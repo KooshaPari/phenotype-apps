@@ -1,90 +1,25 @@
 # AGENTS.md — kwality
 
-## Project Overview
+Phenotype repository
 
-- **Name**: kwality (Quality Assurance Platform)
-- **Description**: Comprehensive quality assurance platform with automated testing, code review, and metrics
-- **Location**: `/Users/kooshapari/CodeProjects/Phenotype/repos/kwality`
-- **Language Stack**: TypeScript, Node.js 20+, Python 3.12+
-- **Published**: Private (Phenotype org)
+## Quick Links
 
-## Quick Start
+- **Local CLAUDE.md:** See `CLAUDE.md` in this repository for project-specific guidance
+- **Phenotype org governance:** `/Users/kooshapari/CodeProjects/Phenotype/repos/CLAUDE.md`
+- **Global agent guidance:** `~/.claude/AGENTS.md`
+- **AgilePlus work tracking:** `cd /repos/AgilePlus && agileplus <command>`
 
-```bash
-# Navigate to project
-cd /Users/kooshapari/CodeProjects/Phenotype/repos/kwality
+## Key Workflows
 
-# Install dependencies
-npm install
+1. **Before implementing:** Check AgilePlus for existing specs
+2. **Quality gates:** Run linters, tests, and docs validation (see CLAUDE.md)
+3. **Worktrees:** Use `repos/kwality-wtrees/<topic>/` for feature work
+4. **Integration:** Commit to canonical repo (`main`) after quality gates pass
 
-# Start development
-npm run dev
-```
+## Project-Specific Gotchas
 
-## Architecture
+See CLAUDE.md for language stack, build commands, and testing requirements.
 
-### Quality Platform
+---
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     Analysis Engine                              │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐   │
-│  │   Code Quality  │  │   Test Results  │  │   Security      │   │
-│  │   (SonarQube)   │  │   (Jest/etc)    │  │   (Snyk)        │   │
-│  └────────┬────────┘  └────────┬────────┘  └────────┬────────┘   │
-└───────────┼───────────────────┼───────────────────┼──────────────┘
-            │                   │                   │
-            └───────────────────┼───────────────────┘
-                                │
-┌───────────────────────────────▼───────────────────────────────┐
-│                     Metrics Dashboard                              │
-│  ┌──────────────────────────────────────────────────────────┐ │
-│  │                    Quality Score                              │ │
-│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  │ │
-│  │  │ Coverage │  │ Bugs     │  │ Debt     │  │ Grade    │  │ │
-│  │  │ Trend    │  │ Trend    │  │ Ratio    │  │ History  │  │ │
-│  │  └──────────┘  └──────────┘  └──────────┘  └──────────┘  │ │
-│  └──────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-## Quality Standards
-
-### Code Quality
-
-- **Formatter**: Prettier
-- **Linter**: ESLint
-- **Tests**: Jest >80%
-- **Coverage**: 80% minimum
-
-## Git Workflow
-
-### Branch Naming
-
-Format: `<type>/<area>/<description>`
-
-Examples:
-- `feat/metrics/add-code-coverage-trend`
-- `fix/reports/handle-large-repos`
-- `integration/add-sonarqube-connector`
-
-## CLI Commands
-
-```bash
-npm run dev
-npm run build
-npm test
-```
-
-## Resources
-
-- [SonarQube](https://www.sonarqube.org/)
-- [Phenotype Registry](https://github.com/KooshaPari/phenotype-registry)
-
-## Agent Notes
-
-**Critical Details:**
-- Aggregate multiple quality tools
-- Track trends over time
-- Set quality gates
-- Automated PR comments
+**Parent contract:** Extends Phenotype-org governance. See `CLAUDE.md` and parent `AGENTS.md` for complete operating procedures.
