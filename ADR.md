@@ -59,7 +59,7 @@ Create an ADR when:
 
 | Status | Description | Action Required |
 |--------|-------------|-----------------|
-| **Proposed** | Idea identified, not yet written | Assign author, create placeholder |
+| **Proposed** | Idea identified, not yet written | Assign author, draft ADR |
 | **Draft** | Being written, not ready for review | Complete all sections |
 | **Under Review** | Open for team feedback | Address comments, seek approval |
 | **Accepted** | Decision approved and merged | Implement decision |
