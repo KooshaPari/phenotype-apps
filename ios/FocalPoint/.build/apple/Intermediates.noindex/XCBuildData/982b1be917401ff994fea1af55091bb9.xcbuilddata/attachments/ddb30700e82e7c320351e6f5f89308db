@@ -1,0 +1,4 @@
+module MascotUI {
+    header "MascotUI-Swift.h"
+    export *
+}

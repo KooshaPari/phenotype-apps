@@ -1,0 +1,4 @@
+module FocalPointCore {
+    header "FocalPointCore-Swift.h"
+    export *
+}
