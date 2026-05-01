@@ -51,7 +51,7 @@ jobs:
           fetch-depth: 0  # Need full history for security analysis
 
       - name: Setup GitHub CLI
-        uses: actions/setup-node@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: ${{ env.NODE_VERSION }}
       
@@ -165,7 +165,7 @@ jobs:
           fi
 
       - name: Upload SBOMs as artifacts
-        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: software-bill-of-materials
           path: |
@@ -267,7 +267,7 @@ jobs:
           cargo deny check
 
       - name: Upload dependency scan results
-        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: dependency-scan-results
@@ -314,7 +314,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
 
       - name: Cache Go modules
-        uses: actions/cache@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: |
             ~/.cache/go-build
@@ -493,7 +493,7 @@ jobs:
           components: rustfmt, clippy
 
       - name: Cache Rust dependencies
-        uses: actions/cache@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: |
             ~/.cargo/registry
@@ -724,7 +724,7 @@ jobs:
           echo "Digest: ${{ steps.build-runtime.outputs.digest }}" >> container-security-report.md
 
       - name: Upload container security artifacts
-        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: container-security-reports
@@ -837,7 +837,7 @@ jobs:
 
       - name: Upload logs
         if: always()
-        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: e2e-logs
           path: e2e-logs.txt
@@ -1179,7 +1179,7 @@ jobs:
             }' || true
 
       - name: Upload deployment artifacts
-        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: production-deployment-artifacts
@@ -1229,7 +1229,7 @@ jobs:
           cargo bench > rust-benchmarks.txt
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: benchmarks
           path: |

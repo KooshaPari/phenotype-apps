@@ -302,7 +302,7 @@ jobs:
           output-file: sbom.spdx.json
 
       - name: Upload SBOM
-        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: sbom
           path: sbom.spdx.json
@@ -362,7 +362,7 @@ jobs:
             --reporter-junit-export staging-test-results.xml
 
       - name: Upload staging test results
-        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: staging-test-results
@@ -475,7 +475,7 @@ jobs:
           hey -n 1000 -c 10 -m GET https://kwality.yourdomain.com/health
 
       - name: Upload production test results
-        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: production-test-results
@@ -556,7 +556,7 @@ jobs:
           EOF
 
       - name: Upload compliance report
-        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: compliance-report
           path: compliance-report.md
