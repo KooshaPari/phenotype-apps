@@ -51,7 +51,7 @@ jobs:
           fetch-depth: 0  # Need full history for security analysis
 
       - name: Setup GitHub CLI
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        uses: actions/setup-node@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           node-version: ${{ env.NODE_VERSION }}
       
@@ -91,14 +91,14 @@ jobs:
           exit-code: '0'  # Don't fail on config issues initially
 
       - name: Upload Trivy scan results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         if: always()
         with:
           sarif_file: 'trivy-fs-results.sarif'
           category: 'trivy-filesystem'
 
       - name: Upload Trivy config results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         if: always()
         with:
           sarif_file: 'trivy-config-results.sarif'
@@ -118,23 +118,23 @@ jobs:
           generateSarif: "1"
 
       - name: Upload Semgrep results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         if: always()
         with:
           sarif_file: semgrep.sarif
           category: 'semgrep-sast'
 
       - name: CodeQL Analysis
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           languages: go
           queries: +security-and-quality
 
       - name: CodeQL Autobuild
-        uses: github/codeql-action/autobuild@v3
+        uses: github/codeql-action/autobuild@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           category: "/language:go"
 
@@ -165,7 +165,7 @@ jobs:
           fi
 
       - name: Upload SBOMs as artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           name: software-bill-of-materials
           path: |
@@ -267,7 +267,7 @@ jobs:
           cargo deny check
 
       - name: Upload dependency scan results
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
         if: always()
         with:
           name: dependency-scan-results
@@ -314,7 +314,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
 
       - name: Cache Go modules
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        uses: actions/cache@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           path: |
             ~/.cache/go-build
@@ -493,7 +493,7 @@ jobs:
           components: rustfmt, clippy
 
       - name: Cache Rust dependencies
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        uses: actions/cache@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           path: |
             ~/.cargo/registry
@@ -555,10 +555,10 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Log in to Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -567,7 +567,7 @@ jobs:
       # Build Go orchestrator image
       - name: Extract Go orchestrator metadata
         id: meta-orchestrator
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/orchestrator
           tags: |
@@ -579,7 +579,7 @@ jobs:
 
       - name: Build and push Go orchestrator image
         id: build-orchestrator
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           context: .
           file: ./Dockerfile
@@ -602,7 +602,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Upload orchestrator container scan results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         if: always()
         with:
           sarif_file: 'trivy-orchestrator-image.sarif'
@@ -644,7 +644,7 @@ jobs:
       # Build Rust runtime validator image
       - name: Extract Rust runtime validator metadata
         id: meta-runtime
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/runtime-validator
           tags: |
@@ -656,7 +656,7 @@ jobs:
 
       - name: Build and push Rust runtime validator image
         id: build-runtime
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           context: ./engines/runtime-validator
           file: ./engines/runtime-validator/Dockerfile
@@ -679,7 +679,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Upload runtime validator container scan results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         if: always()
         with:
           sarif_file: 'trivy-runtime-image.sarif'
@@ -724,7 +724,7 @@ jobs:
           echo "Digest: ${{ steps.build-runtime.outputs.digest }}" >> container-security-report.md
 
       - name: Upload container security artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
         if: always()
         with:
           name: container-security-reports
@@ -772,7 +772,7 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
 
       - name: Log in to Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -837,7 +837,7 @@ jobs:
 
       - name: Upload logs
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           name: e2e-logs
           path: e2e-logs.txt
@@ -865,7 +865,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@34e114876b0b11c390a56381ad16ebd13914f8d5
         if: env.AWS_REGION != ''
         with:
           role-to-assume: ${{ secrets.AWS_STAGING_ROLE_ARN }}
@@ -873,17 +873,17 @@ jobs:
           role-session-name: kwality-staging-deploy
 
       - name: Setup kubectl
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           version: 'v1.28.2'
 
       - name: Setup Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           version: '3.13.0'
 
       - name: Login to Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -1030,7 +1030,7 @@ jobs:
           echo "Deploying version: $VERSION"
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@34e114876b0b11c390a56381ad16ebd13914f8d5
         if: env.AWS_REGION != ''
         with:
           role-to-assume: ${{ secrets.AWS_PRODUCTION_ROLE_ARN }}
@@ -1038,17 +1038,17 @@ jobs:
           role-session-name: kwality-production-deploy
 
       - name: Setup kubectl
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           version: 'v1.28.2'
 
       - name: Setup Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           version: '3.13.0'
 
       - name: Login to Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -1179,7 +1179,7 @@ jobs:
             }' || true
 
       - name: Upload deployment artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
         if: always()
         with:
           name: production-deployment-artifacts
@@ -1229,7 +1229,7 @@ jobs:
           cargo bench > rust-benchmarks.txt
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           name: benchmarks
           path: |
@@ -1251,7 +1251,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@34e114876b0b11c390a56381ad16ebd13914f8d5
         if: env.AWS_REGION != ''
         with:
           role-to-assume: ${{ secrets.AWS_PRODUCTION_ROLE_ARN }}
@@ -1259,7 +1259,7 @@ jobs:
           role-session-name: kwality-emergency-rollback
 
       - name: Setup kubectl
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           version: 'v1.28.2'
 
@@ -1324,7 +1324,7 @@ jobs:
           fi
 
       - name: Send comprehensive notification
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           status: custom
           channel: '#kwality-alerts'
@@ -1437,7 +1437,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload security report to release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           files: SECURITY_REPORT.md
           tag_name: ${{ github.ref_name }}
