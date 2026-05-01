@@ -1399,7 +1399,7 @@ jobs:
           fetch-depth: 0
 
       - name: Generate security attestation
-        uses: actions/attest-build-provenance@5a5c6e4b6f5c8e3d7c8e9f0a1b2c3d4e5f6a7b8
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32
         with:
           subject-path: |
             ${{ needs.build-images.outputs.orchestrator-image }}
