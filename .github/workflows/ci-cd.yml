@@ -209,7 +209,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@be666c2fcd27ec809703dec50e508c2fdc7f6654
         with:
           go-version: ${{ env.GO_VERSION }}
 
@@ -309,12 +309,12 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@be666c2fcd27ec809703dec50e508c2fdc7f6654
         with:
           go-version: ${{ env.GO_VERSION }}
 
       - name: Cache Go modules
-        uses: actions/cache@v3
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: |
             ~/.cache/go-build
@@ -493,7 +493,7 @@ jobs:
           components: rustfmt, clippy
 
       - name: Cache Rust dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: |
             ~/.cargo/registry
@@ -837,7 +837,7 @@ jobs:
 
       - name: Upload logs
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: e2e-logs
           path: e2e-logs.txt
@@ -1200,7 +1200,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@be666c2fcd27ec809703dec50e508c2fdc7f6654
         with:
           go-version: ${{ env.GO_VERSION }}
 
@@ -1229,7 +1229,7 @@ jobs:
           cargo bench > rust-benchmarks.txt
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: benchmarks
           path: |
@@ -1399,7 +1399,7 @@ jobs:
           fetch-depth: 0
 
       - name: Generate security attestation
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@5a5c6e4b6f5c8e3d7c8e9f0a1b2c3d4e5f6a7b8
         with:
           subject-path: |
             ${{ needs.build-images.outputs.orchestrator-image }}
