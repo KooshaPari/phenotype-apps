@@ -1,7 +1,5 @@
 # Security Policy
 
 ## Reporting a Vulnerability
-If you discover a security vulnerability, please report it responsibly:
-1. Do not open a public GitHub issue.
-2. Email the maintainers.
-3. Allow time for assessment before public disclosure.
+To report a security vulnerability, please email **kooshapari@kooshapari.com** or open a private security advisory on GitHub.
+Do NOT open a public issue for security vulnerabilities.
