@@ -61,3 +61,5 @@ freezegun>=1.2.0
 # fastapi>=0.103.0  # For API testing
 # selenium>=4.11.0  # For web testing
 # playwright>=1.37.0  # For modern web testing
+authlib>=1.6.11 # not directly required, pinned by Snyk to avoid a vulnerability
+cryptography>=46.0.7 # not directly required, pinned by Snyk to avoid a vulnerability
