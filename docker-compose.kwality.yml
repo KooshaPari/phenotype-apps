@@ -16,9 +16,10 @@ services:
       - DB_PORT=5432
       - DB_DATABASE=kwality
       - DB_USER=postgres
-      - DB_PASSWORD=postgres
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - RUNTIME_CONTAINER_IMAGE=kwality/runtime-validator:latest
       - RUNTIME_MEMORY_LIMIT_MB=512
       - RUNTIME_CPU_LIMIT_CORES=1.0
