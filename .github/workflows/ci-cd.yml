@@ -91,14 +91,14 @@ jobs:
           exit-code: '0'  # Don't fail on config issues initially
 
       - name: Upload Trivy scan results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@0daab03d71ff584ef619d027a3fd9146679c5d84
         if: always()
         with:
           sarif_file: 'trivy-fs-results.sarif'
           category: 'trivy-filesystem'
 
       - name: Upload Trivy config results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@0daab03d71ff584ef619d027a3fd9146679c5d84
         if: always()
         with:
           sarif_file: 'trivy-config-results.sarif'
@@ -118,23 +118,23 @@ jobs:
           generateSarif: "1"
 
       - name: Upload Semgrep results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@0daab03d71ff584ef619d027a3fd9146679c5d84
         if: always()
         with:
           sarif_file: semgrep.sarif
           category: 'semgrep-sast'
 
       - name: CodeQL Analysis
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@0daab03d71ff584ef619d027a3fd9146679c5d84
         with:
           languages: go
           queries: +security-and-quality
 
       - name: CodeQL Autobuild
-        uses: github/codeql-action/autobuild@v3
+        uses: github/codeql-action/autobuild@0daab03d71ff584ef619d027a3fd9146679c5d84
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@0daab03d71ff584ef619d027a3fd9146679c5d84
         with:
           category: "/language:go"
 
@@ -602,7 +602,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Upload orchestrator container scan results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@0daab03d71ff584ef619d027a3fd9146679c5d84
         if: always()
         with:
           sarif_file: 'trivy-orchestrator-image.sarif'
@@ -679,7 +679,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Upload runtime validator container scan results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@0daab03d71ff584ef619d027a3fd9146679c5d84
         if: always()
         with:
           sarif_file: 'trivy-runtime-image.sarif'
