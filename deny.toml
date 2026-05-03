@@ -1,20 +1,6 @@
 [advisories]
 db-path = "$CARGO_HOME/advisory-db"
-ignore = [
-    # unmaintained — used transitively, no safe upgrade path yet
-    { id = "RUSTSEC-2024-0388" },  # protobuf: uncontrolled recursion crash (transitive via prost)
-    { id = "RUSTSEC-2024-0436" },  # protobuf: same issue
-    { id = "RUSTSEC-2024-0437" },  # protobuf: same issue
-    { id = "RUSTSEC-2025-0057" },  # protobuf: same issue
-    { id = "RUSTSEC-2025-0134" },  # protobuf: same issue
-    { id = "RUSTSEC-2025-0141" },  # protobuf: same issue
-    { id = "RUSTSEC-2025-0001" },  # rustls-pemfile: unmaintained
-    # Add date-based waiver for unmaintained crates tracked transitively
-    { id = "RUSTSEC-2021-0139" },  # bincode: unmaintained, used by serde (transitive)
-    { id = "RUSTSEC-2022-0084" },  # derivative: unmaintained, used in dev (transitive)
-    { id = "RUSTSEC-2023-0052" },  # fxhash: unmaintained, used by rustc-hash (transitive)
-    { id = "RUSTSEC-2024-0332" },  # paste: unmaintained, used by proc-macro2 (transitive)
-]
+ignore = []
 
 [licenses]
 version = 2
@@ -37,7 +23,7 @@ allow = [
     "BlueOak-1.0.0",
     "CDLA-Permissive-2.0",
     "Unlicense",
-    "WTFPL",
+    "WTFPL"
 ]
 
 [bans]
