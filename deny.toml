@@ -1,6 +1,11 @@
 [advisories]
 db-path = "$CARGO_HOME/advisory-db"
-ignore = []
+ignore = [
+    { id = "RUSTSEC-2024-0388", reason = "unmaintained - no safe upgrade" },
+    { id = "RUSTSEC-2024-0436", reason = "unmaintained - no safe upgrade" },
+    { id = "RUSTSEC-2025-0057", reason = "unmaintained - no safe upgrade" },
+    { id = "RUSTSEC-2025-0141", reason = "unmaintained - no safe upgrade" },
+]
 
 [licenses]
 version = 2
