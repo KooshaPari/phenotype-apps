@@ -1429,7 +1429,7 @@ jobs:
           echo "Generated on: $(date -u)" >> SECURITY_REPORT.md
 
       - name: Generate release notes
-        uses: release-drafter/release-drafter@09c613e259eb8d4e7c81c2cb00618eb5fc4575a7
+        uses: release-drafter/release-drafter@563bf132657a13ded0b01fcb723c5a58cdd824e2
         with:
           config-name: release-drafter.yml
           publish: true
