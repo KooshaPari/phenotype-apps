@@ -1,1 +1,4 @@
 pr_details.jsonl
+
+# Rust build artifacts
+/target
