@@ -9,3 +9,13 @@ jobs:
         with: { go-version: '1.23', cache: true }
       - run: go test ./... -short
       - run: go vet ./...
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version: '1.23', cache: true }
+      - uses: golangci/golangci-lint-action@aa6339a8b9e0e1c4b5e7c4e6f8d7c3a2b1e0d9f8
+        with:
+          version: latest
