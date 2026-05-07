@@ -11,16 +11,16 @@ import (
 type ValidationEngine interface {
 	// Validate performs validation on the given codebase
 	Validate(ctx context.Context, codebase *models.Codebase, config *types.ValidationConfig) (*types.EngineResult, error)
-	
+
 	// Name returns the engine name
 	Name() string
-	
+
 	// Version returns the engine version
 	Version() string
-	
+
 	// SupportedLanguages returns the languages supported by this engine
 	SupportedLanguages() []string
-	
+
 	// HealthCheck verifies the engine is healthy and ready
 	HealthCheck(ctx context.Context) error
 }
@@ -39,40 +39,40 @@ const (
 
 // EngineMetadata holds metadata about an engine
 type EngineMetadata struct {
-	Name              string            `json:"name"`
-	Version           string            `json:"version"`
-	Type              EngineType        `json:"type"`
-	Description       string            `json:"description"`
-	SupportedLanguages []string         `json:"supported_languages"`
-	RequiredTools     []string          `json:"required_tools"`
-	OptionalTools     []string          `json:"optional_tools"`
-	ConfigSchema      interface{}       `json:"config_schema,omitempty"`
-	Author            string            `json:"author"`
-	License           string            `json:"license"`
-	Documentation     string            `json:"documentation,omitempty"`
-	Capabilities      []string          `json:"capabilities"`
-	Performance       PerformanceInfo   `json:"performance"`
+	Name               string          `json:"name"`
+	Version            string          `json:"version"`
+	Type               EngineType      `json:"type"`
+	Description        string          `json:"description"`
+	SupportedLanguages []string        `json:"supported_languages"`
+	RequiredTools      []string        `json:"required_tools"`
+	OptionalTools      []string        `json:"optional_tools"`
+	ConfigSchema       interface{}     `json:"config_schema,omitempty"`
+	Author             string          `json:"author"`
+	License            string          `json:"license"`
+	Documentation      string          `json:"documentation,omitempty"`
+	Capabilities       []string        `json:"capabilities"`
+	Performance        PerformanceInfo `json:"performance"`
 }
 
 // PerformanceInfo holds performance characteristics of an engine
 type PerformanceInfo struct {
 	AverageExecutionTime string  `json:"average_execution_time"`
-	MemoryUsage         string  `json:"memory_usage"`
-	CPUIntensive        bool    `json:"cpu_intensive"`
-	DiskIntensive       bool    `json:"disk_intensive"`
-	NetworkRequired     bool    `json:"network_required"`
-	Parallelizable      bool    `json:"parallelizable"`
-	ScalingFactor       float64 `json:"scaling_factor"`
+	MemoryUsage          string  `json:"memory_usage"`
+	CPUIntensive         bool    `json:"cpu_intensive"`
+	DiskIntensive        bool    `json:"disk_intensive"`
+	NetworkRequired      bool    `json:"network_required"`
+	Parallelizable       bool    `json:"parallelizable"`
+	ScalingFactor        float64 `json:"scaling_factor"`
 }
 
 // EngineFactory creates validation engines
 type EngineFactory interface {
 	// CreateEngine creates a new engine instance
 	CreateEngine(engineType EngineType, config interface{}) (ValidationEngine, error)
-	
+
 	// ListAvailableEngines returns all available engine types
 	ListAvailableEngines() []EngineMetadata
-	
+
 	// GetEngineMetadata returns metadata for a specific engine
 	GetEngineMetadata(engineType EngineType) (*EngineMetadata, error)
 }
@@ -107,7 +107,7 @@ func (r *EngineRegistry) CreateEngine(engineType EngineType, config interface{})
 	if !exists {
 		return nil, fmt.Errorf("engine type %s not registered", engineType)
 	}
-	
+
 	return factory(config)
 }
 
@@ -126,6 +126,6 @@ func (r *EngineRegistry) GetEngineMetadata(engineType EngineType) (*EngineMetada
 	if !exists {
 		return nil, fmt.Errorf("engine type %s not found", engineType)
 	}
-	
+
 	return &metadata, nil
 }

@@ -9,14 +9,14 @@ import (
 
 // Config holds the application configuration
 type Config struct {
-	Environment string        `json:"environment"`
-	Server      ServerConfig  `json:"server"`
-	Database    DatabaseConfig `json:"database"`
-	Redis       RedisConfig   `json:"redis"`
-	Logging     LoggingConfig `json:"logging"`
+	Environment  string             `json:"environment"`
+	Server       ServerConfig       `json:"server"`
+	Database     DatabaseConfig     `json:"database"`
+	Redis        RedisConfig        `json:"redis"`
+	Logging      LoggingConfig      `json:"logging"`
 	Orchestrator OrchestratorConfig `json:"orchestrator"`
-	Validation  ValidationConfig   `json:"validation"`
-	Security    SecurityConfig     `json:"security"`
+	Validation   ValidationConfig   `json:"validation"`
+	Security     SecurityConfig     `json:"security"`
 }
 
 // ServerConfig holds HTTP server configuration
@@ -30,14 +30,14 @@ type ServerConfig struct {
 
 // DatabaseConfig holds database configuration
 type DatabaseConfig struct {
-	Host         string `json:"host"`
-	Port         int    `json:"port"`
-	Username     string `json:"username"`
-	Password     string `json:"password"`
-	Database     string `json:"database"`
-	SSLMode      string `json:"ssl_mode"`
-	MaxConns     int    `json:"max_conns"`
-	MaxIdleConns int    `json:"max_idle_conns"`
+	Host         string        `json:"host"`
+	Port         int           `json:"port"`
+	Username     string        `json:"username"`
+	Password     string        `json:"password"`
+	Database     string        `json:"database"`
+	SSLMode      string        `json:"ssl_mode"`
+	MaxConns     int           `json:"max_conns"`
+	MaxIdleConns int           `json:"max_idle_conns"`
 	MaxLifetime  time.Duration `json:"max_lifetime"`
 }
 
@@ -59,18 +59,18 @@ type LoggingConfig struct {
 
 // OrchestratorConfig holds orchestrator configuration
 type OrchestratorConfig struct {
-	MaxWorkers    int    `json:"max_workers"`
-	QueueSize     int    `json:"queue_size"`
-	ResultStorage string `json:"result_storage"`
-	TimeoutMinutes int   `json:"timeout_minutes"`
+	MaxWorkers     int    `json:"max_workers"`
+	QueueSize      int    `json:"queue_size"`
+	ResultStorage  string `json:"result_storage"`
+	TimeoutMinutes int    `json:"timeout_minutes"`
 }
 
 // ValidationConfig holds validation engine configuration
 type ValidationConfig struct {
-	EnabledEngines []string          `json:"enabled_engines"`
-	StaticAnalysis StaticAnalysisConfig `json:"static_analysis"`
-	RuntimeValidation RuntimeValidationConfig `json:"runtime_validation"`
-	SecurityScanning SecurityScanningConfig `json:"security_scanning"`
+	EnabledEngines     []string                 `json:"enabled_engines"`
+	StaticAnalysis     StaticAnalysisConfig     `json:"static_analysis"`
+	RuntimeValidation  RuntimeValidationConfig  `json:"runtime_validation"`
+	SecurityScanning   SecurityScanningConfig   `json:"security_scanning"`
 	IntegrationTesting IntegrationTestingConfig `json:"integration_testing"`
 }
 
@@ -84,20 +84,20 @@ type StaticAnalysisConfig struct {
 
 // RuntimeValidationConfig holds runtime validation configuration
 type RuntimeValidationConfig struct {
-	ContainerImage    string        `json:"container_image"`
-	TimeoutSeconds    int           `json:"timeout_seconds"`
-	MemoryLimitMB     int           `json:"memory_limit_mb"`
-	CPULimitCores     float64       `json:"cpu_limit_cores"`
-	NetworkIsolation  bool          `json:"network_isolation"`
-	TempDirSize       string        `json:"temp_dir_size"`
+	ContainerImage   string  `json:"container_image"`
+	TimeoutSeconds   int     `json:"timeout_seconds"`
+	MemoryLimitMB    int     `json:"memory_limit_mb"`
+	CPULimitCores    float64 `json:"cpu_limit_cores"`
+	NetworkIsolation bool    `json:"network_isolation"`
+	TempDirSize      string  `json:"temp_dir_size"`
 }
 
 // SecurityScanningConfig holds security scanning configuration
 type SecurityScanningConfig struct {
-	EnabledScanners   []string `json:"enabled_scanners"`
-	VulnDatabases     []string `json:"vuln_databases"`
-	SecretsDetection  bool     `json:"secrets_detection"`
-	DependencyScanning bool    `json:"dependency_scanning"`
+	EnabledScanners    []string `json:"enabled_scanners"`
+	VulnDatabases      []string `json:"vuln_databases"`
+	SecretsDetection   bool     `json:"secrets_detection"`
+	DependencyScanning bool     `json:"dependency_scanning"`
 }
 
 // IntegrationTestingConfig holds integration testing configuration
@@ -110,11 +110,11 @@ type IntegrationTestingConfig struct {
 
 // SecurityConfig holds security-related configuration
 type SecurityConfig struct {
-	JWTSecret       string        `json:"jwt_secret"`
-	APIKeyHeader    string        `json:"api_key_header"`
-	RateLimitRPS    int           `json:"rate_limit_rps"`
-	CORSOrigins     []string      `json:"cors_origins"`
-	SessionTimeout  time.Duration `json:"session_timeout"`
+	JWTSecret      string        `json:"jwt_secret"`
+	APIKeyHeader   string        `json:"api_key_header"`
+	RateLimitRPS   int           `json:"rate_limit_rps"`
+	CORSOrigins    []string      `json:"cors_origins"`
+	SessionTimeout time.Duration `json:"session_timeout"`
 }
 
 // Load loads configuration from environment variables
@@ -208,7 +208,7 @@ func validateRequiredEnvVars() error {
 		"JWT_SECRET",
 		"DB_PASSWORD",
 	}
-	
+
 	for _, envVar := range requiredVars {
 		if os.Getenv(envVar) == "" {
 			return fmt.Errorf("required environment variable %s is not set", envVar)
