@@ -393,6 +393,35 @@ fn base64_decode(s: &str) -> std::result::Result<Vec<u8>, String> {
     Ok(result)
 }
 
+#[allow(dead_code)]
+fn bytes_to_hex(bytes: &[u8]) -> String {
+    bytes.iter().map(|b| format!("{:02x}", b)).collect()
+}
+
+// Helper: encode bytes as base64 for testing.
+#[allow(dead_code)]
+fn base64_encode(bytes: &[u8]) -> String {
+    const CHARS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    let mut result = String::new();
+    for chunk in bytes.chunks(3) {
+        let b1 = chunk[0];
+        let b2 = chunk.get(1).copied().unwrap_or(0);
+        let b3 = chunk.get(2).copied().unwrap_or(0);
+
+        let n = ((b1 as u32) << 16) | ((b2 as u32) << 8) | (b3 as u32);
+
+        result.push(CHARS[((n >> 18) & 0x3f) as usize] as char);
+        result.push(CHARS[((n >> 12) & 0x3f) as usize] as char);
+        if chunk.len() > 1 {
+            result.push(CHARS[((n >> 6) & 0x3f) as usize] as char);
+        }
+        if chunk.len() > 2 {
+            result.push(CHARS[(n & 0x3f) as usize] as char);
+        }
+    }
+    result
+}
+
 // ----------------------------------------------------------------------------
 // Tests
 // ----------------------------------------------------------------------------
@@ -514,8 +543,8 @@ author = "x"
 
     #[test]
     fn verify_and_apply_checks_sha256() {
-        use ed25519_dalek::SigningKey;
-        use rand_core::OsRng;
+        
+        
 
         let pack = TemplatePack::from_toml_str(SAMPLE_TOML).expect("parse");
         let digest = signing::digest_pack(&pack).unwrap();
@@ -612,33 +641,4 @@ author = "x"
         let err = pack.verify_and_apply(&mut store, &manifest, &[pubkey2_hex], false).unwrap_err();
         assert!(matches!(err, TemplateError::Verify(_)));
     }
-}
-
-#[allow(dead_code)]
-fn bytes_to_hex(bytes: &[u8]) -> String {
-    bytes.iter().map(|b| format!("{:02x}", b)).collect()
-}
-
-// Helper: encode bytes as base64 for testing.
-#[allow(dead_code)]
-fn base64_encode(bytes: &[u8]) -> String {
-    const CHARS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    let mut result = String::new();
-    for chunk in bytes.chunks(3) {
-        let b1 = chunk[0];
-        let b2 = chunk.get(1).copied().unwrap_or(0);
-        let b3 = chunk.get(2).copied().unwrap_or(0);
-
-        let n = ((b1 as u32) << 16) | ((b2 as u32) << 8) | (b3 as u32);
-
-        result.push(CHARS[((n >> 18) & 0x3f) as usize] as char);
-        result.push(CHARS[((n >> 12) & 0x3f) as usize] as char);
-        if chunk.len() > 1 {
-            result.push(CHARS[((n >> 6) & 0x3f) as usize] as char);
-        }
-        if chunk.len() > 2 {
-            result.push(CHARS[(n & 0x3f) as usize] as char);
-        }
-    }
-    result
 }

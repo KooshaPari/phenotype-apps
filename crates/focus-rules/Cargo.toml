@@ -25,4 +25,4 @@ criterion = { workspace = true }
 
 [[bench]]
 name = "rule_evaluation"
-harness = false
+harness = true

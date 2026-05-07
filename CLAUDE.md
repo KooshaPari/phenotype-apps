@@ -5,7 +5,7 @@ Connector-first screen-time management platform. Native iOS enforcement built on
 ## Stack
 | Layer | Technology |
 |-------|------------|
-| Core | Rust (cargo workspace, 54+ crates) |
+| Core | Rust (cargo workspace, 56 crates) |
 | Mobile | Swift/SwiftUI (iOS native app) |
 | Backend | Go (services/) |
 | DB | SQLite, PostgreSQL, SurrealDB |
@@ -34,7 +34,7 @@ xcrun simctl list devices
 ```
 
 ## Key Files
-- `crates/` — 54 Rust workspace crates
+- `crates/` — 56 Rust workspace crates
 - `apps/` — Application entry points (iOS, CLI, etc.)
 - `services/` — Go backend services
 - `tooling/` — Build and developer tooling

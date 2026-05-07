@@ -477,6 +477,7 @@ impl Default for RuleSuggester {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use chrono::Timelike;
 
     fn ts(offset_days: i64) -> DateTime<Utc> {
         Utc::now() - Duration::days(offset_days)

@@ -2,3 +2,6 @@ pr_details.jsonl
 
 # Rust build artifacts
 /target
+
+# Example FPL scripts (scaffold output)
+/examples/fpl

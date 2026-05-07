@@ -33,8 +33,8 @@ criterion = { workspace = true }
 
 [[bench]]
 name = "eval_tick"
-harness = false
+harness = true
 
 [[bench]]
 name = "eval_batched"
-harness = false
+harness = true

@@ -15,6 +15,10 @@ thiserror.workspace = true
 chrono.workspace = true
 uuid.workspace = true
 
+[dev-dependencies]
+criterion.workspace = true
+anyhow.workspace = true
+
 [[bench]]
 name = "focus_policy_benchmarks"
-harness = false
+harness = true

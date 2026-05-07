@@ -202,6 +202,7 @@ impl Connector for MockFamilyControls {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use focus_events::EventType;
 
     // Traces to: FR-MOCK-001
     #[test]

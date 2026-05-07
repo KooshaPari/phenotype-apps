@@ -3,14 +3,6 @@ use focus_policy::{EnforcementPolicy, BlockProfile, PolicyBuilder};
 use chrono::Utc;
 use std::collections::HashMap;
 
-struct NoOpAudit;
-
-impl focus_audit::AuditSink for NoOpAudit {
-    fn record(&self, _record: focus_audit::AuditRecord) -> anyhow::Result<()> {
-        Ok(())
-    }
-}
-
 fn policy_builder_creation(c: &mut Criterion) {
     c.bench_function("policy_builder_new", |b| {
         b.iter(|| {
