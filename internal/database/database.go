@@ -139,7 +139,7 @@ func (m *Manager) initPostgreSQL() error {
 	// Configure connection pool
 	db.SetMaxOpenConns(m.config.PostgreSQL.MaxConnections)
 	db.SetMaxIdleConns(m.config.PostgreSQL.MaxIdleConnections)
-	
+
 	if m.config.PostgreSQL.ConnMaxLifetime != "" {
 		lifetime, err := time.ParseDuration(m.config.PostgreSQL.ConnMaxLifetime)
 		if err == nil {
@@ -291,7 +291,7 @@ func (m *Manager) runMigrations() error {
 // getMigrationFiles gets sorted migration files
 func getMigrationFiles(dir string) ([]string, error) {
 	var files []string
-	
+
 	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
@@ -301,11 +301,11 @@ func getMigrationFiles(dir string) ([]string, error) {
 		}
 		return nil
 	})
-	
+
 	if err != nil {
 		return nil, err
 	}
-	
+
 	sort.Strings(files)
 	return files, nil
 }
@@ -422,7 +422,7 @@ func (m *Manager) Neo4jExecuteQuery(ctx context.Context, query string, params ma
 	if m.neo4j == nil {
 		return nil, fmt.Errorf("Neo4j driver not initialized")
 	}
-	
+
 	session := m.neo4j.NewSession(ctx, neo4j.SessionConfig{
 		DatabaseName: m.config.Neo4j.Database,
 	})
@@ -431,7 +431,7 @@ func (m *Manager) Neo4jExecuteQuery(ctx context.Context, query string, params ma
 			m.logger.Error("Failed to close Neo4j session", "error", err)
 		}
 	}()
-	
+
 	return session.Run(ctx, query, params)
 }
 
@@ -440,7 +440,7 @@ func (m *Manager) Neo4jExecuteReadTransaction(ctx context.Context, work neo4j.Ma
 	if m.neo4j == nil {
 		return nil, fmt.Errorf("Neo4j driver not initialized")
 	}
-	
+
 	session := m.neo4j.NewSession(ctx, neo4j.SessionConfig{
 		DatabaseName: m.config.Neo4j.Database,
 	})
@@ -449,7 +449,7 @@ func (m *Manager) Neo4jExecuteReadTransaction(ctx context.Context, work neo4j.Ma
 			m.logger.Error("Failed to close Neo4j session", "error", err)
 		}
 	}()
-	
+
 	return session.ExecuteRead(ctx, work)
 }
 
@@ -458,7 +458,7 @@ func (m *Manager) Neo4jExecuteWriteTransaction(ctx context.Context, work neo4j.M
 	if m.neo4j == nil {
 		return nil, fmt.Errorf("Neo4j driver not initialized")
 	}
-	
+
 	session := m.neo4j.NewSession(ctx, neo4j.SessionConfig{
 		DatabaseName: m.config.Neo4j.Database,
 	})
@@ -467,7 +467,7 @@ func (m *Manager) Neo4jExecuteWriteTransaction(ctx context.Context, work neo4j.M
 			m.logger.Error("Failed to close Neo4j session", "error", err)
 		}
 	}()
-	
+
 	return session.ExecuteWrite(ctx, work)
 }
 
@@ -476,54 +476,54 @@ func (m *Manager) Neo4jExecuteWriteTransaction(ctx context.Context, work neo4j.M
 // CheckPostgreSQLHealth checks PostgreSQL health
 func (m *Manager) CheckPostgreSQLHealth() HealthStatus {
 	status := HealthStatus{Timestamp: time.Now()}
-	
+
 	if err := m.postgres.Ping(); err != nil {
 		status.Status = "unhealthy"
 		status.Error = err.Error()
 	} else {
 		status.Status = "healthy"
 	}
-	
+
 	return status
 }
 
 // CheckRedisHealth checks Redis health
 func (m *Manager) CheckRedisHealth() HealthStatus {
 	status := HealthStatus{Timestamp: time.Now()}
-	
+
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	
+
 	if err := m.redis.Ping(ctx).Err(); err != nil {
 		status.Status = "unhealthy"
 		status.Error = err.Error()
 	} else {
 		status.Status = "healthy"
 	}
-	
+
 	return status
 }
 
 // CheckNeo4jHealth checks Neo4j health
 func (m *Manager) CheckNeo4jHealth() HealthStatus {
 	status := HealthStatus{Timestamp: time.Now()}
-	
+
 	if m.neo4j == nil {
 		status.Status = "unavailable"
 		status.Error = "Neo4j driver not initialized"
 		return status
 	}
-	
+
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	
+
 	if err := m.neo4j.VerifyConnectivity(ctx); err != nil {
 		status.Status = "unhealthy"
 		status.Error = err.Error()
 	} else {
 		status.Status = "healthy"
 	}
-	
+
 	return status
 }
 
@@ -532,13 +532,13 @@ func (m *Manager) GetHealthStatus() OverallHealth {
 	postgresql := m.CheckPostgreSQLHealth()
 	redis := m.CheckRedisHealth()
 	neo4j := m.CheckNeo4jHealth()
-	
+
 	overall := "healthy"
 	if postgresql.Status != "healthy" || redis.Status != "healthy" {
 		overall = "degraded"
 	}
 	// Neo4j is optional, so we don't consider it for overall health
-	
+
 	return OverallHealth{
 		PostgreSQL: postgresql,
 		Redis:      redis,
@@ -550,19 +550,19 @@ func (m *Manager) GetHealthStatus() OverallHealth {
 // Close closes all database connections
 func (m *Manager) Close() error {
 	var errs []error
-	
+
 	if m.postgres != nil {
 		if err := m.postgres.Close(); err != nil {
 			errs = append(errs, fmt.Errorf("failed to close PostgreSQL: %w", err))
 		}
 	}
-	
+
 	if m.redis != nil {
 		if err := m.redis.Close(); err != nil {
 			errs = append(errs, fmt.Errorf("failed to close Redis: %w", err))
 		}
 	}
-	
+
 	if m.neo4j != nil {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
@@ -570,11 +570,11 @@ func (m *Manager) Close() error {
 			errs = append(errs, fmt.Errorf("failed to close Neo4j: %w", err))
 		}
 	}
-	
+
 	if len(errs) > 0 {
 		return fmt.Errorf("errors closing connections: %v", errs)
 	}
-	
+
 	m.logger.Info("All database connections closed")
 	return nil
 }
