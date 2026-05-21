@@ -76,7 +76,7 @@ jobs:
           extra_args: --debug --only-verified
 
       - name: Run comprehensive Trivy security scan
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        uses: aquasecurity/trivy-action@314ff8b43182423b84c50b1670b0e10f858f2d98
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -86,7 +86,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Run Trivy configuration scan
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        uses: aquasecurity/trivy-action@314ff8b43182423b84c50b1670b0e10f858f2d98
         with:
           scan-type: 'config'
           scan-ref: '.'
@@ -597,7 +597,7 @@ jobs:
           sbom: true
 
       - name: Run Trivy container scan on orchestrator
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        uses: aquasecurity/trivy-action@314ff8b43182423b84c50b1670b0e10f858f2d98
         with:
           image-ref: ${{ steps.meta-orchestrator.outputs.tags }}
           format: 'sarif'
@@ -674,7 +674,7 @@ jobs:
           sbom: true
 
       - name: Run Trivy container scan on runtime validator
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        uses: aquasecurity/trivy-action@314ff8b43182423b84c50b1670b0e10f858f2d98
         with:
           image-ref: ${{ steps.meta-runtime.outputs.tags }}
           format: 'sarif'
