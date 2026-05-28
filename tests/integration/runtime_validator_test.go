@@ -353,12 +353,26 @@ func (suite *RuntimeValidatorTestSuite) TestValidationTimeout() {
 // Helper methods
 
 func (suite *RuntimeValidatorTestSuite) runValidation(request RuntimeValidationRequest) RuntimeValidationResult {
-	// Create request file
+	// Create request file (codebase data only)
+	codebaseData := map[string]interface{}{
+		"id":      request.CodebaseID,
+		"name":    request.CodebaseID,
+		"files":   request.Files,
+		"config":  request.Config,
+	}
 	requestFile := filepath.Join(suite.tempDir, "request.json")
-	requestData, err := json.MarshalIndent(request, "", "  ")
+	requestJSON, err := json.MarshalIndent(codebaseData, "", "  ")
 	require.NoError(suite.T(), err)
-	
-	err = os.WriteFile(requestFile, requestData, 0644)
+
+	err = os.WriteFile(requestFile, requestJSON, 0644)
+	require.NoError(suite.T(), err)
+
+	// Write config.json for Rust binary (reads from file, not embedded)
+	configFile := filepath.Join(suite.tempDir, "config.json")
+	configJSON, err := json.MarshalIndent(request.Config, "", "  ")
+	require.NoError(suite.T(), err)
+
+	err = os.WriteFile(configFile, configJSON, 0644)
 	require.NoError(suite.T(), err)
 
 	// Create output file
@@ -368,7 +382,7 @@ func (suite *RuntimeValidatorTestSuite) runValidation(request RuntimeValidationR
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 
-	cmd := exec.CommandContext(ctx, suite.validatorBinary, "--input", requestFile, "--output", outputFile)
+	cmd := exec.CommandContext(ctx, suite.validatorBinary, "--config", configFile, "--input", requestFile, "--output", outputFile)
 	cmd.Env = append(os.Environ(), "RUST_LOG=debug")
 	
 	output, err := cmd.CombinedOutput()

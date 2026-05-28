@@ -137,17 +137,27 @@ pub struct FuzzingConfig {
 
 /// Fuzzing strategies
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
 pub enum FuzzingStrategy {
+    #[serde(alias = "random")]
+    #[serde(alias = "Random")]
     Random,
+    #[serde(alias = "structured")]
+    #[serde(alias = "Structured")]
     Structured,
+    #[serde(alias = "mutation")]
+    #[serde(alias = "Mutation")]
     Mutation,
+    #[serde(alias = "grammar")]
+    #[serde(alias = "Grammar")]
     Grammar,
 }
 
 /// General validation configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ValidationConfig {
-    /// Maximum validation time
+    /// Maximum validation time (accepts "5m", "300s", or seconds as number)
+    #[serde(deserialize_with = "deserialize_duration")]
     pub max_validation_time: Duration,
     /// Parallel execution enabled
     pub parallel_execution: bool,
@@ -160,10 +170,15 @@ pub struct ValidationConfig {
 /// Codebase representation for validation
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Codebase {
+    #[serde(alias = "codebase_id")]
     pub id: String,
     pub name: String,
     pub files: Vec<CodeFile>,
+    #[serde(default)]
     pub metadata: HashMap<String, serde_json::Value>,
+    /// Runtime validation config (populated from Go test's `config` field)
+    #[serde(alias = "config", default)]
+    pub runtime_config: Option<RuntimeConfig>,
 }
 
 /// Individual code file
@@ -172,6 +187,7 @@ pub struct CodeFile {
     pub path: String,
     pub content: String,
     pub language: Option<String>,
+    #[serde(alias = "fileType")]
     pub file_type: FileType,
     pub size: u64,
 }
@@ -930,5 +946,40 @@ impl Default for RuntimeConfig {
                 detailed_logging: false,
             },
         }
+    }
+}
+
+/// Deserialize duration from string (e.g. "5m", "300s") or number (seconds)
+fn deserialize_duration<'de, D>(deserializer: D) -> Result<Duration, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    #[derive(serde::Deserialize)]
+    #[serde(untagged)]
+    enum Dur {
+        String(String),
+        Seconds(u64),
+    }
+
+    let d = Dur::deserialize(deserializer)?;
+    match d {
+        Dur::String(s) => {
+            // Parse duration strings like "5m", "300s", "10h"
+            if s.ends_with('s') || s.ends_with('S') {
+                let num: u64 = s[..s.len() - 1].parse().map_err(serde::de::Error::custom)?;
+                Ok(Duration::from_secs(num))
+            } else if s.ends_with('m') || s.ends_with('M') {
+                let num: u64 = s[..s.len() - 1].parse().map_err(serde::de::Error::custom)?;
+                Ok(Duration::from_secs(num * 60))
+            } else if s.ends_with('h') || s.ends_with('H') {
+                let num: u64 = s[..s.len() - 1].parse().map_err(serde::de::Error::custom)?;
+                Ok(Duration::from_secs(num * 3600))
+            } else {
+                // Try parsing as plain seconds
+                let secs: u64 = s.parse().map_err(serde::de::Error::custom)?;
+                Ok(Duration::from_secs(secs))
+            }
+        }
+        Dur::Seconds(s) => Ok(Duration::from_secs(s)),
     }
 }
