@@ -40,7 +40,7 @@ jobs:
   # Pre-flight security and compliance checks
   preflight-security:
     name: Pre-flight Security Checks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       security-events: write
       actions: read
@@ -202,7 +202,7 @@ jobs:
   # Dependency vulnerability assessment
   dependency-scan:
     name: Dependency Vulnerability Scan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [preflight-security]
     if: needs.preflight-security.outputs.security-passed != 'false'
     permissions:
@@ -283,7 +283,7 @@ jobs:
   # Enhanced Go backend testing and analysis
   go-test:
     name: Go Tests and Analysis
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [dependency-scan, rust-test]
     services:
       postgres:
@@ -485,7 +485,7 @@ jobs:
   # Rust runtime validator testing
   rust-test:
     name: Rust Tests and Analysis
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
@@ -542,7 +542,7 @@ jobs:
   # Build and secure Docker images
   build-images:
     name: Build and Scan Docker Images
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [preflight-security, dependency-scan, go-test, rust-test]
     permissions:
       contents: read
@@ -741,7 +741,7 @@ jobs:
   # End-to-end testing
   e2e-test:
     name: End-to-End Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build-images]
     services:
       postgres:
@@ -854,7 +854,7 @@ jobs:
   # Deploy to staging
   deploy-staging:
     name: Deploy to Staging
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [e2e-test]
     if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_environment == 'staging')
     environment:
@@ -1008,7 +1008,7 @@ jobs:
   # Deploy to production
   deploy-production:
     name: Deploy to Production
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [e2e-test, deploy-staging]
     if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_environment == 'production')
     environment:
@@ -1196,7 +1196,7 @@ jobs:
   # Performance benchmarking
   benchmark:
     name: Performance Benchmarks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build-images]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
@@ -1243,7 +1243,7 @@ jobs:
   # Rollback capability
   rollback-production:
     name: Emergency Rollback
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.force_deploy == 'true'
     environment:
       name: production
@@ -1303,7 +1303,7 @@ jobs:
   # Enhanced notification system
   notify-status:
     name: Notify Build Status
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [preflight-security, dependency-scan, go-test, rust-test, build-images, e2e-test, deploy-staging, deploy-production]
     if: always()
     steps:
@@ -1389,7 +1389,7 @@ jobs:
   # Generate release notes and security attestation
   release-notes:
     name: Generate Release Notes and Attestation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [deploy-production]
     permissions:
