@@ -572,16 +572,14 @@ mod tests {
     }
 
     // Serialize these tests to avoid env var conflicts
-    static WATCH_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
+    static WATCH_LOCK: std::sync::LazyLock<tokio::sync::Mutex<()>> =
+        std::sync::LazyLock::new(|| tokio::sync::Mutex::new(()));
 
     #[tokio::test]
     async fn watch_channel_create_succeeds() {
-        let saved = {
-            let _guard = WATCH_LOCK.lock().expect("lock");
-            let saved = std::env::var("FOCALPOINT_GCAL_WEBHOOK_URL").ok();
-            std::env::set_var("FOCALPOINT_GCAL_WEBHOOK_URL", "https://webhook.local/gcal");
-            saved
-        };
+        let _guard = WATCH_LOCK.lock().await;
+        let saved = std::env::var("FOCALPOINT_GCAL_WEBHOOK_URL").ok();
+        std::env::set_var("FOCALPOINT_GCAL_WEBHOOK_URL", "https://webhook.local/gcal");
         let server = MockServer::start().await;
         Mock::given(method("POST"))
             .and(path("/calendar/v3/calendars/primary/events/watch"))
@@ -611,13 +609,10 @@ mod tests {
 
     #[tokio::test]
     async fn watch_channel_create_missing_env_returns_auth_error() {
-        let saved = {
-            let _guard = WATCH_LOCK.lock().expect("lock");
-            // Save the current value if it exists
-            let saved = std::env::var("FOCALPOINT_GCAL_WEBHOOK_URL").ok();
-            std::env::remove_var("FOCALPOINT_GCAL_WEBHOOK_URL");
-            saved
-        };
+        let _guard = WATCH_LOCK.lock().await;
+        // Save the current value if it exists
+        let saved = std::env::var("FOCALPOINT_GCAL_WEBHOOK_URL").ok();
+        std::env::remove_var("FOCALPOINT_GCAL_WEBHOOK_URL");
         let server = MockServer::start().await;
         Mock::given(method("POST"))
             .and(path("/calendar/v3/calendars/primary/events/watch"))
