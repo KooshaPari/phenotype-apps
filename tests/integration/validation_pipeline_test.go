@@ -41,6 +41,8 @@ func (suite *ValidationPipelineTestSuite) SetupSuite() {
 	require.NoError(suite.T(), os.Setenv("DB_DATABASE", "kwality_test"))
 	require.NoError(suite.T(), os.Setenv("REDIS_HOST", "localhost"))
 	require.NoError(suite.T(), os.Setenv("REDIS_PORT", "6379"))
+	require.NoError(suite.T(), os.Setenv("JWT_SECRET", "test-secret-for-integration-tests"))
+	require.NoError(suite.T(), os.Setenv("DB_PASSWORD", "test-password-for-integration-tests"))
 
 	// Load test configuration
 	cfg, err := config.Load()

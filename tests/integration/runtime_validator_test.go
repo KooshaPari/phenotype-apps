@@ -60,6 +60,8 @@ type RuntimeValidationFile struct {
 	Path     string `json:"path"`
 	Content  string `json:"content"`
 	Language string `json:"language,omitempty"`
+	FileType string `json:"file_type"`
+	Size     uint64 `json:"size"`
 }
 
 // RuntimeValidationConfig represents validation configuration
@@ -154,17 +156,21 @@ func (suite *RuntimeValidatorTestSuite) TestGoCodeValidation() {
 				Path:     "main.go",
 				Content:  suite.getValidGoCode(),
 				Language: "go",
+				FileType: "Source",
+				Size:     uint64(len(suite.getValidGoCode())),
 			},
 			{
-				Path:    "go.mod",
-				Content: suite.getGoMod(),
+				Path:     "go.mod",
+				Content:  suite.getGoMod(),
+				FileType: "Config",
+				Size:     uint64(len(suite.getGoMod())),
 			},
 		},
 		Config: suite.getDefaultConfig(),
 	}
 
 	result := suite.runValidation(request)
-	
+
 	assert.Equal(suite.T(), "completed", result.Status)
 	assert.True(suite.T(), result.OverallScore > 50.0, "Expected decent score for valid Go code")
 	assert.NotNil(suite.T(), result.PerformanceMetrics)
@@ -180,17 +186,21 @@ func (suite *RuntimeValidatorTestSuite) TestRustCodeValidation() {
 				Path:     "src/main.rs",
 				Content:  suite.getValidRustCode(),
 				Language: "rust",
+				FileType: "Source",
+				Size:     uint64(len(suite.getValidRustCode())),
 			},
 			{
-				Path:    "Cargo.toml",
-				Content: suite.getRustCargoToml(),
+				Path:     "Cargo.toml",
+				Content:  suite.getRustCargoToml(),
+				FileType: "Config",
+				Size:     uint64(len(suite.getRustCargoToml())),
 			},
 		},
 		Config: suite.getDefaultConfig(),
 	}
 
 	result := suite.runValidation(request)
-	
+
 	assert.Equal(suite.T(), "completed", result.Status)
 	assert.True(suite.T(), result.OverallScore > 50.0, "Expected decent score for valid Rust code")
 }
@@ -204,13 +214,15 @@ func (suite *RuntimeValidatorTestSuite) TestPythonCodeValidation() {
 				Path:     "main.py",
 				Content:  suite.getValidPythonCode(),
 				Language: "python",
+				FileType: "Source",
+				Size:     uint64(len(suite.getValidPythonCode())),
 			},
 		},
 		Config: suite.getDefaultConfig(),
 	}
 
 	result := suite.runValidation(request)
-	
+
 	assert.Equal(suite.T(), "completed", result.Status)
 	assert.True(suite.T(), result.OverallScore > 50.0, "Expected decent score for valid Python code")
 }
@@ -224,17 +236,21 @@ func (suite *RuntimeValidatorTestSuite) TestJavaScriptCodeValidation() {
 				Path:     "index.js",
 				Content:  suite.getValidJavaScriptCode(),
 				Language: "javascript",
+				FileType: "Source",
+				Size:     uint64(len(suite.getValidJavaScriptCode())),
 			},
 			{
-				Path:    "package.json",
-				Content: suite.getPackageJson(),
+				Path:     "package.json",
+				Content:  suite.getPackageJson(),
+				FileType: "Config",
+				Size:     uint64(len(suite.getPackageJson())),
 			},
 		},
 		Config: suite.getDefaultConfig(),
 	}
 
 	result := suite.runValidation(request)
-	
+
 	assert.Equal(suite.T(), "completed", result.Status)
 	assert.True(suite.T(), result.OverallScore > 50.0, "Expected decent score for valid JavaScript code")
 }
@@ -248,17 +264,19 @@ func (suite *RuntimeValidatorTestSuite) TestMaliciousCodeDetection() {
 				Path:     "malicious.py",
 				Content:  suite.getMaliciousPythonCode(),
 				Language: "python",
+				FileType: "Source",
+				Size:     uint64(len(suite.getMaliciousPythonCode())),
 			},
 		},
 		Config: suite.getStrictSecurityConfig(),
 	}
 
 	result := suite.runValidation(request)
-	
+
 	assert.Equal(suite.T(), "completed", result.Status)
 	assert.True(suite.T(), result.OverallScore < 30.0, "Expected low score for malicious code")
 	assert.True(suite.T(), len(result.Findings) > 0, "Expected security findings")
-	
+
 	// Check for security violations
 	securityResult := result.SecurityResult
 	assert.NotNil(suite.T(), securityResult)
@@ -273,16 +291,18 @@ func (suite *RuntimeValidatorTestSuite) TestPerformanceIntensiveCode() {
 				Path:     "intensive.go",
 				Content:  suite.getPerformanceIntensiveGoCode(),
 				Language: "go",
+				FileType: "Source",
+				Size:     uint64(len(suite.getPerformanceIntensiveGoCode())),
 			},
 		},
 		Config: suite.getPerformanceConfig(),
 	}
 
 	result := suite.runValidation(request)
-	
+
 	assert.Equal(suite.T(), "completed", result.Status)
 	assert.NotNil(suite.T(), result.PerformanceMetrics)
-	
+
 	// Should detect performance issues
 	assert.True(suite.T(), len(result.Findings) > 0, "Expected performance findings")
 }
@@ -296,13 +316,15 @@ func (suite *RuntimeValidatorTestSuite) TestFuzzingValidation() {
 				Path:     "fuzz_target.go",
 				Content:  suite.getFuzzTargetGoCode(),
 				Language: "go",
+				FileType: "Source",
+				Size:     uint64(len(suite.getFuzzTargetGoCode())),
 			},
 		},
 		Config: suite.getFuzzingConfig(),
 	}
 
 	result := suite.runValidation(request)
-	
+
 	assert.Equal(suite.T(), "completed", result.Status)
 	assert.NotNil(suite.T(), result.FuzzingResult)
 }
@@ -316,6 +338,8 @@ func (suite *RuntimeValidatorTestSuite) TestValidationTimeout() {
 				Path:     "infinite.go",
 				Content:  suite.getInfiniteLoopGoCode(),
 				Language: "go",
+				FileType: "Source",
+				Size:     uint64(len(suite.getInfiniteLoopGoCode())),
 			},
 		},
 		Config: suite.getTimeoutConfig(),
