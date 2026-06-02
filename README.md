@@ -5,6 +5,9 @@
 > - Branch protection: 1 reviewer required, no force-push
 > - Authority: phenotype-org-governance/SUPERSEDED.md
 
+> **Work state:** DORMANT · **Progress:** `█████████░ 85%`
+> Connector-first screen-time platform: portable Rust core (rules/ledger/audit-chain) + native iOS shell. Phase 1 ~85% but WORKSPACE DOES NOT COMPILE since 2026-04-23 (5 crates, E-series errors) — blocked until fixed. · updated 2026-06-02
+
 # FocalPoint
 
 [![AI Slop Inside](https://sladge.net/badge.svg)](https://sladge.net)
