@@ -170,9 +170,8 @@ async fn handle_ws_connection(
                 "error": { "code": -32000, "message": "Rate limit exceeded: 100 req/min" },
                 "id": request.get("id").cloned().unwrap_or(Value::Null)
             });
-            if let Ok(msg) = Message::text(error.to_string()) {
-                let _ = tx.send(msg).await;
-            }
+            let msg = Message::text(error.to_string());
+            let _ = tx.send(msg).await;
             continue;
         }
 
