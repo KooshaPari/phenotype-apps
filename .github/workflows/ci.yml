@@ -14,5 +14,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+      - name: Clone sibling PhenoObservability
+        run: |
+          git clone --depth 1 https://github.com/KooshaPari/PhenoObservability.git \
+            "$GITHUB_WORKSPACE/../PhenoObservability"
       - run: cargo test --all-features --workspace
       - run: cargo clippy --all-features -- -D warnings 2>/dev/null || cargo check
