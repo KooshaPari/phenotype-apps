@@ -29,3 +29,15 @@ All submissions require review. Please ensure:
 - CI checks pass
 - Code is documented
 - Tests cover new functionality
+
+## Governance
+
+Project-wide rules live under `docs/governance/`. The canonical
+background-agent policy that this repository and sibling repos
+(such as `thegent` and `thegent-clean`) point at is:
+
+- [`docs/governance/background_agent_policy.md`](./docs/governance/background_agent_policy.md)
+
+When changing fleet composition, dispatch patterns, or
+failure-handling expectations, update that file in the same PR and
+reference the governance worklog entry.
