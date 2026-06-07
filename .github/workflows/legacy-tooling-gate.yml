@@ -10,6 +10,9 @@ on:
   pull_request:
     branches: [main, master]
   workflow_dispatch:
+permissions:
+  contents: read
+
 
 jobs:
   legacy-tooling-scan:
@@ -21,17 +24,17 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v4
 
       - name: Checkout phenotype/repos for shared tools
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v4
         with:
           repository: kooshapari/phenotype
           path: phenotype-repos
           sparse-checkout: tooling/legacy-enforcement
 
       - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        uses: actions/setup-python@c8813ba1bc76ebf779b911ad8ffccbf2e449cb48 # v-latest
         with:
           python-version: '3.12'
 
