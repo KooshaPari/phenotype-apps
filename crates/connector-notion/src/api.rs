@@ -131,69 +131,96 @@ mod tests {
     #[test]
     fn parse_page_response() {
         let page_json = serde_json::json!({
-            "object": "page",
-            "id": "abc123",
-            "created_time": "2026-04-20T10:00:00.000Z",
-            "last_edited_time": "2026-04-24T15:00:00.000Z",
-            "properties": {
-                "title": {
-                    "id": "title",
-                    "type": "title",
-                    "title": [{"type": "text", "text": {"content": "My Page"}}]
+            "results": [{
+                "object": "page",
+                "id": "abc123",
+                "created_time": "2026-04-20T10:00:00.000Z",
+                "last_edited_time": "2026-04-24T15:00:00.000Z",
+                "url": "https://notion.so/p/abc123",
+                "properties": {
+                    "title": {
+                        "id": "title",
+                        "type": "title",
+                        "title": [{"type": "text", "plain_text": "My Page"}]
+                    }
                 }
-            }
+            }]
         });
 
         let pages = NotionPage::from_notion_json(&page_json);
         assert!(!pages.is_empty());
+        assert_eq!(pages[0].title, "My Page");
     }
 
     // Traces to: FR-NOTION-API-003 (parse task response)
     #[test]
     fn parse_task_response() {
         let task_json = serde_json::json!({
-            "object": "page",
-            "id": "task123",
-            "properties": {
-                "name": {
-                    "id": "name",
-                    "type": "title",
-                    "title": [{"type": "text", "text": {"content": "Complete task"}}]
-                },
-                "status": {
-                    "id": "status",
-                    "type": "select",
-                    "select": {"name": "In Progress"}
+            "results": [{
+                "object": "page",
+                "id": "task123",
+                "created_time": "2026-04-20T10:00:00.000Z",
+                "last_edited_time": "2026-04-24T15:00:00.000Z",
+                "properties": {
+                    "title": {
+                        "id": "title",
+                        "type": "title",
+                        "title": [{"type": "text", "plain_text": "Complete task"}]
+                    },
+                    "status": {
+                        "id": "status",
+                        "type": "select",
+                        "select": {"name": "In Progress"}
+                    }
                 }
-            }
+            }]
         });
 
         let tasks = NotionTask::from_notion_json(&task_json);
         assert!(!tasks.is_empty());
+        assert_eq!(tasks[0].title, "Complete task");
     }
 
     // Traces to: FR-NOTION-API-004 (parse multiple pages)
     #[test]
     fn parse_multiple_pages() {
-        let page1 = serde_json::json!({
-            "object": "page",
-            "id": "page1",
-            "properties": {
-                "title": {"title": [{"text": {"content": "Page 1"}}]}
-            }
-        });
-        let page2 = serde_json::json!({
-            "object": "page",
-            "id": "page2",
-            "properties": {
-                "title": {"title": [{"text": {"content": "Page 2"}}]}
-            }
+        let pages_json = serde_json::json!({
+            "results": [
+                {
+                    "object": "page",
+                    "id": "page1",
+                    "created_time": "2026-04-20T10:00:00.000Z",
+                    "last_edited_time": "2026-04-20T10:00:00.000Z",
+                    "url": "https://notion.so/p/page1",
+                    "properties": {
+                        "title": {
+                            "id": "title",
+                            "type": "title",
+                            "title": [{"type": "text", "plain_text": "Page 1"}]
+                        }
+                    }
+                },
+                {
+                    "object": "page",
+                    "id": "page2",
+                    "created_time": "2026-04-21T10:00:00.000Z",
+                    "last_edited_time": "2026-04-21T10:00:00.000Z",
+                    "url": "https://notion.so/p/page2",
+                    "properties": {
+                        "title": {
+                            "id": "title",
+                            "type": "title",
+                            "title": [{"type": "text", "plain_text": "Page 2"}]
+                        }
+                    }
+                }
+            ]
         });
 
-        let pages1 = NotionPage::from_notion_json(&page1);
-        let pages2 = NotionPage::from_notion_json(&page2);
-        assert!(!pages1.is_empty());
-        assert!(!pages2.is_empty());
+        let pages = NotionPage::from_notion_json(&pages_json);
+        assert_eq!(pages.len(), 2);
+        assert_eq!(pages[0].id, "page1");
+        assert_eq!(pages[1].id, "page2");
     }
 
     // Traces to: FR-NOTION-API-005 (API base URL)

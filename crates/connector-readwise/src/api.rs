@@ -124,61 +124,72 @@ mod tests {
     #[test]
     fn parse_article_response() {
         let article_json = serde_json::json!({
-            "id": "doc_123",
-            "title": "How to Build Great Apps",
-            "author": "Jane Doe",
-            "source_url": "https://example.com/article",
-            "added_at": "2026-04-20T10:00:00Z",
-            "updated_at": "2026-04-24T15:00:00Z",
-            "reading_progress": 0.75
+            "results": [{
+                "id": "doc_123",
+                "title": "How to Build Great Apps",
+                "author": "Jane Doe",
+                "source_url": "https://example.com/article",
+                "created_at": "2026-04-20T10:00:00Z",
+                "updated_at": "2026-04-24T15:00:00Z",
+                "reading_progress": 0.75
+            }]
         });
 
         let articles = Article::from_readwise_json(&article_json);
         assert!(!articles.is_empty());
+        assert_eq!(articles[0].title, "How to Build Great Apps");
     }
 
     // Traces to: FR-READWISE-API-003 (parse highlight response)
     #[test]
     fn parse_highlight_response() {
         let highlight_json = serde_json::json!({
-            "id": "hl_456",
-            "text": "This is a highlighted quote from the article",
-            "color": "yellow",
-            "created_at": "2026-04-22T12:00:00Z",
-            "updated_at": "2026-04-22T12:00:00Z",
-            "tags": ["important", "quote"]
+            "results": [{
+                "id": "hl_456",
+                "text": "This is a highlighted quote from the article",
+                "color": "yellow",
+                "document_id": "doc_123",
+                "created_at": "2026-04-22T12:00:00Z",
+                "updated_at": "2026-04-22T12:00:00Z",
+                "tags": ["important", "quote"]
+            }]
         });
 
         let highlights = Highlight::from_readwise_json(&highlight_json);
         assert!(!highlights.is_empty());
+        assert_eq!(highlights[0].text, "This is a highlighted quote from the article");
     }
 
     // Traces to: FR-READWISE-API-004 (parse multiple articles)
     #[test]
     fn parse_multiple_articles() {
-        let article1 = serde_json::json!({
-            "id": "doc1",
-            "title": "Article 1",
-            "author": "Author A",
-            "source_url": "https://example.com/1",
-            "added_at": "2026-04-20T10:00:00Z",
-            "updated_at": "2026-04-20T10:00:00Z",
-            "reading_progress": 1.0
-        });
-        let article2 = serde_json::json!({
-            "id": "doc2",
-            "title": "Article 2",
-            "author": "Author B",
-            "source_url": "https://example.com/2",
-            "added_at": "2026-04-21T10:00:00Z",
-            "updated_at": "2026-04-21T10:00:00Z",
-            "reading_progress": 0.5
+        let articles_json = serde_json::json!({
+            "results": [
+                {
+                    "id": "doc1",
+                    "title": "Article 1",
+                    "author": "Author A",
+                    "source_url": "https://example.com/1",
+                    "created_at": "2026-04-20T10:00:00Z",
+                    "updated_at": "2026-04-20T10:00:00Z",
+                    "reading_progress": 1.0
+                },
+                {
+                    "id": "doc2",
+                    "title": "Article 2",
+                    "author": "Author B",
+                    "source_url": "https://example.com/2",
+                    "created_at": "2026-04-21T10:00:00Z",
+                    "updated_at": "2026-04-21T10:00:00Z",
+                    "reading_progress": 0.5
+                }
+            ]
         });
 
-        let articles1 = Article::from_readwise_json(&article1);
-        let articles2 = Article::from_readwise_json(&article2);
-        assert!(!articles1.is_empty());
-        assert!(!articles2.is_empty());
+        let articles = Article::from_readwise_json(&articles_json);
+        assert_eq!(articles.len(), 2);
+        assert_eq!(articles[0].id, "doc1");
+        assert_eq!(articles[1].id, "doc2");
     }
 
     // Traces to: FR-READWISE-API-005 (API base URL)
