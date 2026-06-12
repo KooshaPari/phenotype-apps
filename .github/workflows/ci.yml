@@ -14,5 +14,12 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae # v2
+      - name: Clone sibling PhenoObservability
+        # `crates/focus-always-on/Cargo.toml` references phenotype-observably-macros
+        # via a 3-level relative path (`../../../PhenoObservability/...`). CI must
+        # clone the sibling repo to a location that resolves to that path.
+        run: |
+          git clone --depth 1 https://github.com/KooshaPari/PhenoObservability.git \
+            "$GITHUB_WORKSPACE/../PhenoObservability"
       - run: cargo test --all-features --workspace
       - run: cargo clippy --all-features -- -D warnings 2>/dev/null || cargo check
