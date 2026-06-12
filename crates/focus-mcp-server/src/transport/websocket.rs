@@ -118,9 +118,8 @@ async fn handle_ws_connection(
                     "error": { "code": -32700, "message": "Parse error" },
                     "id": Value::Null
                 });
-                if let Ok(msg) = Message::text(error.to_string()) {
-                    let _ = tx.send(msg).await;
-                }
+                let msg = Message::text(error.to_string());
+                let _ = tx.send(msg).await;
                 continue;
             }
         };
@@ -135,9 +134,8 @@ async fn handle_ws_connection(
                         "result": { "status": "authenticated" },
                         "id": request.get("id").cloned().unwrap_or(Value::Null)
                     });
-                    if let Ok(msg) = Message::text(response.to_string()) {
-                        let _ = tx.send(msg).await;
-                    }
+                    let msg = Message::text(response.to_string());
+                    let _ = tx.send(msg).await;
                     continue;
                 } else {
                     let error = json!({
@@ -145,9 +143,8 @@ async fn handle_ws_connection(
                         "error": { "code": -32603, "message": "Invalid token" },
                         "id": request.get("id").cloned().unwrap_or(Value::Null)
                     });
-                    if let Ok(msg) = Message::text(error.to_string()) {
-                        let _ = tx.send(msg).await;
-                    }
+                    let msg = Message::text(error.to_string());
+                    let _ = tx.send(msg).await;
                     continue;
                 }
             } else {
@@ -156,9 +153,8 @@ async fn handle_ws_connection(
                     "error": { "code": -32003, "message": "Authentication required" },
                     "id": request.get("id").cloned().unwrap_or(Value::Null)
                 });
-                if let Ok(msg) = Message::text(error.to_string()) {
-                    let _ = tx.send(msg).await;
-                }
+                let msg = Message::text(error.to_string());
+                let _ = tx.send(msg).await;
                 continue;
             }
         }
@@ -197,11 +193,10 @@ async fn handle_ws_connection(
             "id": id
         });
 
-        if let Ok(msg) = Message::text(response.to_string()) {
-            if let Err(e) = tx.send(msg).await {
-                tracing::warn!("Failed to send WebSocket message: {}", e);
-                break;
-            }
+        let msg = Message::text(response.to_string());
+        if let Err(e) = tx.send(msg).await {
+            tracing::warn!("Failed to send WebSocket message: {}", e);
+            break;
         }
     }
 
