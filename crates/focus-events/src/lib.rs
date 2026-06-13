@@ -3,23 +3,9 @@
 pub mod dedup;
 
 use chrono::{DateTime, Utc};
+use focus_errors::{FocusError, FocusResult};
 use serde::{Deserialize, Serialize};
-use thiserror::Error;
 use uuid::Uuid;
-
-#[derive(Debug, Error, PartialEq)]
-pub enum EventError {
-    #[error("missing required field: {0}")]
-    MissingField(&'static str),
-    #[error("invalid confidence: {0} (must be in [0.0, 1.0])")]
-    InvalidConfidence(f32),
-    #[error("connector_id is empty")]
-    EmptyConnectorId,
-    #[error("dedupe_key is empty")]
-    EmptyDedupeKey,
-    #[error("time order invalid: occurred_at must be <= effective_at")]
-    TimeOrder,
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NormalizedEvent {
@@ -140,18 +126,24 @@ impl std::fmt::Display for EventType {
 impl NormalizedEvent {
     /// Validate required-fields schema.
     /// Traces to: FR-EVT-001.
-    pub fn validate(&self) -> std::result::Result<(), EventError> {
+    pub fn validate(&self) -> FocusResult<()> {
         if self.connector_id.is_empty() {
-            return Err(EventError::EmptyConnectorId);
+            return Err(FocusError::invalid_input("connector_id", "empty"));
         }
         if self.dedupe_key.0.is_empty() {
-            return Err(EventError::EmptyDedupeKey);
+            return Err(FocusError::invalid_input("dedupe_key", "empty"));
         }
         if !self.confidence.is_finite() || self.confidence < 0.0 || self.confidence > 1.0 {
-            return Err(EventError::InvalidConfidence(self.confidence));
+            return Err(FocusError::invalid_input(
+                "confidence",
+                format!("{} (must be in [0.0, 1.0])", self.confidence),
+            ));
         }
         if self.occurred_at > self.effective_at {
-            return Err(EventError::TimeOrder);
+            return Err(FocusError::invalid_input(
+                "occurred_at/effective_at",
+                "time order invalid: occurred_at must be <= effective_at",
+            ));
         }
         Ok(())
     }
@@ -205,7 +197,10 @@ mod tests {
     fn validate_rejects_empty_connector_id() {
         let mut e = sample();
         e.connector_id = String::new();
-        assert_eq!(e.validate().unwrap_err(), EventError::EmptyConnectorId);
+        assert_eq!(
+            e.validate().unwrap_err(),
+            FocusError::invalid_input("connector_id", "empty")
+        );
     }
 
     // Traces to: FR-EVT-001
@@ -213,7 +208,10 @@ mod tests {
     fn validate_rejects_empty_dedupe_key() {
         let mut e = sample();
         e.dedupe_key = DedupeKey(String::new());
-        assert_eq!(e.validate().unwrap_err(), EventError::EmptyDedupeKey);
+        assert_eq!(
+            e.validate().unwrap_err(),
+            FocusError::invalid_input("dedupe_key", "empty")
+        );
     }
 
     // Traces to: FR-EVT-001
@@ -221,10 +219,16 @@ mod tests {
     fn validate_rejects_out_of_range_confidence() {
         let mut e = sample();
         e.confidence = 1.5;
-        assert_eq!(e.validate().unwrap_err(), EventError::InvalidConfidence(1.5));
+        assert_eq!(
+            e.validate().unwrap_err(),
+            FocusError::invalid_input("confidence", "1.5 (must be in [0.0, 1.0])")
+        );
         let mut e2 = sample();
         e2.confidence = -0.1;
-        assert!(matches!(e2.validate().unwrap_err(), EventError::InvalidConfidence(_)));
+        assert!(matches!(
+            e2.validate().unwrap_err(),
+            FocusError::InvalidInput { .. }
+        ));
     }
 
     // Traces to: FR-EVT-001
@@ -233,7 +237,13 @@ mod tests {
         let mut e = sample();
         e.occurred_at = t(5);
         e.effective_at = t(1);
-        assert_eq!(e.validate().unwrap_err(), EventError::TimeOrder);
+        assert_eq!(
+            e.validate().unwrap_err(),
+            FocusError::invalid_input(
+                "occurred_at/effective_at",
+                "time order invalid: occurred_at must be <= effective_at"
+            )
+        );
     }
 
     // ------------------------------------------------------------------

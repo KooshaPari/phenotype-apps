@@ -3,42 +3,51 @@
 //! Handles bidirectional conversion between native focus_rules::Rule format and IR.
 //! Reuses the converters already defined in focus-ir module tests.
 
-use crate::Document;
+use crate::{Document, RuleTranspiler};
 use anyhow::{anyhow, Result};
 use chrono::Duration;
-use focus_ir::{ActionIr, Body, ConditionIr, DocKind, RuleIr, TriggerIr};
+use focus_ir::{ActionIr, ConditionIr, RuleIr, TriggerIr};
 use focus_rules::{Action, Condition, Rule, Trigger};
 use std::collections::BTreeMap;
 use uuid::Uuid;
 
 /// Convert focus_rules::Rule to IR Document.
+///
+/// Delegates to `RuleTranspiler::to_document` to avoid duplicate Document wrapping.
 pub fn rule_to_document(rule: &Rule) -> Result<Document> {
-    let rule_ir = RuleIr {
-        id: rule.id.to_string(),
-        name: rule.name.clone(),
-        trigger: trigger_to_ir(&rule.trigger),
-        conditions: rule.conditions.iter().map(condition_to_ir).collect(),
-        actions: rule.actions.iter().map(action_to_ir).collect(),
-        priority: rule.priority,
-        cooldown_seconds: rule.cooldown.map(|d| d.num_seconds()),
-        duration_seconds: rule.duration.map(|d| d.num_seconds()),
-        explanation_template: rule.explanation_template.clone(),
-        enabled: rule.enabled,
-    };
-
-    Ok(Document {
-        version: 1,
-        kind: DocKind::Rule,
-        id: rule.id.to_string(),
-        name: rule.name.clone(),
-        body: Body::Rule(Box::new(rule_ir)),
-    })
+    FocusRuleTranspiler::to_document(rule)
 }
 
 /// Convert IR Document back to focus_rules::Rule.
+///
+/// Delegates to `RuleTranspiler::from_document` to avoid duplicate Document unwrapping.
 pub fn document_to_rule(doc: &Document) -> Result<Rule> {
-    match &doc.body {
-        Body::Rule(rule_ir) => Ok(Rule {
+    FocusRuleTranspiler::from_document(doc)
+}
+
+/// Transpiler implementation for `focus_rules::Rule`.
+///
+/// Domain-specific logic: trigger/action/condition conversions and UUID mapping.
+struct FocusRuleTranspiler;
+
+impl RuleTranspiler<Rule> for FocusRuleTranspiler {
+    fn domain_to_ir(rule: &Rule) -> Result<RuleIr> {
+        Ok(RuleIr {
+            id: rule.id.to_string(),
+            name: rule.name.clone(),
+            trigger: trigger_to_ir(&rule.trigger),
+            conditions: rule.conditions.iter().map(condition_to_ir).collect(),
+            actions: rule.actions.iter().map(action_to_ir).collect(),
+            priority: rule.priority,
+            cooldown_seconds: rule.cooldown.map(|d| d.num_seconds()),
+            duration_seconds: rule.duration.map(|d| d.num_seconds()),
+            explanation_template: rule.explanation_template.clone(),
+            enabled: rule.enabled,
+        })
+    }
+
+    fn ir_to_domain(rule_ir: &RuleIr) -> Result<Rule> {
+        Ok(Rule {
             id: Uuid::parse_str(&rule_ir.id).map_err(|_| anyhow!("Invalid rule ID UUID"))?,
             name: rule_ir.name.clone(),
             trigger: ir_to_trigger(&rule_ir.trigger)?,
@@ -49,8 +58,15 @@ pub fn document_to_rule(doc: &Document) -> Result<Rule> {
             duration: rule_ir.duration_seconds.map(Duration::seconds),
             explanation_template: rule_ir.explanation_template.clone(),
             enabled: rule_ir.enabled,
-        }),
-        _ => Err(anyhow!("Expected Rule body, got other kind")),
+        })
+    }
+
+    fn domain_id(rule: &Rule) -> String {
+        rule.id.to_string()
+    }
+
+    fn domain_name(rule: &Rule) -> String {
+        rule.name.clone()
     }
 }
 

@@ -26,7 +26,58 @@ pub mod task_schedule_transpiler;
 pub mod wallet_mutation_transpiler;
 
 use anyhow::{anyhow, Result};
+use focus_ir::{Body, DocKind, RuleIr};
 pub use focus_ir::Document;
+
+/// Trait for transpilers that convert a single domain type to/from a Rule IR Document.
+///
+/// Provides default implementations for `Document` construction/destruction
+/// that are shared across all single-rule transpilers.
+///
+/// Implementors only need to define the domain-specific conversions:
+/// - `domain_to_ir` / `ir_to_domain` for the RuleIr payload
+/// - `domain_id` / `domain_name` for the Document envelope
+///
+/// The `to_document` and `from_document` methods are provided with default
+/// implementations that eliminate the repetitive `Document` wrapping boilerplate.
+pub trait RuleTranspiler<DomainType> {
+    /// Convert domain type to `RuleIr`. This is the domain-specific part.
+    fn domain_to_ir(domain: &DomainType) -> Result<RuleIr>;
+
+    /// Convert `RuleIr` back to domain type.
+    fn ir_to_domain(rule_ir: &RuleIr) -> Result<DomainType>;
+
+    /// Extract the document ID from the domain type.
+    fn domain_id(domain: &DomainType) -> String;
+
+    /// Extract the document name from the domain type.
+    fn domain_name(domain: &DomainType) -> String;
+
+    /// Convert domain type to IR Document.
+    ///
+    /// Default implementation wraps `domain_to_ir` in a `Document` with
+    /// `version: 1`, `kind: DocKind::Rule`, and `body: Body::Rule(Box::new(rule_ir))`.
+    fn to_document(domain: &DomainType) -> Result<Document> {
+        let rule_ir = Self::domain_to_ir(domain)?;
+        Ok(Document {
+            version: 1,
+            kind: DocKind::Rule,
+            id: Self::domain_id(domain),
+            name: Self::domain_name(domain),
+            body: Body::Rule(Box::new(rule_ir)),
+        })
+    }
+
+    /// Convert IR Document back to domain type.
+    ///
+    /// Default implementation extracts `RuleIr` from `Document` and calls `ir_to_domain`.
+    fn from_document(doc: &Document) -> Result<DomainType> {
+        match &doc.body {
+            Body::Rule(rule_ir) => Self::ir_to_domain(rule_ir),
+            _ => Err(anyhow!("Expected Rule body, got other kind")),
+        }
+    }
+}
 
 /// Source format for transpilation.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

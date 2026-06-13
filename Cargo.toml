@@ -23,6 +23,7 @@ members = [
     "crates/focus-sync-store",
     "crates/focus-storage",
     "crates/focus-audit",
+    "crates/pheno-tracing",
     "crates/focus-crypto",
     "crates/focus-time",
     "crates/focus-ffi",
@@ -48,6 +49,7 @@ members = [
     "crates/focus-release-bot",
     "crates/focus-asset-fetcher",
     "crates/focus-webhook-server",
+    "crates/pheno-tracing",
     "crates/focus-ci-watcher",
     "crates/focus-icon-gen",
     "crates/focus-ui",
@@ -58,6 +60,16 @@ members = [
     "crates/connector-linear",
     "tests/e2e",
     "crates/focus-plugin-sdk",
+    "crates/phenotype-crypto",
+    "crates/phenotype-error-core",
+    "crates/focus-errors",
+    "crates/focus-result",
+    "crates/phenotype-contracts",
+    "crates/phenotype-event-sourcing",
+    "crates/phenotype-test-utils",
+    "crates/phenotype-derive",
+    "crates/phenotype-workflow",
+    "crates/phenotype-policy-engine",
 ]
 
 [workspace.package]
@@ -92,6 +104,12 @@ rusqlite = { version = "0.33", features = ["bundled"] }
 sha2 = "0.10"
 ring = "0.17"
 secrecy = "0.10"
+blake3 = "1.5"
+aes-gcm = "0.10"
+pbkdf2 = "0.12"
+rand = "0.8"
+hmac = "0.12"
+zeroize = "1.7"
 
 # Logging
 tracing = "0.1"
@@ -147,9 +165,19 @@ focus-rewards = { path = "crates/focus-rewards" }
 focus-penalties = { path = "crates/focus-penalties" }
 focus-policy = { path = "crates/focus-policy" }
 focus-storage = { path = "crates/focus-storage" }
+
+# Phenotype shared crates
+phenotype-error-core = { path = "crates/phenotype-error-core" }
+phenotype-contracts = { path = "crates/phenotype-contracts" }
+phenotype-event-sourcing = { path = "crates/phenotype-event-sourcing" }
+phenotype-test-utils = { path = "crates/phenotype-test-utils" }
+phenotype-derive = { path = "crates/phenotype-derive" }
+phenotype-workflow = { path = "crates/phenotype-workflow" }
+phenotype-policy-engine = { path = "crates/phenotype-policy-engine" }
 focus-audit = { path = "crates/focus-audit" }
 focus-time = { path = "crates/focus-time" }
 focus-domain = { path = "crates/focus-domain" }
 focus-demo-seed = { path = "crates/focus-demo-seed" }
 focus-observability = { path = "crates/focus-observability" }
 focus-telemetry = { path = "crates/focus-telemetry" }
+pheno-tracing = { path = "crates/pheno-tracing" }

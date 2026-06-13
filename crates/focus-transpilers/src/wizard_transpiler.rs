@@ -3,9 +3,9 @@
 //! Handles bidirectional conversion between flat wizard form state (matching RuleBuilderView)
 //! and IR documents. Preserves rule semantics through deterministic field mapping.
 
-use crate::Document;
+use crate::{Document, RuleTranspiler};
 use anyhow::{anyhow, Result};
-use focus_ir::{ActionIr, Body, ConditionIr, DocKind, RuleIr, TriggerIr};
+use focus_ir::{ActionIr, ConditionIr, RuleIr, TriggerIr};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -44,84 +44,98 @@ fn default_enabled() -> bool {
 }
 
 /// Convert WizardState to IR Document.
+///
+/// Delegates to `RuleTranspiler::to_document` to avoid duplicate Document wrapping.
 pub fn wizard_to_document(state: &WizardState) -> Result<Document> {
-    let trigger = parse_wizard_trigger(&state.trigger_kind, &state.trigger_value)?;
-
-    let conditions: Vec<ConditionIr> = if state.conditions_json.is_empty() {
-        Vec::new()
-    } else {
-        serde_json::from_str(&state.conditions_json)
-            .map_err(|e| anyhow!("Invalid conditions JSON: {}", e))?
-    };
-
-    let actions: Vec<ActionIr> = if state.actions_json.is_empty() {
-        Vec::new()
-    } else {
-        serde_json::from_str(&state.actions_json)
-            .map_err(|e| anyhow!("Invalid actions JSON: {}", e))?
-    };
-
-    // Deterministic ID from rule_id
-    let stable_id = Uuid::new_v5(&Uuid::NAMESPACE_DNS, state.rule_id.as_bytes());
-
-    let rule_ir = RuleIr {
-        id: stable_id.to_string(),
-        name: state.rule_name.clone(),
-        trigger,
-        conditions,
-        actions,
-        priority: state.priority,
-        cooldown_seconds: state.cooldown_seconds,
-        duration_seconds: state.duration_seconds,
-        explanation_template: state.explanation_template.clone(),
-        enabled: state.enabled,
-    };
-
-    Ok(Document {
-        version: 1,
-        kind: DocKind::Rule,
-        id: stable_id.to_string(),
-        name: state.rule_name.clone(),
-        body: Body::Rule(Box::new(rule_ir)),
-    })
+    WizardTranspiler::to_document(state)
 }
 
 /// Convert IR Document back to WizardState.
+///
+/// Delegates to `RuleTranspiler::from_document` to avoid duplicate Document unwrapping.
 pub fn document_to_wizard(doc: &Document) -> Result<WizardState> {
-    match &doc.body {
-        Body::Rule(rule_ir) => {
-            let (trigger_kind, trigger_value) = ir_trigger_to_wizard_fields(&rule_ir.trigger)?;
+    WizardTranspiler::from_document(doc)
+}
 
-            let conditions_json = if rule_ir.conditions.is_empty() {
-                String::new()
-            } else {
-                serde_json::to_string(&rule_ir.conditions)
-                    .map_err(|e| anyhow!("Failed to serialize conditions: {}", e))?
-            };
+/// Transpiler implementation for `WizardState`.
+///
+/// Domain-specific logic: JSON string parsing for conditions/actions and trigger mapping.
+struct WizardTranspiler;
 
-            let actions_json = if rule_ir.actions.is_empty() {
-                String::new()
-            } else {
-                serde_json::to_string(&rule_ir.actions)
-                    .map_err(|e| anyhow!("Failed to serialize actions: {}", e))?
-            };
+impl RuleTranspiler<WizardState> for WizardTranspiler {
+    fn domain_to_ir(state: &WizardState) -> Result<RuleIr> {
+        let trigger = parse_wizard_trigger(&state.trigger_kind, &state.trigger_value)?;
 
-            Ok(WizardState {
-                rule_id: rule_ir.id.clone(),
-                rule_name: rule_ir.name.clone(),
-                rule_description: None,
-                trigger_kind,
-                trigger_value,
-                conditions_json,
-                actions_json,
-                priority: rule_ir.priority,
-                cooldown_seconds: rule_ir.cooldown_seconds,
-                duration_seconds: rule_ir.duration_seconds,
-                explanation_template: rule_ir.explanation_template.clone(),
-                enabled: rule_ir.enabled,
-            })
-        }
-        _ => Err(anyhow!("Expected Rule body, got other kind")),
+        let conditions: Vec<ConditionIr> = if state.conditions_json.is_empty() {
+            Vec::new()
+        } else {
+            serde_json::from_str(&state.conditions_json)
+                .map_err(|e| anyhow!("Invalid conditions JSON: {}", e))?
+        };
+
+        let actions: Vec<ActionIr> = if state.actions_json.is_empty() {
+            Vec::new()
+        } else {
+            serde_json::from_str(&state.actions_json)
+                .map_err(|e| anyhow!("Invalid actions JSON: {}", e))?
+        };
+
+        // Deterministic ID from rule_id
+        let stable_id = Uuid::new_v5(&Uuid::NAMESPACE_DNS, state.rule_id.as_bytes());
+
+        Ok(RuleIr {
+            id: stable_id.to_string(),
+            name: state.rule_name.clone(),
+            trigger,
+            conditions,
+            actions,
+            priority: state.priority,
+            cooldown_seconds: state.cooldown_seconds,
+            duration_seconds: state.duration_seconds,
+            explanation_template: state.explanation_template.clone(),
+            enabled: state.enabled,
+        })
+    }
+
+    fn ir_to_domain(rule_ir: &RuleIr) -> Result<WizardState> {
+        let (trigger_kind, trigger_value) = ir_trigger_to_wizard_fields(&rule_ir.trigger)?;
+
+        let conditions_json = if rule_ir.conditions.is_empty() {
+            String::new()
+        } else {
+            serde_json::to_string(&rule_ir.conditions)
+                .map_err(|e| anyhow!("Failed to serialize conditions: {}", e))?
+        };
+
+        let actions_json = if rule_ir.actions.is_empty() {
+            String::new()
+        } else {
+            serde_json::to_string(&rule_ir.actions)
+                .map_err(|e| anyhow!("Failed to serialize actions: {}", e))?
+        };
+
+        Ok(WizardState {
+            rule_id: rule_ir.id.clone(),
+            rule_name: rule_ir.name.clone(),
+            rule_description: None,
+            trigger_kind,
+            trigger_value,
+            conditions_json,
+            actions_json,
+            priority: rule_ir.priority,
+            cooldown_seconds: rule_ir.cooldown_seconds,
+            duration_seconds: rule_ir.duration_seconds,
+            explanation_template: rule_ir.explanation_template.clone(),
+            enabled: rule_ir.enabled,
+        })
+    }
+
+    fn domain_id(state: &WizardState) -> String {
+        Uuid::new_v5(&Uuid::NAMESPACE_DNS, state.rule_id.as_bytes()).to_string()
+    }
+
+    fn domain_name(state: &WizardState) -> String {
+        state.rule_name.clone()
     }
 }
 
