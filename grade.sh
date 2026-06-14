@@ -29,7 +29,7 @@ if [[ -f "Cargo.toml" ]]; then STACK="rust"; fi
 if [[ -f "package.json" ]]; then STACK="node"; fi
 if [[ -f "pyproject.toml" || -f "setup.py" ]]; then STACK="python"; fi
 if [[ -f "go.mod" ]]; then STACK="go"; fi
-if [[ -f "Taskfile.yml" || -f "Justfile" ]]; then
+if [[ -f "Taskfile.yml" ]]; then
   : # already has task runner
 fi
 

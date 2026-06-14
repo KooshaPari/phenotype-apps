@@ -1,6 +1,6 @@
 # lefthook.yml — Fleet-wide git hook configuration
 # This config uses caching optimizations for commit/push hooks
-# For the strictest check, run: task grade (or just grade)
+# For the strictest check, run: task grade
 
 pre-commit:
   parallel: true
@@ -37,9 +37,7 @@ pre-commit:
         CHANGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(rs|ts|tsx|py|go)$' || true)
         if [ -n "$CHANGED" ]; then
           # Run task grade-fast for affected areas
-          if [ -f "Justfile" ]; then
-            just grade-fast 2>/dev/null || true
-          elif [ -f "Taskfile.yml" ]; then
+          if [ -f "Taskfile.yml" ]; then
             task grade-fast 2>/dev/null || true
           fi
         fi
@@ -65,9 +63,7 @@ pre-push:
     grade:
       run: |
         # Full grade check on push (strict, no caching)
-        if [ -f "Justfile" ]; then
-          just grade
-        elif [ -f "Taskfile.yml" ]; then
+        if [ -f "Taskfile.yml" ]; then
           task grade
         else
           ./grade.sh
