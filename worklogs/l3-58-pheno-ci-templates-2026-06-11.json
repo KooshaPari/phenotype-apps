@@ -1,0 +1,166 @@
+{
+  "task_id": "L3-58",
+  "date": "2026-06-11",
+  "title": "Author canonical pheno-ci-templates reusable CI + release workflows (L3 #58)",
+  "status": "completed",
+  "branch": "chore/l3-58-pheno-ci-templates-2026-06-11",
+  "commit": "b3b1b04c50",
+  "author": "forge",
+  "refs": {
+    "dag": "FLEET_100TASK_DAG_V3.md#L3-#58",
+    "consumers": [
+      "L3-#49 pheno-otel",
+      "L3-#50 pheno-cli-base",
+      "L3-#51 pheno-fastapi-base",
+      "L3-#52 pheno-go-ctxkit",
+      "L3-#53 pheno-zod-pydantic",
+      "L3-#54 pheno-tower-stack",
+      "L3-#55 pheno-ssot-template",
+      "L3-#56 pheno-feature-flags",
+      "L3-#57 pheno-plugin"
+    ],
+    "sibling_crates": [
+      "L3-#46 (pheno-errors)",
+      "L3-#47 (pheno-tracing)",
+      "L3-#48 (pheno-config)",
+      "L3-#49 (pheno-otel)",
+      "L3-#50 (pheno-cli-base)",
+      "L3-#51 (pheno-fastapi-base)",
+      "L3-#52 (pheno-go-ctxkit)",
+      "L3-#53 (pheno-zod-pydantic)",
+      "L3-#54 (pheno-tower-stack)",
+      "L3-#55 (pheno-ssot-template)",
+      "L3-#56 (pheno-feature-flags)",
+      "L3-#57 (pheno-plugin-registry)"
+    ]
+  },
+  "summary": "Authored the canonical pheno-ci-templates package: a self-contained vendoring of two reusable GitHub Actions workflows (ci.yml + release.yml) plus a usage README, structured as `pheno-ci-templates/.github/workflows/` at the monorepo root. The ci.yml is a `workflow_call` + `workflow_dispatch` reusable workflow that auto-detects which language jobs to run (rust, python, go, node) by `hashFiles()`-checking for the consumer's manifest files, then runs `cargo fmt/clippy/test`, `pytest`, `go vet/test`, and `npm test` (with optional coverage on each). The release.yml is a `push: tags: ['v*', 'release/*']` workflow that creates a GitHub release via `softprops/action-gh-release@v2` and conditionally publishes to crates.io, npm, PyPI, and $GOBIN — each gated by a per-language `run_<lang>` input flag.",
+  "scope": {
+    "created": [
+      "pheno-ci-templates/.github/workflows/ci.yml",
+      "pheno-ci-templates/.github/workflows/release.yml",
+      "pheno-ci-templates/README.md"
+    ],
+    "modified": []
+  },
+  "ci_inputs": {
+    "rust_msrv": "string, default '1.75' — Rust toolchain pin (matches fleet's rust-toolchain.toml MSRV)",
+    "python_version": "string, default '3.11' — Python version for actions/setup-python",
+    "go_version": "string, default '1.22' — Go version for actions/setup-go",
+    "node_version": "string, default '20' — Node.js version for actions/setup-node",
+    "run_coverage": "boolean, default false — toggle coverage reporting on every language job",
+    "run_clippy": "boolean, default true — toggle cargo clippy --all-targets -- -D warnings on the rust job"
+  },
+  "ci_secrets": [
+    "CARGO_REGISTRY_TOKEN (optional, passed through to release.yml-style publishes)",
+    "NPM_TOKEN (optional, passed through)",
+    "PYPI_TOKEN (optional, passed through)",
+    "GITHUB_TOKEN (optional, passed through)"
+  ],
+  "ci_jobs": {
+    "rust": "auto-detected via hashFiles('**/Cargo.toml') — fmt --check, optional clippy, test --all-features, optional llvm-cov",
+    "python": "auto-detected via hashFiles('**/pyproject.toml') || hashFiles('**/setup.py') — pip install -e '.[dev]', pytest, optional pytest-cov",
+    "go": "auto-detected via hashFiles('**/go.mod') — go vet, go test -race, optional go test -cover",
+    "node": "auto-detected via hashFiles('**/package.json') — npm ci, npm test --watch=false, optional --coverage",
+    "summary": "aggregate job — depends on all four language jobs, fails if any single language job failed, skipped when no manifests present"
+  },
+  "ci_permissions": "contents: read (no write or id-token needed for CI)",
+  "ci_concurrency": "group = 'ci-${{ github.workflow }}-${{ github.ref }}' with cancel-in-progress: true",
+  "release_triggers": "push: tags: ['v*', 'release/*'] + workflow_dispatch (manual override for tag input)",
+  "release_feature_flags": {
+    "run_cargo_build": "boolean, default true — toggles cargo build --release + cargo publish + cargo publish --dry-run",
+    "run_npm_publish": "boolean, default true — toggles npm ci + npm test + npm publish --access public",
+    "run_pip_build": "boolean, default true — toggles pip install build twine + python -m build + twine check + twine upload",
+    "run_go_install": "boolean, default true — toggles go mod download + go vet + go install ./..."
+  },
+  "release_permissions": "contents: write (create the GitHub release) + id-token: write (OIDC-based trusted publishing for cargo / twine where available)",
+  "release_concurrency": "group = 'release-${{ github.ref }}' with cancel-in-progress: false (releases must not be cancelled mid-publish)",
+  "release_steps": [
+    "actions/checkout@v4 with fetch-depth: 0 (so action-gh-release can generate release notes from the full history)",
+    "Resolve release tag (use workflow_dispatch input if present, else GITHUB_REF_NAME)",
+    "softprops/action-gh-release@v2 (generate_release_notes: true, draft: false, prerelease: true iff tag contains '-')",
+    "Cargo build + publish (gated on run_cargo_build AND hashFiles('**/Cargo.toml'))",
+    "npm publish (gated on run_npm_publish AND hashFiles('**/package.json'))",
+    "pip build + twine upload (gated on run_pip_build AND (hashFiles('**/pyproject.toml') OR hashFiles('**/setup.py')))",
+    "go install (gated on run_go_install AND hashFiles('**/go.mod'))"
+  ],
+  "test_results": {
+    "command": "python3 -c 'import yaml; yaml.safe_load(open(\"pheno-ci-templates/.github/workflows/ci.yml\"))'",
+    "ci_yml_yaml_safe_load": "OK (no exception raised)",
+    "release_yml_yaml_safe_load": "OK (no exception raised)",
+    "ci_yml_parsed_inputs": "rust_msrv, python_version, go_version, node_version, run_coverage, run_clippy (all 6 spec-required inputs present)",
+    "ci_yml_parsed_jobs": "rust, python, go, node, summary (5 jobs, all with auto-detect if: guards)",
+    "release_yml_parsed_triggers": "push (tags: v*, release/*), workflow_dispatch",
+    "release_yml_parsed_jobs": "release (1 monolithic job with 4 feature-flag-gated publish steps)",
+    "yaml_unit_tests": "N/A (workflow YAML is verified by GitHub Actions on merge, not by a local test runner)",
+    "yaml_total": "N/A",
+    "yaml_passed": "N/A",
+    "yaml_failed": "0"
+  },
+  "test_coverage": [
+    "ci.yml line 1-287: yaml.safe_load returns a dict with top-level keys [name, on, permissions, concurrency, jobs] (no YAML parse errors at any indentation level)",
+    "ci.yml: on.workflow_call.inputs has all 6 spec-required input keys: rust_msrv, python_version, go_version, node_version, run_coverage, run_clippy",
+    "ci.yml: on.workflow_dispatch mirrors all 6 inputs (so the template can be manually smoke-tested from the Actions tab without a caller)",
+    "ci.yml: secrets block declares CARGO_REGISTRY_TOKEN, NPM_TOKEN, PYPI_TOKEN, GITHUB_TOKEN (all optional, passed through to consumers)",
+    "ci.yml: rust job has the if: hashFiles('**/Cargo.toml') != '' auto-detect guard",
+    "ci.yml: python job has the if: hashFiles('**/pyproject.toml') != '' || hashFiles('**/setup.py') != '' auto-detect guard",
+    "ci.yml: go job has the if: hashFiles('**/go.mod') != '' auto-detect guard",
+    "ci.yml: node job has the if: hashFiles('**/package.json') != '' auto-detect guard",
+    "ci.yml: summary job depends on [rust, python, go, node] and is itself skipped when no manifests are detected (composite if: always() && <any manifest present>)",
+    "ci.yml: rust job uses dtolnay/rust-toolchain@stable with the rust_msrv input pinned, components: clippy,rustfmt",
+    "ci.yml: rust job runs `cargo fmt --all -- --check`, `cargo clippy --all-targets -- -D warnings` (gated on run_clippy), `cargo test --all-features --no-fail-fast` (always), and `cargo llvm-cov --all-features --workspace --summary-only` (gated on run_coverage)",
+    "ci.yml: python job installs -e '.[dev]' then runs pytest (and pytest --cov=src when run_coverage is true)",
+    "ci.yml: go job runs `go vet ./...` + `go test -race -count=1 ./...` (and `go test -cover -coverprofile=coverage.out` when run_coverage is true)",
+    "ci.yml: node job runs `npm ci` + `npm test -- --watch=false` (and `--coverage` when run_coverage is true)",
+    "release.yml: yaml.safe_load returns a dict with top-level keys [name, on, permissions, concurrency, jobs]",
+    "release.yml: on.push.tags has both v* and release/* glob patterns (covers semver tags and the release/* workflow branch convention)",
+    "release.yml: workflow_dispatch re-exposes the 4 run_<lang> feature flags so a maintainer can manually trigger a partial release from the Actions tab",
+    "release.yml: cargo publish step uses CARGO_REGISTRY_TOKEN from secrets (with a dry-run step before the real publish as a safety net)",
+    "release.yml: npm publish step uses NODE_AUTH_TOKEN and registry-url: https://registry.npmjs.org",
+    "release.yml: pip build + twine upload uses PYPI_TOKEN as TWINE_PASSWORD with TWINE_USERNAME=__token__",
+    "release.yml: go install uses GOFLAGS=-mod=readonly and is gated on run_go_install"
+  ],
+  "language_auto_detect": "Every language job in ci.yml uses `if: hashFiles('<manifest>') != ''` to skip itself when the consumer repo has no manifest of that type. This means a monorepo with manifests for two of the four languages will only run those two jobs, and a pure-Rust crate like pheno-otel will only run the rust job. The summary job is itself skipped when no manifests are detected (avoids a misleading 'no jobs ran' failure).",
+  "caching_strategy": {
+    "rust": "actions/cache@v4 keyed on hashFiles('**/Cargo.lock', '**/Cargo.toml'); caches ~/.cargo/registry, ~/.cargo/git, .cargo-cache, target/",
+    "python": "actions/setup-python cache: pip (keyed on requirements*.txt / pyproject.toml)",
+    "go": "actions/setup-go cache: true (uses go.sum)",
+    "node": "actions/setup-node cache: npm (uses package-lock.json)"
+  },
+  "permissions_model": {
+    "ci.yml": "contents: read only — does not write to the repo, does not publish packages, does not need id-token",
+    "release.yml": "contents: write (create the GitHub release) + id-token: write (OIDC-based trusted publishing for cargo + twine where the registry supports it; falls back to long-lived tokens otherwise)"
+  },
+  "concurrency_model": {
+    "ci.yml": "group = 'ci-${{ github.workflow }}-${{ github.ref }}' with cancel-in-progress: true (new pushes to the same PR/branch cancel the previous in-flight run)",
+    "release.yml": "group = 'release-${{ github.ref }}' with cancel-in-progress: false (release publishes are non-idempotent and must not be cancelled mid-publish)"
+  },
+  "spec_alignment": "The L3 #58 spec required ci.yml to be a composite/reusable workflow with inputs rust_msrv, python_version, go_version, node_version, run_coverage, run_clippy (6 inputs, all present, all with sensible defaults). It required release.yml to trigger on tag push and create a GitHub release, with cargo build, npm publish, pip build, go install — all behind feature flags (4 feature flags present: run_cargo_build, run_npm_publish, run_pip_build, run_go_install, each defaulting to true). The README describes usage including a copy-pasteable consumer snippet for both workflows. The verification command `python3 -c 'import yaml; yaml.safe_load(open(\"pheno-ci-templates/.github/workflows/ci.yml\"))'` does not raise (verified locally).",
+  "spec_deviations": "None. The spec was minimal (input names + flag concept + a single verification command) and the implementation matches it verbatim. The 'composite/reusable' phrasing in the spec was interpreted as 'reusable workflow with composite steps' (the standard GitHub Actions reusable workflow pattern) rather than 'composite action' (a different primitive that can only be used via `uses:` from a single step, not a full `jobs:` block). Composite actions cannot have inputs of the shape required by the spec (e.g. `rust_msrv` and `run_coverage` are too coarse-grained for a single step); reusable workflows are the correct primitive for a multi-language CI matrix.",
+  "consolidation_targets": [
+    ".github/workflows/ in the monorepo root (currently empty per the v3 DAG; future workflows can call into the reusable template)",
+    "phenotype-infra's CI scripts (if any) — the new reusable template should be the single source of truth for CI across all pheno-* / phenotype-* repos",
+    "Existing per-crate CI configs in pheno-errors / pheno-tracing / pheno-config / pheno-otel / etc. (L3 #46-#57) — should be replaced with a one-line `uses:` invocation once each crate adopts a `.github/workflows/ci.yml`"
+  ],
+  "downstream_consumers": [
+    "Every pheno-* crate (L3 #46-#57) can replace its own .github/workflows/ci.yml with a one-line `uses: KooshaPari/pheno-ci-templates/.github/workflows/ci.yml@main` invocation",
+    "Every phenotype-* repo with a release pipeline can adopt release.yml as a reusable workflow, toggling off the run_<lang> flags it doesn't need",
+    "L4-* integration tasks (e.g. L4-88 helioscli + pheno-plugin) will gain uniform CI coverage for free by adopting the template"
+  ],
+  "verification": {
+    "yaml_lint_ci_yml": "python3 -c 'import yaml; yaml.safe_load(open(\"pheno-ci-templates/.github/workflows/ci.yml\"))' → OK (no exception)",
+    "yaml_lint_release_yml": "python3 -c 'import yaml; yaml.safe_load(open(\"pheno-ci-templates/.github/workflows/release.yml\"))' → OK (no exception)",
+    "yaml_structure_ci_yml": "parsed dict has top-level keys [name, on, permissions, concurrency, jobs]; on.workflow_call.inputs has all 6 spec-required keys; jobs has 5 entries (rust, python, go, node, summary)",
+    "yaml_structure_release_yml": "parsed dict has top-level keys [name, on, permissions, concurrency, jobs]; on.push.tags has v* + release/*; on.workflow_dispatch re-exposes the 4 run_<lang> flags; jobs has 1 monolithic release job with 4 feature-flag-gated publish steps",
+    "input_completeness": "all 6 spec-required ci.yml inputs present (rust_msrv, python_version, go_version, node_version, run_coverage, run_clippy)",
+    "feature_flag_completeness": "all 4 spec-required release.yml feature flags present (run_cargo_build, run_npm_publish, run_pip_build, run_go_install)",
+    "test_runner": "N/A — workflow YAML is verified by GitHub Actions on merge (per spec: 'Tests N/A (workflow YAML is verified by GitHub Actions on merge)')"
+  },
+  "notes": "The package is intentionally a self-contained directory (pheno-ci-templates/) with its own .github/workflows/ subdirectory, rather than a top-level .github/workflows/ci.yml. The reason: this template repo is itself a pheno-* reusable workflow library meant to be vendored by other repos. Keeping it under pheno-ci-templates/ makes the boundary explicit and lets the template ship its own README and any future companion files (actionlint configs, Dependabot config, etc.) without polluting the monorepo root. The auto-detect guards on every language job (`if: hashFiles('<manifest>') != ''`) are the single most important design decision: they let one canonical workflow serve a pure-Rust crate (pheno-otel), a pure-Python package (pheno-fastapi-base), a pure-Go module (pheno-go-ctxkit), a multi-language monorepo, or even an empty docs-only repo with zero false-positive jobs. The release.yml's 4 `run_<lang>` feature flags serve a different purpose: at release time, the caller knows exactly which languages its crate ships in and can disable the other three publish steps entirely, so a single tag can be a Rust-only release for a Rust-only crate without leaking npm/PyPI/Go no-op steps into the release run. Both workflows use `concurrency:` blocks tuned to their semantics: CI cancels in-flight runs on the same branch (the new push supersedes the old), release never cancels (a partial publish would be a much worse outcome than a queued second run).",
+  "no_touch": [
+    "Other L3 tasks (L3-#46 pheno-errors, L3-#47 pheno-tracing, L3-#48 pheno-config, L3-#49 pheno-otel, L3-#50 pheno-cli-base, L3-#51 pheno-fastapi-base, L3-#52 pheno-go-ctxkit, L3-#53 pheno-zod-pydantic, L3-#54 pheno-tower-stack, L3-#55 pheno-ssot-template, L3-#56 pheno-feature-flags, L3-#57 pheno-plugin-registry)",
+    "Top-level .github/workflows/ in the monorepo root (pheno-ci-templates is its own subtree, not a top-level workflow file)",
+    "Any existing per-crate CI config (adoption is downstream of this L3 task and not in scope here)",
+    "Cargo.toml / pyproject.toml / go.mod / package.json of any sibling crate (this L3 task adds no source code, only workflow YAML)"
+  ]
+}
