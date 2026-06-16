@@ -1,0 +1,32 @@
+name: E2E Tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Go E2E Smoke
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+
+      - name: Setup Go
+        uses: actions/setup-go@1a4442cacd436585916f4bd0495db9b8a8a0d4d8 # v4
+        with:
+          go-version: '1.24'
+          cache: true
+
+      - name: Run E2E tests
+        run: go test -v ./tests/ -run TestE2E
