@@ -7,7 +7,9 @@ description = "Canonical typed-config loader for the pheno-* fleet. Reads <PREFI
 repository = "https://github.com/KooshaPari/phenotype"
 keywords = ["config", "phenotype", "pheno-config", "env", "settings"]
 categories = ["config", "rust-patterns"]
-publish = false
+# ADR-012 PR-10: enable crates.io publish. The umbrella is now stable
+# at v0.2.0 with TOML/merge/combine + 12-factor docs.
+publish = true
 rust-version = "1.82"
 
 # Empty [workspace] table declares this crate as a standalone package,
@@ -30,3 +32,8 @@ toml = "0.8"
 
 [dev-dependencies]
 serde_json = "1.0"
+tempfile = "3.0"
+
+[[package.metadata.docs.rs]]
+# ADR-012 PR-10: enable docs.rs build on publish.
+targets = ["x86_64-unknown-linux-gnu"]
