@@ -1,0 +1,70 @@
+name: Release + SLSA Build Attestation
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g., v1.6.8)"
+        required: true
+        type: string
+
+# SLSA Build L3: id-token: write (OIDC), contents: read, attestations: write
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build + Attest
+    runs-on: ubuntu-24.04
+    env:
+      VERSION: ${{ github.event.inputs.version || github.ref_name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Verify Go toolchain
+        run: go version
+
+      - name: Build Go binaries
+        run: |
+          mkdir -p build
+          CGO_ENABLED=0 go build -ldflags="-w -s -X main.version=${VERSION}" -o build/kwality ./cmd/kwality
+          CGO_ENABLED=0 go build -ldflags="-w -s -X main.version=${VERSION}" -o build/kwality-cli ./cmd/kwality-cli
+          ls -la build/
+
+      - name: Compute SHA-256 digests
+        id: digest
+        run: |
+          KWALITY_SHA=$(sha256sum build/kwality | awk '{print $1}')
+          CLI_SHA=$(sha256sum build/kwality-cli | awk '{print $1}')
+          echo "kwality=${KWALITY_SHA}" >> "$GITHUB_OUTPUT"
+          echo "kwality-cli=${CLI_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Attest build provenance (kwality)
+        uses: actions/attest-build-provenance@35a8f9717e7a2adb1c2c3b2ac88961ba9c230e98
+        with:
+          subject-name: kwality
+          subject-digest: sha256:${{ steps.digest.outputs.kwality }}
+          push-to-registry: false
+
+      - name: Attest build provenance (kwality-cli)
+        uses: actions/attest-build-provenance@35a8f9717e7a2adb1c2c3b2ac88961ba9c230e98
+        with:
+          subject-name: kwality-cli
+          subject-digest: sha256:${{ steps.digest.outputs.kwality-cli }}
+          push-to-registry: false
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd0de8ccd5686b70862
+        with:
+          name: ${{ env.VERSION }}-binaries
+          path: build/
