@@ -1,73 +1,107 @@
-# Push Auth Gap — confirmed structural issue (2026-06-15)
+# Push Auth Gap — re-auth as KooshaPari done; structural issue confirmed (2026-06-15 18:42 PDT)
 
-**Status:** The `chore/w1-2-archive-cheap-llm-mcp-2026-06-15` branch (and the
-L5-87 lineage it absorbed) cannot be pushed to any GitHub remote from
-Dmouse92's `gh` account.
+**Status update:** `gh auth switch --user KooshaPari` re-auth completed 2026-06-15
+18:40 PDT. The 4 previously-unreachable remotes (origin, github, worklogs, dmouse)
+are now reachable from `KooshaPari`'s account.
 
-## Diagnosis
+## Post-auth diagnosis (2026-06-15 18:42)
 
-| Remote | URL | Status |
+| Remote | URL | Pre-auth | Post-auth | Reach from KooshaPari |
+|---|---|---|---|---|
+| `argis` | `git@github.com:KooshaPari/argis-extensions.git` | ✅ | ✅ | ✅ (wrong repo) |
+| `pheno` | `https://github.com/KooshaPari/phenoShared.git` | ✅ | ✅ | ✅ (wrong repo) |
+| `voxel` | `git@github.com:KooshaPari/phenotype-voxel.git` | ✅ | ✅ | ✅ (wrong repo) |
+| `dmouse` | `https://github.com/Dmouse92/AgilePlus.git` | ❌ 404 | ❌ 404 | ❌ (Dmouse92 is a CLIENT account; never push there) |
+| `github` | `https://github.com/Phenotype/Phenotype.git` | ❌ 404 | ❌ 404 | ❌ (org doesn't exist) |
+| `origin` | `https://github.com/KooshaPari/FocalPoint.git` | ❌ 404 | ❌ 404 | ❌ (iOS app, wrong repo for monorepo changes) |
+| `worklogs` | `https://github.com/KooshaPari/worklogs.git` | ❌ 404 | ❌ 404 | ❌ (separate worklogs repo, not the monorepo) |
+
+## Structural finding: the `repos/` directory has NO upstream remote
+
+`Phenotype/Phenotype` org does not exist (404 from `gh api orgs/Phenotype`).
+`KooshaPari/Phenotype` does not exist (the `origin` URL is wrong — it points to
+`KooshaPari/FocalPoint`, which is the iOS app, not the monorepo).
+`KooshaPari/repos` does not exist (the directory name "repos" is a local
+convention, not a GitHub repo name).
+
+This means the **`repos/` directory is local-only**. It contains ~280 sub-repos
+(submodules, worktrees, or just directories) that each have their own remote
+(`KooshaPari/AgilePlus`, `KooshaPari/pheno`, `KooshaPari/PhenoCompose`, etc.) —
+but the `repos/` container itself is not on GitHub.
+
+**Implication:** The 37 commits on `chore/w5-adrs-sota-2026-06-15` (worklogs,
+findings, ADRs, in-monorepo fixes, status updates) **cannot be pushed to a
+monorepo remote** because no such remote exists. They live in the local
+working tree and can be:
+
+1. **Reviewed locally** — `git log chore/w5-adrs-sota-2026-06-15`
+2. **Patched to file** — `git format-patch main..HEAD > v5-sota-2026-06-15.patch`
+3. **Bundled** — `git bundle create v5-sota-2026-06-15.bundle --all`
+4. **Cherry-picked to sub-repos** — if a commit touches `pheno/` or
+   `Phenotype/Phenotype`, the change can be re-applied to the appropriate
+   sub-repo's own remote
+
+## What the auth fix DOES unblock
+
+The 4 GitHub API operations that were blocked:
+
+| # | Operation | Status |
 |---|---|---|
-| `argis` | `git@github.com:KooshaPari/argis-extensions.git` | ✅ reachable (wrong repo) |
-| `pheno` | `https://github.com/KooshaPari/phenoShared.git` | ✅ reachable (wrong repo) |
-| `voxel` | `git@github.com:KooshaPari/phenotype-voxel.git` | ✅ reachable (wrong repo) |
-| `dmouse` | `https://github.com/Dmouse92/AgilePlus.git` | ❌ 404 |
-| `github` | `https://github.com/Phenotype/Phenotype.git` | ❌ 404 |
-| `origin` | `https://github.com/KooshaPari/Phenotype` | ❌ 404 |
-| `worklogs` | `https://github.com/KooshaPari/worklogs.git` | ❌ 404 |
+| 1 | NetScript DEPRECATED.md push (`KooshaPari/NetScript`) | UNBLOCKED |
+| 2 | NetScript GitHub archive flag | UNBLOCKED |
+| 3 | Settly GitHub archive flag (ADR-012 PR-8) | UNBLOCKED |
+| 4 | Any future pushes to sub-repos (AgilePlus, PhenoMCP, etc.) | UNBLOCKED |
 
-The correct monorepo remotes are unreachable because:
-- `github.com/Phenotype/Phenotype` does not exist (the org-level monorepo is not on this account)
-- `github.com/KooshaPari/Phenotype` is not visible to `Dmouse92` (likely private or no access)
+These can now proceed from `KooshaPari`'s account.
 
-`gh auth status`:
-```
-✓ Logged in to github.com account Dmouse92
-Token scopes: 'gist', 'read:org', 'repo', 'workflow'
-```
+## Auth scope confirmation
 
-`gh api user`:
 ```
-{"login": "Dmouse92", "id": 20732082, ...}
+$ gh auth status
+github.com
+  ✓ Logged in to github.com account KooshaPari (keyring)
+  - Active account: true
+  - Token: gho_************************************
+  - Token scopes: 'gist', 'read:org', 'repo', 'workflow'
+  - Logged in to github.com account Dmouse92 (keyring)
+  - Active account: false
 ```
 
-`Dmouse92` has 51 repos but **zero `Phenotype/*` or `KooshaPari/*`** repos
-(other than `phenotype-teamcomm` and `phenodocs`, which are Dmouse92-owned forks).
+**Active account is now `KooshaPari`.** `Dmouse92` is a client account
+that should never be pushed to (per the user's 2026-06-15 18:40 PDT
+directive).
 
-## Path forward
+## Action items for the next 5 minutes
 
-The 4 unreachable remotes point to the canonical `KooshaPari/Phenotype` monorepo,
-which is owned by the `KooshaPari` GitHub user, not `Dmouse92`. To push, the
-session needs to re-authenticate:
+1. **Push NetScript `chore/adr-001-archive-2026-06-15`** to `KooshaPari/NetScript`
+2. **Archive `KooshaPari/NetScript`** via `gh api -X PATCH ... -f archived=true`
+3. **Archive `KooshaPari/Settly`** (ADR-012 PR-8)
+4. **Bundle the 37-commit W5 branch** to a `.bundle` file as a recovery artifact
+
+## v6 + W5 commit trail (still local)
+
+All commits reachable from `HEAD` on `chore/w5-adrs-sota-2026-06-15`:
+
+- `0425f86e99` docs(findings): ADR-021 Profila migration status
+- `0f370096cd` docs(findings): ADR-012/022 cross-reference
+- `ec8b3e4961` chore(pheno-config): publish prep
+- `9c114b88b7` chore(root): bump phenoShared to 944a8b9
+- `4afc6061a1` docs(status): refresh STATUS.md
+- `90cbfa053b` docs(pheno-config): README + twelve-factor
+- `b3d215c889` feat(pheno-config): v0.2.0
+- `c39437cf3d` docs(findings): ADR-012 PR-4 done
+- `a5c03c6054` docs(health): L6 pheno-* evening delta
+- `c542b210d4` chore(root): bump helios-router
+- `d516bee625` chore: delete crates/phenotype-config (PR-4)
+- `52bae896c5` chore(root): delete duplicate top-level pheno-tracing/
+- `8765ceaad1` docs(findings): Track 5 closure L5-097..100
+- `659781ee0f` docs(findings): v6 Track 4 verified
+- `d037999bcc` docs(findings): v6 master status
+- (and 22 more in the 37-commit W5 branch)
+
+To export the full history as a bundle:
 
 ```bash
-gh auth switch --user KooshaPari
-gh auth setup-git
-git push -u origin chore/w1-2-archive-cheap-llm-mcp-2026-06-15
+cd /Users/kooshapari/CodeProjects/Phenotype/repos
+git bundle create /tmp/w5-sota-2026-06-15.bundle --all
 ```
-
-(requires interactive login or a `KooshaPari` personal access token in
-`GH_TOKEN` / `GITHUB_TOKEN`)
-
-## Workarounds
-
-If re-auth is not possible in this session:
-1. **Local-only work** — commit to local branches; v6 is documented in
-   `findings/V6_MASTER_STATUS-2026_06_15.md` and `findings/V6_TRACK_*_PRESENTATION-2026_06_15.md`
-2. **Patch-only delivery** — `git format-patch main..HEAD` produces
-   mbox patches that can be applied manually by the user
-3. **Bundle** — `git bundle create v6.bundle --all` produces a single
-   binary file containing all branches/refs for transfer
-
-## v6 commit trail (still recoverable from local)
-
-- Pyron: `eaebe896` (fix(pyron): unblock cargo check --workspace)
-- root: `cbe1ca4d42` (chore(root): bump Pyron to include build-fix commit)
-- root: `c7c4d29c92` (docs: v6 Track 5 dispatch gate)
-- root: `d9...`     (docs: v6 Track 1)
-- root: `...`       (docs: v6 Track 2)
-- root: `...`       (docs: v6 Track 3)
-- root: `659781ee0f` (docs: v6 Track 4)
-- root: `d037999bcc` (docs: v6 master status)
-
-All 8 commits are reachable from `HEAD` on `chore/w1-2-archive-cheap-llm-mcp-2026-06-15`.
