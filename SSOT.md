@@ -15,8 +15,11 @@ here wins.
 | Branch & commit policy | `.github/workflows/governance.yml` |
 | Repository health score | `.github/workflows/scorecard.yml` (OpenSSF) |
 | Editor / formatting baseline | `.editorconfig` |
-| Workspace architecture | `ARCHITECTURE.md` (per-crate breakdown) |
+| Workspace architecture | `ARCHITECTURE.md` (per-crate breakdown + polyglot pattern, v6) |
 | Agent operating model | `AGENTS.md` |
+| Canonical config (Rust) | `phenoShared/phenotype-config-core/src/lib.rs` (ADR-012) |
+| Canonical config (Python) | `pheno-config/` (ADR-012 PR-6/7) |
+| Config consolidation plan | `findings/ADR-012_CONFIG_CONSOLIDATION_PR1-3_DONE-2026_06_15.md` (PR-1/2/3 done; 4-11 planned) |
 
 ## Precedence order
 

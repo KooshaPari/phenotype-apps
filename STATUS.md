@@ -23,7 +23,8 @@ This file supersedes the 2026-06-15 01:25 PDT index that lived here 2026-06-08 �
 | **Last L6 full audit** | 2026-06-14 (2 days stale) | File mtime |
 | **Last L6 delta** | 2026-06-15 01:25 | `L6_PHENO_REPOS_HEALTH_2026_06_15_DELTA.md` |
 | **V6 DAG tracks complete** | 5/5 | `findings/V6_MASTER_STATUS-2026_06_15.md` |
-| **ADRs accepted (cumulative)** | 16 | `docs/adr/2026-06-14/` (6) + `docs/adr/2026-06-15/` (10) |
+| **ADRs accepted (cumulative)** | 21 | `docs/adr/2026-06-14/` (6) + `docs/adr/2026-06-15/` (15) |
+| **V6 DAG closure (Track 5)** | ✅ | 5 new ADRs (017-021) + 4 worklogs (L5-097..100) + 4 findings + 3 doc updates shipped |
 | **Config consolidation PR-1/2/3 done** | 3/11 | `findings/ADR-012_CONFIG_CONSOLIDATION_PR1-3_DONE-2026_06_15.md` |
 | **Pheno submodule pointer bumped** | ✅ | `bd5d807` (delete 3 deprecated config dirs) |
 | **Pyron submodule pointer bumped** | ✅ | `eaebe896` (cargo check --workspace fix) |
@@ -108,6 +109,16 @@ This file supersedes the 2026-06-15 01:25 PDT index that lived here 2026-06-08 �
 - **pheno-config v0.2.0 / phenoShared/config-core v0.3.0:** PR-6/7 of ADR-012 plan, additive features.
 - **Profila → pheno-profiling migration:** 12-PR plan in v6 FINAL report §3; ~1,400 LoC including 300 tests.
 - **AtomsBot decomposition:** 20 DAG tasks, 5-10 days effort. **Unblocked by ADR-001/003/005** (was waiting on NetScript/McpKit/KodeVibe decisions).
+
+### v6 DAG closure (Track 5 — landed 2026-06-15)
+
+- **ADR-017** Settly archive (fork-only-not-rewrite) — accepted
+- **ADR-018** PRCP pattern (PR-Check-Publish) for cross-crate deprecation lifts — accepted
+- **ADR-019** pheno-vessel deprecation complete (functionality folded into pheno-runtime) — accepted
+- **ADR-020** pheno-types deprecation complete (functionality folded into pheno-pydantic-models + pheno-zod-schemas) — accepted
+- **ADR-021** pheno-profiling replaces Profila (fork-based, not rewrite) — accepted
+- 4 worklogs (`L5-097..100`), 4 findings (`findings/2026-06-15-L5-09{7,8,9}*.md`, `L5-100-*.md`) — all on disk
+- SSOT.md, STATUS.md (this file), ARCHITECTURE.md — updated for v6 outcomes
 
 ### Stalled / blocked
 
