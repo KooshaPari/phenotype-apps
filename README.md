@@ -120,6 +120,13 @@ For questions about Kwality's research or to request unarchival:
 - See: `/repos/AgilePlus` for governance and team structure
 - Reference: Kwality in AgilePlus audit trail for context
 
+## Security
+
+See [`SECURITY.md`](./SECURITY.md) for the security policy and
+[`docs/security/threat-model.md`](./docs/security/threat-model.md) for the
+current STRIDE-per-component threat model (covers the 8 GitHub Actions
+workflows and archived research artifacts). Last reviewed 2026-06-16.
+
 ## License
 
 MIT — Archived research project, available for reference and study.
