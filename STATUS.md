@@ -1,9 +1,9 @@
 # STATUS.md — Phenotype monorepo
 
-**Date:** 2026-06-15 16:50 PDT
-**Branch in use:** `chore/w5-adrs-2026-06-15` (was `chore/w1-2-archive-cheap-llm-mcp-2026-06-15`; subagent switched mid-session)
-**HEAD:** `ccacce2e35` "docs(adr): ADR-012..016 SOTA decisions for pheno-tracing, pheno-mcp-router, hexagonal ports, V2 worklog, fork-only policy"
-**Working tree:** clean (170+ submodule pointer drifts pre-existing; pheno submodule bumped to bd5d807; melosviz is `-dirty` per `git diff melosviz`)
+**Date:** 2026-06-15 17:35 PDT
+**Branch in use:** `chore/w5-adrs-sota-2026-06-15` (was `chore/w1-2-archive-cheap-llm-mcp-2026-06-15`; subagent switched mid-session)
+**HEAD:** `90cbfa053b` "docs(pheno-config): README + twelve-factor guide (ADR-012 PR-7)"
+**Working tree:** dirty (170+ submodule pointer drifts pre-existing; recent in-flight submodules include AgentMCP, Agentora, AgilePlus, Apisync, BytePort)
 
 This file supersedes the 2026-06-15 01:25 PDT index that lived here 2026-06-08 → 2026-06-15.
 
@@ -13,8 +13,8 @@ This file supersedes the 2026-06-15 01:25 PDT index that lived here 2026-06-08 �
 
 | Metric | Value | Source |
 |---|---|---|
-| **Real divergence from main** | +19 / −0 | `git rev-list --left-right --count main...HEAD` |
-| **Working tree (line-level changes)** | 0 | `git status --short \| grep -v '^ ?'` |
+| **Real divergence from main** | +32 / −0 | `git rev-list --left-right --count main...HEAD` |
+| **Working tree (line-level changes)** | 1 | `.github/workflows/ci.yml` (parallel subagent) |
 | **Submodule pointer drifts** | 170+ | `git status --short` |
 | **pheno-* crates (visible)** | 22 | `ls -d pheno-*/` |
 | **pheno-* crates (added since 2026-06-14)** | 4 | +pheno-cli-base, +pheno-fastapi-base, +pheno-flags, +pheno-otel |
@@ -25,11 +25,16 @@ This file supersedes the 2026-06-15 01:25 PDT index that lived here 2026-06-08 �
 | **V6 DAG tracks complete** | 5/5 | `findings/V6_MASTER_STATUS-2026_06_15.md` |
 | **ADRs accepted (cumulative)** | 21 | `docs/adr/2026-06-14/` (6) + `docs/adr/2026-06-15/` (15) |
 | **V6 DAG closure (Track 5)** | ✅ | 5 new ADRs (017-021) + 4 worklogs (L5-097..100) + 4 findings + 3 doc updates shipped |
-| **Config consolidation PR-1/2/3 done** | 3/11 | `findings/ADR-012_CONFIG_CONSOLIDATION_PR1-3_DONE-2026_06_15.md` |
+| **Config consolidation PR-1..4 done** | 4/11 | PR-1/2/3 = pheno submodule `bd5d807`; PR-4 = root `d516bee625` (Settly fork gitlink removal, 1,320 LoC) |
+| **Config consolidation PR-6/7 done** | 6/11 | PR-6 = pheno-config v0.2.0 `b3d215c889` (TOML + merge + combine, 11 tests); PR-7 = pheno-config docs `90cbfa053b` (README + 12-factor guide) |
 | **Pheno submodule pointer bumped** | ✅ | `bd5d807` (delete 3 deprecated config dirs) |
 | **Pyron submodule pointer bumped** | ✅ | `eaebe896` (cargo check --workspace fix) |
 | **NetScript archive (local commit)** | ✅ | `76f3f3f` in NetScript submodule |
-| **NetScript archive (remote push)** | ❌ | blocked: Dmouse92 gh ≠ KooshaPari |
+| **NetScript archive (SSH push)** | ✅ | branch `chore/adr-001-archive-2026-06-15` pushed via `~/.ssh/push_key` (KooshaPari identity) per `findings/ADR-001-NETSCRIPT-ARCHIVE-LOCAL-STATE-2026_06_15.md:8-9` |
+| **NetScript archive (PR + GitHub archive flag)** | ❌ | Dmouse92 gh not collaborator/admin on KooshaPari/NetScript |
+| **helios-router DEPRECATED.md** | ✅ | submodule commit `6b44386` + parent pointer bump `c542b210d4` |
+| **L6 evening delta** | ✅ | `L6_PHENO_REPOS_HEALTH_2026_06_15_DELTA_EVENING.md` (15:00 → 17:30 PDT) |
+| **pheno-tracing dedup** | ✅ | top-level `pheno-tracing/` removed (270 LoC); `crates/pheno-tracing/` is the canonical (L4 hexagonal pattern); duplicate `Cargo.toml:52` workspace member removed |
 
 ---
 
@@ -133,6 +138,16 @@ This file supersedes the 2026-06-15 01:25 PDT index that lived here 2026-06-08 �
 ## Recent commits (last 24 hours, descending)
 
 ```
+90cbfa053b docs(pheno-config): README + twelve-factor guide (ADR-012 PR-7, 2026-06-15)
+b3d215c889 feat(pheno-config): v0.2.0 — TOML loading, Config::merge, combine() (ADR-012 PR-6)
+c39437cf3d docs(findings): ADR-012 config consolidation PR-4 done (2026-06-15)
+a5c03c6054 docs(health): L6 pheno-* evening delta (15:00 -> 17:30 PDT, 2026-06-15)
+c542b210d4 chore(root): bump helios-router to 6b44386 (DEPRECATED.md)
+d516bee625 chore: delete crates/phenotype-config (ADR-012 PR-4)
+52bae896c5 chore(root): delete duplicate top-level pheno-tracing/ (ADR-012 compliance, 2026-06-15)
+8765ceaad1 docs(findings): Track 5 closure — L5-097..100 findings
+77a88a2f9c docs(worklogs): Track 5 closure — L5-097..100 worklogs
+b17cc57f88 docs(adr): Track 5 closure — ADR-017..021 + INDEX update
 ccacce2e35 docs(adr): ADR-012..016 SOTA decisions for pheno-tracing, pheno-mcp-router, hexagonal ports, V2 worklog, fork-only policy
 99786846aa chore(root): bump pheno to bd5d807 (delete 3 deprecated config dirs, ADR-012 PR-1/2/3)
 215ebf777d docs(findings): ADR-012 config consolidation PR-1/2/3 executed (2026-06-15)
@@ -154,14 +169,14 @@ eaebe896  (Pyron) fix(pyron): unblock cargo check --workspace
 
 ## Open threads (priority order)
 
-1. **PR-4 Settly fork gitlink removal** (P1) — currently racing with parallel subagent on `crates/phenotype-config`; defer until subagent lands
-2. **Config consolidation PR-5..11** (P2) — sequential, ~3-4 hours total
-3. **Re-run L6 health audit** (P2) — append today's findings
-4. **Metron unarchive** (P3) — web UI action, 5 sec; unblocks W1 push
-5. **helios-router PR** (P3) — web UI action
-6. **Push 19 ahead commits** (P3) — blocked by gh auth; needs `KooshaPari` re-auth
-7. **Submodule pointer drifts (170+)** (P3) — non-urgent; per-submodule triage
-8. **AtomsBot decomposition** (P3) — unblocked by ADRs but is 5-10 days effort; schedule separately
+1. **Config consolidation PR-5..11 (5 PRs remaining, ~3-4h)** (P2) — PR-5 (Settly `#[deprecated]` in tree), PR-8 (Settly GitHub archive — blocked by gh auth), PR-9 (phenotype-python-sdk/phenotype-config parity), PR-10 (pheno-config v0.3.0 → crates.io), PR-11 (ADR-012 doc)
+2. **Re-run L6 health audit** (P2) — append today's findings (DONE 17:30 PDT delta, more pending)
+3. **Metron unarchive** (P3) — web UI action, 5 sec; unblocks W1 push
+4. **helios-router PR** (P3) — web UI action (DEPRECATED.md local commit done)
+5. **Push 32 ahead commits** (P3) — blocked by gh auth; needs `KooshaPari` re-auth
+6. **Submodule pointer drifts (170+)** (P3) — non-urgent; per-submodule triage
+7. **AtomsBot decomposition** (P3) — unblocked by ADRs but is 5-10 days effort; schedule separately
+8. **Profila → pheno-profiling migration** (P3) — 12-PR plan; ~6-8h; defer to next session
 
 ---
 
