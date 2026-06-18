@@ -1,14 +1,38 @@
 # STATUS.md — Phenotype monorepo
 
-**Date:** 2026-06-17 12:00 PDT
-**Branch in use:** `chore/w5-adrs-sota-2026-06-15` (HEAD `04c2c7b1af` "wip(meta): add pheno-cli-base, pheno-fastapi-base, pheno-flags, pheno-otel, pheno-secret-scan meta-bundle files")
-**Working tree:** dirty (181 submodule pointer drifts pre-existing; the 5 pheno-* meta-bundles are committed in `04c2c7b1af`)
+**Date:** 2026-06-18 (v8 launch; refresh from 2026-06-17 12:00 PDT baseline)
+**Branch in use:** `archive/2026-06-15-30-pillar-fleet` (HEAD `5df6904e9e` "docs(audit): L5-104 e2e DAG final sign-off — T1.14 kill-switch EXECUTED")
+**Origin remote:** `KooshaPari/phenotype-apps` (was `KooshaPari/FocalPoint` per stale AGENTS.md prior to 2026-06-18; corrected via T9.3)
+**Working tree:** 204 dirty (submodule pointer drifts pre-existing; no user-authored content; see AGENTS.md § "Stale / warnings")
 
-This file supersedes the 2026-06-15 17:35 PDT index that lived here 2026-06-15 → 2026-06-17.
+This file supersedes the 2026-06-17 12:00 PDT version. Refreshed for v8 launch.
 
 ---
 
-## Real-time state
+## Real-time state (2026-06-18, v8 launch)
+
+| Metric | Value | Source |
+|---|---|---|
+| **Origin** | `KooshaPari/phenotype-apps` (writable) | `git remote -v` |
+| **Branches on origin** | 20 | `git ls-remote --heads origin` (apps-extract{,-all,-final}, archive/*, 13 chore/*, main, temp-rebase, wip-2026-06-17-pre-push-snapshot) |
+| **Branches on local** | 18 | 2 auto-cleaned (`apps-extract`, `apps-extract-all`) when their worktrees were auto-collected; data preserved on origin |
+| **Branches LOCAL_ONLY (blocked from push)** | 1 | `chore/w5-adrs-sota-2026-06-15-v2` @ `002f380717` — GitHub secret scanner false positive on `phenotype-python-sdk@7499fd2:test_v020_parity.py:api_key:str="default-key"`; see `findings/2026-06-18-T9-2-secret-block-resolution.md` |
+| **Stashes** | 0 | `git stash list` |
+| **Worktrees** | 1 (primary) | `/private/tmp/apps-extract*` auto-cleaned |
+| **Submodule pointer drifts** | 204 | Pre-existing; not committed |
+| **Real divergence from `origin/main`** | (no common ancestor — local main replaced placeholder) | Pushed via `archive/2026-06-15-30-pillar-fleet` (ADR-027 Tier 2 strategy) |
+| **Dmouse92 work** | 0 | L5-104 migration 100% complete; Dmouse92 token removed from keyring (22:30 PDT 2026-06-17) |
+| **V7 DAG tracks complete** | 8/8 (T1-T8 incl. Dmouse92 migration) | `plans/2026-06-17-v7-dag-stable.md` |
+| **V8 DAG tracks** | 18 (T0, T9-T23, T0.5, T16.5) | `plans/2026-06-18-v8-dag-stable.md` — ~210 tasks, ~200 PRs |
+| **ADRs accepted (cumulative)** | 29 (ADR-001..029) | v7 closure; v8 adds ADR-030..043 (T14.x, T16.17, T21.10, T23.8) |
+| **Pre-flight gate (T0)** | T0.1 PASS, T0.2 FAIL (forge CLI hangs — R1 confirmed; fallback to orchestrator-direct), T0.3 PASS, T0.4 DEFER (4.3GB .git), T0.5 PASS | v8 launch log |
+| **T9.1 (secret identify)** | COMPLETE | `phenotype-python-sdk@7499fd2:test_v020_parity.py:api_key:str="default-key"` — false positive |
+| **T9.2 (secret resolve)** | DEFERRED | Requires user decision: Option A (GitHub unblock URL ~2min) recommended |
+| **T9.3 (AGENTS.md refresh)** | DONE | Prior session 2026-06-18 22:58 PDT |
+
+---
+
+## Carry-over from 2026-06-17 12:00 PDT (preserved for history)
 
 | Metric | Value | Source |
 |---|---|---|
