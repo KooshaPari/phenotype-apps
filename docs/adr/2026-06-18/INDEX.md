@@ -12,6 +12,7 @@ This index lists the ADRs accepted on 2026-06-18 for the v8 execution sweep
 | 039   | Pheno-flake refresh template for substrate repos                                     | Accepted | `ADR-039-pheno-flake-refresh-template.md`             |
 | 040   | Test coverage gates per substrate tier (80/70/60%)                                    | Accepted | `ADR-040-test-coverage-gates-per-tier.md`             |
 | 041   | 71-pillar refresh cadence (weekly Monday 09:00 PDT)                                    | Accepted | `ADR-041-71-pillar-refresh-cadence.md`                |
+| 042   | Substrate quality bar (Rule 3.1 — 7 elements, 3 enforcement layers)                    | Accepted | `ADR-042-substrate-quality-bar.md`                    |
 
 ## Scope
 
@@ -29,6 +30,8 @@ This index lists the ADRs accepted on 2026-06-18 for the v8 execution sweep
 
 - **ADR-041** sets the 71-pillar scorecard refresh cadence at weekly Monday 09:00 PDT via a cron workflow in `phenotype-org-audits`. Owner: worklog-schema circle. Bounds scorecard staleness at ≤ 7 days; weekly delta becomes the input to subsequent wave plans (v9+).
 
+- **ADR-042** codifies ADR-023 Rule 3.1's 7-element quality bar (spec, docs, test matrix, observability, coverage, CI, worklog) with 3 enforcement layers (PR template, CI lint, registry lint). Goal: HITL-less dev — one-line intent produces a PR with all 7 elements by default.
+
 ## Decision-log files
 
 Each ADR has a corresponding decision-log finding at `findings/2026-06-18-L8-00X-*.md`:
@@ -40,6 +43,7 @@ Each ADR has a corresponding decision-log finding at `findings/2026-06-18-L8-00X
 - ADR-039 → `findings/2026-06-18-L8-005-pheno-flake-rollout.md`
 - ADR-040 → `findings/2026-06-18-L8-006-coverage-gates.md`
 - ADR-041 → `findings/2026-06-18-L8-007-71-pillar-cadence.md`
+- ADR-042 → `findings/2026-06-18-L8-008-substrate-quality-bar.md`
 
 ## Supersedes
 
@@ -50,7 +54,7 @@ Each ADR has a corresponding decision-log finding at `findings/2026-06-18-L8-00X
 
 ## Cross-references
 
-- `AGENTS.md` "Active ADRs" table (rows ADR-035..ADR-041 added in v8 wave)
+- `AGENTS.md` "Active ADRs" table (rows ADR-035..ADR-042 added in v8 wave)
 - `plans/2026-06-18-v8-dag-stable.md` (this sweep's execution plan)
 - `docs/adr/2026-06-17/INDEX.md` (predecessor ADRs 024-034)
 - `findings/2026-06-18-L8-001..006-*.md` (decision logs)
