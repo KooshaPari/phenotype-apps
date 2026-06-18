@@ -91,6 +91,7 @@ pub enum FlagError {
 ///
 /// Cloning is cheap: the map is a small `String -> bool` table.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[must_use = "FlagSet exposes only query methods; an unused value is almost always a logic bug"]
 pub struct FlagSet {
     flags: HashMap<String, bool>,
 }
@@ -124,6 +125,7 @@ impl FlagSet {
     ///     .with("dark_mode", false); // last write wins
     /// assert!(!flags.is_enabled("dark_mode"));
     /// ```
+    #[must_use = "builder methods return `self` for chaining; a discarded result is almost always a bug"]
     pub fn with(mut self, key: &str, value: bool) -> Self {
         self.flags.insert(key.to_string(), value);
         self
@@ -143,6 +145,7 @@ impl FlagSet {
     /// Returns [`FlagError::InvalidValue`] on the first
     /// unparseable variable; partial state is **not** built (the
     /// function scans and validates before inserting).
+    #[must_use = "Result-returning; ignoring the Err arm silently masks a misconfigured environment"]
     pub fn from_env(prefix: &str) -> Result<Self, FlagError> {
         // First pass: validate every matching variable. We do not
         // insert until all of them parse, so a partial build
@@ -193,6 +196,14 @@ impl FlagSet {
     ///
     /// Unknown keys return `false` (this is the safe default for
     /// opt-in feature flags).
+    ///
+    /// ```
+    /// use pheno_flags::FlagSet;
+    ///
+    /// let flags = FlagSet::new().with("dark_mode", true);
+    /// assert!(flags.is_enabled("dark_mode"));
+    /// assert!(!flags.is_enabled("never_set"));
+    /// ```
     pub fn is_enabled(&self, key: &str) -> bool {
         self.flags.get(key).copied().unwrap_or(false)
     }
@@ -202,6 +213,7 @@ impl FlagSet {
     /// The map is a fresh `BTreeMap<String, bool>`, so it is safe
     /// to mutate, serialize, or diff independently of the
     /// `FlagSet`. Iteration order is ascending by key.
+    #[must_use = "snapshot allocates a fresh BTreeMap; an unused result wastes the allocation"]
     pub fn snapshot(&self) -> BTreeMap<String, bool> {
         self.flags.iter().map(|(k, v)| (k.clone(), *v)).collect()
     }
