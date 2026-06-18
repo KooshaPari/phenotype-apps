@@ -75,7 +75,16 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 
 ---
 
-## Active ADRs (30 total, +ADR-030, +ADR-031 this turn)
+## Active ADRs (35 total, +ADR-032, +ADR-033, +ADR-034, +ADR-035 this turn)
+
+**2026-06-18 wave (4 ADRs at `docs/adr/2026-06-18/`):**
+
+| ADR | Subject | Notes |
+|---|---|---|
+| ADR-032 | settle-adapter deprecation | Conft reorg — 4 settly-* repos archived |
+| ADR-033 | Phenotype-fleet monorepo-state split | 1 of 2 maintained monorepos |
+| ADR-034 | Phenotype-monorepo-state deletion | 2026-07-17 scheduled deletion |
+| **ADR-035** | **HwLedger reclassification (L5-105)** | KEEP as federated service + extract `pheno-capacity` math lib; bucket change `PAUSED -> CONDITIONAL` |
 
 **2026-06-14 wave (6 ADRs at `docs/adr/2026-06-14/`):**
 
@@ -174,6 +183,7 @@ The MacBook is **not** a heavy-work device. Heavy work is defined as anything th
 | `Dino`       | **CONDITIONAL** | Engine / non-frontend only (heavy visual engine, asset pipeline, deterministic sim). No UI / HUD / UX work right now. |
 | `WSM`        | **CONDITIONAL** | None right now. Re-evaluate when an active consumer appears.                                            |
 | `QuadSGM`    | **PAUSED**     | Read-only.                                                                                              |
+| **HwLedger** | **CONDITIONAL** (was PAUSED) | Federated service (apps/{landing,macos,streamlit} + sidecars/omlx-fork + tools/journey-remotion + docs). Extract `pheno-capacity` math lib (VRAM estimation, model-fit) for fleet reuse. App-level work proceeds; lib extraction is a separate ADR-035 deliverable. |
 | `AtomsBot*`  | **PAUSED (capstone)** | Read-only as a *target* of new work. **May be legally mined** (code, concepts, schema, docs, tests) — capstone project's sponsor is not in good standing; the public repo is fair-game reference material. |
 | `HwLedger` + every other app-level repo not in this list | **RECLASSIFY** (default PAUSED) | Underlying parts to be moved to one of `pheno-*-lib` / `phenotype-*-sdk` / `phenotype-*-framework` / federated service per Rule 3 below. |
 
@@ -405,6 +415,8 @@ See `findings/2026-06-18-L5-109-4-repo-retirement.md` for full migration matrix,
   - **forgecode**: 0 of 378 branches contain unique Phenotype work
   - **Aggregate**: 0 net content loss; audit doc `findings/2026-06-17-L5-104-dmouse92-to-kooshapari.md` §4.5
 - **codex exec unavailable for per-repo verification (2026-06-17 22:05 PDT)**: `codex exec --skip-git-repo-check` hit tool-routing cell_id errors in this environment (no output after 5 min); switched to direct orchestrator-level shell verification (`git fetch` + `git rev-list --count` + `git diff --name-only`). Equivalent rigor: per-commit + per-file cross-check.
+- **Track 8 cursor self-merge is the intended pattern (2026-06-18, per user directive)**: Bot merges with no HITL gate are the fleet norm. The P0 "violation" in the original post-mortem is reclassified P3 (informational). No reverts, no protection rules. See `findings/2026-06-18-track8-self-merge-postmortem.md` for the reclassified version.
+- **bucket_change HwLedger: from=PAUSED to=CONDITIONAL reason=ADR-035 (L5-105) reclassification — federated service with extractable pheno-capacity math lib**
 
 ---
 

@@ -142,6 +142,7 @@ This file supersedes the 2026-06-17 12:00 PDT version. Refreshed for v8 launch.
 | **ADR-032** | **pheno-worklog-schema is a primitive lib, NOT a re-implementation of AgilePlus worklog** | **Accepted 2026-06-17** — see `docs/adr/2026-06-17/ADR-032-pheno-worklog-schema-decision.md`; different formats, different audiences, both coexist |
 | **ADR-033** | **Delete `KooshaPari/phenotype-monorepo-state` — single-source-of-truth** | **Accepted 2026-06-17** — see `docs/adr/2026-06-17/ADR-033-phenotype-monorepo-state-deletion.md`; 11 commits consolidated to `phenotype-org-audits` + monorepo; deletion after 30-day grace |
 | **ADR-034** | **`KooshaPari/phenotype-monorepo-state` deletion schedule — 2026-07-17** | **Accepted 2026-06-17** — see `docs/adr/2026-06-17/ADR-034-monorepo-state-deletion-schedule.md`; 30-day grace + 5-step pre-deletion checklist |
+| **ADR-035** | **HwLedger reclassification — PAUSED app (Rule 3 final disposition)** | **Accepted 2026-06-17** — see `docs/adr/2026-06-17/ADR-035-hwledger-reclassification.md`; HwLedger is one of the explicitly PAUSED app-level repos per ADR-023; underlying capabilities move to pheno-*-lib / phenotype-*-sdk / federated per-capability |
 
 ---
 
