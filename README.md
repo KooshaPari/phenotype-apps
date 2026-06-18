@@ -62,6 +62,8 @@ bifrost deploy fly
 - **[docs/deployment/](docs/deployment/)** - Deployment guides
 - **[docs/evaluation/](docs/evaluation/)** - Gap analysis and roadmap
 - **[docs/guides/](docs/guides/)** - How-to guides and examples
+- [`AGENTS.md`](AGENTS.md) — operating instructions for AI agents and human contributors
+- [`SPEC.md`](SPEC.md) — formal specification of behavior and contracts
 
 ## Architecture
 
