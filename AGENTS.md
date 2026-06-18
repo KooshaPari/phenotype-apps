@@ -137,12 +137,13 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 | **ADR-032** | **pheno-worklog-schema is a primitive lib, NOT a re-implementation of AgilePlus worklog** | **L5-104.8, 2026-06-17** — see `docs/adr/2026-06-17/ADR-032-pheno-worklog-schema-decision.md`; different formats (Markdown table vs JSONL), different audiences, both coexist |
 | **ADR-033** | **Delete `KooshaPari/phenotype-monorepo-state` — single-source-of-truth; monorepo IS the canonical location** | **L5-104.9, 2026-06-17** — see `docs/adr/2026-06-17/ADR-033-phenotype-monorepo-state-deletion.md`; 11 commits consolidated to `phenotype-org-audits` + monorepo; `gh repo delete` after 30-day grace |
 | **ADR-034** | **`KooshaPari/phenotype-monorepo-state` deletion schedule — 2026-07-17** | **L5-104.10, 2026-06-17** — see `docs/adr/2026-06-17/ADR-034-monorepo-state-deletion-schedule.md`; 30-day grace + 5-step pre-deletion checklist |
+| **ADR-035** | **HwLedger reclassification — PAUSED per ADR-023, capability inventory pending** | **L5-104.7, 2026-06-18** — see `docs/adr/2026-06-18/ADR-035-hwledger-reclassification.md`; capability mapping (pheno-*-lib / phenotype-*-sdk / framework / federated) deferred; `hwledger-2nd` worktree preserved locally |
 
 ---
 
-## Wave Plan (v7 — current, supersedes v6)
+## Wave Plan (v8 — current, supersedes v7)
 
-See `plans/2026-06-17-v7-dag-stable.md`. **~7 tracks, 30+ PRs, orchestrator + parallel forge subagent dispatch.**
+See `plans/2026-06-18-v8-dag-stable.md`. **18 tracks, ~210 tasks, ~200 PRs, 4-week execution window, fleet-wide scope.**
 
 - Track 1: Triage (P0, ~5min, this turn) — drop empty commits, drop stashes, commit meta-bundle, refresh governance docs
 - Track 2: 5 PR reviews (P1, parallel, ~10min) — PRs #129-#133 from W5 batch
