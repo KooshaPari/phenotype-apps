@@ -1,11 +1,10 @@
 # STATUS.md — Phenotype monorepo
 
-**Date:** 2026-06-15 17:35 PDT
-**Branch in use:** `chore/w5-adrs-sota-2026-06-15` (was `chore/w1-2-archive-cheap-llm-mcp-2026-06-15`; subagent switched mid-session)
-**HEAD:** `90cbfa053b` "docs(pheno-config): README + twelve-factor guide (ADR-012 PR-7)"
-**Working tree:** dirty (170+ submodule pointer drifts pre-existing; recent in-flight submodules include AgentMCP, Agentora, AgilePlus, Apisync, BytePort)
+**Date:** 2026-06-17 12:00 PDT
+**Branch in use:** `chore/w5-adrs-sota-2026-06-15` (HEAD `04c2c7b1af` "wip(meta): add pheno-cli-base, pheno-fastapi-base, pheno-flags, pheno-otel, pheno-secret-scan meta-bundle files")
+**Working tree:** dirty (181 submodule pointer drifts pre-existing; the 5 pheno-* meta-bundles are committed in `04c2c7b1af`)
 
-This file supersedes the 2026-06-15 01:25 PDT index that lived here 2026-06-08 → 2026-06-15.
+This file supersedes the 2026-06-15 17:35 PDT index that lived here 2026-06-15 → 2026-06-17.
 
 ---
 
@@ -63,33 +62,45 @@ This file supersedes the 2026-06-15 01:25 PDT index that lived here 2026-06-08 �
 
 ---
 
-## Active ADRs (16 total)
+## Active ADRs (25 total, +ADR-024, ADR-025 this turn)
 
 **2026-06-14 wave (6 ADRs at `docs/adr/2026-06-14/`):**
 
 | ADR | Repo | Disposition | Status |
 |---|---|---|---|
-| ADR-001 | NetScript | **DELETE** | Local commit `76f3f3f`; push blocked by gh auth |
+| ADR-001 | NetScript | **DELETE** | Local commit `76f3f3f`; SSH push done, PR+archive blocked by gh auth |
 | ADR-002 | KlipDot | KEEP-archived | — |
 | ADR-003 | McpKit | MERGE into `PhenoMCP` | Plan in `findings/ADR-003-MCPKIT-MIGRATION-PLAN-2026_06_15.md` |
 | ADR-004 | Metron | KEEP | — |
 | ADR-005 | KodeVibe | KEEP | — |
 | ADR-006 | cheap-llm-mcp | archive verified | — |
 
-**2026-06-15 wave (10 ADRs at `docs/adr/2026-06-15/`):**
+**2026-06-15 wave (11 ADRs at `docs/adr/2026-06-15/`):**
 
 | ADR | Subject | Status |
 |---|---|---|
 | ADR-007 | cheap-llm-mcp deprecation | Accepted (DAG-V5 reconciliation) |
 | ADR-008 | dispatch-mcp as sole MCP server | Accepted (consolidation decision) |
-| ADR-009 | (DAG-V5 reconciliation) | Accepted |
-| ADR-010 | (DAG-V5 reconciliation) | Accepted |
-| ADR-011 | (DAG-V5 reconciliation) | Accepted |
+| ADR-009..011 | (DAG-V5 reconciliation) | Accepted |
 | ADR-012 | `pheno-tracing` canonical across pheno-* repos | Accepted (V5 SOTA sweep) |
 | ADR-013 | `pheno-mcp-router` substrate for pheno-mcp-* | Accepted (V5 SOTA sweep) |
 | ADR-014 | Hexagonal L4 ports: `Port` trait + `Adapter` impl | Accepted (V5 SOTA sweep) |
-| ADR-015 | V2 10-column WORKLOG.md schema (canonical) | Accepted (V5 SOTA sweep) |
+| ADR-015 | V2 10-column WORKLOG.md schema (canonical) | Accepted (V5 SOTA sweep) — superseded by ADR-025 |
 | ADR-016 | Fork-only-not-rewrite policy for SOTA libraries | Accepted (V5 SOTA sweep) |
+| ADR-017 | `settly-*` archive — full deprecation | Accepted (V6 Track 5 closure) |
+| ADR-018 | PRCP pattern (Polyglot Reuse via Canonical Ports) | Accepted (V6 Track 5 closure) |
+| ADR-019 | `pheno-vessel-*` full deprecation | Accepted (V6 Track 5 closure) |
+| ADR-020 | `pheno-types-*` full deprecation | Accepted (V6 Track 5 closure) |
+| ADR-021 | `pheno-profiling` replaces `Profila` | Accepted (V6 Track 5 closure) |
+| ADR-022 | Config consolidation — two-crate canonical split | Accepted (Subagent-B 11-PR plan) |
+| **ADR-023** | **Agent-effort governance — device + dogfood + app substrate policy** | **Accepted 2026-06-15 18:42 PDT** — see [§ App-level repo triage (ADR-023)](#app-level-repo-triage-adr-023) below |
+
+**2026-06-17 wave (this turn):**
+
+| ADR | Subject | Status |
+|---|---|---|
+| **ADR-024** | **71-pillar industry-standard audit framework (L1-L71, 9 domains)** | **Accepted 2026-06-17** — see `findings/71-pillar-2026-06-17-schema.md` |
+| **ADR-025** | **ADR-015 v2.1 worklog schema bump (11th column `device:`)** | **Accepted 2026-06-17** — deprecation 2026-06-22 (5 days) |
 
 ---
 
@@ -125,10 +136,22 @@ This file supersedes the 2026-06-15 01:25 PDT index that lived here 2026-06-08 �
 - 4 worklogs (`L5-097..100`), 4 findings (`findings/2026-06-15-L5-09{7,8,9}*.md`, `L5-100-*.md`) — all on disk
 - SSOT.md, STATUS.md (this file), ARCHITECTURE.md — updated for v6 outcomes
 
+### v7 DAG (in flight, 2026-06-17, supersedes v6)
+
+See `plans/2026-06-17-v7-dag-stable.md`. **~7 tracks, 30+ PRs, orchestrator + parallel forge subagent dispatch.**
+
+- **Track 1 — Triage (DONE this turn):** 4 empty `gate1-0..3` branches deleted; 2 stale stashes dropped; 5 pheno-* meta-bundles committed (`04c2c7b1af`); AGENTS.md/STATUS.md/SSOT.md refreshed
+- **Track 2 — 5 PR reviews (parallel, this turn):** PRs #129-#133 from W5 batch (cheap-llm-mcp archive / config consolidation / ADR-012..016 SOTA / STATUS refresh / L05-L10-L25 closure)
+- **Track 3 — 71-pillar audit (this turn):** ADR-024 schema + L1-L30→L1-L71 crosswalk + re-probe 10 repos + score + render
+- **Track 4 — ADR-015 v2.1 schema bump (this turn):** ADR-025 + canonical worklog schema update + migration script
+- **Track 5 — HwLedger reclassification (this turn):** ADR-023 Rule 3 P0 deliverable; inventory capabilities, map to substrates, author migration plan
+- **Track 6 — Rebase + push cleaned branch (this turn):** resolve 39-commit divergence, push as KooshaPari
+- **Track 7 — Work DAG maintenance (ongoing):** keep `findings/71-pillar-2026-06-17*.md` and `plans/2026-06-17-v7-dag-stable.md` updated weekly
+
 ### Stalled / blocked
 
-- **Push to remotes:** Dmouse92 gh cannot reach `KooshaPari/Phenotype` (4 of 7 remotes return 404). Documented in `findings/PUSH_AUTH_GAP-2026_06_15.md`. Workaround: re-auth as `KooshaPari`.
-- **Submodule pointer drifts (170+):** non-urgent; each has real content mods (not pointer drift). Per-submodule triage needed.
+- **Push to remotes:** Dmouse92 gh cannot reach `KooshaPari/Phenotype` (4 of 7 remotes return 404). Documented in `findings/PUSH_AUTH_GAP-2026_06_15.md`. Workaround: re-auth as `KooshaPari` (DONE 2026-06-15 18:40 PDT, active now).
+- **Submodule pointer drifts (181):** non-urgent; each has real content mods (not pointer drift). Per-submodule triage needed.
 - **Melosviz is dirty (3 uncommitted files):** needs to be committed inside the submodule first.
 - **Metron unarchive:** needs `admin:org` scope; Dmouse92 has no org admin. Web UI action needed (5 sec).
 - **helios-router PR:** branch on remote, web UI PR needed (Dmouse92 `gh` can't see private repos).
@@ -167,22 +190,57 @@ eaebe896  (Pyron) fix(pyron): unblock cargo check --workspace
 
 ---
 
-## Open threads (priority order)
+## Open threads (priority order, post-v7-launch)
 
-1. **Config consolidation PR-5..11 (5 PRs remaining, ~3-4h)** (P2) — PR-5 (Settly `#[deprecated]` in tree), PR-8 (Settly GitHub archive — blocked by gh auth), PR-9 (phenotype-python-sdk/phenotype-config parity), PR-10 (pheno-config v0.3.0 → crates.io), PR-11 (ADR-012 doc)
-2. **Re-run L6 health audit** (P2) — append today's findings (DONE 17:30 PDT delta, more pending)
-3. **Metron unarchive** (P3) — web UI action, 5 sec; unblocks W1 push
-4. **helios-router PR** (P3) — web UI action (DEPRECATED.md local commit done)
-5. **Push 32 ahead commits** (P3) — blocked by gh auth; needs `KooshaPari` re-auth
-6. **Submodule pointer drifts (170+)** (P3) — non-urgent; per-submodule triage
-7. **AtomsBot decomposition** (P3) — unblocked by ADRs but is 5-10 days effort; schedule separately
-8. **Profila → pheno-profiling migration** (P3) — 12-PR plan; ~6-8h; defer to next session
+1. **HwLedger reclassification (ADR-023 Rule 3)** (P0) — first concrete deliverable of ADR-023. Open a per-capability migration plan to move underlying parts from "random `phenoShared`" to one of `pheno-*-lib` / `phenotype-*-sdk` / `phenotype-*-framework` / federated service. See Track 5.
+2. **ADR-015 v2.1 schema bump (ADR-025)** (P0) — file `ADR-015-v2.1-worklog-schema.md` (or amendment) with the 11th column (`device:`, enum `macbook | heavy-runner | dispatcher`) definition, deprecation timeline, and migration script. Owner: worklog-schema circle. 1-week deprecation, error after 2026-06-22. See Track 4.
+3. **L6 health-audit delta — bucket-drift check** (P1) — add a new check: any active PR/branch in a PAUSED repo or `device: macbook` on a heavy task is a P1 finding. Runs at the next weekly L6 delta.
+4. **CODEOWNERS review for PAUSED repos** (P1) — every PAUSED app-level repo needs a CODEOWNERS entry that blocks new branches without a bucket-change worklog row. This is the lock; the bucket table is the policy.
+5. **AtomsBot* re-purposing** (P2) — the 20 DAG tasks in the AtomsBot decomposition plan are not closed; they are deferred to "seed HwLedger reclassification when a concrete capability is identified" or "use as a reference for the engine / non-frontend slice of Dino if it overlaps."
+6. **Config consolidation PR-5..11 (5 PRs remaining, ~3-4h)** (P2) — PR-5 (Settly `#[deprecated]` in tree), PR-8 (Settly GitHub archive — blocked by gh auth), PR-9 (phenotype-python-sdk/phenotype-config parity), PR-10 (pheno-config v0.3.0 → crates.io), PR-11 (ADR-012 doc)
+7. **Profila → pheno-profiling migration** (P3) — 12-PR plan; ~6-8h; defer to next session
+8. **Submodule pointer drifts (181)** (P3) — non-urgent; per-submodule triage
+9. **6 OPEN PRs (PRs #129-#134)** (P1, this turn) — Track 2 review cycle
+
+---
+
+## App-level repo triage (ADR-023)
+
+Source of truth: `docs/adr/2026-06-15/ADR-023-agent-effort-governance.md`. Decision log: `findings/2026-06-15-L5-101-app-governance.md`.
+
+| Repo         | Bucket         | Allowed work                                                                                            |
+| :----------- | :------------- | :------------------------------------------------------------------------------------------------------ |
+| `Civis`      | **ACTIVE**     | Any. Full SWE process.                                                                                  |
+| `focalpoint` | **PAUSED**     | Read-only. The prior AGENTS.md template is shelved.                                                     |
+| `Dino`       | **CONDITIONAL** | Engine / non-frontend only (heavy visual engine, asset pipeline, deterministic sim). No UI / HUD / UX work right now. |
+| `WSM`        | **CONDITIONAL** | None right now. Re-evaluate when an active consumer appears.                                            |
+| `QuadSGM`    | **PAUSED**     | Read-only.                                                                                              |
+| `AtomsBot*`  | **PAUSED (capstone)** | Read-only as a *target* of new work. **May be legally mined** (code, concepts, schema, docs, tests) — capstone project's sponsor is not in good standing; the public repo is fair-game reference material. |
+| `HwLedger` + every other app-level repo not in this list | **RECLASSIFY** (default PAUSED) | Underlying parts to be moved to one of `pheno-*-lib` / `phenotype-*-sdk` / `phenotype-*-framework` / federated service per ADR-023 Rule 3. |
+
+A new repo defaults to **PAUSED** until it is added to this table with a bucket. A bucket change requires a one-line worklog entry (`bucket_change: from=... to=... reason=...`).
+
+**Device-fit gate (ADR-023 Rule 1):** The MacBook is **not** a heavy-work device. Heavy work (defined as `cargo test --workspace` against multi-100-crate workspace, iOS Simulator boot, Docker-in-Docker, Unity/Unreal editor, or any single build/test cycle > 10 min wall) runs on a self-hosted runner or a dispatched subagent (`device: heavy-runner`). The MacBook is reserved for planning, ADR-writing, small focused PRs, code review, and dogfooding (`device: macbook`). The `device:` field is in the worklog v2.1 schema (ADR-025 bump pending, due 2026-06-22).
+
+---
+
+## 71-pillar audit (ADR-024, this turn)
+
+See `findings/71-pillar-2026-06-17-schema.md` for the full schema doc (industry references, scoring rubric, pillar definitions). See `findings/71-pillar-2026-06-17.md` for the latest scorecard across 10 existing repos. See `findings/71-pillar-2026-06-17-mapping.md` for the L1-L30 → L1-L71 crosswalk (so the older 30-pillar audit at `findings/30-pillar-2026-06-16.md` is not orphaned).
+
+**Domains (9 total, 71 pillars):** Architecture (AX) 12, Performance 7, Quality/Correctness 8, Developer Experience (DX) 10, User Experience (UX) 8, Security 10, Observability & Ops 8, Documentation & SSOT 5, Governance & Sustainability 3.
+
+**Industry references:** AWS WAF, Azure WAF, Google Cloud Architecture Framework, ISO 25010, OWASP ASVS, NIST SSDF, Microsoft SDL, DORA 2023 capabilities, Google SRE Book, CNCF Cloud Native Definition, OpenSSF Best Practices, Divio documentation system.
+
+**Scoring:** 0-3 per pillar per repo (0=absent, 1=minimal, 2=adequate, 3=strong/SOTA). N/A=3 for UI pillars (L40 i18n, L41 a11y) on headless backend/CLI libraries.
+
+**Refresh cadence:** weekly (every Monday 09:00 PDT). Owner: worklog-schema circle.
 
 ---
 
 ## Infrastructure
 
-- **GitHub auth:** `gh` is `Dmouse92` (scopes: gist, read:org, repo, workflow). SSH `~/.ssh/push_key` is the working path for pushes; web UI is needed for admin actions (unarchive, PR creation in private repos). Documented: `findings/PUSH_AUTH_GAP-2026_06_15.md`.
-- **Subagent dispatch:** `task` tool (re-verified working 2026-06-15 16:45 PDT). `forge -p "..."` CLI (verified working 2026-06-15 01:18 PDT with Tracera L5 integration). `OmniRoute` is UP at `http://localhost:20128/v1/models`.
+- **GitHub auth:** `gh` is `KooshaPari` (active 2026-06-15 18:40 PDT). Dmouse92 still in keyring (read-only collaborator) — DO NOT push as Dmouse92. SSH `~/.ssh/push_key` is the working path for pushes; web UI is needed for admin actions (unarchive, PR creation in private repos).
+- **Subagent dispatch:** `task` tool (re-verified working 2026-06-15 16:45 PDT). `forge -p "..."` CLI (verified working 2026-06-15 01:18 PDT with Tracera L5 integration). `OmniRoute` is UP at `http://localhost:20128/v1/models`. **This turn: `task` tool with `agent_id="forge"` used for 5 PR reviews + 3 content authoring tasks in parallel.**
 - **Sparse-checkout:** cone mode active, pattern includes `/*` + `!/*/` + re-inclusions for `pheno-*`, `plans/`, `worklogs/`, `docs/adr/2026-06-14/*`, `docs/adr/2026-06-15/*`, plus 6 specific sub-paths. `findings/` and `crates/` are NOT in the cone by default.
 - **Hooks:** `HOOKS_SKIP=1` env var bypasses `trufflehog` pre-commit hook (which times out after 60s on the monorepo).
