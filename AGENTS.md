@@ -298,7 +298,14 @@ Sub-plans:
 - **4 empty `gate1-0..3` local branches** — DELETED this turn (probe commits, no content, not on any pushed branch).
 - **ADR-015 v2.1 deprecation in 5 days** (2026-06-22) — see ADR-025 for the bump.
 - **REBASE + PUSH BLOCKED (2026-06-17 21:00 PDT)**: Local `repos/` clone's `origin` remote points to `KooshaPari/FocalPoint` (archived, read-only). Canonical Phenotype monorepo on KooshaPari is `phenotype-monorepo-state` (single-branch cherry-pick snapshot, 3 commits, 0 PRs), but it is structurally a different repo (small snapshot, not full monorepo). Recommended next session: re-clone `phenotype-monorepo-state` to a fresh working dir, apply our 4 commits as a patch series (`git format-patch c144f58c5..HEAD | git am`). 4 new commits since last session (d83900c, eebdeca, 7f52bd, b9ec43) remain local-only.
-- **dispatch-mcp deletion vs archive**: User said "dispatch-mcp should be deleted" but `gh repo delete` requires `delete_repo` scope on Dmouse92 token (403). Archive is the only available action. `Dmouse92/dispatch-mcp` is archived (not deleted); the consumer-facing work is fully absorbed into `KooshaPari/pheno-mcp-router` and `KooshaPari/dispatch-mcp` per the 6 Track 8 PRs.
+- **dispatch-mcp deletion vs archive**: User said "dispatch-mcp should be deleted" but `gh repo delete` requires `delete_repo` scope on Dmouse92 token (HTTP 403, current scopes: `'gist', 'read:org', 'repo', 'workflow'`). Archive is the only available action. `Dmouse92/dispatch-mcp` is archived (not deleted); the consumer-facing work is fully absorbed into `KooshaPari/pheno-mcp-router` and `KooshaPari/dispatch-mcp` per the 6 Track 8 PRs.
+- **L5-104 MIGRATION GUARANTEE VERIFIED (2026-06-17 22:15 PDT)**: Orchestrator-level shell verification confirms 100% migration coverage:
+  - **dispatch-mcp**: 6/6 unique W2-1 commits absorbed (100%) via 5 PR branches on 3 KP repos (pheno-mcp-router +3, dispatch-mcp +1, phenotype-ops +1)
+  - **pheno ADR-012**: 7/7 unique commits decisioned (2 cherry-picked to phenotype-config, 5 correctly discarded per plan §2.2)
+  - **14 bulk mirrors**: 0 unique commits vs KP main (archive action verified correct)
+  - **forgecode**: 0 of 378 branches contain unique Phenotype work
+  - **Aggregate**: 0 net content loss; audit doc `findings/2026-06-17-L5-104-dmouse92-to-kooshapari.md` §4.5
+- **codex exec unavailable for per-repo verification (2026-06-17 22:05 PDT)**: `codex exec --skip-git-repo-check` hit tool-routing cell_id errors in this environment (no output after 5 min); switched to direct orchestrator-level shell verification (`git fetch` + `git rev-list --count` + `git diff --name-only`). Equivalent rigor: per-commit + per-file cross-check.
 
 ---
 
