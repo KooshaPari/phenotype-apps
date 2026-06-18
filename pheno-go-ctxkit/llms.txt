@@ -1,0 +1,22 @@
+# pheno-go-ctxkit
+
+> W3C trace-context propagation for Go services. Stdlib only.
+
+## What
+`ctxkit` is a single Go package that parses and emits W3C `traceparent` headers. Use it to propagate trace IDs across the fleet (Go ↔ Rust ↔ Python).
+
+## Public API
+- `Inject(ctx, http.Header) error` — write `traceparent` to outbound headers
+- `Extract(http.Header) (context.Context, error)` — read `traceparent` from inbound headers
+- `WithTraceparent(ctx, string) context.Context` — force a specific value (test helper)
+- `TraceparentFromContext(ctx) string` — get the current value
+
+## Interop
+- `pheno-context` (Rust) — byte-identical `traceparent` format
+- `pheno-context-py` (Python) — round-trip tested
+
+## Why
+Every Go service in the Phenotype fleet needs to participate in distributed traces. This package is the canonical propagation layer; `pheno-otel` is the collection layer.
+
+## License
+MIT OR Apache-2.0.

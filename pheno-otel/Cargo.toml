@@ -39,6 +39,16 @@ opentelemetry-otlp = { version = "0.27", default-features = false, features = [
 ] }
 futures-util = { version = "0.3", default-features = false, features = ["std"] }
 thiserror = "2.0"
+# `tracing` integration is opt-in via the `tracing` feature.
+# When enabled, init() also installs a tracing-opentelemetry layer so
+# that `tracing::info_span!`, `tracing::info!`, etc. emit OTLP spans.
+tracing = { version = "0.1", optional = true }
+tracing-subscriber = { version = "0.3", optional = true }
+tracing-opentelemetry = { version = "0.28", optional = true }
+
+[features]
+default = []
+tracing = ["dep:tracing", "dep:tracing-subscriber", "dep:tracing-opentelemetry"]
 
 [dev-dependencies]
 opentelemetry = "0.27"
