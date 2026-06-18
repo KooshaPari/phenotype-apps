@@ -28,6 +28,7 @@ here wins.
 | **Quality audit crosswalk (71-pillar ↔ Factory AI)** | `audit-71-pillar-2026-06-17-wrapup.md` § 10 (ADR-026, this turn) |
 | **Dmouse92 → KooshaPari migration audit** | `findings/2026-06-17-L5-104-dmouse92-to-kooshapari.md` (ADR-029, this turn) + sub-plans: dispatch-mcp (527 lines), pheno-ADR-012 (414 lines), bulk-rust-ts (999 lines), forgecode (305 lines) |
 | **Substrate ownership** | `pheno-mcp-router` (ADR-013) owns all `pheno-mcp-*` server tier/cost/budget/quota/audit/llama_cpp/openai_compat; `phenotype-config` (ADR-022) owns Rust core + Conft TS edge; `phenotype-ops` (ADR-023) owns deployment; `phenotype-hub` / `phenotype-bus` (ADR-014) own IoC frameworks |
+| **Git-hook bypass env vars (per P47)** | `HOOKS_SKIP=1` skips all git hooks (trufflehog pre-commit timeout workaround on the 4.3GB monorepo); `SKIP=pre-push,pre-commit` skips specific named hooks (git-standard variable, accepted by lefthook/overcommit/git hooks). Use `HOOKS_SKIP=1` for orchestrator pushes; use `SKIP=...` for surgical hook bypasses. Both must be set as env vars in the same shell as the `git push` / `git commit` invocation (env vars do not persist across shell sessions). |
 
 ## Precedence order
 
