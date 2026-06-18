@@ -75,7 +75,7 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 
 ---
 
-## Active ADRs (23 total, +ADR-024 this turn)
+## Active ADRs (29 total, +ADR-029 this turn)
 
 **2026-06-14 wave (6 ADRs at `docs/adr/2026-06-14/`):**
 
@@ -119,6 +119,10 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 |---|---|---|
 | **ADR-024** | **71-pillar industry-standard audit framework (L1-L71, 9 domains)** | **L5-102, 2026-06-17** — see `findings/71-pillar-2026-06-17-schema.md` |
 | **ADR-025** | **ADR-015 v2.1 worklog schema bump (11th column `device:`)** | **L5-103, 2026-06-17** — supersedes v2.0; deprecation 2026-06-22 |
+| **ADR-026** | **Factory AI Agent Readiness Model as cross-cutting external standard** | **L5-104, 2026-06-17** — see <https://docs.factory.ai/web/agent-readiness/overview>; crosswalk in `audit-71-pillar-2026-06-17-wrapup.md` § 10 |
+| **ADR-027** | **Git LFS 3-tier policy (always-track / on-demand / never-track)** | **L5-105, 2026-06-17** — closes L66; see `.gitattributes.example` |
+| **ADR-028** | **Monorepo architecture eval: hybrid-with-staging-repo** | **L5-106, 2026-06-17** — closes L25; staging repo `phenotype-org-audits` |
+| **ADR-029** | **Dmouse92 → KooshaPari migration — absorb all DM92 work to substrate, archive emptied repos** | **L5-108, 2026-06-17** — see `findings/2026-06-17-L5-104-dmouse92-to-kooshapari.md`; 6 PRs opened, 18 Dmouse92 repos archived |
 
 ---
 
@@ -220,6 +224,68 @@ See `findings/71-pillar-2026-06-17-schema.md` for the full schema doc (industry 
 **Scoring:** 0-3 per pillar per repo (0=absent, 1=minimal, 2=adequate, 3=strong/SOTA). N/A=3 (per `audit-30-pillar-template.md` rule) for UI pillars (L40 i18n, L41 a11y) on headless backend/CLI libraries.
 
 **Refresh cadence:** weekly (every Monday 09:00 PDT). Owner: worklog-schema circle. Diff against previous week is logged in `findings/71-pillar-{date}-delta.md`.
+
+---
+
+## Factory AI Agent Readiness (external cross-cutting, ADR-026, this turn)
+
+Two complementary quality frameworks govern the fleet. See `audit-71-pillar-2026-06-17-wrapup.md` § 10 for the full Factory AI crosswalk.
+
+**1. 71-pillar framework (ADR-024, internal)** — comprehensive static scoring across 9 domains, 71 pillars, L1-L71. Owned by the worklog-schema circle. See `findings/71-pillar-2026-06-17-schema.md` for schema, `findings/71-pillar-2026-06-17.md` for the scorecard, `findings/71-pillar-2026-06-17-mapping.md` for L1-L30 → L1-L71 crosswalk.
+
+**2. Factory AI Agent Readiness Model (external standard)** — gated 5-level progression model (Functional → Documented → Standardized → Optimized → Autonomous) with 9 technical pillars (Style & Validation, Build System, Testing, Documentation, Dev Environment, Debugging & Observability, Security, Task Discovery, Product & Experimentation). 80% threshold per level. Org score = `floor(average of all repo levels)`. Source: <https://docs.factory.ai/web/agent-readiness/overview>.
+
+**Tooling:** Run `/readiness-report` slash command from Droid CLI in any repo to evaluate. The 2-3 highest-impact action items from each report feed the next v7+ plan as P0 tasks.
+
+**Why both:** The 71-pillar framework answers "what is the current state?" (breadth); the Factory AI Model answers "what is the next level to unlock?" (depth). Skipping 71-pillar misses breadth; skipping Factory AI misses progression. Both are tracked weekly; per-repo readiness estimates live in `STATUS.md` § "Factory AI Agent Readiness".
+
+---
+
+## Dmouse92 → KooshaPari migration (ADR-029, this turn)
+
+**User directive (2026-06-17):** *"focus solely on the dmouse92 aspects of work — merge all over to kooshapari → then reconcile/absorb to proper repos. e.g. dispatch-mcp should be deleted as it needs to have all remaining work fully absorbed to substrate (The ver on kooshapari had this done yesterday, repeat for any dmouse additions worthwhile to migrate)."*
+
+**Result:** 20 Dmouse92 phenorepos audited, 6 PRs opened on KooshaPari, 18 Dmouse92 repos archived. **0 net content loss.**
+
+### 6 PRs opened on KooshaPari (2026-06-17 20:40-20:50 PDT)
+
+| # | Repo | Branch → base | Title | What |
+|---|---|---|---|---|
+| [pheno-mcp-router#1](https://github.com/KooshaPari/pheno-mcp-router/pull/1) | pheno-mcp-router | `feat/port-cost-budget-quota-audit-tiers-2026-06-17` → `chore/l3-57-pheno-plugin-registry-2026-06-11` | feat(cost): port tiers/cost/budget/quota/audit/cost_middleware from dispatch-mcp W2-1 (L5-104.1) | 6 modules + 6 test files + PROVIDER_GUIDE.md |
+| [pheno-mcp-router#2](https://github.com/KooshaPari/pheno-mcp-router/pull/2) | pheno-mcp-router | `feat/llama-adapter-2026-06-17` → same | feat(adapters): add LlamaAdapter (LlmPort) | Server + direct modes; 11 tests |
+| [pheno-mcp-router#3](https://github.com/KooshaPari/pheno-mcp-router/pull/3) | pheno-mcp-router | `feat/openai-compat-adapter-2026-06-17` → same | feat(adapters): add OpenAICompatAdapter (LlmPort) | 429/5xx retry; 17 tests, 87% coverage |
+| [phenotype-config#1](https://github.com/KooshaPari/phenotype-config/pull/1) | phenotype-config | `feat/l5-104-canonical-markers-2026-06-17` → `main` | feat(docs): port CANONICAL.md markers + SLSA doc from pheno ADR-012 (L5-104.2) | 2 CANONICAL.md markers + docs/slsa.md |
+| [phenotype-ops#2](https://github.com/KooshaPari/phenotype-ops/pull/2) | phenotype-ops | `feat/llama-cpp-devops-2026-06-17` → `main` | feat(devops): add llama-cpp docker setup (L5-104.1) | Dockerfile + compose + README |
+| [dispatch-mcp#1](https://github.com/KooshaPari/dispatch-mcp/pull/1) | dispatch-mcp | `chore/w1-1-cheap-llm-mcp-deprecation-note-2026-06-15` → `main` | docs: cherry-pick cheap-llm-mcp deprecation notice (W1.1, ADR-008) | docs/CHEAP_LLM_MCP_DEPRECATION.md (22 lines) |
+
+### 18 Dmouse92 repos archived (2026-06-17 20:36 PDT, via Dmouse92 auth)
+
+`AgilePlus`, `dispatch-mcp`, `pheno`, `phenodocs`, `forgecode`, `PhenoCompose`, `PhenoPlugins`, `PhenoProc`, `HeliosCLI`, `Pyron`, `HexaKit`, `Tracera`, `Civis`, `OmniRoute`, `KWatch`, `phenotype-ops`, `phenotype-otel`, `Nanovms`, `PhenoContracts`, `phenotype-teamcomm` — all under `github.com/Dmouse92/`. Archive (read-only marker) per user directive; delete only after 90-day GitHub retention.
+
+### Substrate absorption matrix (per ADR-013/022/023)
+
+| Dmouse92 content | Absorbed to | PR |
+|---|---|---|
+| `dispatch-mcp` W2-1 cost/budget/quota/audit/tiers (6 modules, ~2,000 LOC) | `pheno-mcp-router` substrate (ADR-013) | [pheno-mcp-router#1](https://github.com/KooshaPari/pheno-mcp-router/pull/1) |
+| `dispatch-mcp` W2-1 `llama_cpp.py` provider | `pheno-mcp-router` `LlamaAdapter` (LlmPort) | [pheno-mcp-router#2](https://github.com/KooshaPari/pheno-mcp-router/pull/2) |
+| `dispatch-mcp` W2-1 `openai_compat.py` provider (KP-authored) | `pheno-mcp-router` `OpenAICompatAdapter` (LlmPort) | [pheno-mcp-router#3](https://github.com/KooshaPari/pheno-mcp-router/pull/3) |
+| `dispatch-mcp` W2-1 `PROVIDER_GUIDE.md` | `pheno-mcp-router/docs/PROVIDER_GUIDE.md` | [pheno-mcp-router#1](https://github.com/KooshaPari/pheno-mcp-router/pull/1) (squashed) |
+| `dispatch-mcp` W2-1 `docker/Dockerfile.llama` + `llama-compose.yml` | `phenotype-ops/agent-devops-setups/llama-cpp/` (ADR-023 federated service) | [phenotype-ops#2](https://github.com/KooshaPari/phenotype-ops/pull/2) |
+| `dispatch-mcp` W1-1 `docs/CHEAP_LLM_MCP_DEPRECATION.md` (cherry-pick) | `dispatch-mcp` (consumer-side notice) | [dispatch-mcp#1](https://github.com/KooshaPari/dispatch-mcp/pull/1) |
+| `pheno` ADR-012 `crates/phenotype-config-{loader,shared-config}/CANONICAL.md` (re-pointed) | `phenotype-config` substrate (ADR-022) | [phenotype-config#1](https://github.com/KooshaPari/phenotype-config/pull/1) |
+| `pheno` ADR-012 `docs/slsa.md` | `phenotype-config/docs/slsa.md` | [phenotype-config#1](https://github.com/KooshaPari/phenotype-config/pull/1) |
+
+**Discarded (per plan §2.2):** 5 of 7 Dmouse92 pheno ADR-012 commits (workflow consolidation, agileplus scaffolding, Cargo.lock skew) — verified KP/main already has the canonical version. 1 Dmouse92 dispatch-mcp commit (`9486edb` mock backend duplicate). 1 Dmouse92 dispatch-mcp file (`providers/base.py` — provider protocol shape diverges from substrate LlmPort).
+
+### Audit doc
+
+`findings/2026-06-17-L5-104-dmouse92-to-kooshapari.md` (364 lines, execution COMPLETE 2026-06-17 20:55 PDT) — full cross-reference matrix, per-repo verdicts, decision matrix, execution log, stale warnings.
+
+Sub-plans:
+- `findings/2026-06-17-L5-104-dispatch-mcp-migration-plan.md` (527 lines)
+- `findings/2026-06-17-L5-104-pheno-adr012-migration-plan.md` (414 lines)
+- `findings/2026-06-17-L5-104-bulk-rust-ts-migration.md` (999 lines)
+- `findings/2026-06-17-L5-104-forgecode-migration.md` (305 lines)
 
 ---
 

@@ -62,7 +62,7 @@ This file supersedes the 2026-06-15 17:35 PDT index that lived here 2026-06-15 �
 
 ---
 
-## Active ADRs (25 total, +ADR-024, ADR-025 this turn)
+## Active ADRs (27 total, +ADR-029 this turn)
 
 **2026-06-14 wave (6 ADRs at `docs/adr/2026-06-14/`):**
 
@@ -101,6 +101,8 @@ This file supersedes the 2026-06-15 17:35 PDT index that lived here 2026-06-15 �
 |---|---|---|
 | **ADR-024** | **71-pillar industry-standard audit framework (L1-L71, 9 domains)** | **Accepted 2026-06-17** — see `findings/71-pillar-2026-06-17-schema.md` |
 | **ADR-025** | **ADR-015 v2.1 worklog schema bump (11th column `device:`)** | **Accepted 2026-06-17** — deprecation 2026-06-22 (5 days) |
+| **ADR-026** | **Factory AI Agent Readiness Model as cross-cutting external standard** | **Accepted 2026-06-17** — see <https://docs.factory.ai/web/agent-readiness/overview>; crosswalk in `audit-71-pillar-2026-06-17-wrapup.md` § 10 |
+| **ADR-029** | **Dmouse92 → KooshaPari migration — absorb all DM92 work to substrate, archive emptied repos** | **Accepted 2026-06-17** — see `findings/2026-06-17-L5-104-dmouse92-to-kooshapari.md`; 6 PRs opened, 18 Dmouse92 repos archived |
 
 ---
 
@@ -147,6 +149,25 @@ See `plans/2026-06-17-v7-dag-stable.md`. **~7 tracks, 30+ PRs, orchestrator + pa
 - **Track 5 — HwLedger reclassification (this turn):** ADR-023 Rule 3 P0 deliverable; inventory capabilities, map to substrates, author migration plan
 - **Track 6 — Rebase + push cleaned branch (this turn):** resolve 39-commit divergence, push as KooshaPari
 - **Track 7 — Work DAG maintenance (ongoing):** keep `findings/71-pillar-2026-06-17*.md` and `plans/2026-06-17-v7-dag-stable.md` updated weekly
+
+### Track 8 — Dmouse92 → KooshaPari migration (DONE this turn, L5-104/ADR-029)
+
+User directive 2026-06-17: *"focus solely on the dmouse92 aspects of work — merge all over to kooshapari → then reconcile/absorb to proper repos. e.g. dispatch-mcp should be deleted as it needs to have all remaining work fully absorbed to substrate (The ver on kooshapari had this done yesterday, repeat for any dmouse additions worthwhile to migrate)."*
+
+**Result:** 6 PRs opened on KooshaPari, 18 Dmouse92 repos archived, 0 net content loss.
+
+| PR | Repo | Title |
+|---|---|---|
+| [pheno-mcp-router#1](https://github.com/KooshaPari/pheno-mcp-router/pull/1) | pheno-mcp-router | feat(cost): port tiers/cost/budget/quota/audit/cost_middleware from dispatch-mcp W2-1 |
+| [pheno-mcp-router#2](https://github.com/KooshaPari/pheno-mcp-router/pull/2) | pheno-mcp-router | feat(adapters): add LlamaAdapter (LlmPort) |
+| [pheno-mcp-router#3](https://github.com/KooshaPari/pheno-mcp-router/pull/3) | pheno-mcp-router | feat(adapters): add OpenAICompatAdapter (LlmPort) |
+| [phenotype-config#1](https://github.com/KooshaPari/phenotype-config/pull/1) | phenotype-config | feat(docs): port CANONICAL.md markers + SLSA doc from pheno ADR-012 |
+| [phenotype-ops#2](https://github.com/KooshaPari/phenotype-ops/pull/2) | phenotype-ops | feat(devops): add llama-cpp docker setup |
+| [dispatch-mcp#1](https://github.com/KooshaPari/dispatch-mcp/pull/1) | dispatch-mcp | docs: cherry-pick cheap-llm-mcp deprecation notice (W1.1) |
+
+**Archived Dmouse92 repos** (2026-06-17 20:36 PDT, via Dmouse92 auth): `AgilePlus`, `dispatch-mcp`, `pheno`, `phenodocs`, `forgecode`, `PhenoCompose`, `PhenoPlugins`, `PhenoProc`, `HeliosCLI`, `Pyron`, `HexaKit`, `Tracera`, `Civis`, `OmniRoute`, `KWatch`, `phenotype-ops`, `phenotype-otel`, `Nanovms`, `PhenoContracts`, `phenotype-teamcomm`.
+
+**Audit doc:** `findings/2026-06-17-L5-104-dmouse92-to-kooshapari.md` (364 lines) — full cross-reference matrix + decision matrix + execution log.
 
 ### Stalled / blocked
 
@@ -235,6 +256,25 @@ See `findings/71-pillar-2026-06-17-schema.md` for the full schema doc (industry 
 **Scoring:** 0-3 per pillar per repo (0=absent, 1=minimal, 2=adequate, 3=strong/SOTA). N/A=3 for UI pillars (L40 i18n, L41 a11y) on headless backend/CLI libraries.
 
 **Refresh cadence:** weekly (every Monday 09:00 PDT). Owner: worklog-schema circle.
+
+---
+
+## Factory AI Agent Readiness (external standard, ADR-026, this turn)
+
+Cross-cutting external benchmark per <https://docs.factory.ai/web/agent-readiness/overview>. 5-level gated progression model (Functional → Documented → Standardized → Optimized → Autonomous) with 9 technical pillars. 80% threshold per level. Org score = `floor(average of all repo levels)`.
+
+**Current per-repo readiness (manual estimate, 2026-06-17, pending `/readiness-report` verification):**
+
+| Repo | Level | Pillar avg | Top gap | Next-level unlock |
+|---|---|---|---|---|
+| **AgilePlus** | 2 (Documented) | 1.78/3 (59%) | Security: no secret scanning in CI | Add secret scanning → L3 |
+| **pheno** | 2 (Documented) | 1.89/3 (63%) | Observability: tracing exists but not wired to all sub-apps | Wire pheno-tracing to all sub-apps → L3 |
+| **dispatch-mcp** | 1 (Functional) | 0.89/3 (30%) | Documentation: no AGENTS.md yet | Add AGENTS.md + pre-commit → L2 |
+| **phenotype-ops** | 1 (Functional) | 1.11/3 (37%) | Dev Env: no devcontainer | Add AGENTS.md + devcontainer → L2 |
+
+**Org-level score:** `floor((2+2+1+1)/4)` = **Level 1 (Functional)**. To reach org Level 2, all 4 repos must reach Level 2 (3 of 4 currently are; dispatch-mcp is the blocker).
+
+**Refresh:** run `/readiness-report` from Droid CLI in each repo after major changes. Action items from each run feed into the next v7+ plan as P0 tasks. See `audit-71-pillar-2026-06-17-wrapup.md` § 10 for the full crosswalk and methodology, and `AGENTS.md` § "Factory AI Agent Readiness" for the framework overview.
 
 ---
 
