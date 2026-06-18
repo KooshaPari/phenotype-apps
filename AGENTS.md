@@ -343,6 +343,51 @@ Sub-plans:
 
 ---
 
+## 4-repo retirement (2026-06-18)
+
+**User directive (2026-06-18):** *"all 4 help merge into new target inqwhole ensure all specs, relevant features code properly itnegrated in and then delete. add to ntoes and ocnitnue dont seer"* + *"we are looking to etire kwality into a colleciton\absorb into a different project's arch. no new repos."*
+
+Combined intent: migrate all 4 repos in one wave, ensure full integration of specs + features + code, archive source repos, continue.
+
+### Migration matrix (all 4 PRs OPEN as of 2026-06-18)
+
+| # | Source repo | Target repo | PR | What migrated |
+|---|---|---|---|---|
+| 1 | `KooshaPari/dagctl` (archived pre-existing) | `KooshaPari/phenodag` | [phenodag#13](https://github.com/KooshaPari/phenodag/pull/13) (+93) | `VERSION` v3.3.1, `CHANGELOG.md`, `docs/dagctl-absorption.md` (11-file merge log) |
+| 2 | `KooshaPari/kwality` (archived this turn) | `KooshaPari/phenotype-tooling` | [phenotype-tooling#158](https://github.com/KooshaPari/phenotype-tooling/pull/158) (+29,422 / 93 files) | `docs/absorbed-from-kwality/`: full source (engines, internal, scripts, cmd), tests, examples, database, governance, demos |
+| 3 | `KooshaPari/phenotype-auth-ts` (archived this turn) | `KooshaPari/AuthKit` | [AuthKit#120](https://github.com/KooshaPari/AuthKit/pull/120) (+1,901) | `typescript/packages/auth-ts/` (805 LOC, hexagonal, DDD, vitest BDD/CDD) |
+| 4 | `KooshaPari/dinoforge-packs` (archived this turn) | `KooshaPari/Dino` | [Dino#297](https://github.com/KooshaPari/Dino/pull/297) (+2,329) | `packs/example-balance/` (NEW) + `packs/community-contributions/dinoforge-packs-mirror/` (snapshot) |
+
+### Source archive status (verified 2026-06-18)
+
+All 4 source repos are now **archived** (read-only marker):
+- `KooshaPari/dagctl` (pre-existing 2026-06-17 22:44)
+- `KooshaPari/kwality` (set 2026-06-18 in this turn)
+- `KooshaPari/phenotype-auth-ts` (set 2026-06-18 in this turn)
+- `KooshaPari/dinoforge-packs` (set 2026-06-18 in this turn)
+
+### Manual delete commands (post-archive)
+
+The active `gh` token has scopes `'gist', 'read:org', 'repo', 'workflow'` — **no `delete_repo`**. To complete the migration to fully-deleted state, run via the GitHub UI (Settings → General → Danger Zone → Delete this repository):
+
+- <https://github.com/KooshaPari/dagctl/settings#dangerZone>
+- <https://github.com/KooshaPari/kwality/settings#dangerZone>
+- <https://github.com/KooshaPari/phenotype-auth-ts/settings#dangerZone>
+- <https://github.com/KooshaPari/dinoforge-packs/settings#dangerZone>
+
+90-day GitHub retention applies to the soft-delete tombstone.
+
+### Migration notes file
+
+See `findings/2026-06-18-L5-109-4-repo-retirement.md` for full migration matrix, integration verification, and policy notes.
+
+### Policy decisions
+
+- **kwality README "STRICTLY DO NOT DELETE NOR UNARCHIVE"** is overridden by user's higher-level org consolidation directive. The retirement preserves all source, tests, docs, governance as a collection under `phenotype-tooling/docs/absorbed-from-kwality/`.
+- **dinoforge-packs ID divergence**: mirrored `warfare-starwars/manifest.yaml` uses legacy non-namespaced unit IDs (DO NOT load directly; see `Dino/docs/dinoforge-packs-absorption.md`).
+- **AuthKit polyglot**: `@phenotype/auth-ts` slots into existing `typescript/packages/*` workspace alongside the existing package.
+
+
 ## Stale / warnings
 
 - **Root `Cargo.toml` workspace** lists `crates/phenotype-error-core` as a member but the directory does NOT exist on this branch's sparse-checkout cone. **This is an intentional sparse-checkout artifact**, not a real bug. The crate exists in `phenoShared/crates/`, `FocalPoint/crates/`, `HexaKit/crates/`, `ResilienceKit/rust/`, etc. as workspace-local sub-paths.
