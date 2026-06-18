@@ -29,6 +29,14 @@ This file supersedes the 2026-06-17 12:00 PDT version. Refreshed for v8 launch.
 | **T9.1 (secret identify)** | COMPLETE | `phenotype-python-sdk@7499fd2:test_v020_parity.py:api_key:str="default-key"` — false positive |
 | **T9.2 (secret resolve)** | DEFERRED | Requires user decision: Option A (GitHub unblock URL ~2min) recommended |
 | **T9.3 (AGENTS.md refresh)** | DONE | Prior session 2026-06-18 22:58 PDT |
+| **T9.4 (upstream tracking)** | DONE 2026-06-18 | 21 branches now track `origin/<branch>` (workspace markers `apps-extract*` + 18 substantive) |
+| **T9.5 (STATUS refresh)** | IN PROGRESS | This commit; v8 inventory + T9.4/T9.6 status |
+| **T9.6 (wrap-up commit + push)** | IN PROGRESS | `chore(governance): refresh AGENTS.md + STATUS.md for v8 launch` queued |
+| **Pre-flight T0.4 (apps-extract)** | DEFER | Local `.git` is 4.3GB (Xcode build artifacts); push blocked until slimmed |
+
+**Origin URL correction (T9.3):** `git remote set-url origin git@github.com:KooshaPari/phenotype-apps.git` — was `KooshaPari/argis-extensions`. Verified writable. 21 branches fetched.
+
+**Workspace markers (preserved):** `apps-extract`, `apps-extract-all`, `apps-extract-final` are workspace markers per v8 DAG §3 — kept as local branches with origin tracking; data lives on origin.
 
 ---
 
