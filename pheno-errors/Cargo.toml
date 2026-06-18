@@ -21,8 +21,18 @@ path = "src/lib.rs"
 [dependencies]
 thiserror = "2.0"
 anyhow = "1.0"
-tracing = "0.1"
+# ADR-036 + ADR-042: tracing is optional, gated by the `tracing` feature.
+# Default off; consumers add `pheno-errors = { version = "0.1", features = ["tracing"] }`
+# to opt into the OTLP substrate.
+tracing = { version = "0.1", optional = true }
+
+[features]
+default = []
+# ADR-036: opt into `tracing` for `tracing::error!` integration on AppError::source()
+tracing = ["dep:tracing"]
 
 [dev-dependencies]
 anyhow = "1.0"
 thiserror = "2.0"
+# ADR-036: test that tracing spans emit (use OTEL_SDK_DISABLED=true in CI)
+tracing-test = { version = "0.2", optional = true }
