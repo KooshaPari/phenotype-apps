@@ -1,0 +1,94 @@
+# ADR-035 + SEC L53/L54/L55: CI templates for pheno-* Rust crates
+# This workflow is the canonical template per ADR-039 (pheno-flake refresh).
+# Copy into <crate>/.github/workflows/ci.yml for any new pheno-* crate.
+
+name: CI
+
+on:
+  push:
+    branches: [main, master, chore/**, feat/**, fix/**]
+  pull_request:
+    branches: [main, master]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+  # ADR-036: tracing tests must not actually export OTLP in CI
+  OTEL_SDK_DISABLED: "true"
+
+jobs:
+  test:
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        rust: [stable]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: cargo fmt --check
+        run: cargo fmt --all -- --check
+
+      - name: cargo clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: cargo test
+        run: cargo test --all-features -- --nocapture
+
+      - name: cargo test (no features)
+        run: cargo test --no-default-features -- --nocapture
+
+  audit:
+    name: security audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: cargo-audit
+        uses: rustsec/audit-check@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  deny:
+    name: cargo-deny
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: cargo-deny
+        uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          arguments: --all-features check
+
+  coverage:
+    name: coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install llvm-cov
+        run: cargo install cargo-llvm-cov
+      - name: cargo llvm-cov
+        run: cargo llvm-cov --all-features --lcov --output-path lcov.info
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: lcov.info
+          fail_ci_if_error: false
