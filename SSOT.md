@@ -17,12 +17,12 @@ here wins.
 | Editor / formatting baseline | `.editorconfig` |
 | Workspace architecture | `ARCHITECTURE.md` (per-crate breakdown) |
 | Agent operating model | `AGENTS.md` |
-| Canonical config (Rust) | `phenoShared/phenotype-config-core/src/lib.rs` (ADR-012) |
+| Canonical config (Rust) | **`KooshaPari/Configra`** (ADR-031, absorb target — was `phenoShared/phenotype-config-core` per ADR-012; rename proposed 2026-06-17) |
 | Canonical config (Python) | `pheno-config/` (ADR-012 PR-6/7) |
 | Config consolidation plan | `findings/ADR-012_CONFIG_CONSOLIDATION_PR1-3_DONE-2026_06_15.md` (PR-1/2/3 done; 4-11 planned) |
 | **Agent-effort governance** | `docs/adr/2026-06-15/ADR-023-agent-effort-governance.md` (device-fit gate, app-level repo triage, app substrate placement) |
 | **App-level repo triage table** | `AGENTS.md` § "App-level repo triage & app substrate placement (ADR-023)" + mirrored in `STATUS.md` § "App-level repo triage" |
-| **Worklog schema** | `docs/adr/2026-06-15/ADR-015-v2-worklog-schema.md` (v2.1 bump pending — 11th column `device:`, enum `macbook \| heavy-runner`) |
+| **Worklog schema** | `pheno-worklog-schema` v2.1 (ADR-015) — 11th column `device:` enum `macbook \| heavy-runner \| subagent \| ci`; v2.0 deprecated 2026-06-22; migration script: `pheno-worklog-schema/migrate_v2_to_v2_1.py`; spec: `pheno-worklog-schema/SPEC-v2.1.md` |
 | **Agent readiness scoring (internal)** | 71-pillar framework (ADR-024) — `findings/71-pillar-2026-06-17-schema.md` (schema) + `findings/71-pillar-2026-06-17.md` (scorecard) + `findings/71-pillar-2026-06-17-mapping.md` (L30→L71 crosswalk) |
 | **Agent readiness scoring (external standard)** | Factory AI Agent Readiness Model (5 levels, 9 pillars, 80% threshold per level) — <https://docs.factory.ai/web/agent-readiness/overview> |
 | **Quality audit crosswalk (71-pillar ↔ Factory AI)** | `audit-71-pillar-2026-06-17-wrapup.md` § 10 (ADR-026, this turn) |

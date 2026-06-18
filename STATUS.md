@@ -62,7 +62,7 @@ This file supersedes the 2026-06-15 17:35 PDT index that lived here 2026-06-15 �
 
 ---
 
-## Active ADRs (27 total, +ADR-029 this turn)
+## Active ADRs (29 total, +ADR-030, +ADR-031 this turn)
 
 **2026-06-14 wave (6 ADRs at `docs/adr/2026-06-14/`):**
 
@@ -102,7 +102,14 @@ This file supersedes the 2026-06-15 17:35 PDT index that lived here 2026-06-15 �
 | **ADR-024** | **71-pillar industry-standard audit framework (L1-L71, 9 domains)** | **Accepted 2026-06-17** — see `findings/71-pillar-2026-06-17-schema.md` |
 | **ADR-025** | **ADR-015 v2.1 worklog schema bump (11th column `device:`)** | **Accepted 2026-06-17** — deprecation 2026-06-22 (5 days) |
 | **ADR-026** | **Factory AI Agent Readiness Model as cross-cutting external standard** | **Accepted 2026-06-17** — see <https://docs.factory.ai/web/agent-readiness/overview>; crosswalk in `audit-71-pillar-2026-06-17-wrapup.md` § 10 |
+| **ADR-027** | **Git LFS 3-tier policy (always-track / on-demand / never-track)** | **Accepted 2026-06-17** — closes L66; see `.gitattributes.example` |
+| **ADR-028** | **Monorepo architecture eval: hybrid-with-staging-repo** | **Accepted 2026-06-17** — closes L25; staging repo `phenotype-org-audits` |
 | **ADR-029** | **Dmouse92 → KooshaPari migration — absorb all DM92 work to substrate, archive emptied repos** | **Accepted 2026-06-17** — see `findings/2026-06-17-L5-104-dmouse92-to-kooshapari.md`; 6 PRs opened, 18 Dmouse92 repos archived |
+| **ADR-030** | **pheno-worklog-schema v2.1 — add 11th `device:` column** | **Accepted 2026-06-17** — see `pheno-worklog-schema/SPEC-v2.1.md`; PR `KooshaPari/pheno-worklog-schema#1` open; v2.0 deprecation **2026-06-22** |
+| **ADR-031** | **Configra absorb — canonical name for Rust config; ADR-022 split preserved** | **Accepted 2026-06-17** — see `docs/adr/2026-06-17/ADR-031-configra-absorb.md`; 2 PRs planned; `phenotype-config` archive **2026-07-15** |
+| **ADR-032** | **pheno-worklog-schema is a primitive lib, NOT a re-implementation of AgilePlus worklog** | **Accepted 2026-06-17** — see `docs/adr/2026-06-17/ADR-032-pheno-worklog-schema-decision.md`; different formats, different audiences, both coexist |
+| **ADR-033** | **Delete `KooshaPari/phenotype-monorepo-state` — single-source-of-truth** | **Accepted 2026-06-17** — see `docs/adr/2026-06-17/ADR-033-phenotype-monorepo-state-deletion.md`; 11 commits consolidated to `phenotype-org-audits` + monorepo; deletion after 30-day grace |
+| **ADR-034** | **`KooshaPari/phenotype-monorepo-state` deletion schedule — 2026-07-17** | **Accepted 2026-06-17** — see `docs/adr/2026-06-17/ADR-034-monorepo-state-deletion-schedule.md`; 30-day grace + 5-step pre-deletion checklist |
 
 ---
 
@@ -145,7 +152,7 @@ See `plans/2026-06-17-v7-dag-stable.md`. **~7 tracks, 30+ PRs, orchestrator + pa
 - **Track 1 — Triage (DONE this turn):** 4 empty `gate1-0..3` branches deleted; 2 stale stashes dropped; 5 pheno-* meta-bundles committed (`04c2c7b1af`); AGENTS.md/STATUS.md/SSOT.md refreshed
 - **Track 2 — 5 PR reviews (parallel, this turn):** PRs #129-#133 from W5 batch (cheap-llm-mcp archive / config consolidation / ADR-012..016 SOTA / STATUS refresh / L05-L10-L25 closure)
 - **Track 3 — 71-pillar audit (this turn):** ADR-024 schema + L1-L30→L1-L71 crosswalk + re-probe 10 repos + score + render
-- **Track 4 — ADR-015 v2.1 schema bump (this turn):** ADR-025 + canonical worklog schema update + migration script
+- **Track 4 — ADR-015 v2.1 schema bump (this turn):** **DONE 2026-06-17** — `KooshaPari/pheno-worklog-schema` repo created; PR #1 open (30/30 tests pass); 4 fleet WORKLOG.md files migrated to v2.1 (pheno-mcp-router, pheno-cost-card pushed; pheno-scaffold-kit, phenoForge local-only, no KooshaPari remote); v2.0 deprecation 2026-06-22
 - **Track 5 — HwLedger reclassification (this turn):** ADR-023 Rule 3 P0 deliverable; inventory capabilities, map to substrates, author migration plan
 - **Track 6 — Rebase + push cleaned branch (this turn):** resolve 39-commit divergence, push as KooshaPari
 - **Track 7 — Work DAG maintenance (ongoing):** keep `findings/71-pillar-2026-06-17*.md` and `plans/2026-06-17-v7-dag-stable.md` updated weekly
@@ -241,7 +248,49 @@ Source of truth: `docs/adr/2026-06-15/ADR-023-agent-effort-governance.md`. Decis
 
 A new repo defaults to **PAUSED** until it is added to this table with a bucket. A bucket change requires a one-line worklog entry (`bucket_change: from=... to=... reason=...`).
 
+**PAUSED APPs (wholly out of scope, this turn, 2026-06-17 21:55):** All app-level repos below are **PAUSED** and tracked as **app substrate only**. No active SWE work permitted until every other (non-app) repo is done first. Local work pushed to remote branches as `wip/2026-06-17-pre-pause-snapshot` so the work is off-device but git-tracked. Re-evaluate after all non-app fleet work (config, tracing, MCP-router, observability, registry) reaches 71-pillar ✓ status.
+
+| Repo         | Bucket   | Local state pushed? | Remote WIP branch                                                                              |
+| :----------- | :------- | :------------------ | :--------------------------------------------------------------------------------------------- |
+| `AtomsBot*`  | PAUSED   | Yes (7 unpushed → main) | `KooshaPari/AtomsBot:wip/2026-06-17-pre-pause-snapshot` @ `de10237` (main protected)        |
+| `focalpoint` | PAUSED   | Yes (1 unpushed)    | `KooshaPari/FocalPoint:main` @ `3ae2f126`                                                       |
+| `Dino`       | PAUSED (was CONDITIONAL) | Yes (clean) | (no unpushed)                                                                                  |
+| `QuadSGM`    | PAUSED   | Yes (1 uncommitted) | `KooshaPari/QuadSGM:wip/2026-06-17-pre-pause-snapshot` @ `484dfa1`                             |
+| `HwLedger`   | PAUSED (default per ADR-023) | Yes (1 unpushed) | `KooshaPari/HwLedger:wip/2026-06-17-cleanup-hwLedger` @ `f031f36` (committed `f031f36`) |
+| `WSM`        | PAUSED (was CONDITIONAL) | n/a (not on disk) | (does not exist locally)                                                                       |
+| `*fitness*`  | PAUSED (removed) | n/a | (ripped per user instruction)                                                                  |
+
 **Device-fit gate (ADR-023 Rule 1):** The MacBook is **not** a heavy-work device. Heavy work (defined as `cargo test --workspace` against multi-100-crate workspace, iOS Simulator boot, Docker-in-Docker, Unity/Unreal editor, or any single build/test cycle > 10 min wall) runs on a self-hosted runner or a dispatched subagent (`device: heavy-runner`). The MacBook is reserved for planning, ADR-writing, small focused PRs, code review, and dogfooding (`device: macbook`). The `device:` field is in the worklog v2.1 schema (ADR-025 bump pending, due 2026-06-22).
+
+---
+
+## Scope decisions (this turn, 2026-06-17 21:55)
+
+### Decision A — Configra is the canonical config repo name
+- `KooshaPari/Configra` exists (created 2026-03-25, "Phenotype-org configuration framework"). It is the real repo to absorb.
+- All config-like code currently scattered across `pheno-config`, `phenotype-config`, `phenotype-config-rs`, `Conft`, `settly-*` will **migrate INTO Configra**.
+- **Track T19** in the DAG is the migration plan: 1 absorbing PR, 1 ADR (ADR-031), 8-12 migration PRs to move existing code.
+- All `pheno-config*` / `phenotype-config*` repos get deprecated after migration lands.
+
+### Decision B — pheno-worklog-schema is a primitive lib, NOT a duplicate of AgilePlus
+- **Investigation finding (L5-107):** `pheno-worklog-schema` is a Python lib that parses + validates WORKLOG.md files (markdown table schema: `Date | Task ID | Layer | Action | Files | Notes`).
+- **AgilePlus** has a completely different format: `worklog-L*-*-*.json` files (machine-readable JSONL with task_id, agent_id, files_changed, commit_sha, verification_result).
+- These two are **complementary, not duplicating**:
+  - `pheno-worklog-schema` = human-readable markdown validation
+  - AgilePlus worklogs = machine-readable task audit trail
+- **Track T20** in the DAG: decide whether to keep both, OR merge into one (decision deferred — needs separate design session).
+- **No action this turn.** Both stay where they are.
+
+### Decision C — phenotype-monorepo-state is OUT OF SCOPE going forward
+- `KooshaPari/phenotype-monorepo-state` exists (created 2026-06-18 03:52 UTC) — currently holds 2026-06-17 cherry-picks of governance docs (AGENTS.md, STATUS.md, SSOT.md, ADRs, audit framework).
+- **User direction: phenotype monorepo should NOT exist going forward.** It was created ad-hoc during the wrap-up session.
+- **Track T21** in the DAG: delete the `phenotype-monorepo-state` repo (after merging its 4 governance-snapshot commits back into the actual home for those files, which is the local monorepo's `archive/2026-06-15-30-pillar-fleet` branch).
+- **No immediate deletion** — requires migration plan first.
+
+### Decision D — Spine repos (PhenoHandbook, PhenoSpecs, phenotype-registry, phenotype-infra, phenokits-commons) are LIGHTLY USED
+- These federated spine repos are **light-use only** — referenced for patterns + cross-references, not actively maintained.
+- **No new content authored in them.** They remain available as read-only references.
+- The active spine going forward is the local monorepo's `findings/` + `docs/adr/` + `plans/` directories.
 
 ---
 

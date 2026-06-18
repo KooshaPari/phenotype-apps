@@ -1,0 +1,59 @@
+# .gitattributes example — ADR-027 3-tier LFS policy
+#
+# Copy this file to your repo root as `.gitattributes` (rename; remove this header line).
+# Reference: docs/adr/2026-06-17/ADR-027-git-lfs-strategy.md
+#
+# Required setup (run once per repo):
+#   git lfs install
+#   git add .gitattributes
+#   git commit -m "chore(lfs): adopt ADR-027 3-tier LFS policy"
+#   pheno-ci-templates: just lfs-locksum   # writes LFS_LOCKSUM at repo root
+#
+# CI guard (L6 health audit):
+#   grep -q 'filter=lfs' .gitattributes || { echo "LFS policy missing"; exit 1; }
+#   test -f LFS_LOCKSUM || { echo "LFS_LOCKSUM missing"; exit 1; }
+
+# ============================================================================
+# TIER 1 — ALWAYS track (mandatory LFS)
+# ============================================================================
+# iOS frameworks (the asset that blocked the 2026-06-17 monorepo push)
+*.xcframework/** filter=lfs diff=lfs merge=lfs -text
+*.framework/** filter=lfs diff=lfs merge=lfs -text
+# Compiled native libs
+*.a filter=lfs diff=lfs merge=lfs -text
+*.dylib filter=lfs diff=lfs merge=lfs -text
+*.so filter=lfs diff=lfs merge=lfs -text
+# Unity / Unreal asset bundles
+*.unitypackage filter=lfs diff=lfs merge=lfs -text
+*.uasset filter=lfs diff=lfs merge=lfs -text
+# Disk images
+*.dmg filter=lfs diff=lfs merge=lfs -text
+*.iso filter=lfs diff=lfs merge=lfs -text
+
+# ============================================================================
+# TIER 2 — ON-DEMAND track (LFS only when > 5 MB or > 50 files)
+# ============================================================================
+# Rust release binaries (prefer gh release upload; LFS only if pushing to git)
+target/release/**/*.exe filter=lfs diff=lfs merge=lfs -text
+# Python wheels (prefer PyPI; LFS only if publishing via git)
+dist/*.whl filter=lfs diff=lfs merge=lfs -text
+dist/*.tar.gz filter=lfs diff=lfs merge=lfs -text
+# Go release binaries
+bin/* filter=lfs diff=lfs merge=lfs -text
+# Vendored deps with binaries
+vendor/** filter=lfs diff=lfs merge=lfs -text
+# Test fixtures (images, audio, video) — only if > 5 MB or dir > 50 MB
+tests/fixtures/**/*.png filter=lfs diff=lfs merge=lfs -text
+tests/fixtures/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+tests/fixtures/**/*.mp4 filter=lfs diff=lfs merge=lfs -text
+tests/fixtures/**/*.wav filter=lfs diff=lfs merge=lfs -text
+# Generated docs
+docs/**/api.html filter=lfs diff=lfs merge=lfs -text
+*.pdf filter=lfs diff=lfs merge=lfs -text
+
+# ============================================================================
+# TIER 3 — NEVER track (explicit non-LFS; audit flags any violation)
+# ============================================================================
+# (No entries needed; default behavior is non-LFS. The audit grep checks
+#  that source code patterns are absent from the LFS lines above.)
+# Source code, lockfiles, markdown, configs, LICENSE — all stay in git as text.
