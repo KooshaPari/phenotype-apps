@@ -1,21 +1,91 @@
 # pheno-context
 
-> Canonical request context for the pheno-* fleet. Builder, header
-> extraction, structured metadata bag.
+> Canonical request context for the pheno-* fleet. Builder pattern
+> for request metadata (`request_id`, `span_id`, `trace_id`,
+> `user_id`, `org_id`, free-form `metadata` bag), plus a
+> `from_headers` extractor that pulls known `X-*` HTTP headers into
+> a `Context`.
 
-## Files
+## Public API
 
-- `Cargo.toml` — package manifest (v0.1.0)
-- `src/lib.rs` — library root (Context struct, ContextBuilder, from_headers)
-- `AGENTS.md` — agent context
-- `WORKLOG.md` — change history (v2.1 schema)
-- `CHANGELOG.md` — release notes
-- `LICENSE-MIT` — MIT license
+```rust
+use http::HeaderMap;
+use pheno_context::{Context, ContextBuilder, ContextError};
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct Context {
+    pub request_id: String,
+    pub span_id: String,
+    pub trace_id: String,
+    pub user_id: Option<String>,
+    pub org_id: Option<String>,
+    pub metadata: std::collections::HashMap<String, String>,
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum ContextError {
+    #[error("missing header: {0}")]
+    MissingHeader(String),
+}
+
+impl Context {
+    pub fn new() -> ContextBuilder;
+    pub fn from_headers(headers: &HeaderMap) -> Result<Self, ContextError>;
+}
+
+impl ContextBuilder {
+    pub fn with_request_id(self, id: impl Into<String>) -> Self;
+    pub fn with_span_id(self, id: impl Into<String>) -> Self;
+    pub fn with_trace_id(self, id: impl Into<String>) -> Self;
+    pub fn with_user_id(self, id: impl Into<String>) -> Self;
+    pub fn with_org_id(self, id: impl Into<String>) -> Self;
+    pub fn with_metadata(self, k: impl Into<String>, v: impl Into<String>) -> Self;
+    pub fn build(self) -> Result<Context, ContextError>;
+}
+```
+
+## Quickstart
+
+```toml
+# Cargo.toml
+[dependencies]
+pheno-context = "0.1"
+http = "1"
+```
+
+```rust
+use pheno_context::Context;
+let ctx = Context::new()
+    .with_request_id("req-1").with_span_id("s-1").with_trace_id("t-1")
+    .with_user_id("u-1").with_org_id("o-1").build()?;
+```
 
 ## Conventions
 
-- Conventional Commits
-- rustfmt + clippy (`-D warnings`)
-- 80% lib coverage gate
-- `thiserror` for error types; no `unwrap()` in public API
-- Public API surface fully documented (`#![warn(missing_docs)]`)
+- Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`).
+- rustfmt + clippy (`-D warnings`); `#![warn(missing_docs)]` on the
+  public API.
+- 80% lib coverage gate (ADR-040); pair with `llvm-cov.toml` + a
+  `coverage` job in `.github/workflows/ci.yml` when adding CI.
+- `thiserror` for error types; no `unwrap()` in the public API.
+- Required HTTP headers consumed by `from_headers`:
+  `X-Request-ID`, `X-Trace-ID`, `X-Span-ID`. Optional: `X-User-ID`,
+  `X-Org-ID`. Missing required → `ContextError::MissingHeader`.
+- The `metadata` bag is `HashMap<String, String>`; iteration order
+  is non-deterministic (use a sorted view for observability).
+- Standalone crate (empty `[workspace]` table in `Cargo.toml`); not
+  a member of the root monorepo workspace.
+
+## See also
+
+- `src/lib.rs` — full type definitions, header-extraction rules,
+  `Display` impl, and inline tests.
+- `tests/lib_test.rs` and `tests/async_propagation_test.rs` — public
+  API + async propagation coverage.
+- `examples/quickstart.rs` — minimal builder + header extraction.
+- `AGENTS.md` — agent context.
+- `WORKLOG.md` — change history (v2.1 schema).
+- `CHANGELOG.md` — release notes.
+- `LICENSE-MIT` — MIT license.
+- Sibling: `pheno-config` (typed config), `pheno-errors` (canonical
+  `AppError`), `pheno-flags` (feature flags).
