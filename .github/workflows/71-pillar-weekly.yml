@@ -1,0 +1,126 @@
+name: 71-pillar weekly refresh
+
+# Refreshes the 74-pillar (L1-L71 + PAX L72-L74) weekly scorecard.
+# Schedule: Mondays 09:00 PDT (16:00 UTC).
+# Manual trigger: workflow_dispatch.
+# Owner: worklog-schema circle.
+# Spec: findings/71-pillar-2026-06-17-schema.md (v1.1 with PAX per ADR-041/042/043).
+# Latest: findings/71-pillar-2026-06-19.md (T30, 2026-06-19, 20 repos).
+
+on:
+  schedule:
+    # Mon 09:00 PDT = 16:00 UTC (PDT) or 17:00 UTC (PST).
+    - cron: '0 16 * * 1'
+  workflow_dispatch:
+    inputs:
+      output_basename:
+        description: 'Output basename (defaults to today UTC)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    name: 71-pillar weekly refresh
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Compute date
+        id: date
+        run: |
+          if [ -n "${{ inputs.output_basename }}" ]; then
+            echo "basename=${{ inputs.output_basename }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "basename=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+          fi
+          echo "branch=71-pillar/$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Run 71-pillar refresh
+        run: |
+          set -euo pipefail
+          # Stub: the actual implementation is `scripts/refresh-71-pillar.py` (T31 follow-up).
+          # This stub produces the dated scorecard placeholder + render + delta and
+          # writes them under /tmp for the PR step to pick up.
+          BASENAME="${{ steps.date.outputs.basename }}"
+          OUT_SCORE="findings/71-pillar-${BASENAME}.md"
+          OUT_RENDER="findings/71-pillar-${BASENAME}-render.md"
+          OUT_DELTA="findings/71-pillar-${BASENAME}-delta.md"
+
+          if [ -f scripts/refresh-71-pillar.py ]; then
+            python3 scripts/refresh-71-pillar.py \
+              --output      "$OUT_SCORE"  \
+              --render      "$OUT_RENDER" \
+              --delta       "$OUT_DELTA"  \
+              --schema      findings/71-pillar-2026-06-17-schema.md \
+              --prev-score  findings/71-pillar-2026-06-19.md \
+              --repos       pheno-config,pheno-otel,pheno-errors,pheno-tracing,pheno-port-adapter,pheno-context,pheno-llms-txt,pheno-cost-card,pheno-fastapi-base,pheno-pydantic-models,pheno-zod-schemas,pheno-vibecoding-guard,pheno-scaffold-kit,pheno-prompt-test,pheno-cargo-template,Configra,AgilePlus,pheno,dispatch-mcp,phenotype-ops
+          else
+            echo "::warning::scripts/refresh-71-pillar.py missing — emitting placeholder. T31 follow-up."
+            mkdir -p findings
+            {
+              echo "# 74-Pillar Scorecard — 20 Phenotype Repos (${BASENAME} weekly, v1.1)"
+              echo
+              echo "**Date:** ${BASENAME} (auto-generated placeholder)"
+              echo
+              echo "> **STUB**: scripts/refresh-71-pillar.py not yet implemented (T31)."
+              echo "> See findings/71-pillar-2026-06-19.md for the most recent hand-curated scorecard."
+            } > "$OUT_SCORE"
+            {
+              echo "# 74-Pillar Heatmap (${BASENAME} weekly)"
+              echo
+              echo "**STUB**: see findings/71-pillar-2026-06-19-render.md"
+            } > "$OUT_RENDER"
+            {
+              echo "# 74-Pillar Delta (${BASENAME} weekly)"
+              echo
+              echo "**STUB**: see findings/71-pillar-2026-06-19-delta.md"
+            } > "$OUT_DELTA"
+          fi
+
+      - name: Open PR (or update existing branch)
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'chore(71-pillar): weekly refresh ${{ steps.date.outputs.basename }}'
+          branch: ${{ steps.date.outputs.branch }}
+          title: 'chore(71-pillar): weekly refresh ${{ steps.date.outputs.basename }}'
+          body: |
+            Automated weekly 74-pillar (L1-L71 + PAX L72-L74) refresh per ADR-024/041/042/043.
+
+            - Scorecard: `findings/71-pillar-${{ steps.date.outputs.basename }}.md`
+            - Heatmap:   `findings/71-pillar-${{ steps.date.outputs.basename }}-render.md`
+            - Delta:     `findings/71-pillar-${{ steps.date.outputs.basename }}-delta.md`
+
+            Owner: worklog-schema circle. Cadence: Mon 09:00 PDT. If `scripts/refresh-71-pillar.py` is still stub, the PR contains placeholder text and the manual refresh needs to land separately.
+          add-paths: |
+            findings/71-pillar-${{ steps.date.outputs.basename }}.md
+            findings/71-pillar-${{ steps.date.outputs.basename }}-render.md
+            findings/71-pillar-${{ steps.date.outputs.basename }}-delta.md
+          delete-branch: true
