@@ -1,0 +1,91 @@
+name: CodeQL
+
+# ---------------------------------------------------------------------------
+# pheno-ci-templates — CodeQL reusable workflow (L5 #111 / G-7)
+#
+# Absorbed from `McpKit/.github/workflows/codeql.yml` on 2026-06-18 as part
+# of the McpKit CI absorption (ADR-003). The McpKit version was itself a
+# passthrough to `KooshaPari/phenoShared/.github/workflows/reusable/codeql.yml`;
+# this template inlines the CodeQL setup so consumers do not need to depend
+# on phenoShared.
+#
+# Consumed by any pheno-* repo via:
+#
+#   jobs:
+#     codeql:
+#       uses: KooshaPari/pheno-ci-templates/.github/workflows/codeql.yml@main
+#       with:
+#         languages: '["actions","go","javascript","python"]'
+#         build_mode: "autobuild"
+#
+# Supported languages: actions, c-cpp, csharp, go, java, javascript, python,
+# ruby, rust, swift. Pass any subset as a JSON array.
+# ---------------------------------------------------------------------------
+
+on:
+  workflow_call:
+    inputs:
+      languages:
+        description: "JSON array of languages to analyze (e.g. '[\"go\",\"python\"]')"
+        required: false
+        type: string
+        default: '["actions","go","javascript","python"]'
+      build_mode:
+        description: "CodeQL build mode (none | autobuild | manual)"
+        required: false
+        type: string
+        default: "autobuild"
+      runner:
+        description: "Runner type for the job"
+        required: false
+        type: string
+        default: "ubuntu-latest"
+  workflow_dispatch:
+    inputs:
+      languages:
+        description: "JSON array of languages"
+        required: false
+        type: string
+        default: '["actions","go","javascript","python"]'
+      build_mode:
+        description: "CodeQL build mode"
+        required: false
+        type: string
+        default: "autobuild"
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+concurrency:
+  group: codeql-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: CodeQL analyze (${{ inputs.languages }})
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ inputs.languages }}
+          build-mode: ${{ inputs.build_mode }}
+
+      - name: Build (autobuild)
+        if: ${{ inputs.build_mode == 'autobuild' }}
+        uses: github/codeql-action/autobuild@v4
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{ inputs.languages }}"

@@ -1,0 +1,81 @@
+name: cargo-deny
+
+# ---------------------------------------------------------------------------
+# pheno-ci-templates — cargo-deny reusable workflow (L5 #111 / G-7)
+#
+# Absorbed from `McpKit/.github/workflows/cargo-deny.yml` on 2026-06-18 as
+# part of the McpKit CI absorption (ADR-003). Runs `cargo deny` to enforce
+# license / advisory / ban / source policy against the consumer's `Cargo.lock`.
+#
+# Consumed by any pheno-* crate via:
+#
+#   jobs:
+#     deny:
+#       uses: KooshaPari/pheno-ci-templates/.github/workflows/deny.yml@main
+#       with:
+#         working_directory: "."
+#         command: "check"
+#
+# The `command` input accepts any cargo-deny subcommand. Common values:
+#   - "check"            — run all checks
+#   - "check advisories" — only check for security advisories
+#   - "check bans"       — only check for banned dependencies
+#   - "check licenses"   — only check for license compliance
+#   - "check sources"    — only check for source allowlist compliance
+# ---------------------------------------------------------------------------
+
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        description: "Working directory for cargo-deny (path to Cargo.toml root)"
+        required: false
+        type: string
+        default: "."
+      command:
+        description: "cargo-deny subcommand (e.g. 'check', 'check advisories')"
+        required: false
+        type: string
+        default: "check"
+      runner:
+        description: "Runner type for the job"
+        required: false
+        type: string
+        default: "ubuntu-latest"
+    secrets:
+      GITHUB_TOKEN:
+        required: false
+  workflow_dispatch:
+    inputs:
+      working_directory:
+        description: "Working directory for cargo-deny"
+        required: false
+        type: string
+        default: "."
+      command:
+        description: "cargo-deny subcommand"
+        required: false
+        type: string
+        default: "check"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deny-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cargo-deny:
+    name: cargo-deny (${{ inputs.command }})
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run cargo-deny
+        uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          command: ${{ inputs.command }}
+          working-directory: ${{ inputs.working_directory }}
