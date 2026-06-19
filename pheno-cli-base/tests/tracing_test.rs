@@ -18,15 +18,12 @@ fn emits_span_after_setup_tracing() {
     let span = tracing::info_span!("setup_test");
     let _enter = span.enter();
     tracing::info!("emitted from inside span");
-    // If `tracing` is mis-configured, the span above would not be
-    // recorded by the test's captured subscriber.
 }
 
 #[tracing_test::traced_test]
 #[test]
-fn verbosity_quiet_yields_error_filter() {
+fn verbosity_default_yields_info_filter() {
     use tracing_subscriber::filter::LevelFilter;
     let v = Verbosity::default();
-    let _ = v.to_filter();
     assert_eq!(LevelFilter::INFO, v.to_filter());
 }

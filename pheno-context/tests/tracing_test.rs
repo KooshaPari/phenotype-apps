@@ -3,8 +3,8 @@
 //! Verifies that the `tracing` opt-in feature compiles + links
 //! correctly and that `Context` construction can be captured in a
 //! `tracing` span. The crate itself does not emit spans in the
-//! default code path; this test exercises the dependency graph
-//! end-to-end with `tracing-test::traced_test`.
+//! default code path; this test exercises the dependency
+//! graph end-to-end with `tracing-test::traced_test`.
 
 #![cfg(feature = "tracing")]
 
