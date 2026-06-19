@@ -64,7 +64,6 @@ members = [
     "crates/focus-errors",
     "crates/focus-result",
     "crates/phenotype-contracts",
-    "crates/phenotype-event-sourcing",
     "crates/phenotype-test-utils",
     "crates/phenotype-derive",
     "crates/phenotype-workflow",
@@ -169,7 +168,6 @@ focus-storage = { path = "crates/focus-storage" }
 # Phenotype shared crates
 phenotype-error-core = { path = "crates/phenotype-error-core" }
 phenotype-contracts = { path = "crates/phenotype-contracts" }
-phenotype-event-sourcing = { path = "crates/phenotype-event-sourcing" }
 phenotype-test-utils = { path = "crates/phenotype-test-utils" }
 phenotype-derive = { path = "crates/phenotype-derive" }
 phenotype-workflow = { path = "crates/phenotype-workflow" }
