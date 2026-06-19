@@ -1,0 +1,173 @@
+name: Release Attestation (SLSA Build L2)
+
+# ---------------------------------------------------------------------------
+# pheno-ci-templates — Release attestation (SLSA Build L2) reusable workflow
+# (L5 #111 / G-7)
+#
+# Absorbed from `McpKit/.github/workflows/release-attestation.yml` on
+# 2026-06-18 as part of the McpKit CI absorption (ADR-003). The McpKit
+# source was a complete SLSA Build L2 producer: build release artifacts,
+# upload them as a workflow artifact, and emit a build provenance
+# attestation using `slsa-framework/slsa-github-generator`.
+#
+# Consumed by any pheno-* crate / package via:
+#
+#   jobs:
+#     attest:
+#       uses: KooshaPari/pheno-ci-templates/.github/workflows/release-attestation.yml@main
+#       with:
+#         working_directory: "."
+#         toolchain: "stable"
+#         artifact_name: "release-artifacts"
+#         build_command: "cargo build --release --locked --workspace --all-targets"
+#       permissions:
+#         contents: read
+#         id-token: write
+#         attestations: write
+#
+# The `id-token: write` and `attestations: write` permissions are required
+# for the SLSA generator to mint an OIDC token and post the provenance
+# attestation to the repository.
+# ---------------------------------------------------------------------------
+
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        description: "Working directory for the build (path to Cargo.toml / pyproject.toml / package.json)"
+        required: false
+        type: string
+        default: "."
+      toolchain:
+        description: "Rust toolchain channel (e.g. 'stable', '1.75'). Only used by the Rust build path."
+        required: false
+        type: string
+        default: "stable"
+      build_command:
+        description: "Shell command to build release artifacts (run in working_directory)"
+        required: false
+        type: string
+        default: "cargo build --release --locked --workspace --all-targets"
+      artifact_name:
+        description: "Name for the uploaded release-artifacts artifact"
+        required: false
+        type: string
+        default: "release-artifacts"
+      retention_days:
+        description: "Artifact retention in days (1..90)"
+        required: false
+        type: number
+        default: 90
+      runner:
+        description: "Runner type for the build + attestation"
+        required: false
+        type: string
+        default: "ubuntu-latest"
+  workflow_dispatch:
+    inputs:
+      working_directory:
+        description: "Working directory for the build"
+        required: false
+        type: string
+        default: "."
+      toolchain:
+        description: "Rust toolchain"
+        required: false
+        type: string
+        default: "stable"
+      build_command:
+        description: "Build command"
+        required: false
+        type: string
+        default: "cargo build --release --locked --workspace --all-targets"
+      artifact_name:
+        description: "Artifact name"
+        required: false
+        type: string
+        default: "release-artifacts"
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
+concurrency:
+  group: release-attest-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-attest:
+    name: Build and Attest (SLSA Build L2)
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    env:
+      CARGO_WORKDIR: ${{ inputs.working_directory }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Rust toolchain (${{ inputs.toolchain }})
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ inputs.toolchain }}
+
+      - name: Cache cargo registry and build artifacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            ${{ inputs.working_directory }} -> target
+
+      - name: Build release artifacts
+        working-directory: ${{ inputs.working_directory }}
+        run: ${{ inputs.build_command }}
+
+      - name: Stage release artifacts
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          set -euo pipefail
+          mkdir -p release-artifacts
+          # Copy all built executables (Cargo build output)
+          if [ -d target/release ]; then
+            find target/release -maxdepth 1 -type f -executable \
+              -exec cp -t release-artifacts/ {} + 2>/dev/null || true
+          fi
+          # Source tarball
+          tar \
+            --exclude='./target' \
+            --exclude='./.git' \
+            --exclude='./release-artifacts' \
+            --exclude='./node_modules' \
+            --exclude='./__pycache__' \
+            -czf release-artifacts/source.tar.gz \
+            -C "$GITHUB_WORKSPACE/${{ inputs.working_directory }}" .
+          # Build manifest
+          cat > release-artifacts/BUILD_MANIFEST.txt <<EOF
+          # Release Build Manifest
+          repository: ${{ github.repository }}
+          ref:        ${{ github.ref }}
+          sha:        ${{ github.sha }}
+          runner:     ${{ runner.os }}
+          toolchain:  ${{ inputs.toolchain }}
+          built_at:   $(date -u +%Y-%m-%dT%H:%M:%SZ)
+          EOF
+          echo "=== Release artifacts ==="
+          ls -la release-artifacts/
+
+      - name: Upload artifacts for provenance
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: ${{ inputs.working_directory }}/release-artifacts/
+          if-no-files-found: warn
+          retention-days: ${{ inputs.retention_days }}
+
+      - name: Attest build provenance (SLSA Build L2)
+        uses: slsa-framework/slsa-github-generator/attest-build-provenance@v1
+        with:
+          artifact-name: ${{ inputs.artifact_name }}

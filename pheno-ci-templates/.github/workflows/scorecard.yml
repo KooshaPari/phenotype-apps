@@ -1,0 +1,96 @@
+name: OpenSSF Scorecard
+
+# ---------------------------------------------------------------------------
+# pheno-ci-templates — OpenSSF Scorecard reusable workflow (L5 #111 / G-7)
+#
+# Absorbed from `McpKit/.github/workflows/scorecard.yml` on 2026-06-18 as
+# part of the McpKit CI absorption (ADR-003). Runs the OpenSSF Scorecard
+# supply-chain analysis on the consumer repo and publishes results to the
+# Security tab as a SARIF file.
+#
+# Consumed by any pheno-* repo via:
+#
+#   jobs:
+#     scorecard:
+#       uses: KooshaPari/pheno-ci-templates/.github/workflows/scorecard.yml@main
+#       with:
+#         results_format: "sarif"
+#         publish_results: true
+#
+# The action pins `actions/checkout` to a SHA and disables credential
+# persistence to satisfy the Scorecard "Dangerous Workflow" check.
+# ---------------------------------------------------------------------------
+
+on:
+  workflow_call:
+    inputs:
+      results_format:
+        description: "Scorecard output format (sarif | json | default)"
+        required: false
+        type: string
+        default: "sarif"
+      publish_results:
+        description: "Publish results to the repository Security tab"
+        required: false
+        type: boolean
+        default: true
+      runner:
+        description: "Runner type for the job"
+        required: false
+        type: string
+        default: "ubuntu-latest"
+  workflow_dispatch:
+    inputs:
+      results_format:
+        description: "Scorecard output format"
+        required: false
+        type: string
+        default: "sarif"
+      publish_results:
+        description: "Publish results to the Security tab"
+        required: false
+        type: boolean
+        default: true
+
+permissions: read-all
+
+concurrency:
+  group: scorecard-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  analysis:
+    name: Scorecard analysis
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 30
+    permissions:
+      security-events: write
+      id-token: write
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
+      - name: Run OpenSSF Scorecard
+        uses: ossf/scorecard-action@v2.4.3
+        with:
+          results_file: results.sarif
+          results_format: ${{ inputs.results_format }}
+          publish_results: ${{ inputs.publish_results }}
+
+      - name: Upload SARIF artifact
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: SARIF file
+          path: results.sarif
+          retention-days: 5
+
+      - name: Upload SARIF to CodeQL database
+        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: results.sarif
