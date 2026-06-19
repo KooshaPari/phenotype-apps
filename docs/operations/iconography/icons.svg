@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="icon-alert-triangle" viewBox="0 0 24 24" role="img">
+    <title>Alert Triangle</title>
+    <desc>A warning triangle icon representing alerts, cautions, or potential issues.</desc>
+    <path d="M10.3 3L2 20h20L13.7 3H10.3zM12 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0-8l1.5 6H10.5L12 9z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-build" viewBox="0 0 24 24" role="img">
+    <title>Build</title>
+    <desc>A wrench and screwdriver icon representing build, compile, or construction operations.</desc>
+    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-chart-bar" viewBox="0 0 24 24" role="img">
+    <title>Chart Bar</title>
+    <desc>A vertical bar chart icon representing analytics and data visualization.</desc>
+    <path d="M3 3v18h18M7 16v4M12 10v10M17 5v15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-clock" viewBox="0 0 24 24" role="img">
+    <title>Clock</title>
+    <desc>A clock face showing time, with hour and minute hands.</desc>
+    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm4.5-8.5l-3 2.1V7a1 1 0 0 0-2 0v6a1 1 0 0 0 .83 1l4 2.5a1 1 0 0 0 1-1.7z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-database" viewBox="0 0 24 24" role="img">
+    <title>Database</title>
+    <desc>A database cylinder icon representing data storage and management.</desc>
+    <path d="M12 2C6.5 2 2 4.2 2 6.5v11C2 19.8 6.5 22 12 22s10-2.2 10-4.5v-11C22 4.2 17.5 2 12 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M2 10h20M2 16h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-deploy" viewBox="0 0 24 24" role="img">
+    <title>Deploy</title>
+    <desc>A rocket launch icon representing deployment or publishing to production.</desc>
+    <path d="M12 2L8 8l-6 2 6 2 4 6 4-6 6-2-6-2-4-6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M20 10l-8 2 6 6-6 6 8 2-2-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-file" viewBox="0 0 24 24" role="img">
+    <title>File</title>
+    <desc>A document file icon representing a text file or page.</desc>
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-folder" viewBox="0 0 24 24" role="img">
+    <title>Folder</title>
+    <desc>A folder icon representing file organization and storage.</desc>
+    <path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-key" viewBox="0 0 24 24" role="img">
+    <title>Key</title>
+    <desc>A key icon representing authentication, security, or access credentials.</desc>
+    <path d="M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 0-7.8 7.8 5.5 5.5 0 0 0 7.8-7.8zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-shield" viewBox="0 0 24 24" role="img">
+    <title>Shield</title>
+    <desc>A shield icon representing security, protection, or verified status.</desc>
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-alert-triangle-outline" viewBox="0 0 24 24" role="img">
+    <title>Alert Triangle</title>
+    <desc>A warning triangle icon representing alerts, cautions, or potential issues.</desc>
+    <path d="M10.3 3L2 20h20L13.7 3H10.3zM12 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0-8l1.5 6H10.5L12 9z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-build-outline" viewBox="0 0 24 24" role="img">
+    <title>Build</title>
+    <desc>A wrench and screwdriver icon representing build, compile, or construction operations.</desc>
+    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-chart-bar-outline" viewBox="0 0 24 24" role="img">
+    <title>Chart Bar</title>
+    <desc>A vertical bar chart icon representing analytics and data visualization.</desc>
+    <path d="M18 20V10M12 20V4M6 20v-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-clock-outline" viewBox="0 0 24 24" role="img">
+    <title>Clock</title>
+    <desc>A clock face showing time, with hour and minute hands.</desc>
+    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 4a1 1 0 0 1 1 1v4.4l3.1 3.1a1 1 0 0 1-1.4 1.4l-3.5-3.5A1 1 0 0 1 11 12V7a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-database-outline" viewBox="0 0 24 24" role="img">
+    <title>Database</title>
+    <desc>A database cylinder icon representing data storage and management.</desc>
+    <path d="M12 3C7 3 3 4.8 3 6.5v11C3 19.2 7 21 12 21s9-1.8 9-3.5v-11C21 4.8 17 3 12 3z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M3 10.5h18M3 16.5h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-deploy-outline" viewBox="0 0 24 24" role="img">
+    <title>Deploy</title>
+    <desc>A rocket launch icon representing deployment or publishing to production.</desc>
+    <path d="M12 2L8 8l-6 2 6 2 4 6 4-6 6-2-6-2-4-6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M20 10l-8 2 6 6-6 6 8 2-2-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-file-outline" viewBox="0 0 24 24" role="img">
+    <title>File</title>
+    <desc>A document file icon representing a text file or page.</desc>
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-folder-outline" viewBox="0 0 24 24" role="img">
+    <title>Folder</title>
+    <desc>A folder icon representing file organization and storage.</desc>
+    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-key-outline" viewBox="0 0 24 24" role="img">
+    <title>Key</title>
+    <desc>A key icon representing authentication, security, or access credentials.</desc>
+    <path d="M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 0-7.8 7.8 5.5 5.5 0 0 0 7.8-7.8zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+  <symbol id="icon-shield-outline" viewBox="0 0 24 24" role="img">
+    <title>Shield</title>
+    <desc>A shield icon representing security, protection, or verified status.</desc>
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+</svg>

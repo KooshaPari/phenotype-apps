@@ -1,0 +1,24 @@
+[package]
+name = "phenotype-crypto"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository = "https://github.com/KooshaPari/phenotype-infrakit"
+authors = ["Phenotype Team"]
+description = "Cryptographic utilities for Phenotype — hashing, symmetric encryption, key derivation, and HMAC signatures"
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+sha2 = { workspace = true }
+hex = { workspace = true }
+blake3 = { workspace = true }
+thiserror = { workspace = true }
+aes-gcm = { workspace = true }
+pbkdf2 = { workspace = true }
+rand = { workspace = true }
+hmac = { workspace = true }
+zeroize = { workspace = true }
+ed25519-dalek = { workspace = true }

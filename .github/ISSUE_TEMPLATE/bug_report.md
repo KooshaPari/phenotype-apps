@@ -1,30 +1,20 @@
 ---
 name: Bug report
-about: Report a bug or defect
-title: "[BUG] "
-labels: ["bug"]
+about: Create a report to help us improve
+title: '[BUG] '
+labels: bug
+assignees: ''
 ---
 
-## Description
+**Describe the bug**
+A clear description of the bug.
 
-<!-- Clear description of what's broken -->
+**To Reproduce**
+Steps to reproduce the behavior.
 
-## Reproduction
+**Expected behavior**
+What you expected to happen.
 
-1.
-2.
-3.
-
-## Expected vs actual
-
-- Expected:
-- Actual:
-
-## Environment
-
-- OS:
-- Version:
-
-## Logs / screenshots
-
-<!-- If applicable, add screenshots or paste relevant log output -->
+**Environment**
+- OS: [e.g. macOS]
+- Version: [e.g. 1.0.0]

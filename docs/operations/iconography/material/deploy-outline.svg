@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+     role="img" aria-label="Deploy" focusable="false">
+  <title>Deploy</title>
+  <desc>A rocket launch icon representing deployment or publishing to production.</desc>
+  <path d="M12 2L8 8l-6 2 6 2 4 6 4-6 6-2-6-2-4-6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M20 10l-8 2 6 6-6 6 8 2-2-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

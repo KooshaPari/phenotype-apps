@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="FocalPoint Android Glass">
+  <title>FocalPoint Android Glass</title>
+  <defs>
+    <clipPath id="ag-squircle-clip">
+      <rect x="22" y="22" width="468" height="468" rx="120" ry="120" />
+    </clipPath>
+    <clipPath id="ag-disc-clip">
+      <circle cx="256" cy="256" r="214" />
+    </clipPath>
+    <linearGradient id="ag-backdrop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090a0c" />
+      <stop offset="35%" stop-color="#0d1c1a" />
+      <stop offset="100%" stop-color="#091014" />
+    </linearGradient>
+    <radialGradient id="ag-blob-1" cx="36%" cy="30%" r="42%">
+      <stop offset="0%" stop-color="#7ebab5" stop-opacity="0.62" />
+      <stop offset="50%" stop-color="#7ebab5" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#090a0c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="ag-blob-2" cx="72%" cy="68%" r="35%">
+      <stop offset="0%" stop-color="#95ccc8" stop-opacity="0.46" />
+      <stop offset="55%" stop-color="#353a40" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#090a0c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="ag-disc-fill" cx="40%" cy="22%" r="72%">
+      <stop offset="0%" stop-color="#95ccc8" stop-opacity="0.48" />
+      <stop offset="100%" stop-color="#7ebab5" stop-opacity="0.22" />
+    </radialGradient>
+    <filter id="ag-frost" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="blur" />
+    </filter>
+    <filter id="ag-rim" x="-8%" y="-8%" width="116%" height="116%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="r" />
+      <feBlend in="SourceGraphic" in2="r" mode="screen" />
+    </filter>
+    <filter id="ag-spec" x="-8%" y="-8%" width="116%" height="116%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.2" result="a" />
+      <feSpecularLighting in="a" surfaceScale="7" specularConstant="0.9" specularExponent="20" lighting-color="#ffffff" result="s">
+        <fePointLight x="220" y="180" z="180" />
+      </feSpecularLighting>
+      <feComposite in="s" in2="SourceAlpha" operator="in" result="spec" />
+      <feBlend in="SourceGraphic" in2="spec" mode="screen" />
+    </filter>
+    <g id="fp-mark">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M 256 50 A 206 206 0 1 1 255.99 50" fill="none" stroke="#f6f5f5" stroke-width="14" />
+        <path d="M 256 110 A 146 146 0 1 1 255.99 110" fill="none" stroke="#95ccc8" stroke-width="9" />
+        <path d="M 256 152 A 104 104 0 1 1 255.99 152" fill="none" stroke="#7ebab5" stroke-width="8" />
+        <path d="M 256 50 L 256 36" stroke="#f6f5f5" stroke-width="16" />
+        <path d="M 256 462 L 256 476" stroke="#f6f5f5" stroke-width="16" />
+        <path d="M 50 256 L 36 256" stroke="#f6f5f5" stroke-width="16" />
+        <path d="M 462 256 L 476 256" stroke="#f6f5f5" stroke-width="16" />
+      </g>
+      <g fill="#f6f5f5">
+        <circle cx="256" cy="256" r="12" />
+        <circle cx="256" cy="36" r="8" />
+        <circle cx="256" cy="476" r="8" />
+        <circle cx="36" cy="256" r="8" />
+        <circle cx="476" cy="256" r="8" />
+      </g>
+    </g>
+  </defs>
+
+  <g clip-path="url(#ag-squircle-clip)">
+    <rect x="0" y="0" width="512" height="512" fill="url(#ag-backdrop)" />
+    <rect x="0" y="0" width="512" height="512" fill="url(#ag-blob-1)" />
+    <rect x="0" y="0" width="512" height="512" fill="url(#ag-blob-2)" />
+  </g>
+
+  <g clip-path="url(#ag-disc-clip)" filter="url(#ag-frost)" opacity="0.86">
+    <rect x="0" y="0" width="512" height="512" fill="url(#ag-backdrop)" />
+    <rect x="0" y="0" width="512" height="512" fill="url(#ag-blob-1)" />
+  </g>
+
+  <g clip-path="url(#ag-disc-clip)">
+    <circle cx="256" cy="256" r="214" fill="url(#ag-disc-fill)" />
+    <circle cx="256" cy="256" r="214" fill="none" stroke="url(#ag-blob-2)" stroke-width="2" opacity="0.56" />
+  </g>
+
+  <g transform="translate(0 0)">
+    <g filter="url(#ag-rim)">
+      <circle cx="256" cy="256" r="214" fill="none" stroke="white" stroke-width="12" stroke-opacity="0.5" />
+    </g>
+    <circle cx="256" cy="256" r="204" fill="none" stroke="#95ccc8" stroke-width="4" stroke-opacity="0.35" />
+  </g>
+
+  <g clip-path="url(#ag-disc-clip)" filter="url(#ag-spec)" opacity="0.88">
+    <g transform="translate(0 0)">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M 188 188 L 226 226" stroke="#f6f5f5" stroke-width="11" />
+        <path d="M 286 286 L 324 324" stroke="#f6f5f5" stroke-width="11" />
+        <path d="M 324 188 L 286 226" stroke="#7ebab5" stroke-width="11" />
+        <path d="M 226 286 L 188 324" stroke="#7ebab5" stroke-width="11" />
+      </g>
+      <circle cx="256" cy="256" r="18" fill="#95ccc8" />
+    </g>
+  </g>
+</svg>

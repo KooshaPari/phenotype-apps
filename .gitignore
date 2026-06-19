@@ -1,0 +1,17 @@
+pr_details.jsonl
+
+# Rust build artifacts
+/target
+
+# Example FPL scripts (scaffold output)
+/examples/fpl
+
+# iOS / SwiftPM / Xcode build artifacts (must never be committed)
+apps/ios/**/.build/
+**/.build/
+**/DerivedData/
+*.xcframework/
+
+# Local worktree directory
+FocalPoint-wtrees/
+.build

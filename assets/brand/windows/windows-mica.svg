@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="FocalPoint Windows Mica">
+  <title>FocalPoint Windows Mica</title>
+  <defs>
+    <clipPath id="wm-clip"><rect x="18" y="18" width="476" height="476" rx="14" ry="14" /></clipPath>
+    <linearGradient id="wm-wall" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1e1c" />
+      <stop offset="55%" stop-color="#101a1d" />
+      <stop offset="100%" stop-color="#090a0c" />
+    </linearGradient>
+    <radialGradient id="wm-blob-1" cx="34%" cy="28%" r="45%">
+      <stop offset="0%" stop-color="#7ebab5" stop-opacity="0.52" />
+      <stop offset="65%" stop-color="#569691" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#090a0c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="wm-blob-2" cx="72%" cy="72%" r="40%">
+      <stop offset="0%" stop-color="#353a40" stop-opacity="0.58" />
+      <stop offset="100%" stop-color="#090a0c" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="wm-fg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7ebab5" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#95ccc8" stop-opacity="0.14" />
+    </linearGradient>
+    <filter id="wm-blur" x="-8%" y="-8%" width="116%" height="116%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="11" />
+    </filter>
+    <g id="fp-mark">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M 256 54 A 202 202 0 1 1 255.99 54" fill="none" stroke="#f6f5f5" stroke-width="14" />
+        <path d="M 256 112 A 144 144 0 1 1 255.99 112" fill="none" stroke="#95ccc8" stroke-width="10" />
+        <path d="M 256 170 A 86 86 0 1 1 255.99 170" fill="none" stroke="#7ebab5" stroke-width="8" />
+      </g>
+      <g fill="#f6f5f5">
+        <circle cx="256" cy="54" r="8" />
+        <circle cx="256" cy="458" r="8" />
+        <circle cx="54" cy="256" r="8" />
+        <circle cx="458" cy="256" r="8" />
+        <circle cx="256" cy="256" r="12" />
+      </g>
+      <g fill="none" stroke-linecap="round" opacity="0.8" stroke-width="12">
+        <path d="M 256 54 L 256 38" stroke="#f6f5f5" />
+        <path d="M 256 458 L 256 474" stroke="#f6f5f5" />
+        <path d="M 54 256 L 38 256" stroke="#f6f5f5" />
+        <path d="M 458 256 L 474 256" stroke="#f6f5f5" />
+      </g>
+    </g>
+  </defs>
+
+  <rect x="0" y="0" width="512" height="512" fill="#090a0c" />
+  <g clip-path="url(#wm-clip)">
+    <rect x="0" y="0" width="512" height="512" fill="url(#wm-wall)" />
+    <rect x="0" y="0" width="512" height="512" fill="url(#wm-blob-1)" />
+    <rect x="0" y="0" width="512" height="512" fill="url(#wm-blob-2)" />
+
+    <rect x="18" y="18" width="476" height="476" fill="url(#wm-wall)" filter="url(#wm-blur)" opacity="0.9" />
+    <rect x="24" y="24" width="468" height="468" fill="url(#wm-fg)" opacity="0.75" />
+    <rect x="32" y="32" width="460" height="460" rx="12" fill="url(#wm-wall)" filter="url(#wm-blur)" opacity="0.62" />
+    <rect x="40" y="40" width="452" height="452" rx="10" fill="url(#wm-fg)" opacity="0.4" />
+    <rect x="18" y="18" width="476" height="476" fill="#95ccc8" opacity="0.07" />
+
+    <use href="#fp-mark" transform="scale(0.8) translate(64 64)" />
+
+    <rect x="18" y="18" width="476" height="476" rx="14" fill="none" stroke="#7ebab5" stroke-width="1.2" />
+  </g>
+</svg>

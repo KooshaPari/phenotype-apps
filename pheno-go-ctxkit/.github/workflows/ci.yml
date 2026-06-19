@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache: true
+      - run: go build ./...
+      - run: go test -race -coverprofile=coverage.out ./...
+      - run: go test -cover ./... | grep -E '^ok|FAIL'
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache: true
+      - run: gofmt -l . | tee /tmp/fmt.log && [ ! -s /tmp/fmt.log ]
+      - run: go vet ./...
+
+  coverage:
+    name: coverage (codecov)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache: true
+      - run: go test -coverprofile=coverage.out ./...
+      - uses: codecov/codecov-action@v3
+        with:
+          files: coverage.out

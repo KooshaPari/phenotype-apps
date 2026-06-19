@@ -1,0 +1,17 @@
+[workspace]
+
+[package]
+name = "quality-gate"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+anyhow = "1"
+serde_json = "1"
+walkdir = "2"
+regex = "1"
+
+[[bin]]
+name = "quality-gate"
+path = "src/main.rs"

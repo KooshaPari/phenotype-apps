@@ -1,66 +1,191 @@
-# Phenotype Apps
+<!-- AI-DD-META:START -->
+<!-- This repository is planned, maintained, and managed by AI Agents only. -->
+<!-- Slop issues are expected and intentionally present as part of an HITL-less -->
+<!-- /minimized AI-DD metaproject of learning, refining, and building brute-force -->
+<!-- training for both agents and the human operator. -->
+![Downloads](https://img.shields.io/github/downloads/KooshaPari/FocalPoint/total?style=flat-square&label=downloads&color=blue)
+![GitHub release](https://img.shields.io/github/v/release/KooshaPari/FocalPoint?style=flat-square&label=release)
+![License](https://img.shields.io/github/license/KooshaPari/FocalPoint?style=flat-square)
+![AI-Slop](https://img.shields.io/badge/AI--DD-Slop%20Expected-orange?style=flat-square)
+![AI-Only-Maintained](https://img.shields.io/badge/Planned%20%26%20Maintained%20by-AI%20Agents%20Only-red?style=flat-square)
+![HITL-less](https://img.shields.io/badge/HITL--less%20AI--DD-metaproject-yellow?style=flat-square)
 
-Extracted from `apps/` subdir of `KooshaPari/FocalPoint` (the meta-repo) on 2026-06-17 per ADR-023 (agent-effort governance: apps are self-repod).
+> ⚠️ **AI-Agent-Only Repository**
+>
+> This repo is **planned, maintained, and managed exclusively by AI Agents**.
+> Slop issues, rough edges, and AI artifacts are **expected and intentionally
+> present** as part of an **HITL-less / minimized AI-DD** metaproject focused
+> on learning, refining, and brute-force training both the agents and the
+> human operator. Bug reports and contributions are still welcome, but please
+> expect AI-generated code, comments, and documentation throughout.
+<!-- AI-DD-META:END -->
+> **Pinned references (Phenotype-org)**
+> - MSRV: see rust-toolchain.toml
+> - cargo-deny config: see deny.toml
+> - cargo-audit: rustsec/audit-check@v2 weekly
+> - Branch protection: 1 reviewer required, no force-push
+> - Authority: phenotype-org-governance/SUPERSEDED.md
 
-## Contents
+> **Work state:** ACTIVE · **Progress:** `█████████░ 85%`
+> Connector-first screen-time platform: portable Rust core (rules/ledger/audit-chain) + native iOS shell. Phase 1 ~85% but WORKSPACE DOES NOT COMPILE since 2026-04-23 (5 crates, E-series errors) — blocked until fixed. · updated 2026-06-02
 
-26 files, ~1.7 MB total, 446-commit history preserved (via `git subtree split`).
+# FocalPoint
 
-### iOS shell
+[![AI Slop Inside](https://sladge.net/badge.svg)](https://sladge.net)
+[![Build](https://img.shields.io/github/actions/workflow/status/KooshaPari/FocalPoint/rust.yml?branch=main&label=build)](https://github.com/KooshaPari/FocalPoint/actions)
+[![Release](https://img.shields.io/github/v/release/KooshaPari/FocalPoint?include_prereleases&sort=semver)](https://github.com/KooshaPari/FocalPoint/releases)
+[![License](https://img.shields.io/github/license/KooshaPari/FocalPoint)](LICENSE)
+[![Phenotype](https://img.shields.io/badge/Phenotype-org-blueviolet)](https://github.com/KooshaPari)
 
-- `ios/FocalPoint/Assets.xcassets/AppIcon.appiconset/Contents.json` — iOS AppIcon catalog manifest
-- `ios/FocalPoint/Assets.xcassets/AppIcon.appiconset/icon-*.png` — 9 PNG icons (60x60@2x, 60x60@3x, 76x76@1x, 76x76@2x, 83.5x83.5@2x, 1024x1024@1x)
+**Status:** v0.0.5 — Phase 1 in progress (~85%).
+**✅ Builds green** — `cargo build --workspace` Finished (verified 2026-06-02). NOTE: 11 crates use a relative cross-repo path-dep on `phenotype-observably-macros`, so **clone [PhenoObservability](https://github.com/KooshaPari/PhenoObservability) adjacent** (`../PhenoObservability`) before building. (Earlier "compilation broken" status is resolved.)
 
-### Web shell
+Connector-first screen-time management platform. Native iOS enforcement built on a portable Rust core: rules engine, connector runtime, reward/penalty ledger, audit chain, mascot state machine.
 
-- `web/public/favicon.ico` — browser favicon
-- `web/public/icon-{16,32,48,512}.png` — 4 PNG icons at common web sizes
-- `web/public/logo.svg` — SVG logo
+**What's shipped:**
+- ✅ Domain layer end-to-end: event sourcing, rules engine, wallet/penalty ledgers, audit chain (hash-chained, tamper-evident), task scheduling, rituals (Morning Brief + Evening Shutdown)
+- ✅ iOS shell: SwiftUI views, FamilyControls integration (awaiting entitlement approval), rule authoring wizard, Canvas OAuth
+- ✅ 17 crates + 80+ passing tests (when workspace compiles)
+- ✅ Multi-platform FFI (UniFFI Rust → Swift; JNI stubs for Android future)
 
-### Governance (open-source standards)
+**Honest gaps blocking production:**
+- ❌ **Workspace compilation:** backup (E0505 borrow-check), rituals (E0277 Eq on f32), 3× connectors (type errors)
+- ❌ **Apple entitlement:** FamilyControls driver logic shipped but gated behind `#if FOCALPOINT_HAS_FAMILYCONTROLS` flag. Awaiting Apple review (submitted Phase 0, 1–4 week SLA).
+- ❌ **Onboarding UX:** 0 screens shipped. Users cannot self-serve setup today.
+- ❌ **Designer assets:** Coachy 3D animation (`.riv` Rive file); SwiftUI placeholder in use.
+- ❌ **Real-device QA:** simulator only; entitlement approval required for real testing.
+- ❌ **GCal/GitHub OAuth:** buttons exist, flows incomplete.
 
-- `CHANGELOG.md` — version history (Keep-a-Changelog format)
-- `CODE_OF_CONDUCT.md` — community standards
-- `CONTRIBUTING.md` — contribution guide
-- `LICENSE` — MIT license
-- `SECURITY.md` — security policy
-- `.github/CODEOWNERS` — code ownership
-- `.github/ISSUE_TEMPLATE/bug_report.md` — bug report template
-- `.github/ISSUE_TEMPLATE/config.yml` — issue chooser config
-- `.github/ISSUE_TEMPLATE/feature_request.md` — feature request template
-- `.github/ISSUE_TEMPLATE/question.md` — question template
-- `.github/ISSUE_TEMPLATE/security_report.md` — security report template
+**See [roadmap_v2.md](docs/roadmap_v2.md) for phased plan (6 phases, honest effort estimates, dependencies, and known deviations from earlier claims).**
 
-## What this repo IS
+## Feature Status at a Glance
 
-- The **shell assets + governance** for iOS and web Phenotype apps.
-- 26 files (1.7 MB total).
-- 446-commit history preserved (via `git subtree split`).
+| Feature | Status | Details |
+|---------|--------|---------|
+| **Domain: Events** | [SHIPPED] | SHA256-chained deduping, 9+ event sources, schema v3 |
+| **Domain: Rules engine** | [SHIPPED] | 12 condition primitives, 6 actions, schedule triggers, cooldowns, explainability |
+| **Domain: Wallet** | [SHIPPED] | +/-Credit mutations, balance caps, audit trail on every change |
+| **Domain: Penalties** | [SHIPPED] | Lockout windows, rigidity spectrum (Hard/Semi/Soft), debt tracking, escalation |
+| **Domain: Audit chain** | [SHIPPED] | Hash-chained tamper-evident records; verification on startup |
+| **Domain: Task scheduling** | [SHIPPED] | Rigidity-aware bin-packing, working-hours constraints, chunk splitting, 14 tests |
+| **Domain: Calendar integration** | [SHIPPED] | Async trait + mock; GCal OAuth scaffold, EventKit real adapter (iOS) |
+| **Domain: Rituals** | [SHIPPED] | Morning Brief (schedule-derived + LLM-coached), Evening Shutdown (task classification + streak); 15 tests |
+| **iOS: App shell** | [SHIPPED] | SwiftUI skeleton, 5 tabs (Home, Tasks, Rules, Activity, Settings) |
+| **iOS: Rule authoring** | [SHIPPED] | 4-step wizard (When/If/Then/Settings), JSON preview, DSL catalog |
+| **iOS: Canvas OAuth** | [SHIPPED] | ASWebAuthenticationSession, keychain persistence, sync heartbeat |
+| **iOS: GCal OAuth** | [SCAFFOLD] | Button present, flow incomplete |
+| **iOS: GitHub OAuth** | [SCAFFOLD] | Button present, flow incomplete |
+| **iOS: Onboarding** | [SCAFFOLD] | Canvas button only; no user-facing setup flow |
+| **iOS: FamilyControls driver** | [SCAFFOLD] | ManagedSettingsStore + DeviceActivityCenter wired behind `#if FOCALPOINT_HAS_FAMILYCONTROLS` flag; awaiting entitlement approval |
+| **iOS: Coachy mascot** | [PARTIAL] | SwiftUI render shipped; `.riv` Rive animation pending designer |
+| **Connectors: Canvas** | [SHIPPED] | OAuth2, 4 event types, 44 wiremock tests, live-API test scaffold |
+| **Connectors: GCal** | [SCAFFOLD] | OAuth2 scaffold, event list WIP |
+| **Connectors: GitHub** | [SCAFFOLD] | Auth scaffold, event mapping pending |
+| **Connectors: Readwise, Notion, Linear** | [SCAFFOLD] | Event mapping stubs only |
+| **Backup & restore** | [SCAFFOLD] | age encryption + passphrase, CLI built; iOS FFI has E0505 borrow-check error |
+| **Builder (web task editor)** | [SHIPPED] | 12 ReactFlow node types, Coachy preview, dist/ builds (not integrated to iOS) |
+| **Ecosystem: Connector manifest** | [SHIPPED] | TOML format, tier system (Official/Verified/MCPBridged/Private) |
+| **Ecosystem: Webhook registry** | [SHIPPED] | Signature verification, handler dispatch, 5 tests |
+| **Ecosystem: Template pack format** | [SHIPPED] | ed25519 signing, TOML round-trip, deterministic UUID derivation |
+| **Ecosystem: MCP-bridged connectors** | [SCAFFOLD] | Type defined, transport pending |
+| **Ecosystem: Marketplace catalog** | [SHIPPED] | ConnectorRegistry, tier-ordered, deduped listings |
+| **Ecosystem: Visual rule builder** | [SHIPPED] | iOS Rule Wizard shipped; web-hosted builder has all primitives to consume |
+| **Backend: Services** | [SCAFFOLD] | auth-broker, webhook-ingest, sync-api placeholders only |
+| **Backend: Sentry integration** | [SHIPPED] | SDK integrated, live monitoring pending real deploy |
+| **Backend: Release notes gen** | [SHIPPED] | markdown + Discord format generators, tested |
+| **Docs: ADRs** | [SHIPPED] | 9 decisions logged (stack, architecture, privacy, connectors, auth) |
+| **Docs: Connector SDK** | [SHIPPED] | Manifest spec, trait contract, example walkthrough |
+| **Docs: Design docs** | [SHIPPED] | Multi-device CRDT sync, Watch companion, Coachy art direction, connector ecosystem strategy |
+| **Docs: RFC process** | [SHIPPED] | RFC-0001 plugin SDK, RFC-0002 template format |
+| **i18n: Translations** | [SHIPPED] | Spanish + Japanese (122 strings), Localizable.xcstrings extracted |
+| **CI: Linting** | [SHIPPED] | Clippy green, Vale markdown checks, commit-msg validator |
+| **CI: Testing** | [SHIPPED] | 80+ unit tests, 44 Canvas wiremock tests, ritual integration tests, sync cursor persistence |
+| **CI: Security** | [PARTIAL] | Audit chain tamper-detection tested; external security audit pending |
 
-## What this repo is NOT
+## Primary differentiators
 
-- **NOT** the actual iOS app source code. The Swift sources, Xcode project, and UniFFI bindings live in `KooshaPari/FocalPoint` branches (e.g., `chore/focalpoint-ios-untrack-build-artifacts`, `feat/focalpoint-ios*`).
-- **NOT** the actual web app source code. The marketing site (`focalpoint-web`) lives in its own branch on the meta-repo.
-- **NOT** the Rust core. That lives in `phenoShared` (the polyglot SSOT).
+- **Connector runtime** treats Canvas LMS, calendars, tasks, health apps as
+  first-class behavioral inputs. Ecosystem is the compounding moat, not blocking.
+- **Rules engine** with explainable decisions, cooldowns, and state snapshots.
+- **Reward/penalty dual-ledger** with escalation tiers, streaks, bypass budgets.
+- **Portable Rust core** exported to iOS (Swift via UniFFI) + Android (Kotlin via JNI).
 
-## Why extracted
+## Try it now
 
-Per ADR-023 Rule 1: "apps are self-repod" — apps want to be advertised/self-branded, so they don't fold into a collection at maturity; they keep their own repo. This repo is the proper home for app shell assets.
+The `focus` CLI is ready for exploration. Walk through the end-to-end workflow:
 
-## Adding new app shell assets
-
-1. Branch from `apps-extract` (the default branch).
-2. Add your asset (PNG, SVG, JSON, etc.).
-3. Update `Contents.json` if adding to the iOS AppIcon catalog.
-4. Open a PR.
-5. After merge, no further action needed — files are immediately live.
-
-## Provenance
-
-Extracted via:
 ```bash
-git subtree split --prefix=apps --annotate="(apps-extract)" -b apps-extract-final
-git push --set-upstream origin apps-extract-final:apps-extract --force
+# 3-command quickstart
+cargo build -p focus-cli --release
+./target/release/focus demo seed --db=/tmp/focus-demo.db
+./target/release/focus tasks list --db=/tmp/focus-demo.db --json
 ```
 
-Original commits remain intact in `KooshaPari/FocalPoint` history.
+For a full automated walkthrough with transcript, see [CLI Demo](docs-site/guides/cli_demo.md) or run:
+
+```bash
+task demo
+```
+
+This exercises all major subcommands (audit, tasks, rules, wallet, sync, eval, focus sessions, templates) and generates a markdown report.
+
+## Repo structure
+
+```
+crates/          Rust workspace — 17 crate stubs (domain core + mascot)
+apps/ios/        SwiftUI + FamilyControls/ManagedSettings + Spline mascot
+apps/android/    Deferred beyond Phase 2 (placeholder)
+services/        Optional backend — deferred to Phase 5 (placeholders)
+docs/            Architecture, ADRs, connector SDK, ecosystem strategy
+examples/        Sample rules + connector fixtures
+scripts/         Demo walkthrough runner + CI utilities
+```
+
+## Spec docs
+
+- [`PRD.md`](PRD.md) — product requirements
+- [`ADR.md`](ADR.md) — architecture decisions index
+- [`FUNCTIONAL_REQUIREMENTS.md`](FUNCTIONAL_REQUIREMENTS.md) — FR-CONN/EVT/RULE/STATE/ENF/DATA/UX
+- [`PLAN.md`](PLAN.md) — phased roadmap
+- [`USER_JOURNEYS.md`](USER_JOURNEYS.md) — primary flows
+- [`00_START_HERE.md`](00_START_HERE.md) — onboarding
+
+## Build & Test Status
+
+**⚠️ Workspace does not currently compile.** See [honest_coverage.md](docs/reference/honest_coverage.md) for error details (5 crates with E-series errors pending fix).
+
+When compilation is repaired:
+
+```bash
+cargo build --workspace
+cargo test --workspace      # ~80 tests pass
+cargo clippy --workspace -- -D warnings  # green after repair
+cargo fmt --check
+```
+
+**iOS build:** SwiftUI compiles; requires Xcode 15.2+, iOS 16+ deployment target.
+**Android build:** JNI bindings scaffolded; no Gradle integration yet.
+
+## Stack
+
+- **Rust** (1.82, edition 2021) — shared core (will bind to Android later)
+- **Swift 5.9+ / SwiftUI** — iOS 16+; FamilyControls entitlement required
+- **SQLite** — local-first persistence
+- **UniFFI** — Rust↔Swift bindings
+- **Spline** — iOS mascot animation runtime (`crates/focus-mascot` + `apps/ios/Mascot/`)
+
+Android Kotlin/Compose support reserved in `apps/android/` but deferred
+beyond Phase 2. Cross-native frameworks (Tauri / RN / Flutter) rejected
+per ADR-001.
+
+See [`ADR.md`](ADR.md) for the full decision log.
+
+## Status & Planning
+
+- **[roadmap_v2.md](docs/roadmap_v2.md)** — Honest 6-phase roadmap with effort estimates, dependencies, and known gaps
+- **[honest_coverage.md](docs/reference/honest_coverage.md)** — Feature-by-feature audit (shipped vs scaffold vs partial vs external-blocked)
+- **[open_questions.md](docs/research/open_questions.md)** — Tracked unknowns that may impact Phase 1.5+ timing
+
+## License
+
+MIT OR Apache-2.0.

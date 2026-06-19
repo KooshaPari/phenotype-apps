@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+     role="img" aria-label="Alert Triangle" focusable="false">
+  <title>Alert Triangle</title>
+  <desc>A warning triangle icon representing alerts, cautions, or potential issues.</desc>
+  <path d="M10.3 3L2 20h20L13.7 3H10.3zM12 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0-8l1.5 6H10.5L12 9z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
