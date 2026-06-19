@@ -11,6 +11,7 @@ use std::path::PathBuf;
 /// Use as `#[command(flatten)] config: ConfigArg` on the top-level
 /// CLI struct.
 #[derive(Debug, Args, Clone, Default)]
+#[must_use = "ConfigArg is a value type; an unused value is almost always a logic bug"]
 pub struct ConfigArg {
     /// Path to the config file (YAML/TOML/JSON).
     #[arg(short, long, env = "PHENOTYPE_CONFIG", value_name = "PATH")]
@@ -19,11 +20,27 @@ pub struct ConfigArg {
 
 impl ConfigArg {
     /// Returns the configured config path, if any.
+    ///
+    /// ```
+    /// use pheno_cli_base::ConfigArg;
+    ///
+    /// let cfg = ConfigArg::default();
+    /// assert!(cfg.path().is_none());
+    /// ```
+    #[must_use = "querying the path and discarding the result is almost always a logic bug"]
     pub fn path(&self) -> Option<&Path> {
         self.config.as_deref()
     }
 
     /// Returns `true` if a config path was supplied (flag or env).
+    ///
+    /// ```
+    /// use pheno_cli_base::ConfigArg;
+    ///
+    /// let cfg = ConfigArg::default();
+    /// assert!(!cfg.is_set());
+    /// ```
+    #[must_use = "querying the set state and discarding the result is almost always a logic bug"]
     pub fn is_set(&self) -> bool {
         self.config.is_some()
     }

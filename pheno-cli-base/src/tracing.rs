@@ -12,6 +12,14 @@ use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 /// `SetGlobalDefaultError` if a global subscriber is already installed,
 /// which we swallow so library and test code can be called repeatedly
 /// without panicking.
+///
+/// ```
+/// use pheno_cli_base::setup_tracing;
+///
+/// // Calling twice does not panic.
+/// setup_tracing(tracing_subscriber::filter::LevelFilter::INFO);
+/// setup_tracing(tracing_subscriber::filter::LevelFilter::DEBUG);
+/// ```
 pub fn setup_tracing(filter: tracing_subscriber::filter::LevelFilter) {
     let env_filter = EnvFilter::try_from_default_env()
         .unwrap_or_else(|_| EnvFilter::default().add_directive(filter.into()));
@@ -31,6 +39,19 @@ pub fn setup_tracing(filter: tracing_subscriber::filter::LevelFilter) {
 /// - `count == 0`         → `INFO`
 /// - `count == 1`         → `DEBUG`
 /// - `count >= 2`         → `TRACE`
+/// - `quiet`              → `ERROR`
+/// - `count == 0`         → `INFO`
+/// - `count == 1`         → `DEBUG`
+/// - `count >= 2`         → `TRACE`
+///
+/// ```
+/// use pheno_cli_base::setup_tracing_from_count;
+///
+/// // Each call must not panic.
+/// setup_tracing_from_count(0, false);
+/// setup_tracing_from_count(1, false);
+/// setup_tracing_from_count(0, true);
+/// ```
 pub fn setup_tracing_from_count(verbose_count: u8, quiet: bool) {
     let filter = if quiet {
         tracing_subscriber::filter::LevelFilter::ERROR

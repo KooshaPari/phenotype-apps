@@ -9,6 +9,7 @@ use clap::Args;
 /// parser will reject `--verbose --quiet` combinations.
 #[derive(Debug, Args, Clone, Copy, Default)]
 #[group(multiple = false)]
+#[must_use = "Verbosity is a value type; an unused value is almost always a logic bug"]
 pub struct Verbosity {
     /// Increase log verbosity (`-v`, `-vv`, `-vvv`).
     #[arg(short, long, action = clap::ArgAction::Count)]
@@ -26,6 +27,14 @@ impl Verbosity {
     /// - (default)         → `INFO`
     /// - `-v`              → `DEBUG`
     /// - `-vv` (or more)   → `TRACE`
+    ///
+    /// ```
+    /// use pheno_cli_base::Verbosity;
+    ///
+    /// let v = Verbosity::default();
+    /// assert!(matches!(v.to_filter(), tracing_subscriber::filter::LevelFilter::INFO));
+    /// ```
+    #[must_use = "querying the filter and discarding the result is almost always a logic bug"]
     pub fn to_filter(self) -> tracing_subscriber::filter::LevelFilter {
         match (self.verbose, self.quiet) {
             (_, true) => tracing_subscriber::filter::LevelFilter::ERROR,
@@ -36,11 +45,27 @@ impl Verbosity {
     }
 
     /// Returns `true` if the quiet flag was set.
+    ///
+    /// ```
+    /// use pheno_cli_base::Verbosity;
+    ///
+    /// let v = Verbosity::default();
+    /// assert!(!v.is_quiet());
+    /// ```
+    #[must_use = "querying the quiet state and discarding the result is almost always a logic bug"]
     pub fn is_quiet(self) -> bool {
         self.quiet
     }
 
     /// Returns the raw verbose count.
+    ///
+    /// ```
+    /// use pheno_cli_base::Verbosity;
+    ///
+    /// let v = Verbosity::default();
+    /// assert_eq!(v.verbose_count(), 0);
+    /// ```
+    #[must_use = "querying the count and discarding the result is almost always a logic bug"]
     pub fn verbose_count(self) -> u8 {
         self.verbose
     }

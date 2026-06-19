@@ -12,7 +12,7 @@ publish = false
 
 # An empty [workspace] table declares this crate as a standalone
 # package. Without it, cargo looks upward and finds the surrounding
-# monorepo workspace (which currently has unrelated tooling members).
+# monorepo workspace.
 [workspace]
 
 [lib]
@@ -21,8 +21,24 @@ path = "src/lib.rs"
 
 [dependencies]
 clap = { version = "4.5", features = ["derive", "env"] }
-tracing = "0.1"
+# ADR-036 (adapted for pheno-cli-base): `tracing-subscriber` stays a
+# hard dep because `Verbosity::to_filter` returns
+# `tracing_subscriber::filter::LevelFilter`; making it optional would
+# break the default build. The `tracing` crate itself is gated on
+# the `tracing` feature because `setup_tracing` only does useful
+# work when the OTLP-emitting macros are compiled in.
+tracing = { version = "0.1", optional = true }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
+[features]
+default = []
+# ADR-036: tracing feature flag (off by default). Enables the
+# `tracing` crate so `setup_tracing` and friends can be called; the
+# `tracing-subscriber` plumbing is always available.
+tracing = ["dep:tracing"]
+
 [dev-dependencies]
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+# ADR-036: test that tracing spans emit (use OTEL_SDK_DISABLED=true in CI)
+# `tracing-test` is a regular (non-optional) dev-dep; the test that
+# uses it is feature-gated so it is only compiled with `--features tracing`.
+tracing-test = "0.2"

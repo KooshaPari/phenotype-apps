@@ -15,5 +15,18 @@ publish = true
 name = "pheno_flags"
 path = "src/lib.rs"
 
+[features]
+default = []
+# ADR-036: tracing feature flag (off by default). Enables the `tracing`
+# macros so `FlagSet::get` and friends can emit span events. The
+# canonical pheno-tracing substrate lives in `crates/pheno-tracing`;
+# the dev-dep `tracing-test` asserts span emission in tests/tracing_test.rs.
+tracing = ["dep:tracing"]
+
 [dependencies]
 thiserror = "2"
+tracing = { version = "0.1", optional = true }
+
+[dev-dependencies]
+# ADR-036: test that tracing spans emit (use OTEL_SDK_DISABLED=true in CI)
+tracing-test = "0.2"

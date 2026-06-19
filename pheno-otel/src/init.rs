@@ -54,6 +54,7 @@ pub const DEFAULT_OTLP_ENDPOINT: &str = "http://localhost:4318";
 /// // _guard drops at scope exit; the global tracer provider is
 /// // flushed + shut down.
 /// ```
+#[must_use = "Result-returning; ignoring the Err arm silently masks a broken init (the guard is what scopes the pipeline)"]
 pub fn init(service_name: &str) -> Result<TelemetryGuard, OtelError> {
     let resource = build_resource(service_name)?;
     let exporter = opentelemetry_otlp::SpanExporter::builder()
@@ -82,6 +83,7 @@ pub fn init(service_name: &str) -> Result<TelemetryGuard, OtelError> {
 /// // spans emitted here are written to stdout as JSON lines.
 /// drop(_guard);
 /// ```
+#[must_use = "Result-returning; ignoring the Err arm silently masks a broken init (the guard is what scopes the pipeline)"]
 pub fn init_with_stdout(service_name: &str) -> Result<TelemetryGuard, OtelError> {
     let resource = build_resource(service_name)?;
     let exporter = StdoutSpanExporter::new();

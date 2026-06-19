@@ -1,0 +1,22 @@
+# cargo-llvm-cov configuration
+# Target: 80% lib coverage per ADR-040 (pheno-* lib tier)
+# Generated for batch 9F — T18 coverage gate
+
+[llvm-cov]
+run = false
+summary = true
+output = "JsonFormat"   # codecov-action v4 consumes JSON
+output = "lcov"          # also produce lcov for codecov upload
+
+# Report thresholds — fail CI if coverage drops below
+fail-under-lines = 80
+fail-under-branches = 75
+fail-under-regions = 80
+
+# Source globs (exclude tests + examples from coverage targets)
+exclude-from-coverage = [
+    "*/tests/*",
+    "*/examples/*",
+    "*/benches/*",
+    "*/target/*",
+]

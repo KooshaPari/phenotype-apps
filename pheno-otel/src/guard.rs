@@ -28,6 +28,19 @@ use crate::error::OtelError;
 /// Construct one via [`crate::init`] or [`crate::init_with_stdout`]. Drop
 /// is fire-and-forget; for typed error handling call
 /// [`TelemetryGuard::shutdown`] explicitly.
+///
+/// ```
+/// use pheno_otel::TelemetryGuard;
+///
+/// // The guard comes from `init_with_stdout`; the stdout exporter is
+/// // a no-op network-wise so this runs in any environment.
+/// let guard: TelemetryGuard =
+///     pheno_otel::init_with_stdout("doc-test").expect("stdout init works");
+/// // `shutdown` is idempotent; calling it before the guard is dropped
+/// // surfaces any flush/shutdown error to the caller.
+/// guard.shutdown().expect("fresh provider shutdown is Ok");
+/// ```
+#[must_use = "TelemetryGuard owns the TracerProvider; dropping it (or ignoring the init return) flushes the pipeline immediately"]
 pub struct TelemetryGuard {
     /// Held so the provider stays alive (and reachable for `force_flush`)
     /// until the guard is dropped.
@@ -44,6 +57,23 @@ impl TelemetryGuard {
     }
 
     /// Explicitly flush pending spans and shut down the held provider.
+    ///
+    /// Returns [`OtelError::Shutdown`] if either `force_flush` or
+    /// `shutdown` on the held [`TracerProvider`] reports an error. The
+    /// [`Drop`] impl calls the same function and swallows the error
+    /// (logging at WARN); this method exposes the error to the caller.
+    ///
+    /// Idempotent: calling it after the guard has already been shut
+    /// down is a no-op that returns `Ok(())`.
+    ///
+    /// ```
+    /// use pheno_otel::TelemetryGuard;
+    ///
+    /// let guard: TelemetryGuard =
+    ///     pheno_otel::init_with_stdout("doc-test").expect("stdout init works");
+    /// guard.shutdown().expect("fresh provider shutdown is Ok");
+    /// ```
+    #[must_use = "Result-returning; ignoring the Err arm silently masks a failed shutdown"]
     pub fn shutdown(&self) -> Result<(), OtelError> {
         let flush_errors = self.provider.force_flush();
         for result in &flush_errors {

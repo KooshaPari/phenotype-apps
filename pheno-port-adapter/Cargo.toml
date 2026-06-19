@@ -6,5 +6,20 @@ rust-version = "1.82"
 
 [workspace]
 
+[features]
+default = []
+# ADR-036: tracing feature flag (off by default). Enables the `tracing`
+# macros so `Connection::open` and `Adapter::call` can emit span
+# events. The canonical pheno-tracing substrate lives in
+# `crates/pheno-tracing`; this flag is opt-in per the v8 batch spec.
+tracing = ["dep:tracing"]
+
 [dependencies]
 thiserror = "2.0"
+tracing = { version = "0.1", optional = true }
+
+[dev-dependencies]
+# ADR-036: `tracing-test` is a regular (non-optional) dev-dep; the test
+# that uses it is feature-gated so it is only compiled with
+# `--features tracing`.
+tracing-test = "0.2"

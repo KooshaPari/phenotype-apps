@@ -122,6 +122,17 @@ impl ContextBuilder {
     }
 
     /// Build the [`Context`], validating that all required fields are present.
+    ///
+    /// Returns [`ContextError::MissingHeader`] if any of the required
+    /// fields (`request_id`, `span_id`, `trace_id`) is unset.
+    ///
+    /// ```
+    /// use pheno_context::Context;
+    ///
+    /// let err = Context::new().build().expect_err("missing required fields");
+    /// assert!(matches!(err, pheno_context::ContextError::MissingHeader(_)));
+    /// ```
+    #[must_use = "Result-returning; ignoring the Err arm silently masks a missing field"]
     pub fn build(self) -> Result<Context, ContextError> {
         let request_id = self
             .request_id

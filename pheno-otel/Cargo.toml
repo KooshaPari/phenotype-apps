@@ -24,6 +24,13 @@ publish = false
 name = "pheno_otel"
 path = "src/lib.rs"
 
+[features]
+# T17 (ADR-024) — forward-compat placeholder for the
+# `pheno-tracing` OTLP substrate (per ADR-012). When wired up, this
+# will swap the in-crate `tracing`/`tracing-subscriber` deps for the
+# canonical pheno-* implementations.
+tracing = []
+
 [dependencies]
 # OpenTelemetry stack — pinned to the 0.27 line. The 0.27 API uses
 # `Resource::new_with_defaults(...)` (infallible) and a

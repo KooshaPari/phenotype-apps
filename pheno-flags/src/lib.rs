@@ -91,6 +91,7 @@ pub enum FlagError {
 ///
 /// Cloning is cheap: the map is a small `String -> bool` table.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[must_use = "FlagSet exposes only query methods; an unused value is almost always a logic bug"]
 pub struct FlagSet {
     flags: HashMap<String, bool>,
 }

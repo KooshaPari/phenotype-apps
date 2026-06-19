@@ -13,9 +13,24 @@ publish = false
 name = "pheno_context"
 path = "src/lib.rs"
 
+[features]
+default = []
+# ADR-036: tracing feature flag (off by default). Enables the `tracing`
+# macros so `Context::new` and `Context::from_headers` can emit
+# span events. The canonical pheno-tracing substrate lives in
+# `crates/pheno-tracing`; this flag is opt-in per the v8 batch spec.
+tracing = ["dep:tracing"]
+
 [dependencies]
 thiserror = { workspace = true }
 http = "1.1"
+# ADR-036: opt into `tracing` for span propagation through
+# `Context::from_headers` and `ContextBuilder::build`. Default off.
+tracing = { version = "0.1", optional = true }
 
 [dev-dependencies]
 http = "1.1"
+# ADR-036: `tracing-test` is a regular (non-optional) dev-dep; the test
+# that uses it is feature-gated so it is only compiled with
+# `--features tracing`.
+tracing-test = "0.2"
