@@ -1,0 +1,49 @@
+# {{REPO_NAME}} — STATUS.md
+
+> **Last refreshed:** `{{YYYY-MM-DD}}` against tree `{{commit-sha | tag}}`. **Refresh:** weekly Monday 09:00 local OR on any wave-merge. **Substrate tier:** `{{pheno-*-lib | phenotype-*-sdk | phenotype-*-framework | federated-service}}` (per ADR-023).
+
+---
+## 1. Current state
+| Build | Coverage | Latest | Open issues / PRs |
+|---|---|---|---|
+| `{{green | yellow | red}}` | `{{NN%}}` | `{{vX.Y.Z}}` (`{{YYYY-MM-DD}}`) | `{{N}}` / `{{N}}` |
+
+## 2. Recent activity (last 7 days)
+- `{{YYYY-MM-DD}}` — {{one-line change}} (PR `{{#NNN}}`)
+- `{{YYYY-MM-DD}}` — {{one-line change}} (PR `{{#NNN}}`)
+
+## 3. In-flight
+- `{{branch}}` → `{{base}}` — {{summary}} ([PR `{{#NNN}}`]({{URL}}))
+
+## 4. Blocked
+- {{item}} — waiting on {{person / repo / system}}; since `{{YYYY-MM-DD}}`
+
+## 5. Near-term (next 2 weeks)
+- {{planned}} — target `{{YYYY-MM-DD}}`; owner `{{name}}`
+
+## 6. Version
+- **Latest:** `{{vX.Y.Z}}` (`{{YYYY-MM-DD}}`) — {{one-line note}}
+- **Next planned:** `{{vX.Y.Z}}` — target `{{YYYY-MM-DD}}`
+- **LTS (if any):** `{{vX.Y.Z}}` — supported until `{{YYYY-MM-DD}}`
+
+## 7. Related
+`README.md` · `SPEC.md` (per ADR-042) · `llms.txt` · `WORKLOG.md` (per ADR-025 v2.1, includes `device:` field) · `CHANGELOG.md` · `docs/adr/`
+
+---
+
+## Factory AI Agent Readiness (per ADR-026)
+5-level gated model (Functional → Documented → Standardized → Optimized → Autonomous); 9 pillars; 80% threshold per level. Source: <https://docs.factory.ai/web/agent-readiness/overview>.
+
+| Pillar | Score (0-3) | Top gap |
+|---|---|---|
+| Style & Validation | `{{0-3}}` | {{one-line gap}} |
+| Build System | `{{0-3}}` | {{one-line gap}} |
+| Testing | `{{0-3}}` | {{one-line gap}} |
+| Documentation | `{{0-3}}` | {{one-line gap}} |
+| Dev Environment | `{{0-3}}` | {{one-line gap}} |
+| Debugging & Observability | `{{0-3}}` | {{one-line gap}} |
+| Security | `{{0-3}}` | {{one-line gap}} |
+| Task Discovery | `{{0-3}}` | {{one-line gap}} |
+| Product & Experimentation | `{{0-3}}` | {{one-line gap}} |
+
+**Current level:** `{{0-4}}` (label: `{{Functional | Documented | Standardized | Optimized | Autonomous}}`). Refresh via `/readiness-report` Droid CLI; action items feed next v7+ plan as P0 tasks. Org score = `floor(average of all repo levels)`.
