@@ -75,7 +75,7 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 
 ---
 
-## Active ADRs (30 total, +ADR-030, +ADR-031 this turn)
+## Active ADRs (49 total, +ADR-035 through +ADR-049 this turn)
 
 **2026-06-14 wave (6 ADRs at `docs/adr/2026-06-14/`):**
 
@@ -128,6 +128,40 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 | **ADR-032** | **pheno-worklog-schema is a primitive lib, NOT a re-implementation of AgilePlus worklog** | **L5-104.8, 2026-06-17** — see `docs/adr/2026-06-17/ADR-032-pheno-worklog-schema-decision.md`; different formats (Markdown table vs JSONL), different audiences, both coexist |
 | **ADR-033** **[CLOSED 2026-06-19]** | **Delete `KooshaPari/phenotype-monorepo-state` — single-source-of-truth; monorepo IS the canonical location** | **L5-104.9, 2026-06-17** — see `docs/adr/2026-06-17/ADR-033-phenotype-monorepo-state-deletion.md`; 11 commits consolidated to `phenotype-org-audits` + monorepo; `gh repo delete` after 30-day grace → **EXECUTED 2026-06-18, 18 days ahead of schedule**; verified HTTP 404 (2026-06-19 04:46 UTC); disposition-index `sr-monorepo-state` `fsm: done` |
 | **ADR-034** **[CLOSED 2026-06-19]** | **`KooshaPari/phenotype-monorepo-state` deletion schedule — 2026-07-17** | **L5-104.10, 2026-06-17** — see `docs/adr/2026-06-17/ADR-034-monorepo-state-deletion-schedule.md`; 30-day grace + 5-step pre-deletion checklist → **schedule superseded by user-deleted 2026-06-18**; pre-checklist partially met (11 commits LOST, 5 ADR docs re-authored locally) |
+
+**2026-06-18 wave (this turn, +ADR-035 through +ADR-049 = 15 ADRs):**
+
+**Wave A — Substrate canonicals (ADR-035..ADR-040, 6 ADRs):**
+
+| ADR | Subject | Notes |
+|---|---|---|
+| **ADR-035** | **Configra migration gates** | L5-105, 2026-06-18 — see `docs/adr/2026-06-18/ADR-035-configra-migration-gates.md`; gate table for `phenotype-config` → `Configra` move (closes L6 health gap) |
+| **ADR-035B** | **Event-bus substrate consolidation** | L5-105.5, 2026-06-18 — see `docs/adr/2026-06-18/ADR-035B-event-bus-substrate-consolidation.md`; `pheno-events` / `phenotype-bus` / `phenotype-hub` polyglot merge plan |
+| **ADR-036** | **pheno-capacity substrate canonical** | L5-106, 2026-06-18 — see `docs/adr/2026-06-18/ADR-036-pheno-capacity.md`; extracted from `HwLedger` (per drift-detector retroactive hit) |
+| **ADR-036B** | **pheno-tracing substrate canonical (re-affirmed)** | L5-106.5, 2026-06-18 — see `docs/adr/2026-06-18/ADR-036-pheno-tracing-substrate-canonical.md`; supersedes ADR-012 reference for v8 sweep |
+| **ADR-037** | **pheno-mcp-router substrate canonical (re-affirmed)** | L5-107, 2026-06-18 — see `docs/adr/2026-06-18/ADR-037-pheno-mcp-router-substrate-canonical.md`; supersedes ADR-013 reference for v8 sweep |
+| **ADR-038** | **Hexagonal port-adapter L4 policy (formal)** | L5-108, 2026-06-18 — see `docs/adr/2026-06-18/ADR-038-hexagonal-port-adapter-l4-policy.md`; supersedes ADR-014 reference for v8 sweep |
+| **ADR-039** | **pheno-flake refresh template** | L5-109, 2026-06-18 — see `docs/adr/2026-06-18/ADR-039-pheno-flake-refresh-template.md`; nix flake canonical for all pheno-* tooling |
+| **ADR-040** | **Test coverage gates per tier** | L5-110, 2026-06-18 — see `docs/adr/2026-06-18/ADR-040-test-coverage-gates-per-tier.md`; 80% lib / 70% framework / 60% federated service (codifies ADR-023 Rule 3.1) |
+
+**Wave B — Cadence / quality ADRs (ADR-041..ADR-045, 5 ADRs — note: doc-numbering collision with drift detector) :**
+
+| ADR | Subject | Notes |
+|---|---|---|
+| **ADR-041** | **71-pillar refresh cadence** | L5-110.1, 2026-06-18 — see `docs/adr/2026-06-18/ADR-041-71-pillar-refresh-cadence.md`; weekly Monday 09:00 PDT cron (codifies `audit-71-pillar-2026-06-17-wrapup.md` § 11) |
+| **ADR-041B** | **Substrate audit cadence** | L5-110.2, 2026-06-18 — see `docs/adr/2026-06-18/ADR-041-substrate-audit-cadence.md`; bi-weekly substrate health audit |
+| **ADR-042** | **Security audit cadence** | L5-110.3, 2026-06-18 — see `docs/adr/2026-06-18/ADR-042-security-audit-cadence.md`; monthly `cargo audit` + `pip-audit` + `govulncheck` sweep |
+| **ADR-042B** | **Substrate quality bar (formal)** | L5-110.4, 2026-06-18 — see `docs/adr/2026-06-18/ADR-042-substrate-quality-bar.md`; codifies ADR-023 Rule 3.1 with named checks |
+| **ADR-043** | **Registry refresh cadence** | L5-110.5, 2026-06-18 — see `docs/adr/2026-06-18/ADR-043-registry-refresh-cadence.md`; bi-weekly `phenotype-registry` validation |
+
+**Wave C — Forward-looking governance (ADR-046..ADR-049, 4 ADRs):**
+
+| ADR | Subject | Notes |
+|---|---|---|
+| **ADR-046** | **Federation mTLS + OIDC** | L5-111, 2026-06-18 — see `docs/adr/2026-06-18/ADR-046-federation-mtls-oidc.md`; cross-org service-to-service auth |
+| **ADR-047** | **Predictive DRY discipline (4-criterion rule)** | L5-112, 2026-06-18 — see `docs/adr/2026-06-18/ADR-047-predictive-dry.md` + [§ Predictive DRY](#predictive-dry-adr-047) below; tool: `KooshaPari/pheno-predict` (L72) |
+| **ADR-048** | **Substrate graduation path (4-tier gate table)** | L5-113, 2026-06-18 — see `docs/adr/2026-06-18/ADR-048-substrate-graduation-path.md` + [§ Substrate graduation path](#substrate-graduation-path-adr-048) below; tool: `KooshaPari/pheno-framework-lint` (L73) |
+| **ADR-049** | **App-substrate drift detector (3-pass algorithm)** | L5-114, 2026-06-18 — see `docs/adr/2026-06-18/ADR-049-app-substrate-drift-detector.md` + [§ App-substrate drift detector](#app-substrate-drift-detector-adr-049) below; tool: `KooshaPari/pheno-drift-detector` (L74) |
 
 ---
 
