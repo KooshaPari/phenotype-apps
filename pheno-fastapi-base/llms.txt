@@ -1,0 +1,46 @@
+# pheno-fastapi-base
+
+Canonical FastAPI base for the pheno-* service fleet. Used by every pheno-*
+HTTP service.
+
+## Public API
+
+- `create_app(title, version)` — FastAPI factory with `/healthz`, `/readyz`,
+  structlog access-log middleware, `app.started` startup hook, and `AppError`
+  exception handler.
+- `AppError(code, message, details)` — framework-agnostic exception with
+  stable wire-code mapped to HTTP status via `code_to_status`.
+- `AsyncTestClient` — thin wrapper over `httpx.AsyncClient` driving the app
+  in-process via `httpx.ASGITransport` (no live uvicorn needed).
+
+## Conventions
+
+- When to use: any new pheno-* HTTP service.
+- When NOT to use: non-HTTP services.
+- 5-line quickstart:
+  ```python
+  from pheno_fastapi_base import create_app, AppError
+  app = create_app(title="my-service", version="0.1.0")
+  @app.get("/items/{id}")
+  async def get_item(id: str):
+      raise AppError("NotFound", f"no item {id}")
+  ```
+
+## Probe contracts
+
+- `GET /healthz` → 200 `{"status": "ok"}` always.
+- `GET /readyz` → 200 `{"status": "ready"}` once startup hook completed.
+
+## Quality bar
+
+- 71-pillar score: 23/71 (Tier 0)
+- Test matrix: 5 contract tests + smoke (`tests/test_app.py`)
+- License: dual (MIT + Apache-2.0)
+
+## See also
+
+- [SPEC.md](SPEC.md)
+- [AGENTS.md](AGENTS.md)
+- [CHANGELOG.md](CHANGELOG.md)
+- [WORKLOG.md](WORKLOG.md)
+- ADR-039 (pheno-flake template)
