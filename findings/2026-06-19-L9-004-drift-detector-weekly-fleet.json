@@ -1,0 +1,302 @@
+[
+  {
+    "repo": "AtomsBot",
+    "bucket": "capstone",
+    "capabilities": [
+      {
+        "dir": "tests",
+        "file_count": 44,
+        "total_bytes": 593239,
+        "has_port": true,
+        "has_adapter": false,
+        "has_test": true,
+        "ports": [
+          "github.ts:interface MockGitHubIssue {",
+          "github.ts:interface MockGitHubRepository {",
+          "jira.ts:interface MockJiraIssue {",
+          "jira.ts:interface MockJiraProject {",
+          "redis.ts:interface CacheEntry {"
+        ]
+      },
+      {
+        "dir": "scripts",
+        "file_count": 24,
+        "total_bytes": 77620,
+        "has_port": true,
+        "has_adapter": false,
+        "has_test": true,
+        "ports": [
+          "migrate-to-database.ts:interface LegacyLinkMappings {",
+          "migrate-to-database.ts:interface LegacyThread {",
+          "verify-test-performance.ts:interface TestSuiteMetrics {",
+          "verify-test-performance.ts:interface PerformanceReport {"
+        ]
+      },
+      {
+        "dir": "coverage",
+        "file_count": 6,
+        "total_bytes": 52852,
+        "has_port": false,
+        "has_adapter": false,
+        "has_test": false,
+        "ports": []
+      },
+      {
+        "dir": "src",
+        "file_count": 202,
+        "total_bytes": 2874520,
+        "has_port": true,
+        "has_adapter": true,
+        "has_test": true,
+        "ports": [
+          "store-db.ts:interface JiraLinkMapping {",
+          "store-db.ts:interface GitHubLinkMapping {",
+          "interfaces.ts:interface Thread {",
+          "interfaces.ts:interface ThreadComment {",
+          "interfaces.ts:interface GitIssue {"
+        ]
+      },
+      {
+        "dir": "api",
+        "file_count": 9,
+        "total_bytes": 20324,
+        "has_port": false,
+        "has_adapter": false,
+        "has_test": false,
+        "ports": []
+      }
+    ],
+    "drift_score": 7.4,
+    "candidate_paths": [
+      "tests",
+      "scripts",
+      "src"
+    ],
+    "target_substrate": "phenotype-*-sdk",
+    "rationale": "Found 5 non-trivial capabilities, 3 with Port trait, 1 with Adapter, 3 with tests. Score 7.40 (threshold 1.5).",
+    "suggested_action": "Extract 'tests' (and related) from AtomsBot into a new `phenotype-*-sdk` crate under the appropriate fleet location (see ADR-023 substrate placement rules).",
+    "matched_files": [
+      "tests/*",
+      "scripts/*",
+      "src/*"
+    ],
+    "detected_at": "2026-06-19T07:59:01.850213+00:00"
+  },
+  {
+    "repo": "AtomsBot-2nd",
+    "bucket": "capstone",
+    "capabilities": [
+      {
+        "dir": "tests",
+        "file_count": 44,
+        "total_bytes": 584178,
+        "has_port": true,
+        "has_adapter": false,
+        "has_test": true,
+        "ports": [
+          "github.ts:interface MockGitHubIssue {",
+          "github.ts:interface MockGitHubRepository {",
+          "jira.ts:interface MockJiraIssue {",
+          "jira.ts:interface MockJiraProject {",
+          "redis.ts:interface CacheEntry {"
+        ]
+      },
+      {
+        "dir": "scripts",
+        "file_count": 24,
+        "total_bytes": 77250,
+        "has_port": true,
+        "has_adapter": false,
+        "has_test": true,
+        "ports": [
+          "migrate-to-database.ts:interface LegacyLinkMappings {",
+          "migrate-to-database.ts:interface LegacyThread {",
+          "verify-test-performance.ts:interface TestSuiteMetrics {",
+          "verify-test-performance.ts:interface PerformanceReport {"
+        ]
+      },
+      {
+        "dir": "src",
+        "file_count": 202,
+        "total_bytes": 2874520,
+        "has_port": true,
+        "has_adapter": true,
+        "has_test": true,
+        "ports": [
+          "store-db.ts:interface JiraLinkMapping {",
+          "store-db.ts:interface GitHubLinkMapping {",
+          "interfaces.ts:interface Thread {",
+          "interfaces.ts:interface ThreadComment {",
+          "interfaces.ts:interface GitIssue {"
+        ]
+      },
+      {
+        "dir": "api",
+        "file_count": 9,
+        "total_bytes": 20089,
+        "has_port": false,
+        "has_adapter": false,
+        "has_test": false,
+        "ports": []
+      }
+    ],
+    "drift_score": 6.4,
+    "candidate_paths": [
+      "tests",
+      "scripts",
+      "src"
+    ],
+    "target_substrate": "phenotype-*-sdk",
+    "rationale": "Found 4 non-trivial capabilities, 3 with Port trait, 1 with Adapter, 3 with tests. Score 6.40 (threshold 1.5).",
+    "suggested_action": "Extract 'tests' (and related) from AtomsBot-2nd into a new `phenotype-*-sdk` crate under the appropriate fleet location (see ADR-023 substrate placement rules).",
+    "matched_files": [
+      "tests/*",
+      "scripts/*",
+      "src/*"
+    ],
+    "detected_at": "2026-06-19T07:59:02.166314+00:00"
+  },
+  {
+    "repo": "Dino",
+    "bucket": "conditional",
+    "capabilities": [
+      {
+        "dir": "unity-assetbundle-builder",
+        "file_count": 4,
+        "total_bytes": 18268,
+        "has_port": false,
+        "has_adapter": false,
+        "has_test": false,
+        "ports": []
+      },
+      {
+        "dir": "scripts",
+        "file_count": 109,
+        "total_bytes": 1012968,
+        "has_port": true,
+        "has_adapter": true,
+        "has_test": true,
+        "ports": [
+          "detect_unguarded_deserialize.py:interface IValidatable {",
+          "types.ts:interface CalloutProps {",
+          "types.ts:interface FeatureSceneProps {",
+          "TitleCard.tsx:interface TitleCardProps {"
+        ]
+      },
+      {
+        "dir": "src",
+        "file_count": 45,
+        "total_bytes": 425195,
+        "has_port": false,
+        "has_adapter": true,
+        "has_test": true,
+        "ports": []
+      },
+      {
+        "dir": "packs",
+        "file_count": 5,
+        "total_bytes": 50497,
+        "has_port": false,
+        "has_adapter": false,
+        "has_test": false,
+        "ports": []
+      },
+      {
+        "dir": "docs",
+        "file_count": 8,
+        "total_bytes": 45440,
+        "has_port": true,
+        "has_adapter": false,
+        "has_test": false,
+        "ports": [
+          "journey-generator.ts:interface ValidationWarning {",
+          "registry.data.ts:interface RegistryPackEntry {",
+          "registry.data.ts:interface RegistryDocument {",
+          "types.ts:interface BBox {",
+          "types.ts:interface Annotation {"
+        ]
+      },
+      {
+        "dir": "tools",
+        "file_count": 7,
+        "total_bytes": 13796,
+        "has_port": true,
+        "has_adapter": false,
+        "has_test": false,
+        "ports": [
+          "SceneView.tsx:interface SceneViewProps {",
+          "Highlight.tsx:interface ScaleCtx {"
+        ]
+      }
+    ],
+    "drift_score": 8.4,
+    "candidate_paths": [
+      "scripts",
+      "docs",
+      "tools"
+    ],
+    "target_substrate": "phenotype-*-framework",
+    "rationale": "Found 6 non-trivial capabilities, 3 with Port trait, 2 with Adapter, 2 with tests. Score 8.40 (threshold 1.5).",
+    "suggested_action": "Extract 'unity-assetbundle-builder' (and related) from Dino into a new `phenotype-*-framework` crate under the appropriate fleet location (see ADR-023 substrate placement rules).",
+    "matched_files": [
+      "scripts/*",
+      "docs/*",
+      "tools/*"
+    ],
+    "detected_at": "2026-06-19T07:59:02.798079+00:00"
+  },
+  {
+    "repo": "QuadSGM",
+    "bucket": "paused",
+    "capabilities": [
+      {
+        "dir": "4sgm",
+        "file_count": 191,
+        "total_bytes": 1223220,
+        "has_port": true,
+        "has_adapter": true,
+        "has_test": true,
+        "ports": [
+          "base.py:class BaseRepository(Protocol",
+          "session.ts:interface SessionCartItem {",
+          "session.ts:interface DiscountOffer {",
+          "session.ts:interface QuickLinkTarget {",
+          "session.ts:interface PageViewEvent {"
+        ]
+      },
+      {
+        "dir": "assets",
+        "file_count": 105,
+        "total_bytes": 2401923,
+        "has_port": false,
+        "has_adapter": true,
+        "has_test": true,
+        "ports": []
+      },
+      {
+        "dir": "docs",
+        "file_count": 5,
+        "total_bytes": 16742,
+        "has_port": true,
+        "has_adapter": false,
+        "has_test": false,
+        "ports": [
+          "video-embed.ts:interface VideoEmbedOptions {"
+        ]
+      }
+    ],
+    "drift_score": 4.999999999999999,
+    "candidate_paths": [
+      "4sgm",
+      "docs"
+    ],
+    "target_substrate": "phenotype-*-framework",
+    "rationale": "Found 3 non-trivial capabilities, 2 with Port trait, 2 with Adapter, 2 with tests. Score 5.00 (threshold 1.5).",
+    "suggested_action": "Extract '4sgm' (and related) from QuadSGM into a new `phenotype-*-framework` crate under the appropriate fleet location (see ADR-023 substrate placement rules).",
+    "matched_files": [
+      "4sgm/*",
+      "docs/*"
+    ],
+    "detected_at": "2026-06-19T07:59:03.350392+00:00"
+  }
+]

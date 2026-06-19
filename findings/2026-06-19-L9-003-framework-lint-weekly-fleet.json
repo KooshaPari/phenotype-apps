@@ -1,0 +1,658 @@
+[
+  {
+    "repo": "pheno-agents-md",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic",
+      "no-app-deps"
+    ]
+  },
+  {
+    "repo": "pheno-cargo-template",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic",
+      "no-app-deps"
+    ]
+  },
+  {
+    "repo": "pheno-ci-templates",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic"
+    ]
+  },
+  {
+    "repo": "pheno-cli-base",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic",
+      "no-app-deps"
+    ]
+  },
+  {
+    "repo": "pheno-config",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic",
+      "no-app-deps"
+    ]
+  },
+  {
+    "repo": "pheno-context",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic",
+      "no-app-deps"
+    ]
+  },
+  {
+    "repo": "pheno-cost-card",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic"
+    ]
+  },
+  {
+    "repo": "pheno-drift-detector",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic"
+    ]
+  },
+  {
+    "repo": "pheno-errors",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "tests/smoke.rs",
+        "detail": "found business-logic marker `\\bdomain\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      },
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "src/lib.rs",
+        "detail": "found business-logic marker `\\bdomain\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      }
+    ],
+    "passed": [
+      "no-domain",
+      "no-app-deps"
+    ]
+  },
+  {
+    "repo": "pheno-fastapi-base",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "pheno_fastapi_base/__init__.py",
+        "detail": "found business-logic marker `\\bhandler\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      },
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "pheno_fastapi_base/app.py",
+        "detail": "found business-logic marker `\\bhandler\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      },
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "pheno_fastapi_base/errors.py",
+        "detail": "found business-logic marker `\\bdomain\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      },
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "pheno_fastapi_base/errors.py",
+        "detail": "found business-logic marker `\\bhandler\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      },
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "pheno_fastapi_base/testing.py",
+        "detail": "found business-logic marker `\\bhandler\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      }
+    ],
+    "passed": [
+      "no-domain"
+    ]
+  },
+  {
+    "repo": "pheno-flags",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic",
+      "no-app-deps"
+    ]
+  },
+  {
+    "repo": "pheno-framework-lint",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "pheno_framework_lint.py",
+        "detail": "found business-logic marker `\\bdomain\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      },
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "tests/test_smoke.py",
+        "detail": "found business-logic marker `\\bdomain\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      }
+    ],
+    "passed": [
+      "no-domain"
+    ]
+  },
+  {
+    "repo": "pheno-go-ctxkit",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "ctxkit/ctxkit.go",
+        "detail": "found business-logic marker `\\bhandler\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      },
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "ctxkit/ctxkit_test.go",
+        "detail": "found business-logic marker `\\bhandler\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      }
+    ],
+    "passed": [
+      "no-domain"
+    ]
+  },
+  {
+    "repo": "pheno-llms-txt",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic"
+    ]
+  },
+  {
+    "repo": "pheno-mcp-router",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "tests/test_ports.py",
+        "detail": "found business-logic marker `\\bhandler\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      }
+    ],
+    "passed": [
+      "no-domain"
+    ]
+  },
+  {
+    "repo": "pheno-otel",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic",
+      "no-app-deps"
+    ]
+  },
+  {
+    "repo": "pheno-port-adapter",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "src/lib.rs",
+        "detail": "found business-logic marker `\\bdomain\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      },
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "src/adapters/unix.rs",
+        "detail": "found business-logic marker `\\bdomain\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      }
+    ],
+    "passed": [
+      "no-domain",
+      "no-app-deps"
+    ]
+  },
+  {
+    "repo": "pheno-predict",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic"
+    ]
+  },
+  {
+    "repo": "pheno-profiling",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic"
+    ]
+  },
+  {
+    "repo": "pheno-prompt-test",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic"
+    ]
+  },
+  {
+    "repo": "pheno-pydantic-models",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "pheno_pydantic_models/__init__.py",
+        "detail": "found business-logic marker `\\bdomain\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      }
+    ],
+    "passed": [
+      "no-domain"
+    ]
+  },
+  {
+    "repo": "pheno-scaffold-kit",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": ".venv-test/lib/python3.14/site-packages/packaging/metadata.py",
+        "detail": "found business-logic marker `\\bhandler\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      },
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": ".venv-test/lib/python3.14/site-packages/_pytest/logging.py",
+        "detail": "found business-logic marker `\\bhandler\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      },
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": ".venv-test/lib/python3.14/site-packages/_pytest/terminal.py",
+        "detail": "found business-logic marker `\\bdomain\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      },
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": ".venv-test/lib/python3.14/site-packages/_pytest/subtests.py",
+        "detail": "found business-logic marker `\\bdomain\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      },
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": ".venv-test/lib/python3.14/site-packages/_pytest/subtests.py",
+        "detail": "found business-logic marker `\\bhandler\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      }
+    ],
+    "passed": [
+      "no-domain"
+    ]
+  },
+  {
+    "repo": "pheno-secret-scan",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic"
+    ]
+  },
+  {
+    "repo": "pheno-ssot-template",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic"
+    ]
+  },
+  {
+    "repo": "pheno-vibecoding-guard",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic"
+    ]
+  },
+  {
+    "repo": "pheno-worklog-schema",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [],
+    "passed": [
+      "no-domain",
+      "no-business-logic"
+    ]
+  },
+  {
+    "repo": "pheno-zod-schemas",
+    "inferred_tier": "pheno-*-lib",
+    "violations": [
+      {
+        "rule": "pheno-lib/no-business-logic",
+        "severity": "warning",
+        "path": "src/index.ts",
+        "detail": "found business-logic marker `\\bdomain\\b`",
+        "remediation": "Refactor into phenotype-*-sdk or phenotype-*-framework; keep pheno-*-lib primitives-only."
+      }
+    ],
+    "passed": [
+      "no-domain"
+    ]
+  },
+  {
+    "repo": "phenoAI",
+    "inferred_tier": "federated-service",
+    "violations": [
+      {
+        "rule": "federated-service/deploy-config",
+        "severity": "warning",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoAI",
+        "detail": "no Dockerfile / k8s / compose / Procfile / fly.toml found",
+        "remediation": "Add a Dockerfile and at least one deployment manifest."
+      },
+      {
+        "rule": "federated-service/health-endpoint",
+        "severity": "error",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoAI",
+        "detail": "no /health /healthz /readyz /livez /ready endpoint found",
+        "remediation": "Add a /health (liveness) and /readyz (readiness) endpoint."
+      }
+    ],
+    "passed": []
+  },
+  {
+    "repo": "phenoData",
+    "inferred_tier": "federated-service",
+    "violations": [
+      {
+        "rule": "federated-service/deploy-config",
+        "severity": "warning",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoData",
+        "detail": "no Dockerfile / k8s / compose / Procfile / fly.toml found",
+        "remediation": "Add a Dockerfile and at least one deployment manifest."
+      },
+      {
+        "rule": "federated-service/health-endpoint",
+        "severity": "error",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoData",
+        "detail": "no /health /healthz /readyz /livez /ready endpoint found",
+        "remediation": "Add a /health (liveness) and /readyz (readiness) endpoint."
+      }
+    ],
+    "passed": []
+  },
+  {
+    "repo": "phenoDesign",
+    "inferred_tier": "federated-service",
+    "violations": [
+      {
+        "rule": "federated-service/deploy-config",
+        "severity": "warning",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoDesign",
+        "detail": "no Dockerfile / k8s / compose / Procfile / fly.toml found",
+        "remediation": "Add a Dockerfile and at least one deployment manifest."
+      },
+      {
+        "rule": "federated-service/health-endpoint",
+        "severity": "error",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoDesign",
+        "detail": "no /health /healthz /readyz /livez /ready endpoint found",
+        "remediation": "Add a /health (liveness) and /readyz (readiness) endpoint."
+      }
+    ],
+    "passed": []
+  },
+  {
+    "repo": "phenoForge",
+    "inferred_tier": "federated-service",
+    "violations": [
+      {
+        "rule": "federated-service/deploy-config",
+        "severity": "warning",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoForge",
+        "detail": "no Dockerfile / k8s / compose / Procfile / fly.toml found",
+        "remediation": "Add a Dockerfile and at least one deployment manifest."
+      },
+      {
+        "rule": "federated-service/health-endpoint",
+        "severity": "error",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoForge",
+        "detail": "no /health /healthz /readyz /livez /ready endpoint found",
+        "remediation": "Add a /health (liveness) and /readyz (readiness) endpoint."
+      }
+    ],
+    "passed": []
+  },
+  {
+    "repo": "phenoResearchEngine",
+    "inferred_tier": "federated-service",
+    "violations": [
+      {
+        "rule": "federated-service/deploy-config",
+        "severity": "warning",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoResearchEngine",
+        "detail": "no Dockerfile / k8s / compose / Procfile / fly.toml found",
+        "remediation": "Add a Dockerfile and at least one deployment manifest."
+      },
+      {
+        "rule": "federated-service/health-endpoint",
+        "severity": "error",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoResearchEngine",
+        "detail": "no /health /healthz /readyz /livez /ready endpoint found",
+        "remediation": "Add a /health (liveness) and /readyz (readiness) endpoint."
+      }
+    ],
+    "passed": []
+  },
+  {
+    "repo": "phenoShared",
+    "inferred_tier": "federated-service",
+    "violations": [
+      {
+        "rule": "federated-service/deploy-config",
+        "severity": "warning",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoShared",
+        "detail": "no Dockerfile / k8s / compose / Procfile / fly.toml found",
+        "remediation": "Add a Dockerfile and at least one deployment manifest."
+      }
+    ],
+    "passed": [
+      "health-endpoint"
+    ]
+  },
+  {
+    "repo": "phenoUtils",
+    "inferred_tier": "federated-service",
+    "violations": [
+      {
+        "rule": "federated-service/deploy-config",
+        "severity": "warning",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoUtils",
+        "detail": "no Dockerfile / k8s / compose / Procfile / fly.toml found",
+        "remediation": "Add a Dockerfile and at least one deployment manifest."
+      },
+      {
+        "rule": "federated-service/health-endpoint",
+        "severity": "error",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoUtils",
+        "detail": "no /health /healthz /readyz /livez /ready endpoint found",
+        "remediation": "Add a /health (liveness) and /readyz (readiness) endpoint."
+      }
+    ],
+    "passed": []
+  },
+  {
+    "repo": "phenoXdd",
+    "inferred_tier": "federated-service",
+    "violations": [
+      {
+        "rule": "federated-service/deploy-config",
+        "severity": "warning",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoXdd",
+        "detail": "no Dockerfile / k8s / compose / Procfile / fly.toml found",
+        "remediation": "Add a Dockerfile and at least one deployment manifest."
+      },
+      {
+        "rule": "federated-service/health-endpoint",
+        "severity": "error",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenoXdd",
+        "detail": "no /health /healthz /readyz /livez /ready endpoint found",
+        "remediation": "Add a /health (liveness) and /readyz (readiness) endpoint."
+      }
+    ],
+    "passed": []
+  },
+  {
+    "repo": "phenotype-auth-ts",
+    "inferred_tier": "phenotype-*-sdk",
+    "violations": [
+      {
+        "rule": "phenotype-sdk/polyglot-required",
+        "severity": "error",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-auth-ts",
+        "detail": "phenotype-*-sdk must have polyglot consumers (\u2265 2 languages) OR ADR-018 PRCP markers. Found 1 lang(s) in repo, no PRCP markers.",
+        "remediation": "Add a consumer in another language, or add an ADR-018 PRCP marker (pyo3/uniffi/wasm_bindgen/grpc)."
+      }
+    ],
+    "passed": []
+  },
+  {
+    "repo": "phenotype-errors",
+    "inferred_tier": "phenotype-*-sdk",
+    "violations": [
+      {
+        "rule": "phenotype-sdk/polyglot-required",
+        "severity": "error",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-errors",
+        "detail": "phenotype-*-sdk must have polyglot consumers (\u2265 2 languages) OR ADR-018 PRCP markers. Found 1 lang(s) in repo, no PRCP markers.",
+        "remediation": "Add a consumer in another language, or add an ADR-018 PRCP marker (pyo3/uniffi/wasm_bindgen/grpc)."
+      }
+    ],
+    "passed": []
+  },
+  {
+    "repo": "phenotype-go-sdk",
+    "inferred_tier": "phenotype-*-sdk",
+    "violations": [],
+    "passed": [
+      "polyglot (4 langs)"
+    ]
+  },
+  {
+    "repo": "phenotype-mcp-sdk-go",
+    "inferred_tier": "phenotype-*-sdk",
+    "violations": [
+      {
+        "rule": "phenotype-sdk/polyglot-required",
+        "severity": "error",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-mcp-sdk-go",
+        "detail": "phenotype-*-sdk must have polyglot consumers (\u2265 2 languages) OR ADR-018 PRCP markers. Found 1 lang(s) in repo, no PRCP markers.",
+        "remediation": "Add a consumer in another language, or add an ADR-018 PRCP marker (pyo3/uniffi/wasm_bindgen/grpc)."
+      }
+    ],
+    "passed": []
+  },
+  {
+    "repo": "phenotype-mcp-sdk-py",
+    "inferred_tier": "phenotype-*-sdk",
+    "violations": [
+      {
+        "rule": "phenotype-sdk/polyglot-required",
+        "severity": "error",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-mcp-sdk-py",
+        "detail": "phenotype-*-sdk must have polyglot consumers (\u2265 2 languages) OR ADR-018 PRCP markers. Found 1 lang(s) in repo, no PRCP markers.",
+        "remediation": "Add a consumer in another language, or add an ADR-018 PRCP marker (pyo3/uniffi/wasm_bindgen/grpc)."
+      }
+    ],
+    "passed": []
+  },
+  {
+    "repo": "phenotype-mcp-sdk-ts",
+    "inferred_tier": "phenotype-*-sdk",
+    "violations": [
+      {
+        "rule": "phenotype-sdk/polyglot-required",
+        "severity": "error",
+        "path": "/Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-mcp-sdk-ts",
+        "detail": "phenotype-*-sdk must have polyglot consumers (\u2265 2 languages) OR ADR-018 PRCP markers. Found 1 lang(s) in repo, no PRCP markers.",
+        "remediation": "Add a consumer in another language, or add an ADR-018 PRCP marker (pyo3/uniffi/wasm_bindgen/grpc)."
+      }
+    ],
+    "passed": []
+  },
+  {
+    "repo": "phenotype-org-audits",
+    "inferred_tier": "phenotype-*-sdk",
+    "violations": [],
+    "passed": [
+      "polyglot (3 langs)"
+    ]
+  },
+  {
+    "repo": "phenotype-python-sdk",
+    "inferred_tier": "phenotype-*-sdk",
+    "violations": [],
+    "passed": [
+      "polyglot (4 langs)"
+    ]
+  }
+]
