@@ -1,6 +1,6 @@
 # AGENTS.md — Phenotype monorepo
 
-**Date:** 2026-06-19 05:00 PDT (T12 closure: ADR-033 + ADR-034 marked CLOSED; Decision C closed)
+**Date:** 2026-06-19 05:00 PDT (T0.5 closure: v9 closed 2026-06-19; T12 closure: ADR-033 + ADR-034 marked CLOSED; Decision C closed)
 **Status:** ACTIVE (this file supersedes the prior FocalPoint template that lived here 2026-06-12 → 2026-06-15, the 2026-06-15 18:42 PDT version that lived here 2026-06-15 → 2026-06-17, and the 2026-06-17 12:00 PDT version that lived here 2026-06-17 → 2026-06-19)
 
 ---
@@ -75,7 +75,7 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 
 ---
 
-## Active ADRs (49 total, +ADR-035 through +ADR-049 this turn)
+## Active ADRs (54 total, +ADR-050 through +ADR-054 this turn [v9 T0.5])
 
 **2026-06-14 wave (6 ADRs at `docs/adr/2026-06-14/`):**
 
