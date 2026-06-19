@@ -315,7 +315,7 @@ Re-evaluate after all non-app fleet work (config, tracing, MCP-router, observabi
 - Pre-deletion checklist partially met; the 11-commit git history is **LOST** (the snapshot was a duplicate of in-progress governance that has since been superseded by v9/v8/v7 versions in the monorepo)
 - The 5 ADR docs (ADR-024 to ADR-034) exist in the monorepo's `docs/adr/2026-06-17/` directory independently — they were re-authored locally, not cherry-picked
 - 90-day GitHub retention policy still applies to the deleted repo (no recovery possible via UI)
-- Outstanding follow-ups: 5 stale `KooshaPari/Pyron:README.md` and `KooshaPari/phenotype-registry:*` link references need re-pointing to `KooshaPari/phenotype-apps` ADR paths (non-blocking, cosmetic)
+- **CLOSED:** 5 stale `KooshaPari/Pyron:README.md` and `KooshaPari/phenotype-registry:*` link references re-pointed to `KooshaPari/phenotype-apps` ADR paths via `docs/adr/` + AGENTS.md updates. `KooshaPari/Pyron` repo does not exist (HTTP 404); `KooshaPari/phenotype-registry` records are accurate disposition docs — no external repo changes needed. See PR `KooshaPari/phenotype-apps#chore/stale-refs-cleanup-2026-06-19`.
 
 **Historical state (pre-closure):**
 - `KooshaPari/phenotype-monorepo-state` existed (created 2026-06-18 03:52 UTC) — held 4 governance-snapshot commits.
@@ -457,6 +457,7 @@ See `findings/2026-06-18-L5-109-4-repo-retirement.md` for full migration matrix,
 - **codex exec unavailable for per-repo verification (2026-06-17 22:05 PDT)**: `codex exec --skip-git-repo-check` hit tool-routing cell_id errors in this environment (no output after 5 min); switched to direct orchestrator-level shell verification (`git fetch` + `git rev-list --count` + `git diff --name-only`). Equivalent rigor: per-commit + per-file cross-check.
 - **Track 8 cursor self-merge is the intended pattern (2026-06-18, per user directive)**: Bot merges with no HITL gate are the fleet norm. The P0 "violation" in the original post-mortem is reclassified P3 (informational). No reverts, no protection rules. See `findings/2026-06-18-track8-self-merge-postmortem.md` for the reclassified version.
 - **bucket_change HwLedger: from=PAUSED to=CONDITIONAL reason=ADR-035 (L5-105) reclassification — federated service with extractable pheno-capacity math lib**
+- **5 stale `KooshaPari/Pyron:README.md` and `KooshaPari/phenotype-registry:*` link references — CLOSED 2026-06-19** via `chore/stale-refs-cleanup-2026-06-19`. `KooshaPari/Pyron` does not exist (HTTP 404); `KooshaPari/phenotype-registry` references are accurate disposition docs. AGENTS.md Decision C follow-up updated to CLOSED; ADR-034 § Outstanding follow-ups marked DONE.
 
 ---
 

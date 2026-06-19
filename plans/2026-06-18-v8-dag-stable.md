@@ -137,9 +137,11 @@ Per AGENTS.md **Decision B** — `pheno-worklog-schema` is a primitive lib; Agil
 
 **Track T11 PR count: 4** (T11.4 ADR + T11.5 pheno-worklog-schema README + T11.6 AgilePlus README + 1 decision log)
 
-### 3.4 Track T12 — Monorepo-state Cleanup (P1, ~30 min, orchestrator)
+### 3.4 Track T12 — Monorepo-state Cleanup (P1, ~30 min, orchestrator) [SUPERSEDED]
 
 Per AGENTS.md **Decision C** — `KooshaPari/phenotype-monorepo-state` should not exist going forward.
+
+**Note:** This plan was superseded by actual events. The repo was user-deleted 2026-06-18 before the scheduled archival (see ADR-033 CLOSURE). All 4 governance-snapshot commits were already in the local monorepo.
 
 | Task | Description | P-level | Owner | Acceptance |
 |---|---|---|---|---|
@@ -638,7 +640,7 @@ T0.5.1 → T0.5.5 (15 min, wrap-up)
 | PR-303 | chore(governance): refresh AGENTS.md + STATUS.md for v8 launch | `KooshaPari/phenotype-apps` | T9.6 | PENDING |
 | PR-304 | chore(worklog-schema): ADR-032 keep separate | `KooshaPari/pheno-worklog-schema` | T11.4 | PENDING |
 | PR-305 | docs(agileplus): clarify worklog scope | `KooshaPari/AgilePlus` | T11.6 | PENDING |
-| PR-306 | chore(monorepo-state): mark for archival | `KooshaPari/phenotype-monorepo-state` | T12.5 | PENDING |
+| PR-306 | chore(monorepo-state): mark for archival | `KooshaPari/phenotype-monorepo-state` | T12.5 | SUPERSEDED (repo user-deleted 2026-06-18 before archival PR was needed) |
 | PR-307..310 | feat(*): substrate gap-closure (4 PRs) | `KooshaPari/Configra`, `pheno-tracing`, `pheno-mcp-router`, `phenotype-otel` | T16 | PENDING |
 | PR-311 | chore(github): weekly 71-pillar cron | `KooshaPari/phenotype-org-audits` | T13.17 | PENDING |
 | PR-312 | chore(github): quarterly substrate audit cron | `KooshaPari/phenotype-org-audits` | T16.18 | PENDING |

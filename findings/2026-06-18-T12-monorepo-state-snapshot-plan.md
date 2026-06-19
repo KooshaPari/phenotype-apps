@@ -16,7 +16,7 @@
 
 | Property | Value |
 |---|---|
-| Location | `github.com/KooshaPari/phenotype-monorepo-state` (created 2026-06-18 03:52 UTC) |
+| Location | `github.com/KooshaPari/phenotype-monorepo-state` (created 2026-06-18 03:52 UTC, user-deleted 2026-06-18 — now HTTP 404) |
 | Purpose | Ad-hoc governance snapshot taken during wrap-up session |
 | Content | 4 governance-snapshot commits (cherry-picked from local monorepo) |
 | Branches | Single branch (likely `main`) |
@@ -28,7 +28,7 @@
 | # | Task | Where | Action |
 |---|---|---|---|
 | 12.1 | Author `findings/2026-06-18-L8-008-phenotype-monorepo-state-snapshot.md` | local monorepo | (this file) |
-| 12.2 | Clone phenotype-monorepo-state locally | local `/tmp` | `git clone https://github.com/KooshaPari/phenotype-monorepo-state.git /tmp/pms` |
+| 12.2 | Clone phenotype-monorepo-state locally (NOTE: repo deleted 2026-06-18, clone will fail) | local `/tmp` | `git clone https://github.com/KooshaPari/phenotype-monorepo-state.git /tmp/pms` (404) |
 | 12.3 | Inspect 4 commits, extract their content (commits + diffs) | `/tmp/pms` | `git log -p --all 2>&1 \| head -200` |
 | 12.4 | Compare extracted content to local monorepo's `archive/2026-06-15-30-pillar-fleet` | local monorepo | `git diff archive/2026-06-15-30-pillar-fleet..origin/main /tmp/pms` |
 | 12.5 | If content is unique, copy into local `archive/2026-06-15-30-pillar-fleet/imports/2026-06-18-phenotype-monorepo-state/` | local monorepo | `mkdir -p archive/.../imports/2026-06-18-phenotype-monorepo-state/ && cp -r /tmp/pms/* archive/.../imports/2026-06-18-phenotype-monorepo-state/` |

@@ -85,5 +85,5 @@ After deletion (2026-07-17):
 
 ### Outstanding follow-ups (deferred)
 
-1. **External link cleanup:** The 5 stale references in `KooshaPari/Pyron:README.md` and `KooshaPari/phenotype-registry:*` should be re-pointed to `KooshaPari/phenotype-apps` ADR paths. Non-blocking; cosmetic.
-2. **AGENTS.md § "Scope decisions" Decision C** still reads as if deletion is pending; should be marked CLOSED (see T12.5, in same PR as this closure).
+1. **External link cleanup:** **[DONE — chore/stale-refs-cleanup-2026-06-19]** The 5 stale references in `KooshaPari/Pyron:README.md` and `KooshaPari/phenotype-registry:*` should be re-pointed to `KooshaPari/phenotype-apps` ADR paths. Non-blocking; cosmetic. `KooshaPari/Pyron` repo does not exist (HTTP 404); `KooshaPari/phenotype-registry` records are accurate disposition docs — no external repo changes required.
+2. **AGENTS.md § "Scope decisions" Decision C** — **[DONE — chore/stale-refs-cleanup-2026-06-19]** Already marked CLOSED per AGENTS.md § Decision C header `[CLOSED 2026-06-19, orch-w1-a T12]`. Verified in current AGENTS.md line 307.
