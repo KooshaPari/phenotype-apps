@@ -1,0 +1,37 @@
+<!--
+  llms.txt template — LLM-friendly content discovery index.
+  Spec: https://llmstxt.org/  (curated plain-text file at project root; "robots.txt for LLMs").
+  T20.7 of v8 plan; completes the 2nd governance doc in the release-ready meta-bundle
+  (per AGENTS.md §Conventions: AGENTS.md + llms.txt + WORKLOG.md + CHANGELOG.md + LICENSE-MIT).
+  Cross-references T20.2 SPEC.md.template, T20.5 WORKLOG.md.template, T20.6 CHANGELOG.md.template.
+-->
+
+# {{REPO_NAME}}
+
+> {{One-paragraph project summary: what it is, who it is for, why it exists.}}
+
+## Documentation
+
+- [README.md](README.md): quickstart, install, when to use, when NOT to use.
+- [AGENTS.md](AGENTS.md): project overview, conventions, governance for AI agents.
+- [SPEC.md](SPEC.md): canonical specification (what / why / how / interface / status; per ADR-042).
+- [WORKLOG.md](WORKLOG.md): change history (ADR-025 v2.1 schema; includes `device:` field).
+- [CHANGELOG.md](CHANGELOG.md): release notes, semver, breaking changes.
+- [{{topic-1}}.md]({{path/to/topic-1.md}}): {{one-line — e.g., "tutorial — getting started with X"}}.
+- [{{topic-2}}.md]({{path/to/topic-2.md}}): {{one-line — e.g., "architecture overview"}}.
+
+## Optional
+
+- [LICENSE-MIT](LICENSE-MIT): MIT license text.
+- [{{other-doc}}.md]({{path}}): {{one-line — e.g., "CONTRIBUTING.md — how to contribute"}}.
+- [{{other-doc}}.md]({{path}}): {{one-line — e.g., "SECURITY.md — vulnerability reporting"}}.
+
+<!--
+  Template notes:
+  - Format is fixed by llmstxt.org: H1 title, > blockquote summary, ## sections with bullet lists.
+  - Length: target ≤ 1 page (≤ 50 lines). Trim any section that does not earn its place.
+  - Each bullet MUST be `[filename](path): one-line summary` — the colon is part of the spec.
+  - List the meta-bundle files first (AGENTS.md, README.md, SPEC.md, WORKLOG.md, CHANGELOG.md),
+    then topic-specific docs. Place license under "Optional" so LLMs can skip it.
+  - Update cadence: re-audit on every release. CI lint: pheno-ci-templates/llms-txt-lint.yml (T20.7 follow-up).
+-->
