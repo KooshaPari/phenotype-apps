@@ -19,6 +19,7 @@ use crate::{AdapterError, Connection, PortAdapter};
 
 /// TCP transport adapter backed by a single [`TcpStream`].
 #[derive(Debug, Default)]
+#[must_use = "TcpAdapter is a value type; an unused value is almost always a logic bug"]
 pub struct TcpAdapter {
     inner: Mutex<TcpState>,
 }
@@ -31,6 +32,17 @@ struct TcpState {
 
 impl TcpAdapter {
     /// Create a new, unconnected TCP adapter.
+    ///
+    /// ```
+    /// use pheno_port_adapter::adapters::tcp::TcpAdapter;
+    /// use pheno_port_adapter::PortAdapter;
+    ///
+    /// let adapter = TcpAdapter::new();
+    /// assert_eq!(adapter.name(), "tcp");
+    /// // Not connected yet, so the health probe is expected to fail.
+    /// assert!(adapter.health().is_err());
+    /// ```
+    #[must_use = "TcpAdapter is a value type; an unused value is almost always a logic bug"]
     pub fn new() -> Self {
         Self::default()
     }

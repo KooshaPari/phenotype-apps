@@ -21,8 +21,31 @@ path = "src/lib.rs"
 
 [dependencies]
 clap = { version = "4.5", features = ["derive", "env"] }
+# ADR-036 (adapted for pheno-cli-base): `tracing-subscriber` stays a
+# hard dep because `Verbosity::to_filter` returns
+# `tracing_subscriber::filter::LevelFilter`; making it optional would
+# break the default build (the crate's purpose is CLI boilerplate and
+# every consumer needs the filter type). The `tracing` crate itself
+# is gated on the `tracing` feature because `setup_tracing` only does
+# useful work when the OTLP-emitting macros are compiled in. The
+# canonical "make both optional" pattern from the other 5 repos would
+# break `Verbosity` for default-build consumers, which violates the
+# "don't break default build" constraint from the v8 batch spec.
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
+[features]
+# T17 (ADR-024) — empty placeholder for forward-compat. When consumers
+# want to swap in the canonical `pheno-tracing` OTLP substrate (per
+# ADR-012), this feature will be wired up. For now `tracing` and
+# `tracing-subscriber` are non-optional hard deps because
+# `Verbosity::to_filter` returns a `tracing_subscriber::filter::LevelFilter`,
+# which would otherwise break the default build.
+default = []
+tracing = []
+
 [dev-dependencies]
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+# ADR-036: test that tracing spans emit (use OTEL_SDK_DISABLED=true in CI)
+# `tracing-test` is a regular (non-optional) dev-dep; the test that
+# uses it is feature-gated so it is only compiled with `--features tracing`.
+tracing-test = "0.2"

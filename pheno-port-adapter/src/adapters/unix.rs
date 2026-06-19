@@ -24,6 +24,7 @@ use crate::{AdapterError, Connection, PortAdapter};
 
 /// Unix-domain socket transport adapter backed by a single [`UnixStream`].
 #[derive(Debug, Default)]
+#[must_use = "UnixAdapter is a value type; an unused value is almost always a logic bug"]
 pub struct UnixAdapter {
     inner: Mutex<UnixState>,
 }
@@ -36,6 +37,17 @@ struct UnixState {
 
 impl UnixAdapter {
     /// Create a new, unconnected Unix-domain socket adapter.
+    ///
+    /// ```
+    /// use pheno_port_adapter::adapters::unix::UnixAdapter;
+    /// use pheno_port_adapter::PortAdapter;
+    ///
+    /// let adapter = UnixAdapter::new();
+    /// assert_eq!(adapter.name(), "unix");
+    /// // Not connected yet, so the health probe is expected to fail.
+    /// assert!(adapter.health().is_err());
+    /// ```
+    #[must_use = "UnixAdapter is a value type; an unused value is almost always a logic bug"]
     pub fn new() -> Self {
         Self::default()
     }
