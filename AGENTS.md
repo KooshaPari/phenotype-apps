@@ -131,17 +131,22 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 
 ---
 
-## Wave Plan (v7 — current, supersedes v6)
+## Wave Plan (v8 — current, supersedes v7)
 
-See `plans/2026-06-17-v7-dag-stable.md`. **~7 tracks, 30+ PRs, orchestrator + parallel forge subagent dispatch.**
+See `plans/2026-06-18-v8-dag-stable.md`. **19 tracks, ~220 tasks, ~210 PRs, 4-week execution window, fleet-wide scope.**
 
 - Track 1: Triage (P0, ~5min, this turn) — drop empty commits, drop stashes, commit meta-bundle, refresh governance docs
 - Track 2: 5 PR reviews (P1, parallel, ~10min) — PRs #129-#133 from W5 batch
 - Track 3: 71-pillar audit (P1, ~30min) — schema + probe + score + render + crosswalk
 - Track 4: ADR-015 v2.1 schema bump (P0, due 2026-06-22) — **DONE 2026-06-17**; PR `KooshaPari/pheno-worklog-schema#1` open; 30/30 tests pass; 4 fleet WORKLOG.md files migrated; spec: `pheno-worklog-schema/SPEC-v2.1.md`; migration: `pheno-worklog-schema/migrate_v2_to_v2_1.py`
-- Track 5: HwLedger reclassification (P0, ADR-023 Rule 3 deliverable, ~30min)
+- Track 5: HwLedger reclassification (P0, ADR-023 Rule 3 deliverable, ~30min) — **DONE 2026-06-18 (L5-105)**; HwLedger bucket `PAUSED → CONDITIONAL`; new substrate `KooshaPari/pheno-capacity` v0.1.0 created (Rust, no_std, 23 unit tests + 6 doc tests, 80 % lib coverage); HwLedger PR [KooshaPari/hwLedger#111](https://github.com/KooshaPari/hwLedger/pull/111) open; findings: `findings/2026-06-18-L5-105-hwledger-reclassify.md`; integration: `hwLedger/docs/integrations/pheno-capacity.md` + `hwLedger/docs/integrations/cost-model-migration.md`
 - Track 6: Rebase + push cleaned branch (~5min)
-- Track 7: Work DAG maintenance (ongoing) — keep `findings/71-pillar-2026-06-17*.md` and `plans/2026-06-17-v7-dag-stable.md` updated
+- Track 7: Work DAG maintenance (ongoing) — keep `findings/71-pillar-2026-06-17*.md` and `plans/2026-06-18-v8-dag-stable.md` updated
+- Track 8: Dmouse92 → KooshaPari migration (P0, ADR-029) — **DONE 2026-06-17 (L5-104)**; 6 PRs opened, 18 Dmouse92 repos archived; see `findings/2026-06-17-L5-104-dmouse92-to-kooshapari.md`
+- Track 9: Eidolon absorption (P1, ADR-016 fork-not-rewrite) — **DONE 2026-06-18 (L5-107)**; Eidolon worklogs + journeys + test fixtures absorbed into HexaKit; see `findings/2026-06-18-eidolon-absorption-execution.md`
+- Track 10: Configra absorb (P1, ADR-031) — **DONE 2026-06-18 (L5-110)**; 5 PRs merged; `phenotype-config` archive scheduled 2026-07-15; see `findings/2026-06-18-L5-110-adr-035-impl.md`
+- Track 11: 4-repo retirement (P1, user directive 2026-06-18) — **DONE 2026-06-18 (L5-109)**; dagctl → phenodag, kwality → phenotype-tooling, phenotype-auth-ts → AuthKit, dinoforge-packs → Dino; all 4 sources archived; see `findings/2026-06-18-L5-109-4-repo-retirement.md`
+- **Track 12: ADR-035A HwLedger reclassify + pheno-capacity extract (L5-105, 2026-06-18) — DONE this turn.** Per the user's earlier ADR-035 directive ("HwLedger: bucket change PAUSED → CONDITIONAL. Capability inventory pending."), this turn completed the capability inventory, created the `KooshaPari/pheno-capacity` substrate repo (v0.1.0, no_std Rust, MIT OR Apache-2.0, 23 unit tests + 6 doc tests, 80 % lib coverage gate), wired HwLedger's docs to the new substrate, and opened [HwLedger PR #111](https://github.com/KooshaPari/hwLedger/pull/111). HwLedger was unarchived on GitHub as a precondition (was archived by a prior session, violating the ADR-035A CONSTRAINT). See `findings/2026-06-18-L5-105-hwledger-reclassify.md`. **Phase 2 (Streamlit consumer migration) deferred** — needs L5-XXX task after PyO3/Python shim decision.
 
 ---
 
@@ -175,7 +180,8 @@ The MacBook is **not** a heavy-work device. Heavy work is defined as anything th
 | `WSM`        | **CONDITIONAL** | None right now. Re-evaluate when an active consumer appears.                                            |
 | `QuadSGM`    | **PAUSED**     | Read-only.                                                                                              |
 | `AtomsBot*`  | **PAUSED (capstone)** | Read-only as a *target* of new work. **May be legally mined** (code, concepts, schema, docs, tests) — capstone project's sponsor is not in good standing; the public repo is fair-game reference material. |
-| `HwLedger` + every other app-level repo not in this list | **RECLASSIFY** (default PAUSED) | Underlying parts to be moved to one of `pheno-*-lib` / `phenotype-*-sdk` / `phenotype-*-framework` / federated service per Rule 3 below. |
+| **HwLedger** | **CONDITIONAL** (was PAUSED) | Federated service (apps/{landing,macos,streamlit} + sidecars/omlx-fork + tools/journey-remotion + docs). Extract `pheno-capacity` math lib (VRAM estimation, model-fit) for fleet reuse. App-level work proceeds; lib extraction is a separate ADR-035A deliverable. |
+| Every other app-level repo not in this list | **RECLASSIFY** (default PAUSED) | Underlying parts to be moved to one of `pheno-*-lib` / `phenotype-*-sdk` / `phenotype-*-framework` / federated service per Rule 3 below. |
 
 A new repo defaults to **PAUSED** until it is added to this table with a bucket. A bucket change requires a one-line worklog entry (`bucket_change: from=... to=... reason=...`).
 
@@ -244,7 +250,6 @@ Re-evaluate after all non-app fleet work (config, tracing, MCP-router, observabi
 | `focalpoint`   | PAUSED                              | `KooshaPari/FocalPoint:main` @ `3ae2f126` (1 commit ahead)                         |
 | `Dino`         | PAUSED (was CONDITIONAL)            | (no unpushed)                                                                     |
 | `QuadSGM`      | PAUSED                              | `KooshaPari/QuadSGM:wip/2026-06-17-pre-pause-snapshot` @ `484dfa1`                 |
-| `HwLedger`     | PAUSED (default per ADR-023 Rule 3) | `KooshaPari/HwLedger:wip/2026-06-17-cleanup-hwLedger` @ `f031f36`                  |
 | `WSM`          | PAUSED (was CONDITIONAL)            | (does not exist locally)                                                          |
 | `*fitness*`    | PAUSED (ripped)                     | n/a                                                                               |
 
@@ -405,6 +410,7 @@ See `findings/2026-06-18-L5-109-4-repo-retirement.md` for full migration matrix,
   - **forgecode**: 0 of 378 branches contain unique Phenotype work
   - **Aggregate**: 0 net content loss; audit doc `findings/2026-06-17-L5-104-dmouse92-to-kooshapari.md` §4.5
 - **codex exec unavailable for per-repo verification (2026-06-17 22:05 PDT)**: `codex exec --skip-git-repo-check` hit tool-routing cell_id errors in this environment (no output after 5 min); switched to direct orchestrator-level shell verification (`git fetch` + `git rev-list --count` + `git diff --name-only`). Equivalent rigor: per-commit + per-file cross-check.
+- **bucket_change HwLedger (2026-06-18 22:55 PDT)**: `from=PAUSED to=CONDITIONAL reason=ADR-035A (L5-105) reclassification — federated service with extractable pheno-capacity math lib`. Per ADR-023 Rule 3, the lib extraction is a separate deliverable from the bucket change; this turn completed the capability inventory, created `KooshaPari/pheno-capacity` v0.1.0 (Rust, no_std, 23 unit + 6 doc tests, 80 % lib coverage), wired HwLedger's docs to the new substrate, and opened [KooshaPari/hwLedger#111](https://github.com/KooshaPari/hwLedger/pull/111). HwLedger was unarchived on GitHub as a precondition (was archived by a prior session, violating the ADR-035A CONSTRAINT). Phase 2 (Streamlit Planner/WhatIf consumer migration) deferred — see `hwLedger/docs/integrations/cost-model-migration.md` and `findings/2026-06-18-L5-105-hwledger-reclassify.md`.
 
 ---
 
