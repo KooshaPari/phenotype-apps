@@ -1,0 +1,19 @@
+{
+  "task_id": "L5-116",
+  "task_subid": "drift-and-codeowners",
+  "date": "2026-06-19",
+  "repo": "KooshaPari/phenotype-monorepo",
+  "category": "L5-Governance",
+  "title": "ADR-023 follow-ups FU1 (drift baseline) + FU7 (CODEOWNERS audit)",
+  "status": "complete",
+  "author": "KooshaPari",
+  "device": "macbook",
+  "schema_version": "v2.1",
+  "adr_anchors": ["docs/adr/2026-06-15/ADR-023-agent-effort-governance.md"],
+  "files_written": [
+    "scripts/l6_bucket_drift_check.py",
+    "findings/L6-bucket-drift-baseline-2026-06-19.json",
+    "findings/2026-06-19-L5-116-codeowners-review-paused-repos.md",
+    "findings/2026-06-19-L5-116-bucket-drift-and-codeowners.md"
+  ]
+}
