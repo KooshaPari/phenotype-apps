@@ -1,9 +1,9 @@
 module github.com/kooshapari/bifrost-extensions
 
-go 1.25.0
+go 1.26
 
 require (
-	connectrpc.com/connect v1.19.2
+	connectrpc.com/connect v1.20.0
 	github.com/99designs/gqlgen v0.17.90
 	github.com/bytedance/sonic v1.15.1
 	github.com/fsnotify/fsnotify v1.10.0
@@ -12,7 +12,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.19.1
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674
-	github.com/hatchet-dev/hatchet v0.85.3
+	github.com/hatchet-dev/hatchet v0.90.2
 	github.com/jackc/pgx/v5 v5.9.2
 	github.com/maximhq/bifrost/core v1.2.30
 	github.com/nats-io/nats.go v1.51.0
@@ -25,8 +25,8 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/valyala/fasthttp v1.70.0
 	github.com/vektah/gqlparser/v2 v2.5.33
-	golang.org/x/crypto v0.50.0
-	golang.org/x/net v0.53.0
+	golang.org/x/crypto v0.53.0
+	golang.org/x/net v0.56.0
 )
 
 require (
@@ -108,9 +108,9 @@ require (
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/arch v0.8.0 // indirect
 	golang.org/x/exp v0.0.0-20260218203240-3dfff04db8fa // indirect
-	golang.org/x/sync v0.20.0 // indirect
-	golang.org/x/sys v0.43.0 // indirect
-	golang.org/x/text v0.36.0 // indirect
+	golang.org/x/sync v0.21.0 // indirect
+	golang.org/x/sys v0.46.0 // indirect
+	golang.org/x/text v0.38.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20260401024825-9d38bb4040a9 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260406210006-6f92a3bedf2d // indirect
 	google.golang.org/grpc v1.80.0 // indirect
