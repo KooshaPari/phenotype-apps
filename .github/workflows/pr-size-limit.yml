@@ -1,0 +1,25 @@
+name: pr-size-limit
+permissions:
+  contents: read
+  pull-requests: read
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  size-limit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/github-script@9b07f96a59e28dd64e6923a93b1c6c1e6a8369c5 # v6
+        with:
+          script: |
+            const MAX = 500;
+            const pr = context.payload.pull_request;
+            const total = (pr.additions || 0) + (pr.deletions || 0);
+            core.info(`PR #${pr.number}: +${pr.additions}/-${pr.deletions} = ${total} lines`);
+            if (total > MAX) {
+              core.setFailed(
+                `PR #${pr.number} is ${total} lines (max ${MAX}). ` +
+                `Please split into smaller PRs (ADR-047 predictive DRY + ADR-049 drift detector).`
+              );
+            }
