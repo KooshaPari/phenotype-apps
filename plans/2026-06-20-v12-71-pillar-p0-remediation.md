@@ -141,3 +141,138 @@ Per the worktree-isolation pattern proven in v11 (5 waves, 102/102 WPs drained):
 - Update `AGENTS.md` Wave Plan section
 - Update `.agileplus/agileplus.db` with v12 WPs (if reused as substrate)
 - Push to origin
+
+---
+
+## 10. v12.5 Supplement — 12-Pillar Remediation (Authored 2026-06-20, post-v11 closure)
+
+**Status:** DRAFT — supplements the v12 plan above; v12 work largely landed per `findings/2026-06-20-v12-closure.md` (6/10 tracks). v12.5 is the next-batch remediation plan that addresses the 12 pillars NOT closed by v12 (mean < 2.00 after v12 closes). v13 plan (`plans/2026-06-20-v13-71-pillar-cycle-2-p0.md`, commit `7b724bbd8f`) overlaps; v12.5 is the bridge from v12 closure to v13 start.
+
+**Strategic frame:** v12.5 shifts from **gap-closing** (v12's approach: top-10 cycle 1 P0 gaps across the 7 active focus repos) to **remediation** — addressing the 12 cross-cutting pillars that scored ≤1 across the post-v12 fleet. These 12 are the ones the v11 closure post-mortem (`findings/2026-06-20-L5-104-v11-closure-postmortem.md` § 3.1) flagged as deferred. v12.5 finishes the remediation loop and primes the fleet for v13's P1 cadence.
+
+### 10.1 Pillar-to-schema mapping
+
+The v12.5 brief authored in the v11 closure post-mortem used pillar numbers that do not align 1:1 with the canonical 71-pillar schema (ADR-024, see `findings/71-pillar-refresh-template.md`). The mapping below translates each v12.5 brief pillar to its actual schema location. **The work described in the brief maps to the following 12 actual schema pillars (post-v12 baseline):**
+
+| Brief # | Brief description (v11 post-mortem § 3.1) | Actual schema pillar | Post-v12 score (cycle 2 + delta) |
+|---|---|---|---|
+| 1 | L8 (observability) — OTLP not wired to substrate fleet | **L57** Metrics (RED/USE) + **L58** Distributed tracing | 2.0 (cycle 1) → ~2.4 (v12 partial) |
+| 2 | L9 (error handling) — substrate error paths not uniform | **L24** Error handling | 1.5 → ~2.0 |
+| 3 | L16 (concurrency model) — not documented | **L18** Concurrency model | 1.2 → ~1.5 |
+| 4 | L17 (resource limits) — not enforced | **L14** Resource efficiency | 1.4 → ~1.7 |
+| 5 | L18 (rate limits) — not configured | **L57** (rate metric) + **L13** Latency budgets | 1.3 → ~1.6 |
+| 6 | L19 (circuit breakers) — missing | **L26** Reliability / fault tolerance | 1.1 → ~1.4 |
+| 7 | L22 (data integrity) — not tested | **L21** Code review rigor + **L22** Static analysis | 2.0 → ~2.4 |
+| 8 | L23 (migrations) — no migration framework | **L60** Deployment automation (DB migration subset) | 1.0 → ~1.3 |
+| 9 | L24 (backups) — not configured | **L62** Backup / restore | 1.2 → ~1.5 |
+| 10 | L25 (disaster recovery) — not planned | **L61** Incident response | 1.0 → ~1.3 |
+| 11 | L26 (capacity planning) — not done | **L63** Capacity planning | 1.3 → ~1.6 |
+| 12 | L29 (dependency hygiene) — 57 dependabot alerts | **L25** Supply-chain integrity + **L29** CI/CD pipeline | 1.5 (CI up) / 2.0 (deps down) → ~2.5 |
+
+### 10.2 12-track execution plan (T1-T12)
+
+Each track has the same shape: 1 P0 pillar, 1-3 substrate adopters, exit criterion "score ≥2 on the pillar in cycle 3 re-audit". Estimated 4-6 weeks critical path. **T12 (dependency hygiene) blocks 8 other tracks via security gate.**
+
+| Track | Pillar | Substrate adopters | What | Effort |
+|---|---|---|---|---|
+| **T1** | L57/L58 OTLP wiring | pheno-config, pheno-tracing, pheno-mcp-router, pheno-observability | Adopt `pheno-tracing`; OTLP smoke test in test matrix; `pheno_tracing::init()` at lib entrypoints | ~3h |
+| **T2** | L24 error handling | pheno-config, pheno-tracing, pheno-mcp-router | Uniform error paths via `pheno-errors`; `Result<T, PhenoError>` convention; structured error variant export | ~2h |
+| **T3** | L18 concurrency model | pheno-tracing, pheno-mcp-router | Document per-substrate concurrency model (async runtime, sync vs async, channels, locks); add `CONCURRENCY.md` per substrate | ~2h |
+| **T4** | L14 resource limits | pheno-config, pheno-mcp-router | Enforce via config: max memory, max CPU, max file descriptors; runtime limits in `pheno-config::Limits` | ~2h |
+| **T5** | L13/L57 rate limits | pheno-mcp-router middleware | Rate-limit middleware via `pheno-mcp-router`; per-key QPS/RPS budgets; 429 with retry-after | ~3h |
+| **T6** | L26 circuit breakers | pheno-mcp-router, pheno-observability | Adopt `ResilienceKit` (or `pheno-circuit-breaker` substrate); per-provider CB; half-open after 30s; failure threshold config | ~3h |
+| **T7** | L21/L22 data integrity | pheno-mcp-router, pheno-secret-scan | Test framework adoption: `proptest` for Rust invariants; `hypothesis` for Python; coverage gate at 80% | ~2h |
+| **T8** | L60 migrations | pheno-config (DB schema migrations) | Adopt `pheno-migrate` framework (or scaffold one if absent); reversible migrations; CI smoke test | ~4h |
+| **T9** | L62 backups | fleet-wide | Fleet backup policy: daily snapshots for federated services; 30-day retention; restore runbook | ~3h |
+| **T10** | L61 disaster recovery | fleet-wide | DR runbook: RTO 4h, RPO 1h for federated services; tabletop exercise per ADR-042 | ~4h |
+| **T11** | L63 capacity planning | pheno-capacity (canonical substrate) | Adopt `pheno-capacity` substrate (ADR-036, EXECUTED 2026-06-19); per-service capacity budgets; auto-scaling hooks | ~3h |
+| **T12** | L25/L29 dependency hygiene | fleet-wide | **57 dependabot fixes across 9 repos**: cargo update + pip-compile + go mod tidy; SLSA L3 provenance for 3 critical services; blocks T1-T8 via security gate | ~6h |
+
+### 10.3 Critical path
+
+```
+T12 (security gate, 6h) ─┐
+                         │
+                         ├──> T1 (OTLP, 3h) ──> T3 (concurrency docs, 2h) ──> cycle 3 re-audit
+                         │
+                         ├──> T2 (error handling, 2h)
+                         │
+                         ├──> T5 (rate limits, 3h) ──> T6 (circuit breakers, 3h)
+                         │
+                         └──> T11 (capacity, 3h) ──> T9 (backups, 3h) ──> T10 (DR, 4h)
+
+T4 (resource limits, 2h) ──> parallel
+T7 (data integrity, 2h) ──> parallel
+T8 (migrations, 4h) ──> parallel
+```
+
+**Critical path:** T12 → T1 → T3 (security gate → OTLP wire-up → concurrency docs) = **~11h serial wall + 12h parallel** = ~1.5-2 weeks with 2 devs in parallel. **Conservative estimate with full T9/T10 (backups/DR) end-to-end testing: 4-6 weeks.**
+
+### 10.4 Pre-conditions (v12.5 launch gate)
+
+- [x] v11 closure post-mortem authored (`findings/2026-06-20-L5-104-v11-closure-postmortem.md`, this turn)
+- [x] v12 closure summary exists (`findings/2026-06-20-v12-closure.md`, 6/10 tracks landed, 7 pillars closed to 3/3 mean)
+- [x] v13 plan committed (`plans/2026-06-20-v13-71-pillar-cycle-2-p0.md`, commit `7b724bbd8f`)
+- [ ] PR #105 (v12 P0 remediation on KooshaPari/argis-extensions) merged — conflicts to resolve (30 min)
+- [ ] v12.5 branch opened: `chore/v12-5-12-pillar-remediation-2026-06-20`
+- [ ] T12 dependabot alert list refreshed (currently 57 per brief; cycle 3 re-count TBD)
+- [ ] `pheno-capacity` substrate source verified in `KooshaPari/pheno-capacity` (ADR-036 EXECUTED 2026-06-19; L5-117 absorb DEFERRED — see `findings/2026-06-19-L5-117-pr-status.md`)
+
+### 10.5 Success metrics (v12.5 closure gates)
+
+| Metric | Target | Source |
+|---|---|---|
+| P0 pillars closed to ≥2 (cycle 3 re-audit) | ≥ 8 of 12 | per cycle 3 scorecard (target 2026-07-06 Mon) |
+| Org mean (cycle 3) | ≥ 2.10 | from 1.47 (cycle 2 baseline); v12 lifts to ~1.85; v12.5 lifts to ~2.10 |
+| Repos PASS (mean ≥ 2.00) | ≥ 5 of 15 | from 0/15 (cycle 2 baseline) |
+| OTLP smoke tests in CI | 7/7 fleet-critical substrates | T1 |
+| Dependabot alerts closed | ≥ 40 of 57 | T12 |
+| DR runbook RTO/RPO test | PASS for 1 federated service | T10 |
+| Capacity budgets published | ≥ 3 services | T11 |
+
+**v12.5 closure:** when ≥ 8 of 12 tracks pass cycle 3 re-audit and org mean ≥ 2.10. The remaining 4 tracks roll into v13 as the next P1 batch.
+
+### 10.6 Risk register
+
+| Risk | Mitigation |
+|---|---|
+| T12 (security gate) blocks 8 tracks → if it slips, v12.5 wall-time doubles | Start T12 in parallel with T1-T4 even though T12 is "blocking"; gate is on `main` merge, not on starting work |
+| `pheno-capacity` substrate source not on this branch (L5-117 deferred) | Use the canonical `KooshaPari/pheno-capacity#1` branch as the substrate source; document local-checkout absence in v12.5 worklog |
+| OTLP smoke test diverges from `pheno-tracing` env-config (T1 vs T5 already in v12) | Reuse `pheno-tracing/src/env.rs` (commit `pheno-tracing/eb41827`) verbatim; do not re-author |
+| Backups/DR (T9/T10) require federated service cooperation (PhenoMCP, phenoObservability, phenoEvents) | Use a single federated service as the pilot (PhenoMCP); scale to others in v13 |
+| DR tabletop exercise (T10) is a non-engineering deliverable | Defer to Mission 4 if no owner surfaces in v12.5 launch window |
+| 12 tracks in 4-6 weeks with 2 devs requires parallel-agent dispatch | Use v11's 20-wide worktree-isolation pattern; each track gets its own worktree + merge batch |
+
+### 10.7 v12.5 → v13 hand-off
+
+v12.5 closes the remediation loop that v12 started. The 4 tracks v12.5 does NOT close (estimate 2-4 of 12) roll into v13 as P1 work. v13 plan (`plans/2026-06-20-v13-71-pillar-cycle-2-p0.md`) already has 8 tracks targeting cycle-2 P0 gaps; v12.5 deferred items merge into v13's track list without rewriting.
+
+**Combined v12 + v12.5 + v13 trajectory:**
+
+| Wave | Target mean | Target repos PASS | P0 closed (cumulative) |
+|---|---:|---:|---:|
+| Cycle 2 (baseline) | 1.47 | 0/15 | 0 |
+| v12 (in-flight) | ~1.85 | 2/15 | 7 |
+| v12.5 (this section) | ~2.10 | 5/15 | 15 |
+| v13 (planned) | ~2.55 | 9/15 | 26 |
+
+### 10.8 References
+
+- `findings/2026-06-20-L5-104-v11-closure-postmortem.md` (this turn) — the brief that motivated v12.5
+- `findings/2026-06-20-v12-closure.md` — v12 closure summary (6/10 tracks landed)
+- `plans/2026-06-20-v13-71-pillar-cycle-2-p0.md` (commit `7b724bbd8f`) — v13 plan, the next wave
+- `findings/71-pillar-2026-06-20-weekly-2.md` — cycle 2 substrate rollup
+- `findings/71-pillar-refresh-template.md` — canonical 71-pillar schema (ADR-024)
+- ADR-024 — 71-pillar audit framework
+- ADR-026 — worklog schema (cycle-3 cadence)
+- ADR-027 — LFS 3-tier policy (relevant to T12 supply-chain)
+- ADR-036 — pheno-capacity substrate canonical (EXECUTED 2026-06-19)
+- ADR-041 — 71-pillar refresh cadence (weekly Monday 09:00 PDT)
+- ADR-042 — security audit cadence (monthly `cargo audit` + `pip-audit` + `govulncheck`)
+- ADR-042B — substrate quality bar
+- ADR-046 — federation mTLS + OIDC (relevant to T10 DR)
+- ADR-048 — substrate graduation path (relevant to T11 capacity)
+
+---
+
+**v12 plan + v12.5 supplement complete. v12 closure narrative is the source of truth for what landed; v12.5 is the next-batch plan for what didn't. v13 plan (`7b724bbd8f`) extends the trajectory.**
