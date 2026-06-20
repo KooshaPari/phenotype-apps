@@ -1,0 +1,36 @@
+name: cargo-outdated
+permissions:
+  contents: read
+  issues: write
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+env:
+  TRACKING_ISSUE: ${{ vars.OUTDATED_TRACKING_ISSUE || '1' }}
+jobs:
+  outdated:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-outdated
+        run: cargo install --locked cargo-outdated
+      - name: Detect major-version drift
+        run: |
+          cargo outdated --root-deps-only --format json > outdated.json
+          python3 - <<'PY'
+          import json, sys, subprocess, os
+          with open("outdated.json") as f: data = json.load(f)
+          deps = data.get("dependencies", {})
+          majors = [d for d in deps.values() if d.get("major_below")]
+          if not majors:
+              print("No major-version drift detected."); sys.exit(0)
+          body = "## cargo outdated: major-version drift detected\n\n"
+          for d in majors:
+              body += f"- **{d['name']}** {d['current']} -> {d['latest']}\n"
+          subprocess.check_call([
+              "gh","issue","comment", os.environ["TRACKING_ISSUE"],
+              "--body", body, "--repo", os.environ["GITHUB_REPOSITORY"],
+          ])
+          PY
