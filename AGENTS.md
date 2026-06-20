@@ -165,18 +165,20 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 
 ---
 
-## Wave Plan (v8 — current, supersedes v7)
+## Wave Plan (v9 — current, supersedes v8)
 
-See `plans/2026-06-18-v8-dag-stable.md`. **18 tracks, ~210 tasks, ~200 PRs, ~22h wall-clock with 6-way parallelism.** v7 closed 2026-06-17 (8 tracks, ~40 PRs); v8 adds the wrap-up + Configra + 71-pillar refresh + ADR-030..043 backlog.
+See `plans/2026-06-19-v9-dag-stable.md` (the working plan) and `plans/2026-06-19-v9-wrapup.md` (closure report). **11 tracks (T0 + T25..T33 + T0.5), 28 tasks, 6 PRs, ~3h wall-clock on macbook with 4-way parallelism (orchestrator-only — subagent dispatch had a routing cell_id outage 2026-06-19 17:46 PDT, see T0.0 retro).** v8 closed 2026-06-19 04:46 UTC (18 tracks, ~210 tasks, ~200 PRs); v9 focuses on the wrap-up + Configra + 71-pillar refresh + L5-110 substrate audit + 3 PhenoKit absorptions (L5-111, L5-112, L5-113) + 4-repo retirement (L5-114) + pheno-capacity extraction (L5-115) + pheno-capacity absorb into phenotype-gateway (L5-117). v9 closure batch: see [§ v9 closure](#v9-closure-2026-06-19-2230-pdt) below.
 
-- Track 1: Triage (P0, ~5min) — drop empty commits, drop stashes, commit meta-bundle, refresh governance docs
-- Track 2: 5 PR reviews (P1, parallel, ~10min) — PRs #129-#133 from W5 batch
-- Track 3: 71-pillar audit (P1, ~30min) — schema + probe + score + render + crosswalk
-- Track 4: ADR-015 v2.1 schema bump (P0, due 2026-06-22) — **DONE 2026-06-17**; PR `KooshaPari/pheno-worklog-schema#1` open; 30/30 tests pass; 4 fleet WORKLOG.md files migrated; spec: `pheno-worklog-schema/SPEC-v2.1.md`; migration: `pheno-worklog-schema/migrate_v2_to_v2_1.py`
-- Track 5: HwLedger reclassification (P0, ADR-023 Rule 3 deliverable, ~30min) — reclassified PAUSED → CONDITIONAL via ADR-035 (L5-105); see [§ App-level repo triage](#app-level-repo-triage--app-substrate-placement-adr-023) below
-- Track 6: Rebase + push cleaned branch (~5min)
-- Track 7: Work DAG maintenance (ongoing) — keep `findings/71-pillar-2026-06-17*.md` and `plans/2026-06-17-v7-dag-stable.md` updated
-- Track 8: 4-repo retirement (L5-109..114) **DONE 2026-06-18** — `phenotype-voxel`, `phenotype-terrain`, `phenotype-water`, `phenotype-postfx` absorbed into `phenotype-gfx` (ADR-004 transition); 4 source repos archived+deleted; PRs `KooshaPari/phenotype-gfx#10` (main migration, MERGED) + `#11` (audit sync, MERGED); `KooshaPari/phenotype-registry#200` (pre-archive SUPERSEDE, closed as superseded) + `#203` (post-archive fsm=archived, MERGED); `phenotype-gfx#9` closed as superseded by #10. Registry entries for all 4 flipped to terminal `fsm=archived`. See `findings/2026-06-18-L5-114-4-repo-retirement.md`.
+- **T25: v2.1 Worklog Schema Fix (P0, ~30 min) — DONE 2026-06-19**. Rebase conflict on `SPEC-v2.1.md` resolved. 5 PRs merged (#2–#6). 75/75 tests pass. Both v1 and v2.1 formats accepted.
+- **T26: L5-110 Substrate Audit (P0, ~30 min) — DONE 2026-06-19**. 6 drift findings (0.4 h retro), ADR-041 (71-pillar refresh cadence) + ADR-042 (security audit cadence) authored. See `findings/2026-06-19-L5-110-substrate-audit.md`.
+- **T27: L5-111 pheno-drift-detector Absorption (P0, ~15 min) — DONE 2026-06-19**. Absorbed into PhenoKit substrate (ADR-049 tool). 5 PRs on `KooshaPari/PhenoKit`.
+- **T28: L5-112 pheno-predict Absorption (P1, ~15 min) — DONE 2026-06-19**. Absorbed into PhenoKit substrate (ADR-047 tool). 4 PRs.
+- **T29: L5-113 pheno-framework-lint Absorption (P1, ~15 min) — DONE 2026-06-19**. Absorbed into PhenoKit substrate (ADR-048 tool). 3 PRs.
+- **T30: L5-114 Services Retirement (P0, ~30 min) — DONE 2026-06-19**. 4 federated service repos (`phenotype-voxel`, `phenotype-terrain`, `phenotype-water`, `phenotype-postfx`) absorbed into `phenotype-gfx`. Registry entries flipped to terminal `fsm=archived`.
+- **T31: L5-115 pheno-capacity Extraction (P0, ~20 min) — DONE 2026-06-19**. New repo `KooshaPari/pheno-capacity` created (10 files, 1 PR `#1` merged).
+- **T32: L5-117 pheno-capacity Absorb (P0, ~20 min) — DONE 2026-06-19**. Pushed `feat/l5-117-absorb-pheno-capacity-2026-06-19` to `phenotype-gateway:master` via `git merge --no-ff` (commit `4898bc3`). 10 pheno-capacity source files now at `spikes/rust/capacity/`. ADR-036 marked CLOSED.
+- **T33: Side-DAG Filler (P1, ~180 min, background) — IN_PROGRESS**. 26 tasks across 6 subagents. Estimated completion: 2026-06-20 02:00 PDT.
+- **T0.5: Wrap-up (P0, ~60 min) — IN_PROGRESS this turn**. T0.5.1 wrapup plan ✓ (304 lines), T0.5.3 postmortem ✓ (255 lines), T0.5.4 AGENTS.md closure (this update), T0.5.5 STATUS.md (next), T0.5.2 governance commit (next).
 
 ---
 
