@@ -651,6 +651,35 @@ impl Document {
     ///
     /// Uses canonical JSON format: all keys sorted alphabetically, no whitespace,
     /// deterministic serialization for stable hashing across rebuilds.
+    ///
+    /// ```
+    /// # use focus_ir::{Document, DocKind, Body, RuleIr, TriggerIr, ActionIr, ConditionIr};
+    /// let doc = Document {
+    ///     version: 1,
+    ///     kind: DocKind::Rule,
+    ///     id: "doc-test-001".into(),
+    ///     name: "doc-test-rule".into(),
+    ///     body: Body::Rule(Box::new(RuleIr {
+    ///         id: "rule-1".into(),
+    ///         name: "test".into(),
+    ///         trigger: TriggerIr::EventFired { event_name: "test_event".into() },
+    ///         conditions: vec![],
+    ///         actions: vec![],
+    ///         priority: 1,
+    ///         cooldown_seconds: None,
+    ///         duration_seconds: None,
+    ///         explanation_template: "Doc test rule".into(),
+    ///         enabled: true,
+    ///     })),
+    /// };
+    ///
+    /// let hash = doc.content_hash().expect("content hash computation");
+    /// assert_eq!(hash.len(), 32, "SHA-256 produces 32 bytes");
+    ///
+    /// // The hash is deterministic: calling twice yields the same result.
+    /// let hash2 = doc.content_hash().expect("second hash");
+    /// assert_eq!(hash, hash2, "content hash must be stable");
+    /// ```
     pub fn content_hash(&self) -> Result<[u8; 32], IrError> {
         let canonical = canonical_json(self)?;
         let mut hasher = Sha256::new();

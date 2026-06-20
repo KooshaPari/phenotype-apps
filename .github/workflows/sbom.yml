@@ -1,0 +1,41 @@
+name: SBOM Generation
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+  schedule:
+    - cron: '0 7 * * 1'  # weekly Monday
+  workflow_dispatch:
+
+jobs:
+  sbom:
+    name: CycloneDX SBOM
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.1.1
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cargo-cyclonedx
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-cyclonedx
+
+      - name: Generate SBOM (JSON)
+        run: |
+          cargo cyclonedx --manifest-path Cargo.toml --format json --describe crate
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: focalpoint-sbom
+          path: '*.cdx.json'
+          retention-days: 90

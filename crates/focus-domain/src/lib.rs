@@ -199,12 +199,103 @@ mod rigidity_tests {
         assert!(Rigidity::default().is_hard());
     }
 
-    // Traces to: FR-RIGIDITY-001
+    // Traces to: FR-DOMAIN-001
     #[test]
     fn rigidity_roundtrips_serde() {
         let r = Rigidity::Semi(RigidityCost::CreditCost(7));
         let json = serde_json::to_string(&r).expect("serialize Rigidity");
         let back: Rigidity = serde_json::from_str(&json).expect("deserialize Rigidity");
         assert_eq!(r, back);
+    }
+}
+
+// -----------------------------------------------------------------------------
+// User / Device domain entity tests
+// -----------------------------------------------------------------------------
+
+#[cfg(test)]
+#[allow(clippy::disallowed_methods)]
+mod entity_tests {
+    use super::*;
+    use chrono::Utc;
+
+    // Traces to: FR-DOMAIN-002
+    #[test]
+    fn user_serde_roundtrip() {
+        let user = User {
+            id: UserId(Uuid::new_v4()),
+            created_at: Utc::now(),
+            display_name: "Test User".into(),
+            primary_device_id: Some(DeviceId(Uuid::new_v4())),
+        };
+        let json = serde_json::to_string(&user).expect("serialize User");
+        let back: User = serde_json::from_str(&json).expect("deserialize User");
+        assert_eq!(user.id.0, back.id.0);
+        assert_eq!(user.display_name, back.display_name);
+        assert_eq!(user.primary_device_id.map(|d| d.0), back.primary_device_id.map(|d| d.0));
+    }
+
+    // Traces to: FR-DOMAIN-002
+    #[test]
+    fn device_serde_roundtrip() {
+        let device = Device {
+            id: DeviceId(Uuid::new_v4()),
+            user_id: UserId(Uuid::new_v4()),
+            platform: Platform::Macos,
+            os_version: "15.0".into(),
+            enrolled_at: Utc::now(),
+            last_seen: Some(Utc::now()),
+        };
+        let json = serde_json::to_string(&device).expect("serialize Device");
+        let back: Device = serde_json::from_str(&json).expect("deserialize Device");
+        assert_eq!(device.id.0, back.id.0);
+        assert_eq!(device.platform, back.platform);
+        assert_eq!(device.os_version, back.os_version);
+    }
+
+    // Traces to: FR-DOMAIN-002
+    #[test]
+    fn platform_variants_serde() {
+        for (platform, expected_name) in [
+            (Platform::Ios, "Ios"),
+            (Platform::Android, "Android"),
+            (Platform::Macos, "Macos"),
+            (Platform::Unknown, "Unknown"),
+        ] {
+            let json = serde_json::to_string(&platform).expect("serialize");
+            assert!(json.contains(expected_name), "JSON {json} should contain {expected_name}");
+            let back: Platform = serde_json::from_str(&json).expect("deserialize");
+            assert_eq!(platform, back);
+        }
+    }
+
+    // Traces to: FR-DOMAIN-002
+    #[test]
+    fn user_without_device_roundtrip() {
+        let user = User {
+            id: UserId(Uuid::new_v4()),
+            created_at: Utc::now(),
+            display_name: "No Device".into(),
+            primary_device_id: None,
+        };
+        let json = serde_json::to_string(&user).expect("serialize User");
+        let back: User = serde_json::from_str(&json).expect("deserialize User");
+        assert!(back.primary_device_id.is_none(), "User without device should roundtrip");
+    }
+
+    // Traces to: FR-DOMAIN-002
+    #[test]
+    fn device_last_seen_null_roundtrip() {
+        let device = Device {
+            id: DeviceId(Uuid::new_v4()),
+            user_id: UserId(Uuid::new_v4()),
+            platform: Platform::Android,
+            os_version: "14.0".into(),
+            enrolled_at: Utc::now(),
+            last_seen: None,
+        };
+        let json = serde_json::to_string(&device).expect("serialize Device");
+        let back: Device = serde_json::from_str(&json).expect("deserialize Device");
+        assert!(back.last_seen.is_none());
     }
 }
