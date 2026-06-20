@@ -45,7 +45,12 @@
 - All 100 v11 wide-DAG finding files created and staged
 - `plans/2026-06-19-v11-dag-100task.md` committed
 
-## Next Steps
-1. Archive Settly on GitHub (already complete — config consolidation closed)
-2. Verify cheap-llm-mcp archive status
-3. v11 findings need real research (placeholders only)
+## Post-Archival Verification (DONE 2026-06-20)
+
+All L5-500 follow-ups verified via `gh api`:
+
+| Step | Action | Result | Evidence |
+|---|---|---|---|
+| 1 | Archive Settly on GitHub | **DONE** | `gh api repos/KooshaPari/Settly` → `archived: true` (pushed 2026-06-19) |
+| 2 | Verify cheap-llm-mcp archive status | **DONE** | `gh api repos/KooshaPari/cheap-llm-mcp` → `404 Not Found` (already removed) |
+| 3 | v11 findings need real research | **DEFERRED** | 150 placeholder files exist in `findings/`; deferred to separate v11 tracks (T74-T88) |
