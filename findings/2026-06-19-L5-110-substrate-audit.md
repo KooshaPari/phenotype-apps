@@ -1,3 +1,5 @@
+**STATUS: CLOSED 2026-06-19**
+
 # Finding — pheno-* Substrate Audit (L5-110)
 
 **Date:** 2026-06-19 (v8 batch, T15 sweep)
