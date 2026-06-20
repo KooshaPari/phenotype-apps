@@ -6,6 +6,11 @@ the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 
 ## [Unreleased]
 
+### Changed
+- `WORKLOG.md` v2.1 deprecation sweep entry added: this canonical
+  exemplar now self-documents its role as the fleet-wide reference
+  for the v2.1 schema (ADR-025 / ADR-030).
+
 ### Added
 - Tier-0 meta-bundle (per ADR-023 Rule 3.1, ADR-039, ADR-040, ADR-025).
 - `pyproject.toml` with `structlog` dep (ADR-036B).

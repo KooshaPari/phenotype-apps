@@ -6,6 +6,12 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+- `WORKLOG.md` v2.1 deprecation sweep (ADR-025 / ADR-030): file was
+  already at v2.1 schema (11 cols incl. `device:`) from the initial
+  Tier-0 bootstrap. Verified compliance and added a sweep entry to
+  document the audit. No migration rows needed.
+
 ### Added
 - Tier-0 meta-bundle (per ADR-023 Rule 3.1, ADR-039, ADR-040, ADR-025).
 - `pyproject.toml` with `structlog` dep (ADR-036B).

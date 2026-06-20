@@ -10,3 +10,4 @@
 | 2026-06-20 | L5-119-11D | test | add-tests | tests/test_generate.py, tests/test_spec_compliance.py | 7 unit + spec-compliance cases. | macbook | pheno-llms-txt | low | src/ | tests/ |
 | 2026-06-20 | L5-119-11D | ci | add-workflow | .github/workflows/ci.yml | pytest matrix (3.10/3.11/3.12) + ruff + coverage at 80%. | macbook | pheno-llms-txt | low | tests/ | .github/workflows/ci.yml |
 | 2026-06-20 | L5-119-11D | docs | add-quickstart | examples/quickstart.py | 5-line quickstart (per ADR-023 quickstart rule). | macbook | pheno-llms-txt | low | none | examples/quickstart.py |
+| 2026-06-20 | ADR-025 | governance | verify-v2.1-compliance | WORKLOG.md | v2.1 deprecation sweep: file already at v2.1 schema (11 cols incl. `device:`) from initial Tier-0 bootstrap; no migration needed; verified compliance against `pheno-worklog-schema` reference implementation. | macbook | pheno-llms-txt | low | ADR-025, ADR-030 | pheno-worklog-schema/WORKLOG.md |
