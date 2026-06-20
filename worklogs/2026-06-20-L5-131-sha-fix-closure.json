@@ -1,0 +1,28 @@
+{
+  "id": "L5-131",
+  "date": "2026-06-20",
+  "summary": "SHA pin validator bugs identified + 4 broken workflow SHAs repaired (commit 1495c7d2fc on phenotype-apps:main)",
+  "validator_bugs_fixed": [
+    "grep --color=never required (ANSI escapes were corrupting SHA capture)",
+    "head -1 truncated JSON to opening brace only — must parse full response",
+    "subshell capture of gh api output needed 2>/dev/null to suppress stderr"
+  ],
+  "shas_fixed": [
+    {"file": ".github/workflows/ci.yml", "old": "codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed414238", "new": "codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238", "source": "v4 tag"},
+    {"file": ".github/workflows/deny.yml", "old": "dtolnay/rust-toolchain@2a11a0a5583295ce6732f4f6716cb1a358e1c5c4", "new": "dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9", "source": "master HEAD"},
+    {"file": ".github/workflows/governance-drift.yml", "old": "actions/upload-artifact@65c4c4a1d7e1b4d1b4d1b4d1b4d1b4d1b4d1b4d1", "new": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02", "source": "v4 tag (was a literal 4-char repeating fake)"},
+    {"file": ".github/workflows/scorecard.yml", "old": "ossf/scorecard-action@f49aabe0b5af0936a0987cfb85d86b757266b50c", "new": "ossf/scorecard-action@50757822a4ac41af1c2f5572df4e1c1a5ae50c03", "source": "main HEAD"}
+  ],
+  "commit": "1495c7d2fc",
+  "branch": "main",
+  "repository": "KooshaPari/phenotype-apps",
+  "post_fix_state": {
+    "local_workflow_shas": "20/20 valid",
+    "fleet_corruptions": 0
+  },
+  "remaining_work": [
+    "30 Dependabot vulnerabilities on phenotype-apps (separate track)",
+    "Apply phenotype-pin to new PRs as they open to prevent re-corruption"
+  ],
+  "status": "complete"
+}
