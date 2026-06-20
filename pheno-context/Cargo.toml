@@ -1,0 +1,46 @@
+[package]
+name = "pheno-context"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+rust-version = "1.82"
+description = "Canonical request context for the pheno-* fleet. Builder, header extraction, and structured metadata."
+keywords = ["context", "request", "headers", "phenotype", "tracing"]
+categories = ["web-programming", "data-structures"]
+publish = false
+
+[lib]
+name = "pheno_context"
+path = "src/lib.rs"
+
+[dependencies]
+thiserror = { workspace = true }
+http = "1.1"
+# ADR-036: opt into `tracing` for span propagation through
+# `Context::from_headers` and `ContextBuilder::build`. Default off;
+# consumers add `pheno-context = { version = "0.1", features = ["tracing"] }`
+# to opt into the OTLP substrate.
+tracing = { version = "0.1", optional = true }
+# ADR-036: `pheno-otel` is the canonical OTLP/tracing substrate
+# (realized as `pheno-otel`; see ADR-012 + ADR-036). Gated by the
+# `tracing` feature so consumers that don't want OTLP don't pull in
+# the opentelemetry + reqwest stack. `pheno_context::init()` (also
+# feature-gated) is a one-liner that calls `pheno_otel::init` and
+# returns the RAII `TelemetryGuard`.
+pheno-otel = { path = "../pheno-otel", optional = true }
+
+[features]
+default = []
+# ADR-036: tracing feature flag (off by default). When enabled,
+# `pheno_context::init()` is callable and returns a
+# `pheno_otel::TelemetryGuard` that flushes+shuts down the global
+# tracer provider on drop. Endpoint is read from
+# `OTEL_EXPORTER_OTLP_ENDPOINT` (see `.env.example`).
+tracing = ["dep:tracing", "dep:pheno-otel"]
+
+[dev-dependencies]
+http = "1.1"
+# ADR-036: test that tracing spans emit (use OTEL_SDK_DISABLED=true in CI)
+# `tracing-test` is a regular (non-optional) dev-dep; the test that
+# uses it is feature-gated so it is only compiled with `--features tracing`.
+tracing-test = "0.2"

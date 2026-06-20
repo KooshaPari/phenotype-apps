@@ -1,6 +1,6 @@
 # AGENTS.md — Phenotype monorepo
 
-**Date:** 2026-06-19 05:00 PDT (T12 closure: ADR-033 + ADR-034 marked CLOSED; Decision C closed)
+**Date:** 2026-06-19 05:00 PDT (T0.5 closure: v9 closed 2026-06-19; T12 closure: ADR-033 + ADR-034 marked CLOSED; Decision C closed)
 **Status:** ACTIVE (this file supersedes the prior FocalPoint template that lived here 2026-06-12 → 2026-06-15, the 2026-06-15 18:42 PDT version that lived here 2026-06-15 → 2026-06-17, and the 2026-06-17 12:00 PDT version that lived here 2026-06-17 → 2026-06-19)
 
 ---
@@ -163,11 +163,23 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 | **ADR-048** | **Substrate graduation path (4-tier gate table)** | L5-113, 2026-06-18 — see `docs/adr/2026-06-18/ADR-048-substrate-graduation-path.md` + [§ Substrate graduation path](#substrate-graduation-path-adr-048) below; tool: `KooshaPari/pheno-framework-lint` (L73) |
 | **ADR-049** | **App-substrate drift detector (3-pass algorithm)** | L5-114, 2026-06-18 — see `docs/adr/2026-06-18/ADR-049-app-substrate-drift-detector.md` + [§ App-substrate drift detector](#app-substrate-drift-detector-adr-049) below; tool: `KooshaPari/pheno-drift-detector` (L74) |
 
+**v9 wave (2026-06-19, 5 ADRs):**
+
+| ADR | Subject | Notes |
+|---|---|---|
+| **ADR-050** | **pheno-capacity substrate canonical (L5-115)** | 2026-06-19 — see `docs/adr/2026-06-19/ADR-050-pheno-capacity.md`; extracted from `HwLedger` (per drift-detector retroactive hit); repo `KooshaPari/pheno-capacity` created |
+| **ADR-051** | **pheno-capacity absorb into phenotype-gateway (L5-117)** | 2026-06-19 — see `docs/adr/2026-06-19/ADR-051-pheno-capacity-absorb.md`; absorbed at `spikes/rust/capacity/`; CLOSED via merge `4898bc3` |
+| **ADR-052** | **WORKLOG v2.1 GATE companion spec (L5-103)** | 2026-06-19 — see `docs/specs/WORKLOG_V21_GATE.md`; CI enforcement for the 11-col worklog v2.1 schema (ADR-015 v2.1) |
+| **ADR-053** | **Substrate audit cadence (L5-110, codifies ADR-041/042)** | 2026-06-19 — bi-weekly substrate health audit, monthly security sweep (cargo audit / pip-audit / govulncheck) |
+| **ADR-054** | **v9 wrap-up closure** | 2026-06-19 — T25..T32 + T0.5 all closed; 20 tracks / 280 tasks / 210 PRs; see `plans/2026-06-19-v9-wrapup.md` |
+
 ---
 
-## Wave Plan (v8 — current, supersedes v7)
+## Wave Plan (v9 — current, supersedes v8)
 
-See `plans/2026-06-18-v8-dag-stable.md`. **18 tracks, ~210 tasks, ~200 PRs, ~22h wall-clock with 6-way parallelism.** v7 closed 2026-06-17 (8 tracks, ~40 PRs); v8 adds the wrap-up + Configra + 71-pillar refresh + ADR-030..043 backlog.
+v9 closed 2026-06-19 (20 tracks, 280 tasks, 210 PRs). v8 closed 2026-06-18 (18 tracks, ~210 tasks, ~200 PRs). v7 closed 2026-06-17 (8 tracks, ~40 PRs).
+
+See `plans/2026-06-18-v8-dag-stable.md` for the v8 worklog; v9 track list TBD.
 
 - Track 1: Triage (P0, ~5min) — drop empty commits, drop stashes, commit meta-bundle, refresh governance docs
 - Track 2: 5 PR reviews (P1, parallel, ~10min) — PRs #129-#133 from W5 batch
