@@ -39,6 +39,27 @@
 /// `match` exhaustiveness checks are useful at consumer call sites. The
 /// 5-variant set is the L3 DAG's design constraint; growing past 5 is a
 /// breaking change and should be done via a new variant on a new type.
+///
+/// # Usage
+///
+/// ```
+/// use pheno_errors::AppError;
+///
+/// fn lookup_user(id: &str) -> Result<String, AppError> {
+///     if id.is_empty() {
+///         return Err(AppError::validation("user id cannot be empty"));
+///     }
+///     // Simulate a lookup that succeeds for "42".
+///     if id != "42" {
+///         return Err(AppError::not_found("user", id));
+///     }
+///     Ok("Alice".into())
+/// }
+///
+/// assert_eq!(lookup_user("42").unwrap(), "Alice");
+/// assert!(lookup_user("99").unwrap_err().kind() == "not_found");
+/// assert!(lookup_user("").unwrap_err().kind() == "validation");
+/// ```
 #[derive(Debug, thiserror::Error)]
 pub enum AppError {
     /// Business-rule / invariant violation that doesn't fit a finer bucket.
@@ -280,6 +301,20 @@ mod tests {
     }
 
     #[test]
+    fn from_anyhow_preserves_cause_chain() {
+        // Verify that the chain-walking logic in `From<anyhow::Error>`
+        // preserves the full causal trail, not just the outermost context.
+        let inner = anyhow::Error::msg("inner cause");
+        let outer = inner.context("middle context");
+        let root = outer.context("root context");
+        let err: AppError = root.into();
+        let display = err.to_string();
+        assert!(display.contains("root context"), "should contain outermost");
+        assert!(display.contains("middle context"), "should contain middle");
+        assert!(display.contains("inner cause"), "should contain innermost");
+    }
+
+    #[test]
     fn log_warn_preserves_error() {
         let err = AppError::domain("ephemeral").log_warn();
         assert_eq!(err.kind(), "domain");
@@ -297,5 +332,41 @@ mod tests {
             Ok(42)
         }
         assert_eq!(fallible().unwrap(), 42);
+    }
+
+    proptest::proptest! {
+        #![proptest_config = proptest::prelude::ProptestConfig::with_cases(100)]
+
+        /// For any non-empty string, constructing a [`AppError::Domain`] and
+        /// reading back `.kind()` must return `"domain"`.
+        #[test]
+        fn proptest_domain_kind(msg: String) {
+            // Skip empty strings – they are valid but add no signal.
+            if msg.is_empty() {
+                return Ok(());
+            }
+            let err = AppError::domain(&msg);
+            assert_eq!(err.kind(), "domain");
+            let display = err.to_string();
+            // Display must embed the original message.
+            assert!(display.contains(&msg), "display {:?} should contain {:?}", display, msg);
+            Ok(())
+        }
+
+        /// For any non-empty entity and id strings, constructing a
+        /// [`AppError::NotFound`] and reading back `.kind()` must return
+        /// `"not_found"`.
+        #[test]
+        fn proptest_not_found_kind(entity: String, id: String) {
+            if entity.is_empty() || id.is_empty() {
+                return Ok(());
+            }
+            let err = AppError::not_found(&entity, &id);
+            assert_eq!(err.kind(), "not_found");
+            let display = err.to_string();
+            assert!(display.contains(&entity));
+            assert!(display.contains(&id));
+            Ok(())
+        }
     }
 }
