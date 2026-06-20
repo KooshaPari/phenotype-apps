@@ -1,0 +1,97 @@
+<!--
+  llms.txt for pheno-fastapi-base — LLM-friendly content discovery index.
+  Spec: https://llmstxt.org/  (curated plain-text file at project root; "robots.txt for LLMs").
+  Per ADR-042 element 7 + pheno-llms-txt (T20.7) v8 template (5-line quickstart + non-scope + 3 examples).
+  Cross-references SPEC.md (T20.2), WORKLOG.md (T20.5), CHANGELOG.md (T20.6).
+-->
+
+# pheno-fastapi-base
+
+> Canonical FastAPI base for the pheno-* service fleet. One small package, one small set of contracts: `create_app(title, version)` factory wires `/healthz` + `/readyz` + a structlog-based JSON access-log middleware + the `AppError` exception handler; `AsyncTestClient` is an `httpx.AsyncClient` wrapper for in-process testing. Replaces 6 copies of the same boilerplate across the fleet.
+
+## Quickstart (5 lines)
+
+```python
+from pheno_fastapi_base import create_app, AppError
+app = create_app(title="pheno-thing-api", version="0.1.0")
+@app.get("/widgets/{widget_id}")
+async def get_widget(widget_id: str) -> dict[str, str]:
+    if widget_id != "known": raise AppError("NotFound", f"widget {widget_id!r} not found")
+    return {"id": widget_id, "name": "Sprocket"}
+```
+
+## When to use
+
+- You need a FastAPI app with `/healthz`, `/readyz`, structlog JSON access logs, and a single error envelope.
+- You want one PR to change `code_to_status` or add a probe across the entire fleet.
+- You want `AsyncTestClient.with_app(app)` for in-process async tests via `httpx.ASGITransport`.
+
+## When NOT to use
+
+- You need a non-FastAPI HTTP server — port the patterns manually; this package is FastAPI-coupled.
+- You need OAuth2 / OIDC / JWT validation — pair with `phenotype-auth-ts` or `AuthKit`; this package only handles the error envelope.
+- You need background-task queues / scheduler — use `arq`, `celery`, or `dramatiq` alongside, not instead of.
+
+## 3 examples (illustrative)
+
+1. **Minimal `create_app` + `AppError`** — `pheno_fastapi_base/__init__.py` exports `create_app` and `AppError`; a 30-line `main.py` stands up a working `/widgets/{id}` route with full health probes and error handling.
+2. **Structlog access-log middleware** — `pheno_fastapi_base/middleware.py` `StructlogAccessLogMiddleware` emits one JSON line per request with `event=app.access`, `method`, `path`, `status_code`, `duration_ms`.
+3. **AsyncTestClient in-process e2e** — `tests/` exercises the full `/healthz` / `/readyz` / error-translation round-trip via `AsyncTestClient.with_app(app)` without booting uvicorn.
+
+## Documentation
+
+- [README.md](README.md): quickstart, install, when to use, when NOT to use, why a separate package.
+- [AGENTS.md](../AGENTS.md): project overview, conventions, governance for AI agents. Per-repo template (v8); cites ADR-023, ADR-042.
+- [SPEC.md](SPEC.md): canonical 1-page specification (what / why / how / interface / status; per ADR-042 element 1). Cites the `code_to_status` map.
+- [WORKLOG.md](WORKLOG.md): change history (ADR-025 v2.1 schema, 11 columns including `device:` field). Validator: `pheno-worklog-schema` v2.1.
+- [CHANGELOG.md](CHANGELOG.md): release notes, semver, breaking changes. Keep a Changelog 1.1.0.
+- [STATUS.md](STATUS.md): weekly-refresh status doc with honest 71-pillar scorecard (Tier 0) and Factory AI Agent Readiness level 0 (Functional). Per ADR-041 + ADR-026.
+- [CONTRIBUTING.md](../CONTRIBUTING.md): how to contribute. Branch prefixes, Conventional Commits, PR template.
+- [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md): Contributor Covenant 2.1.
+- [SECURITY.md](../SECURITY.md): vulnerability disclosure policy.
+
+## Optional
+
+- [pyproject.toml](pyproject.toml): package manifest. `fastapi`, `httpx`, `structlog`, `pydantic` runtime deps; `pytest`, `pytest-asyncio` dev deps.
+- [pheno_fastapi_base/__init__.py](pheno_fastapi_base/__init__.py): `create_app` factory + re-exports.
+- [pheno_fastapi_base/app.py](pheno_fastapi_base/app.py): `create_app` body (lifespan, route registration, exception handler wiring).
+- [pheno_fastapi_base/errors.py](pheno_fastapi_base/errors.py): `AppError` + `code_to_status` map + FastAPI exception handler.
+- [pheno_fastapi_base/middleware.py](pheno_fastapi_base/middleware.py): `StructlogAccessLogMiddleware`.
+- [pheno_fastapi_base/testing.py](pheno_fastapi_base/testing.py): `AsyncTestClient.with_app(app)`.
+- [tests/](tests/): pytest suite covering health probes, error envelope, structlog output.
+
+## Sibling substrates (fleet)
+
+- `pheno-config` (Rust) — typed config loader; consumed at startup to configure structlog level and HTTP host/port.
+- `pheno-context` (Rust) — request-context propagation; `X-Request-ID` round-trips through structlog's `app.access` line.
+- `pheno-otel` (Rust) — OTLP exporter; the structlog JSON access-log is shipped to OTLP/HTTP via `pheno-otel`'s `HttpExporter`.
+- `pheno-errors` (Rust) — `thiserror`-aligned error envelope; the Python `AppError.code` strings (`NotFound` / `Validation` / `Conflict` / `Storage` / `Domain`) mirror the Rust `AppError` variants.
+- `pheno-port-adapter` — connection-lifecycle errors (HTTP upstream calls go through `TcpAdapter`).
+
+## ADRs (governance)
+
+- [ADR-023 (Agent-effort governance)](../../docs/adr/2026-06-15/ADR-023-agent-effort-governance.md): substrate placement + Rule 3.1 quality bar.
+- [ADR-037 (pheno-mcp-router substrate canonical)](../../docs/adr/2026-06-18/ADR-037-pheno-mcp-router-substrate-canonical.md): analogous substrate-assignment ADR.
+- [ADR-038 (Hexagonal L4 Port/Adapter policy)](../../docs/adr/2026-06-18/ADR-038-hexagonal-port-adapter-l4-policy.md): pattern contract.
+- [ADR-042 (Substrate quality bar)](../../docs/adr/2026-06-18/ADR-042-substrate-quality-bar.md): 7-element quality bar.
+- [ADR-040 (Test coverage gates per tier)](../../docs/adr/2026-06-18/ADR-040-test-coverage-gates-per-tier.md): tier-based gate (60% federated-service tier for HTTP services).
+- [ADR-025 (worklog v2.1 schema bump)](../../docs/adr/2026-06-17/ADR-025-adr-015-v2-1.md): `device:` field.
+- [ADR-030 (pheno-worklog-schema v2.1)](../../docs/adr/2026-06-17/ADR-030-pheno-worklog-schema-v2-1.md): 4 `device:` values pinned.
+- [ADR-041 (71-pillar refresh cadence)](../../docs/adr/2026-06-18/ADR-041-71-pillar-refresh-cadence.md): weekly probe cadence.
+- [ADR-026 (Factory AI Agent Readiness)](../../docs/adr/2026-06-17/ADR-026-factory-ai-agent-readiness.md): external cross-cutting standard.
+
+## See also
+
+- [findings/71-pillar-2026-06-17.md § 1.x](../../findings/71-pillar-2026-06-17.md): 71-pillar scorecard (this crate scored Tier 0).
+- [findings/71-pillar-2026-06-17-schema.md](../../findings/71-pillar-2026-06-17-schema.md): 71-pillar framework schema (ADR-024).
+- [pheno-worklog-schema v2.1](../../pheno-worklog-schema/SPEC-v2.1.md): worklog validator CLI.
+
+<!--
+  Template notes:
+  - Format is fixed by llmstxt.org: H1 title, > blockquote summary, ## sections with bullet lists.
+  - Each bullet MUST be [filename](path): one-line summary — the colon is part of the spec.
+  - Per ADR-024 + v8 plan T20.7: 5-line quickstart + non-scope + 3 examples structure.
+  - List the meta-bundle files first (AGENTS.md, README.md, SPEC.md, WORKLOG.md, CHANGELOG.md, STATUS.md, CONTRIBUTING.md), then topic-specific docs.
+  - License under "Optional" so LLMs can skip it.
+  - Update cadence: re-audit on every release. CI lint: pheno-ci-templates/llms-txt-lint.yml (T20.7 follow-up).
+-->

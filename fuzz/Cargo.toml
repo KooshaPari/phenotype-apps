@@ -8,12 +8,15 @@ rust-version = "1.82"
 [package.metadata]
 cargo-fuzz = true
 
+[[bin]]
+name = "suggest_rules"
+path = "fuzz_targets/suggest_rules.rs"
+
 [dependencies]
 libfuzzer-sys = "0.4"
 
 # Local crate under test
 focus-rule-suggester = { path = "../crates/focus-rule-suggester" }
-focus-rule-suggester-noop = { path = "../crates/focus-rule-suggester", package = "focus-rule-suggester" }
 
 # Transitive deps needed for mock data construction
 chrono = { version = "0.4", features = ["serde"] }
@@ -23,6 +26,7 @@ serde = { version = "1.0", features = ["derive"] }
 anyhow = "1.0"
 focus-events = { path = "../crates/focus-events" }
 focus-audit = { path = "../crates/focus-audit" }
+focus-errors = { path = "../crates/focus-errors" }
 
 [profile.release]
 debug = 1

@@ -1,0 +1,94 @@
+<!--
+  llms.txt for pheno-go-ctxkit — LLM-friendly content discovery index.
+  Spec: https://llmstxt.org/  (curated plain-text file at project root; "robots.txt for LLMs").
+  Per ADR-042 element 7 + pheno-llms-txt (T20.7) v8 template (5-line quickstart + non-scope + 3 examples).
+  Cross-references SPEC.md (T20.2), WORKLOG.md (T20.5), CHANGELOG.md (T20.6).
+-->
+
+# pheno-go-ctxkit
+
+> Canonical context utilities for the Pheno Go HTTP-service fleet. Standardises three values every Pheno handler needs: a per-request UUID v4 id (header `X-Request-ID`), a `*slog.Logger` reachable from `context.Context`, and a `net/http` middleware that wires both together and emits a structured `request.complete` log line on the way out. Depends only on the Go standard library (`log/slog`, `crypto/rand`); no third-party deps.
+
+## Quickstart (5 lines)
+
+```go
+import "github.com/kooshapari/pheno-go-ctxkit/ctxkit"
+func main() {
+    mux := http.NewServeMux()
+    mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+        ctxkit.Logger(r.Context()).Info("ping", "id", ctxkit.RequestID(r.Context()))
+        w.WriteHeader(204)
+    })
+    http.ListenAndServe(":8080", ctxkit.Middleware(mux))
+}
+```
+
+## When to use
+
+- You need a per-request id + `*slog.Logger` pair propagated through `context.Context` in a `net/http` handler chain.
+- You want a single canonical `X-Request-ID` header for inbound + outbound requests.
+- You want a `request.complete` access-log line emitted via the stdlib `log/slog` (no third-party logger).
+
+## When NOT to use
+
+- You need gRPC interceptors — `pheno-go-ctxkit` is `net/http` only; port the pattern manually.
+- You need distributed-tracing context propagation (W3C `traceparent`) — use `go.opentelemetry.io/otel/propagation` alongside; this package only carries the request id.
+- You need a third-party logger (zap / zerolog) — keep `log/slog`; the package only exposes `*slog.Logger`.
+
+## 3 examples (illustrative)
+
+1. **Inbound + outbound header round-trip** — `ctxkit_test.go` `TestMiddleware_PreservesExistingRequestID` verifies that an inbound request carrying `X-Request-ID` keeps its id, and `TestMiddleware_GeneratesUUIDWhenMissing` confirms a fresh UUID v4 is generated otherwise.
+2. **`Logger` extraction with `slog.Default()` fallback** — `ctxkit.go` `Logger` returns the per-request logger if set, otherwise `slog.Default()`. Handlers can call `ctxkit.Logger(ctx).Info(...)` unconditionally.
+3. **`WithRequestID` programmatic override** — middleware code paths can call `ctxkit.WithRequestID(ctx, "trace-123")` to inject a known id (e.g. when crossing an internal queue); the override is preserved through `RequestID` lookups.
+
+## Documentation
+
+- [AGENTS.md](../AGENTS.md): project overview, conventions, governance for AI agents. Per-repo template (v8); cites ADR-023, ADR-042.
+- [SPEC.md](SPEC.md): canonical 1-page specification (what / why / how / interface / status; per ADR-042 element 1). Cites the 3-value standardisation (id, logger, middleware).
+- [WORKLOG.md](WORKLOG.md): change history (ADR-025 v2.1 schema, 11 columns including `device:` field). Validator: `pheno-worklog-schema` v2.1.
+- [CHANGELOG.md](CHANGELOG.md): release notes, semver, breaking changes. Keep a Changelog 1.1.0.
+- [STATUS.md](STATUS.md): weekly-refresh status doc with honest 71-pillar scorecard (Tier 0) and Factory AI Agent Readiness level 0 (Functional). Per ADR-041 + ADR-026.
+- [CONTRIBUTING.md](../CONTRIBUTING.md): how to contribute. Branch prefixes, Conventional Commits, PR template.
+- [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md): Contributor Covenant 2.1.
+- [SECURITY.md](../SECURITY.md): vulnerability disclosure policy.
+
+## Optional
+
+- [go.mod](go.mod): module manifest (`github.com/kooshapari/pheno-go-ctxkit`, go 1.22). Zero third-party deps.
+- [ctxkit/ctxkit.go](ctxkit/ctxkit.go): `WithRequestID`, `RequestID`, `NewRequestID`, `WithLogger`, `Logger`, `Middleware`, `HeaderRequestID`.
+- [ctxkit/ctxkit_test.go](ctxkit/ctxkit_test.go): table-driven tests for inbound header preservation, UUID generation, logger extraction, middleware ordering.
+
+## Sibling substrates (fleet)
+
+- `pheno-context` (Rust) — request-context propagation; the Go `X-Request-ID` header is the wire-level mirror of the Rust `Context::request_id` field.
+- `pheno-fastapi-base` (Python) — FastAPI base; uses structlog in lieu of `log/slog` but mirrors the same `X-Request-ID` convention.
+- `phenotype-go-sdk` — polyglot substrate SDK; Go consumers reach this package through the SDK's `ctxkit` re-export.
+- `pheno-otel` (Rust) — OTLP exporter; the Go `request.complete` log line is shipped via the Go-side OTLP exporter (not yet in-tree; tracked as a follow-up).
+
+## ADRs (governance)
+
+- [ADR-023 (Agent-effort governance)](../../docs/adr/2026-06-15/ADR-023-agent-effort-governance.md): substrate placement + Rule 3.1 quality bar.
+- [ADR-037 (pheno-mcp-router substrate canonical)](../../docs/adr/2026-06-18/ADR-037-pheno-mcp-router-substrate-canonical.md): analogous substrate-assignment ADR.
+- [ADR-038 (Hexagonal L4 Port/Adapter policy)](../../docs/adr/2026-06-18/ADR-038-hexagonal-port-adapter-l4-policy.md): pattern contract.
+- [ADR-042 (Substrate quality bar)](../../docs/adr/2026-06-18/ADR-042-substrate-quality-bar.md): 7-element quality bar.
+- [ADR-040 (Test coverage gates per tier)](../../docs/adr/2026-06-18/ADR-040-test-coverage-gates-per-tier.md): 80% lib/SDK gate.
+- [ADR-025 (worklog v2.1 schema bump)](../../docs/adr/2026-06-17/ADR-025-adr-015-v2-1.md): `device:` field.
+- [ADR-030 (pheno-worklog-schema v2.1)](../../docs/adr/2026-06-17/ADR-030-pheno-worklog-schema-v2-1.md): 4 `device:` values pinned.
+- [ADR-041 (71-pillar refresh cadence)](../../docs/adr/2026-06-18/ADR-041-71-pillar-refresh-cadence.md): weekly probe cadence.
+- [ADR-026 (Factory AI Agent Readiness)](../../docs/adr/2026-06-17/ADR-026-factory-ai-agent-readiness.md): external cross-cutting standard.
+
+## See also
+
+- [findings/71-pillar-2026-06-17.md § 1.x](../../findings/71-pillar-2026-06-17.md): 71-pillar scorecard (this crate scored Tier 0).
+- [findings/71-pillar-2026-06-17-schema.md](../../findings/71-pillar-2026-06-17-schema.md): 71-pillar framework schema (ADR-024).
+- [pheno-worklog-schema v2.1](../../pheno-worklog-schema/SPEC-v2.1.md): worklog validator CLI.
+
+<!--
+  Template notes:
+  - Format is fixed by llmstxt.org: H1 title, > blockquote summary, ## sections with bullet lists.
+  - Each bullet MUST be [filename](path): one-line summary — the colon is part of the spec.
+  - Per ADR-024 + v8 plan T20.7: 5-line quickstart + non-scope + 3 examples structure.
+  - List the meta-bundle files first (AGENTS.md, README.md, SPEC.md, WORKLOG.md, CHANGELOG.md, STATUS.md, CONTRIBUTING.md), then topic-specific docs.
+  - License under "Optional" so LLMs can skip it.
+  - Update cadence: re-audit on every release. CI lint: pheno-ci-templates/llms-txt-lint.yml (T20.7 follow-up).
+-->

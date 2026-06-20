@@ -1,0 +1,96 @@
+<!--
+  llms.txt for pheno-config — LLM-friendly content discovery index.
+  Spec: https://llmstxt.org/  (curated plain-text file at project root; "robots.txt for LLMs").
+  Per ADR-042 element 7 + pheno-llms-txt (T20.7) v8 template (5-line quickstart + non-scope + 3 examples).
+  Cross-references SPEC.md (T20.2), WORKLOG.md (T20.5), CHANGELOG.md (T20.6).
+-->
+
+# pheno-config
+
+> Canonical typed-config loader for the pheno-* fleet. Reads `<PREFIX>_*` env vars (with a `ConfigBuilder` for programmatic construction) and JSON config files, returning a `Config` struct with `url` / `port` / `log_level` / `db_path` / `feature_flags`. Sibling to `pheno-context` (request propagation) and `pheno-flags` (synchronous in-memory flag set).
+
+## Quickstart (5 lines)
+
+```rust
+use pheno_config::Config;
+let cfg = Config::builder().with_url("postgres://localhost/app").build();
+assert_eq!(cfg.url(), "postgres://localhost/app");
+assert_eq!(cfg.port(), 5432);
+println!("{}", cfg.log_level());
+```
+
+## When to use
+
+- You need a typed `Config` struct with builder + env cascade + JSON file loading.
+- You want a single source of truth for service configuration shared across the pheno-* fleet.
+- You want zero-config defaults that can be overridden by `PHENO_*` env vars or a JSON file.
+
+## When NOT to use
+
+- You need hot-reload at runtime — load once at startup; mutate via builder pattern instead.
+- You need TOML / YAML support — JSON only; pair with a JSON-derived config source.
+- You need secrets handling — use a secret-manager (Vault, AWS Secrets Manager) and feed values via env.
+
+## 3 examples (illustrative)
+
+1. **`Config::default()` + `to_string()`** — `src/lib.rs` defines a `Default` impl that yields a `Config` with `url=""`, `port=0`, `log_level="info"`, `db_path=None`, `feature_flags={}`. Use as a hermetic starting point.
+2. **Env cascade `PHENO_URL=postgres://...`** — at startup, the `ConfigBuilder` reads `<PREFIX>_*` env vars first, then overlays a JSON file (if supplied), then falls back to `Default`.
+3. **`pheno-otel` OTLP export of resolved config** — `examples/otel_quickstart.rs` builds a default `Config`, serializes to JSON, and ships a one-line OTLP/JSON log through `pheno_otel::StdoutExporter` (ADR-037).
+
+## Documentation
+
+- [AGENTS.md](../AGENTS.md): project overview, conventions, governance for AI agents. Per-repo template (v8); cites ADR-023, ADR-042, ADR-040.
+- [SPEC.md](SPEC.md): canonical 1-page specification (what / why / how / interface / status; per ADR-042 element 1). Cites the env-cascade ordering.
+- [WORKLOG.md](WORKLOG.md): change history (ADR-025 v2.1 schema, 11 columns including `device:` field). Validator: `pheno-worklog-schema` v2.1.
+- [CHANGELOG.md](CHANGELOG.md): release notes, semver, breaking changes. Keep a Changelog 1.1.0.
+- [STATUS.md](STATUS.md): weekly-refresh status doc with honest 71-pillar scorecard (Tier 0) and Factory AI Agent Readiness level 0 (Functional). Per ADR-041 + ADR-026.
+- [CONTRIBUTING.md](../CONTRIBUTING.md): how to contribute. Branch prefixes, Conventional Commits, PR template, 80% lib coverage gate (ADR-040).
+- [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md): Contributor Covenant 2.1.
+- [SECURITY.md](../SECURITY.md): vulnerability disclosure policy.
+
+## Optional
+
+- [Cargo.toml](Cargo.toml): package manifest (v0.1.0). MSRV 1.82, edition 2021, `thiserror = "1.0"`, `serde = "1.0"`, `serde_json = "1.0"`, `pheno-otel = { path = "../pheno-otel" }` (ADR-037), empty `[workspace]` (standalone crate).
+- [llvm-cov.toml](llvm-cov.toml): 80% lib coverage threshold (ADR-040).
+- [scripts/coverage.sh](scripts/coverage.sh): cargo-llvm-cov coverage gate runner (HTML / summary / --fail modes).
+- [src/lib.rs](src/lib.rs): `Config` struct + `ConfigBuilder` + 8+ inline unit tests.
+- [examples/otel_quickstart.rs](examples/otel_quickstart.rs): `pheno-otel` OTLP exporter wiring (ADR-037 × ADR-038).
+
+## Sibling substrates (fleet)
+
+- `pheno-context` — request context propagation (config values flow into request-scoped metadata).
+- `pheno-flags` — synchronous in-memory feature-flag set (subset of `Config::feature_flags`).
+- `pheno-cli-base` — CLI substrate (consumes `Config::path()` via `ConfigArg`).
+- `pheno-port-adapter` — connection-lifecycle errors (uses `pheno_config::Config::url()` as endpoint).
+- `pheno-otel` — OTLP exporter (consumes `pheno-config` resolved-config diffs via `examples/otel_quickstart.rs`).
+- `pheno-errors` — `thiserror`-aligned error envelope; config-parse failures map to `AppError::Validation`.
+
+## ADRs (governance)
+
+- [ADR-022 (Config consolidation)](../../docs/adr/2026-06-15/ADR-022-config-consolidation.md): two-crate canonical split (Rust core / TS edge) — `pheno-config` is the Rust core.
+- [ADR-023 (Agent-effort governance)](../../docs/adr/2026-06-15/ADR-023-agent-effort-governance.md): substrate placement + Rule 3.1 quality bar.
+- [ADR-037 (pheno-mcp-router substrate canonical)](../../docs/adr/2026-06-18/ADR-037-pheno-mcp-router-substrate-canonical.md): analogous substrate-assignment ADR; `pheno-otel` is the OTLP substrate in the same family.
+- [ADR-038 (Hexagonal L4 Port/Adapter policy)](../../docs/adr/2026-06-18/ADR-038-hexagonal-port-adapter-l4-policy.md): pattern contract.
+- [ADR-042 (Substrate quality bar)](../../docs/adr/2026-06-18/ADR-042-substrate-quality-bar.md): 7-element quality bar.
+- [ADR-040 (Test coverage gates per tier)](../../docs/adr/2026-06-18/ADR-040-test-coverage-gates-per-tier.md): 80% lib/SDK gate.
+- [ADR-025 (worklog v2.1 schema bump)](../../docs/adr/2026-06-17/ADR-025-adr-015-v2-1.md): `device:` field.
+- [ADR-030 (pheno-worklog-schema v2.1)](../../docs/adr/2026-06-17/ADR-030-pheno-worklog-schema-v2-1.md): 4 `device:` values pinned.
+- [ADR-041 (71-pillar refresh cadence)](../../docs/adr/2026-06-18/ADR-041-71-pillar-refresh-cadence.md): weekly probe cadence.
+- [ADR-026 (Factory AI Agent Readiness)](../../docs/adr/2026-06-17/ADR-026-factory-ai-agent-readiness.md): external cross-cutting standard.
+
+## See also
+
+- [findings/71-pillar-2026-06-17.md § 1.x](../../findings/71-pillar-2026-06-17.md): 71-pillar scorecard (this crate scored Tier 0).
+- [findings/71-pillar-2026-06-17-schema.md](../../findings/71-pillar-2026-06-17-schema.md): 71-pillar framework schema (ADR-024).
+- [pheno-worklog-schema v2.1](../../pheno-worklog-schema/SPEC-v2.1.md): worklog validator CLI.
+- [pheno-ci-templates](https://github.com/KooshaPari/pheno-ci-templates): CI gate templates (per ADR-042 element 6).
+
+<!--
+  Template notes:
+  - Format is fixed by llmstxt.org: H1 title, > blockquote summary, ## sections with bullet lists.
+  - Each bullet MUST be [filename](path): one-line summary — the colon is part of the spec.
+  - Per ADR-024 + v8 plan T20.7: 5-line quickstart + non-scope + 3 examples structure.
+  - List the meta-bundle files first (AGENTS.md, README.md, SPEC.md, WORKLOG.md, CHANGELOG.md, STATUS.md, CONTRIBUTING.md), then topic-specific docs.
+  - License under "Optional" so LLMs can skip it.
+  - Update cadence: re-audit on every release. CI lint: pheno-ci-templates/llms-txt-lint.yml (T20.7 follow-up).
+-->
