@@ -63,10 +63,27 @@
 //! let keys: Vec<&String> = snap.keys().collect();
 //! assert_eq!(keys, vec![&"alpha".to_string(), &"zeta".to_string()]);
 //! ```
+//!
+//! ## Tracing integration (L58, optional)
+//!
+//! With the `tracing` feature enabled, [`FlagSet::from_env`] runs
+//! inside a `#[instrument]` span carrying the prefix as a field,
+//! and [`FlagSet::is_enabled`] emits a `trace!` event per lookup
+//! with the flag key and the resolved boolean. Consumers add
+//!
+//! ```toml
+//! pheno-flags = { version = "0.1", features = ["tracing"] }
+//! ```
+//!
+//! to opt in. The crate remains `tracing`-free at rest (the
+//! dependency is `optional`, the feature is off by default).
 
 use std::collections::{BTreeMap, HashMap};
 
 use thiserror::Error;
+
+#[cfg(feature = "tracing")]
+use tracing::{debug, instrument, trace};
 
 /// Errors raised by [`FlagSet::from_env`].
 #[derive(Debug, Error, PartialEq, Eq)]
@@ -143,6 +160,7 @@ impl FlagSet {
     /// Returns [`FlagError::InvalidValue`] on the first
     /// unparseable variable; partial state is **not** built (the
     /// function scans and validates before inserting).
+    #[cfg_attr(feature = "tracing", instrument(skip(), fields(prefix = %prefix)))]
     pub fn from_env(prefix: &str) -> Result<Self, FlagError> {
         // First pass: validate every matching variable. We do not
         // insert until all of them parse, so a partial build
@@ -186,6 +204,8 @@ impl FlagSet {
         for (k, v) in parsed {
             flags.insert(k, v);
         }
+        #[cfg(feature = "tracing")]
+        debug!(count = flags.len(), "flags loaded");
         Ok(Self { flags })
     }
 
@@ -193,8 +213,17 @@ impl FlagSet {
     ///
     /// Unknown keys return `false` (this is the safe default for
     /// opt-in feature flags).
+    ///
+    /// With the `tracing` feature enabled, each call emits a
+    /// `trace!` event carrying `key` and the resolved `enabled`
+    /// boolean, so flag-evaluation hot paths can be inspected
+    /// through any `tracing` subscriber (including the OTLP
+    /// exporter installed by `pheno-tracing`).
     pub fn is_enabled(&self, key: &str) -> bool {
-        self.flags.get(key).copied().unwrap_or(false)
+        let enabled = self.flags.get(key).copied().unwrap_or(false);
+        #[cfg(feature = "tracing")]
+        trace!(key = %key, enabled, "is_enabled");
+        enabled
     }
 
     /// Return a copy of the underlying map, sorted by key.

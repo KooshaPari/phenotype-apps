@@ -17,3 +17,20 @@ path = "src/lib.rs"
 
 [dependencies]
 thiserror = "2"
+# ADR-036 + L58 71-pillar: tracing integration is opt-in via the
+# `tracing` feature. Default off; consumers add
+# `pheno-flags = { version = "0.1", features = ["tracing"] }`
+# to get `tracing::trace!` events on `is_enabled` lookups and a
+# `#[instrument]` span around `from_env`.
+tracing = { version = "0.1", optional = true }
+
+[features]
+default = []
+# L58 (Observability & Ops): opt into `tracing` for fleet-wide
+# distributed tracing of flag evaluation.
+tracing = ["dep:tracing"]
+
+[dev-dependencies]
+# L58: integration test that tracing spans/events emit. Run with
+#   OTEL_SDK_DISABLED=true cargo test --features tracing --test tracing_test
+tracing-test = "0.2"
