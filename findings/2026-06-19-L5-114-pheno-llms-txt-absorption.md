@@ -230,6 +230,54 @@ None.
 
 ---
 
+---
+
+## 10. CLOSURE_STATUS
+
+**Closure date:** 2026-06-20 (T+1 from audit)
+**Closure branch:** `chore/L5-114-llms-txt-closure-2026-06-20`
+
+| Step | Status | Evidence |
+|---|---|---|
+| 1. Source content absorbed | ✅ DONE | PR #6 merged into `KooshaPari/phenotype-py-extras:main` |
+| 2. Source repo archived | ⏭ N/A | Source repo `KooshaPari/pheno-llms-txt` returns HTTP 404 from `gh api repos/KooshaPari/pheno-llms-txt` as of 2026-06-20 — already deleted from GitHub ahead of the audit's archive step. The 90-day GitHub retention tombstone still applies. No action possible via the standard `gh api -X PATCH /repos/{owner}/{repo} -f archived=true` endpoint (HTTP 404). |
+| 3. Manual delete | ⏭ ALREADY_DELETED | User-deleted pre-emptively (per HTTP 404 evidence). User-facing URL no longer reachable: <https://github.com/KooshaPari/pheno-llms-txt/settings#dangerZone> |
+| 4. CHANGELOG follow-up | ⏭ DEFERRED | Append `### Added` line to `phenotype-py-extras/CHANGELOG.md` `[Unreleased]` on next release PR (release-time task, not closure-time task). |
+
+### PR #6 merge evidence (2026-06-20 04:37:59 UTC)
+
+| Field | Value |
+|---|---|
+| PR | <https://github.com/KooshaPari/phenotype-py-extras/pull/6> |
+| State | **MERGED** |
+| Title | `feat(llms-txt): absorb pheno-llms-txt into phenotype-py-extras` |
+| Head | `feat/absorb-pheno-llms-txt-2026-06-18` |
+| Base | `main` |
+| Merge SHA | `a726a4e063d59f049fa9723b171a7219aa4bd7c5` |
+| Merge date | `2026-06-20T04:37:59Z` |
+| Merge parent | `4219a21` |
+| Files added | 10 files, 545 LOC added, 0 removed |
+| Added files | `docs/boundary/phenotype-py-extras.md` (46), `docs/intent/phenotype-py-extras.md` (70), `docs/llms-txt-spec.md` (58), `docs/llms.txt` (28), `examples/llms_txt/quickstart.py` (60), `src/phenotype_py_extras/llms_txt/__init__.py` (20), `src/phenotype_py_extras/llms_txt/cli.py` (23), `src/phenotype_py_extras/llms_txt/core.py` (138), `tests/llms_txt/test_core.py` (74), `tests/llms_txt/test_init.py` (28) |
+
+### Archive step outcome
+
+```
+$ gh api repos/KooshaPari/pheno-llms-txt
+{
+  "message": "Not Found",
+  "documentation_url": "https://docs.github.com/rest/repos/repos#get-a-repository",
+  "status": "404"
+}
+```
+
+The source repo `KooshaPari/pheno-llms-txt` was user-deleted between the audit (2026-06-19) and this closure turn (2026-06-20). The audit-recommended archive action (`gh api -X PATCH repos/KooshaPari/pheno-llms-txt -f archived=true`) is moot because the repo no longer exists at the GitHub API surface. All absorbed content survives in `KooshaPari/phenotype-py-extras:main` @ `a726a4e063d59f049fa9723b171a7219aa4bd7c5`.
+
+### Closure verdict
+
+**`DELETE_AFTER_PATCHES`** recipe **COMPLETE** (modified step 2: archive step auto-resolved by pre-emptive user deletion). No further action required for `pheno-llms-txt`.
+
+---
+
 ## REFERENCES
 
 - **PR #6**: <https://github.com/KooshaPari/phenotype-py-extras/pull/6>
