@@ -502,7 +502,7 @@ See `plans/2026-06-20-v11-dag-router-rebuild.md` for the v11 DAG plan (Router Ar
 | T8: v11 closure + AGENTS.md + STATUS.md | ✅ DONE | |
 | T9: Round-2 absorption follow-up | ✅ DONE | |
 | T10: v11 session wrap | ✅ DONE | |
-| §8: Router architecture decision | ⏳ AWAITING USER | Option A/B/C pick blocks L2 |
+| §8: Router architecture decision | ✅ ACCEPTED 2026-06-20 | Option B (Bifrost-as-library + Phenotype-owned decision layer per ADR-050 + ADR-051); unblocks L1+L2+L3 |
 | T30 (cancelled) | ❌ CANCELLED | |
 
 #### Stage1 Config Consolidation Closure
