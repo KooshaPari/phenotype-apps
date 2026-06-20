@@ -1,0 +1,28 @@
+[package]
+name = "focus-rule-suggester-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+rust-version = "1.82"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+
+# Local crate under test
+focus-rule-suggester = { path = "../crates/focus-rule-suggester" }
+focus-rule-suggester-noop = { path = "../crates/focus-rule-suggester", package = "focus-rule-suggester" }
+
+# Transitive deps needed for mock data construction
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.11", features = ["v4", "serde"] }
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+anyhow = "1.0"
+focus-events = { path = "../crates/focus-events" }
+focus-audit = { path = "../crates/focus-audit" }
+
+[profile.release]
+debug = 1

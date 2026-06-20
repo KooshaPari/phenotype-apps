@@ -1,0 +1,19 @@
+# pheno-config — coverage config (cargo-llvm-cov)
+# Per ADR-040 (test coverage gates per tier): lib tier = 80% lines /
+# 75% branches / 80% fns. Mirrors pheno-otel/llvm-cov.toml (the
+# reference impl).
+
+[coverage]
+# Run tests with all features enabled so feature-gated code is exercised.
+run = ["--all-features"]
+
+# Exclude benches, examples, and the workspace manifest itself from
+# coverage accounting.
+exclude = [
+    "**/benches/**",
+    "**/examples/**",
+    "**/tests/**",
+]
+
+# Output format: cobertura for CI; html for local dev.
+report = ["cobertura", "html"]

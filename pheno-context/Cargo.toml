@@ -16,6 +16,12 @@ path = "src/lib.rs"
 [dependencies]
 thiserror = { workspace = true }
 http = "1.1"
+# Canonical OTLP wire-format export substrate (ADR-037).
+# `pheno-context` uses `pheno-otel` to surface per-request spans and
+# header-extraction logs to OTLP/HTTP collectors when wired into a
+# wider observability stack (per ADR-023 Rule 3.1: every substrate
+# ships observability).
+pheno-otel = { path = "../pheno-otel" }
 
 [dev-dependencies]
 http = "1.1"
