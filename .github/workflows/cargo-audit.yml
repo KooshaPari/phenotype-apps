@@ -1,25 +1,25 @@
 name: cargo-audit
 permissions:
   contents: read
-  pull-requests: read
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 on:
   push:
     branches: [main]
-    paths: ['Cargo.lock', 'Cargo.toml']
   pull_request:
-    paths: ['Cargo.lock', 'Cargo.toml']
+    branches: [main]
   schedule:
-    - cron: '37 5 * * 3'
+    - cron: '0 6 * * *'
   workflow_dispatch:
 jobs:
   audit:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.1.1
-      - uses: rustsec/audit-check@v2
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: rustsec/audit-check@dd51754d4e59da7395a4cd9b593f0ff2d61a9b95 # v1.4.1
         with:
           token: ${{ github.token }}
+          denyWarnings: true
+      - name: cargo audit --deny warnings
+        if: always()
+        run: |
+          cargo install --locked cargo-audit --version "^0.21"
+          cargo audit --deny warnings
