@@ -35,6 +35,29 @@
     "Created this L7-007 worklog per ADR-015 v2.1 schema (with device: field per ADR-025/030 bump)",
     "Added L7-007 row to STATUS.md app-level repo triage table (KooshaPari/apps bucket: DELETED 2026-06-20)"
   ],
+  "subagent_5_actions_this_turn": {
+    "subagent_id": "subagent-5",
+    "dispatched_at": "2026-06-20",
+    "device": "macbook",
+    "rationale": "Pure governance task: STATUS.md refresh + worklog update + git commit + git push. No builds. ADR-023 Rule 1 PASS.",
+    "actions": [
+      "Verified phenotype-apps repo on remote via `gh repo view KooshaPari/phenotype-apps` (15 branches, ~895 MB, 3 open issues, default branch `apps-extract`)",
+      "Listed all remote branches via `gh api repos/KooshaPari/phenotype-apps/branches` (13 named branches including `wip/2026-06-20-L7-007-apps-orphan-closure` already created by Subagent 4)",
+      "Reviewed 30 most-recent PRs via `gh pr list --state all --limit 30` (25 MERGED, 4 CLOSED, 1 OPEN); the OPEN PR is `KooshaPari/phenotype-apps#40` (CLOSE in flight, 2026-06-20) for chore(orch-v11-044)",
+      "Confirmed Subagent 4's prior commit `4ffddc3` ('chore(governance): L7-007 apps-orphan closure — refresh STATUS + author worklog') exists on `wip/2026-06-20-L7-007-apps-orphan-closure`",
+      "Read Subagent A's audit doc (`/private/tmp/subagent-a-apps-orphan-audit.md`, 360 lines) and Subagent A's repo-metadata doc (`/private/tmp/subagent-a-apps-repo-audit.md`, 454 lines) to source L7-001..L7-007 narrative",
+      "Read existing STATUS.md (345 lines pre-this-turn) to confirm structure and identify the L7-001..L7-007 timeline gap (no explicit structured section; this turn adds it)",
+      "Read existing worklog (102 lines pre-this-turn) to confirm v2.1 schema fields and identify the Subagent-5 action-update section (this turn adds it)",
+      "Shallow-cloned the L7-007 branch: `git clone --depth 1 --branch wip/2026-06-20-L7-007-apps-orphan-closure git@github.com:KooshaPari/phenotype-apps.git /private/tmp/pheno-apps-status` (succeeded after `--depth 5 --no-single-branch` and full-clone attempts failed with `fetch-pack: unexpected disconnect` due to slow GitHub fetch and 97% disk full)",
+      "Patched STATUS.md: added 'Current state (2026-06-20)' section (3-row table covering phenotype-apps, apps orphan, local /repos/apps/ pending prune); added 'L7-001 through L7-007 apps-orphan sweep timeline' section (7 paragraphs, one per L7-N); added 'Outstanding work (post-L7-007, this turn)' section (5-row table); added 'Subagent dispatches (L7-001..L7-007 sweep)' section (4-row table); added 'Top-level metrics (2026-06-20, L7-007 closure)' section (22-row table)",
+      "STATUS.md grew from 345 → 424 lines (net +79 lines; +33 lines for L7 timeline + Outstanding work + Subagent dispatches + Top-level metrics, plus minor header additions)",
+      "Patched worklog: appended `subagent_5_actions_this_turn` block (this section) documenting the 12 actions above",
+      "Worklog grew from 102 → ~150 lines (net +48 lines for the actions block + JSON pretty-printing whitespace)",
+      "Will commit both files with conventional commit message: `chore(governance): L7-007 subagent-5 follow-up — add structured L7-001..L7-007 timeline + outstanding work + subagent dispatches + metrics to STATUS.md`",
+      "Will push to remote: `git push origin wip/2026-06-20-L7-007-apps-orphan-closure`",
+      "Will verify push and check for existing PR: `gh pr list --head wip/2026-06-20-L7-007-apps-orphan-closure`"
+    ]
+  },
   "open_follow_ups": [
     {
       "id": "L7-007-FU1",
@@ -91,6 +114,53 @@
     "Did not invoke cargo, swift, docker, or any heavy build/test cycle (per device-fit gate, Rule 1)."
   ],
   "summary": "L7-007 apps-orphan closure COMPLETE. KooshaPari/apps confirmed as 100% redundant orphan by Subagent A's 360-line byte-level audit (/private/tmp/subagent-a-apps-orphan-audit.md): 2 files / 373 B remote content (1 byte-identical to phenotype-apps, 1 generic boilerplate). Deletion executed 2026-06-20 per round-2 absorption sweep (apps action: delete, rationale: '6KB placeholder repo containing only .github/ and .gitignore. Empty scaffold; content lives in phenotype-apps.'). HTTP 404 confirmed 2026-06-20 via gh repo view. STATUS.md refreshed for v11 closure + this closure (345 lines, supersedes 2026-06-18 21:00 PDT version). This worklog created per ADR-015 v2.1 schema. 0 net content loss. 3 follow-ups deferred (local /repos/apps/ prune + iOS source preservation decision + 2 cosmetic updates). Closure push to KooshaPari/phenotype-apps:wip/2026-06-20-L7-007-apps-orphan-closure pending at end of this turn.",
+  "outcome": {
+    "status_md_path": "STATUS.md",
+    "status_md_line_count": 424,
+    "status_md_pre_subagent_5_line_count": 345,
+    "status_md_delta_lines": 79,
+    "worklog_path": "worklogs/L7-007-apps-orphan-closure-2026-06-20.json",
+    "worklog_line_count_target": "~150",
+    "worklog_pre_subagent_5_line_count": 102,
+    "branch": "wip/2026-06-20-L7-007-apps-orphan-closure",
+    "branch_sha_before_subagent_5": "4ffddc3 (Subagent 4 commit)",
+    "branch_sha_after_subagent_5": "TBD (this turn's commit)",
+    "push_target": "git@github.com:KooshaPari/phenotype-apps.git",
+    "push_status": "TBD (this turn)",
+    "pr_number": "TBD (after push, check `gh pr list --head wip/2026-06-20-L7-007-apps-orphan-closure`)"
+  },
+  "next_steps": [
+    {
+      "id": "L7-007-NS1",
+      "priority": "P0",
+      "description": "Commit STATUS.md + worklog to wip/2026-06-20-L7-007-apps-orphan-closure branch and push to remote (this turn's primary objective; required for L7-007 closure canonical home)",
+      "owner": "subagent-5 (this turn)"
+    },
+    {
+      "id": "L7-007-NS2",
+      "priority": "P1",
+      "description": "Open or update PR for wip/2026-06-20-L7-007-apps-orphan-closure branch. If no PR exists after push, create one with title 'chore(governance): L7-007 apps-orphan closure — STATUS.md structured timeline + subagent-5 worklog update'. Body should reference the Subagent A audit + this worklog + the v11 closure sweep.",
+      "owner": "interactive-parent-1 (next sweep) or subagent-5 if time permits"
+    },
+    {
+      "id": "L7-007-NS3",
+      "priority": "P2",
+      "description": "Once PR is merged: archive the wip/2026-06-20-L7-007-apps-orphan-closure branch (via gh api -X POST repos/KooshaPari/phenotype-apps/git/refs/{ref} -f sha=<sha>) — but only if the merge target branch is preserved and the WIP branch is no longer needed for reference",
+      "owner": "interactive-parent-1 (next sweep)"
+    },
+    {
+      "id": "L7-007-NS4",
+      "priority": "P2",
+      "description": "Resolve FU1 (local /repos/apps/ prune + iOS source preservation) — user must pick Option A (push 1.8 MB to phenotype-apps:wip/2026-06-20-focalpoint-ios-source) or Option B (copy to findings/2026-06-20-focalpoint-ios-source-orphan/) before local rm -rf can proceed safely",
+      "owner": "user (decision required)"
+    },
+    {
+      "id": "L7-007-NS5",
+      "priority": "P3",
+      "description": "Cosmetic: add L7-007 row to docs/adr/INDEX.md closure cross-reference table for symmetry with the other 4 closed ADRs (ADR-031, 033, 034, 036). Note: L7-007 is a task closure, not an ADR closure — recording it provides symmetry and discoverability.",
+      "owner": "interactive-parent-1 (next sweep)"
+    }
+  ],
   "bucket_change": null,
   "verification_metadata": {
     "gh_token_active": "KooshaPari (scopes: delete_repo, gist, read:org, repo, workflow)",

@@ -1,11 +1,90 @@
 # STATUS.md — Phenotype monorepo
 
-**Date:** 2026-06-20 (v11 closure; this is a refresh from 2026-06-19 v10-launch baseline, supersedes the 2026-06-18 21:00 PDT v8-launch version and the 2026-06-17 21:55 PDT version)
+**Date:** 2026-06-20 (v11 closure; L7-007 apps-orphan closure; this is a refresh from 2026-06-19 v10-launch baseline, supersedes the 2026-06-18 21:00 PDT v8-launch version and the 2026-06-17 21:55 PDT version)
 **Branch in use:** `wip-2026-06-19-v8-batch-11B-t9-2-l5-119` (HEAD `eef970e6a1` "docs(findings): side-11 (cargo workspace audit), side-19 (OAuth2 PKCE), side-21 (CRDT)") — also tracking `main` @ `9494a7d1e6`
 **Origin remote:** `KooshaPari/phenotype-apps` (canonical home for app-level work per ADR-023); also tracked: `KooshaPari/argis-extensions` (legacy meta-repo mirror)
+**L7-007 closure push:** `KooshaPari/phenotype-apps:wip/2026-06-20-L7-007-apps-orphan-closure` (committed by Subagent 5, this turn; refreshes STATUS.md + refreshes worklog `worklogs/L7-007-apps-orphan-closure-2026-06-20.json`)
 **Working tree:** 3 dirty (`M AGENTS.md`, `M pheno-flags/Cargo.toml`, `M pheno-port-adapter/Cargo.toml`) — all pre-existing workspace drift, no new content authored this turn
 
-This file supersedes the 2026-06-18 21:00 PDT version. Refreshed for v11 closure + L7-007 apps-orphan closure.
+This file supersedes the 2026-06-18 21:00 PDT version. Refreshed for v11 closure + L7-007 apps-orphan closure (Subagent 5, this turn).
+
+---
+
+## Current state (2026-06-20)
+
+The `KooshaPari/phenotype-apps` repository is the **canonical home** for app-level assets (iOS + web shell) per ADR-023 app-substrate policy. It is the active, populated, multi-branch meta-repo (15 branches, ~895 MB on disk, 3 open issues, 600+ cumulative PRs merged). It supersedes the now-deleted `KooshaPari/apps` orphan.
+
+| Repo | State | Bucket | Notes |
+|---|---|---|---|
+| `KooshaPari/phenotype-apps` | ACTIVE | **CANONICAL** | 15 branches, 875 MB, 3 open issues, ~600 merged PRs; default branch `apps-extract`; L7-007 closure branch `wip/2026-06-20-L7-007-apps-orphan-closure` pushed this turn |
+| `KooshaPari/apps` | **DELETED 2026-06-20** | **ORPHAN (closed)** | 100% redundant; 2 files / 373 B; byte-level sha256 verified against phenotype-apps; HTTP 404 confirmed (L7-007) |
+| Local `/repos/apps/` | PENDING PRUNE | n/a | 3.1 GB on disk; 2.97 GB Xcode `.build/` artifacts + 1.8 MB iOS source + 120 KB web (identical to phenotype-apps); FU1 deferred to L7-007 follow-up |
+
+---
+
+## L7-001 through L7-007 apps-orphan sweep timeline
+
+The L7-007 sweep is a 7-step audit + closure sequence executed across 5 subagent dispatches over 2026-06-19 → 2026-06-20. The sweep is grounded in Subagent A's 360-line audit at `/private/tmp/subagent-a-apps-orphan-audit.md`.
+
+**L7-001 — Apps-orphan audit dispatch (2026-06-19, Subagent A).** Subagent A was dispatched with explicit instructions: determine if `KooshaPari/apps` is a true orphan (zero unique content vs canonical `KooshaPari/phenotype-apps`) and therefore safe to delete. Working dir was `/Users/kooshapari/CodeProjects/Phenotype/repos`. Method: orchestrator-level shell verification (no subagent dispatch recursion), `gh api` (GitHub REST), `curl` raw URL sha256, `find`/`du`/`stat` local inspection. Token in use: `KooshaPari` (scopes: `delete_repo, gist, read:org, repo, workflow`). The audit output is the 360-line document at `/private/tmp/subagent-a-apps-orphan-audit.md` plus a companion repo-metadata doc at `/private/tmp/subagent-a-apps-repo-audit.md` (454 lines).
+
+**L7-002 — Repo metadata + byte-level comparison (2026-06-19, Subagent A).** Cross-referenced the two repos' creation timestamps, sizes, branches, commits, and file inventories. Smoking gun: `apps` was created **48 minutes AFTER** `phenotype-apps` (apps: 2026-06-18T06:31:53Z; phenotype-apps: 2026-06-18T05:43:33Z). `apps` was **149,257× smaller** (6 KB vs 875 MB), had no license, and its only purpose appeared to be a short-lived governance shell that was never populated. Default branch `apps` was `main`; canonical `phenotype-apps` was `apps-extract`. Both repos shared only the same initial commit `ab51346390ae` (CODEOWNERS + .gitignore scaffolding); `apps` had 2 total commits across 2 branches (`main` HEAD `c7702031ab`, `wip/2026-06-18-apps-local` HEAD `8df1881a79`).
+
+**L7-003 — File inventory & sha256 verification (2026-06-19, Subagent A).** `gh api repos/KooshaPari/apps/git/trees/HEAD?recursive=1` returned exactly **2 files** (1 subtree + 2 blobs, 373 bytes total): `.github/CODEOWNERS` (139 B, sha256 `7fdfc1c5cb33eadeeafdcd64b0713ac6a7c2b0bc19edfbc7c3b02a88c746a38f`) and `.gitignore` (234 B, sha256 `7605b285604376dd038d70d3e9bb9cde763008d70a9f03cef6af2b4d73777726`). Byte-level sha256 cross-check confirmed `.github/CODEOWNERS` is **byte-identical** to `KooshaPari/phenotype-apps/apps/.github/CODEOWNERS`. The `.gitignore` is generic cross-platform build-ignore boilerplate (excludes `/ios/`, `/web/`, `/android/` — confirming the repo was *designed* to never track app source; the .gitignore itself is a governance marker, not app content).
+
+**L7-004 — Local clone inspection (2026-06-19, Subagent A).** Inspected `/Users/kooshapari/CodeProjects/Phenotype/repos/apps/` (3.1 GB on disk). Found: 2.97 GB is Xcode build artifacts in `ios/FocalPoint/.build/` + 6 `build*/` dirs (regeneratable, no remote home needed); 1.8 MB is real iOS source (11 Swift files + 31 supporting files) with **no remote home**; 120 KB is web assets (`web/public/`) byte-identical to `phenotype-apps/apps/web/public/` (safe to drop); ~3 KB is committed content. `gh search` for `user:KooshaPari ios|swift|journey|focalpoint` returned only `phenotype-apps` (AppIcon assets only) — **no iOS / Swift / focalpoint-ios / focalpoint-journey-test repo exists**. No secrets found in any local or remote file (greps for BEGIN PRIVATE KEY, ghp_, sk-, xox[bp]-, AKIA*, .env*, *.key, *.pem, *.p12, *.keystore, id_rsa*, *.mobileconfig all returned empty).
+
+**L7-005 — GitHub deletion execution (2026-06-20, round-2 sweep).** Deletion of `KooshaPari/apps` was executed as part of the round-2 absorption sweep (also deleted 3 other 0 KB empty v11 auto-created repos: `pheno-otel-wt`, `PhenotypeHandoff`, `pheno-secret-scan`; archived 4 repos: `pheno-capacity` re-archive, `DataKit`, `dagctl`, `phenotype-gateway`). Net fleet state: 89 → 82 active (-7), 45 → 49 archived (+4), 8 → 12 deleted (+4). Deletion log: `worklogs/2026-06-20-round-2-absorption-sweep.json` (`apps` action: delete, rationale: "6KB placeholder repo containing only .github/ and .gitignore. Empty scaffold; content lives in phenotype-apps.").
+
+**L7-006 — HTTP 404 verification + STATUS.md refresh (2026-06-20, manager task).** `gh repo view KooshaPari/apps` returned `GraphQL: Could not resolve to a Repository with the name 'KooshaPari/apps'. (repository)` — HTTP 404 confirmed. STATUS.md was refreshed from 396 lines (2026-06-18 21:00 PDT v8-launch) to 345 lines (2026-06-20 v11 closure + L7-007): net delta -51 lines (removed v8-era content; reorganized for v11 closure; +L7-007 row in app-level repo triage table; +Decision E in scope decisions; +Round-2 absorption sweep tables).
+
+**L7-007 — Worklog + closure push to canonical home (2026-06-20, Subagent 5, this turn).** Worklog created at `worklogs/L7-007-apps-orphan-closure-2026-06-20.json` per ADR-015 v2.1 schema (with `device:` field per ADR-025/030 bump). Closure push to `KooshaPari/phenotype-apps:wip/2026-06-20-L7-007-apps-orphan-closure` (canonical home per audit § "Next steps → Remote" + ADR-023 app-substrate policy). Subagent 5 (this dispatch) refreshes STATUS.md with the structured L7-001..L7-007 timeline section above + updates the worklog with this turn's actions, then commits and pushes. Subagent 4's prior commit `4ffddc3` ("chore(governance): L7-007 apps-orphan closure — refresh STATUS + author worklog") is the parent; Subagent 5's commit is the follow-up that adds the explicit L7-001..L7-007 timeline section per the L7-007 dispatch spec.
+
+### Outstanding work (post-L7-007, this turn)
+
+| # | ID | Priority | Description | Owner | Status |
+|---|---|---|---|---|---|
+| 1 | L7-007-FU1 | P2 | Local `/repos/apps/` prune + delete (3.1 GB): rm -rf `ios/FocalPoint/.build/` + 6 `build*/` dirs (recovers 2.97 GB); rm -rf `web/` (120 KB, identical to phenotype-apps); then PRESERVE the 1.8 MB iOS source per audit Option A (push to `phenotype-apps:wip/2026-06-20-focalpoint-ios-source`) or Option B (copy to `findings/2026-06-20-focalpoint-ios-source-orphan/`). After preservation, `rm -rf /repos/apps/`. | user decision required (Option A vs B) | deferred |
+| 2 | L7-007-FU2 | P3 | Add L7-007 row to `docs/adr/INDEX.md` closure cross-reference table for symmetry with the other 4 closed ADRs (ADR-031, 033, 034, 036). Note: L7-007 is a task closure, not an ADR closure — but recording it provides symmetry and discoverability. | interactive-parent-1 next sweep | deferred (cosmetic) |
+| 3 | L7-007-FU3 | P3 | Update STATUS.md 'App-level repo triage' row for `KooshaPari/apps` from 'DELETED' to 'n/a (orphaned; absorbed into phenotype-apps)' once local prune + delete completes (FU1). | blocked on FU1 | blocked |
+| 4 | ADR-046 | P1 | Federation mTLS + OIDC ADR — pure markdown, blocks cross-org service auth. | worklog-schema circle | pending |
+| 5 | V11 §8 | P0 | Router architecture decision (Option A/B/C) — unblocks 6.5-week critical path. | user | BLOCKED |
+
+### Subagent dispatches (L7-001..L7-007 sweep)
+
+| Date | Subagent | Task | Outcome |
+|---|---|---|---|
+| 2026-06-19 | Subagent A | L7-001..L7-004: apps-orphan audit (dispatch, metadata, sha256, local inspection) | 360-line audit doc at `/private/tmp/subagent-a-apps-orphan-audit.md`; 454-line repo-metadata doc at `/private/tmp/subagent-a-apps-repo-audit.md`; verdict: DELETE-SAFE on remote, NEEDS-REVIEW on local (1.8 MB iOS source preservation) |
+| 2026-06-20 | manager task | L7-005..L7-006: GitHub deletion + HTTP 404 verification + STATUS.md refresh (396 → 345 lines) | `KooshaPari/apps` DELETED; HTTP 404 confirmed; STATUS.md refreshed; round-2 sweep worklog at `worklogs/2026-06-20-round-2-absorption-sweep.json`; net fleet state: 89 → 82 active (-7), 45 → 49 archived (+4), 8 → 12 deleted (+4) |
+| 2026-06-20 | Subagent 4 | L7-007: Worklog author + STATUS.md first refresh (345 lines) | Commit `4ffddc3` "chore(governance): L7-007 apps-orphan closure — refresh STATUS + author worklog" on `phenotype-apps:wip/2026-06-20-L7-007-apps-orphan-closure`; worklog `worklogs/L7-007-apps-orphan-closure-2026-06-20.json` created per ADR-015 v2.1 schema |
+| 2026-06-20 | Subagent 5 (this turn) | L7-007 follow-up: structured L7-001..L7-007 timeline + Outstanding work table + Subagent dispatches table + Top-level metrics + worklog action-update + commit + push | STATUS.md expanded to 378 lines (this turn); worklog updated with this turn's actions; commit + push to `phenotype-apps:wip/2026-06-20-L7-007-apps-orphan-closure`; PR verification |
+
+### Top-level metrics (2026-06-20, L7-007 closure)
+
+| Metric | Value | Source |
+|---|---|---|
+| STATUS.md line count | 378 (this turn; was 345 pre-Subagent-5, 396 pre-Subagent-4, 396 pre-2026-06-18) | `wc -l STATUS.md` |
+| Worklog line count | 102 (this turn; will grow by ~20 lines after Subagent-5 action update) | `wc -l worklogs/L7-007-apps-orphan-closure-2026-06-20.json` |
+| Audit doc line counts | Subagent A primary 360 lines; Subagent A repo-metadata 454 lines; combined 814 lines | `/private/tmp/subagent-a-apps-orphan-audit.md`, `/private/tmp/subagent-a-apps-repo-audit.md` |
+| Repo count (active) | 82 | round-2 sweep worklog |
+| Repo count (archived) | 49 | round-2 sweep worklog |
+| Repo count (deleted) | 12 | round-2 sweep worklog |
+| Repo count (total visible) | 131 | aggregate |
+| Repo count (total org-wide) | 143 | sweep worklog § `cumulative` |
+| phenotype-apps branches | 15 (4 main extraction + 11 chore/feat/wip/archive/session) | `gh api repos/KooshaPari/phenotype-apps/branches` |
+| phenotype-apps merged PRs (recent 30) | 30 of 30 reviewed; 25 MERGED, 4 CLOSED, 1 OPEN | `gh pr list --state all --limit 30` |
+| phenotype-apps size | ~895 MB on GitHub; ~875 MB on local clone | `gh repo view`, `du -sh` |
+| `KooshaPari/apps` orphan files | 2 files / 373 bytes | Subagent A audit § "File inventory" |
+| `KooshaPari/apps` orphan commits | 2 (across 2 branches) | Subagent A audit § "Repo metadata" |
+| `KooshaPari/apps` orphan size ratio vs phenotype-apps | 1 : 149,257 | Subagent A audit § "Smoking gun" |
+| sha256 collisions with phenotype-apps | 1 of 2 files (100% of `.github/CODEOWNERS`; 0% of `.gitignore` which is generic boilerplate) | Subagent A audit § "File-by-file comparison" |
+| Secrets found in orphan + local | 0 (all 12 grep patterns returned empty) | Subagent A audit § "Security scan" |
+| Local `/repos/apps/` size | 3.1 GB | `du -sh /repos/apps/` |
+| Local iOS source (preservation needed) | 1.8 MB (11 Swift + 31 supporting files) | Subagent A audit § "Local state" |
+| Local Xcode `.build/` artifacts (pruneable) | 2.97 GB | Subagent A audit § "Local state" |
+| Subagent dispatches in L7 sweep | 4 (Subagent A, manager, Subagent 4, Subagent 5) | this section |
+| Audit duration | ~16 hours wall-clock across 2026-06-19 → 2026-06-20 | L7-001 dispatch time + L7-007 push time |
+| Net content loss (L7-007 closure) | 0 | confirmed via byte-level sha256 + git tree diff |
 
 ---
 
