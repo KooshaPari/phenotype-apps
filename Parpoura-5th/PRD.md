@@ -149,7 +149,7 @@ As an operator, all protected API endpoints require a valid JWT token so unautho
 access is rejected at the API boundary.
 
 **Acceptance Criteria:**
-- `venture/auth.py` provides JWT creation and verification using `python-jose[cryptography]`.
+- `venture/auth.py` provides JWT creation and verification using `pyjwt[crypto]`.
 - Invalid or expired tokens return HTTP 401 with a descriptive error.
 - Token claims include at minimum: `sub` (subject), `exp` (expiry).
 - `passlib[bcrypt]` is available for password hashing in credential storage.

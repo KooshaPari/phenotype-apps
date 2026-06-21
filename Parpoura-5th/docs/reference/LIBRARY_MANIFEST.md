@@ -65,7 +65,7 @@ The following patterns are **absolutely forbidden** without an ADR:
 - Custom retry loops (use `tenacity`)
 - Custom cache TTL logic (use `redis-py` with `EX=`)
 - Custom rate limiter (use `tenacity + asyncio.Semaphore`)
-- Custom JWT handling (use `python-jose`)
+- Custom JWT handling (use `pyjwt[crypto]`)
 - Custom config parsing (use `pydantic-settings`)
 - Custom HTTP clients (use `httpx`)
 
@@ -1147,16 +1147,16 @@ async def test_money_intent_expired():
 
 ## 14. Security Libraries
 
-### 14.1 JWT: python-jose
+### 14.1 JWT: pyjwt[crypto]
 
 | Property | Value |
 |---|---|
-| **Library** | `python-jose[cryptography]==3.3.0` |
+| **Library** | `pyjwt[crypto]>=2.8.0` |
 | **License** | MIT |
 | **Purpose** | JWT creation and validation for founder authentication |
 
 ```python
-from jose import jwt, JWTError
+import jwt
 from app.config import settings
 from datetime import datetime, timedelta, timezone
 
@@ -1174,7 +1174,7 @@ def validate_jwt(token: str) -> dict:
     try:
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
         return payload
-    except JWTError as e:
+    except jwt.InvalidTokenError as e:
         raise AuthenticationError(f"invalid token: {e}") from e
 ```
 
@@ -1371,7 +1371,7 @@ anthropic = "==0.45.0"
 openai = "==1.61.0"
 
 # Security
-python-jose = {version = "==3.3.0", extras = ["cryptography"]}
+pyjwt = {version = ">=2.8.0", extras = ["crypto"]}
 cryptography = "==44.0.0"
 passlib = {version = "==1.7.4", extras = ["bcrypt"]}
 
@@ -1438,7 +1438,7 @@ dev-dependencies = [
 | `ffmpeg-python` | NO | NO | YES | NO | NO | NO | NO |
 | `anthropic` | NO | NO | YES | NO | NO | NO | YES |
 | `openai` | NO | NO | NO | NO | NO | NO | YES |
-| `python-jose` | YES | YES | NO | YES | YES | NO | YES |
+| `pyjwt[crypto]` | YES | YES | NO | YES | YES | NO | YES |
 | `cryptography` | YES | YES | NO | YES | YES | NO | NO |
 
 ---

@@ -7,9 +7,9 @@ import os
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
+import jwt
 from fastapi import HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import JWTError, jwt
 
 # JWT Configuration
 SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-secret-key-change-in-production")
@@ -33,7 +33,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials) -> dict[str, Any]:
     try:
         payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except JWTError:
+    except jwt.InvalidTokenError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",

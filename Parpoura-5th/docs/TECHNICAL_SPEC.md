@@ -69,7 +69,7 @@
 | Component | Responsibility | Technology |
 |-----------|---------------|------------|
 | API Gateway | Request routing, rate limiting | FastAPI |
-| Auth Service | JWT validation, RBAC | python-jose |
+| Auth Service | JWT validation, RBAC | pyjwt[crypto] |
 | Workflow Service | Workflow lifecycle | Custom |
 | Policy Service | Policy management | Custom |
 | Database | Persistent storage | PostgreSQL |

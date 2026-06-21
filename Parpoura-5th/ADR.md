@@ -198,7 +198,7 @@ Use Python 3.14+ with FastAPI 0.115+, pydantic v2, and uvicorn[standard] as the 
 Key library choices from pyproject.toml:
 - HTTP: httpx for outbound, FastAPI for inbound
 - Database: SQLAlchemy (async) + asyncpg + alembic
-- Auth: python-jose + passlib[bcrypt]
+- Auth: pyjwt[crypto] + passlib[bcrypt]
 - Logging: structlog + OpenTelemetry
 - Config: pydantic-settings
 - Event sourcing: eventsourcing library

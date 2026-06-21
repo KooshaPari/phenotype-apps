@@ -145,7 +145,7 @@ nats-py>=0.24.0
 redis>=5.0.0
 
 # Auth
-python-jose[cryptography]>=3.3.0
+pyjwt[crypto]>=2.8.0
 
 # Validation
 pydantic>=2.10.0

@@ -13,7 +13,7 @@ We will implement JWT-based authentication with the following characteristics:
 
 ```python
 from fastapi.security import HTTPBearer
-import jose.jwt as jwt
+import jwt
 
 SECRET_KEY = os.environ.get("JWT_SECRET_KEY", ...)
 ALGORITHM = "HS256"
