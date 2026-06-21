@@ -1,3 +1,5 @@
+#![warn(missing_docs)]
+
 use thiserror::Error;
 
 /// Error type for port adapter operations.
