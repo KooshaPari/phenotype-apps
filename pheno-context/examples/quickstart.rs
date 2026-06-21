@@ -18,7 +18,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     headers.insert("x-user-id", "user-42".parse()?);
 
     // Build context from headers
-    let ctx = Context::from_http_headers(&headers)?;
+    let ctx = Context::from_headers(&headers)?;
     println!("✓ Built context: {:#?}", ctx);
 
     // Create a tracing::Span pre-populated with context fields

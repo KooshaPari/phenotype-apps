@@ -11,7 +11,7 @@ fn make_ctx() -> Context {
     let mut h = HeaderMap::new();
     h.insert("x-trace-id", "11111111111111111111111111111111".parse().unwrap());
     h.insert("x-span-id", "2222222222222222".parse().unwrap());
-    Context::from_http_headers(&h).unwrap()
+    Context::from_headers(&h).unwrap()
 }
 
 #[tokio::test]

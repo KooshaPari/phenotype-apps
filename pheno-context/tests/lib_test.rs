@@ -1,6 +1,6 @@
 //! Unit tests for `pheno-context`.
 //!
-//! Covers: from_http_headers (W3C trace-context), current_span construction,
+//! Covers: from_headers (W3C trace-context), current_span construction,
 //! snapshot determinism, empty-headers edge case.
 
 use pheno_context::Context;
@@ -16,8 +16,8 @@ fn make_headers() -> HeaderMap {
 }
 
 #[test]
-fn from_http_headers_extracts_all() {
-    let ctx = Context::from_http_headers(&make_headers()).expect("valid headers");
+fn from_headers_extracts_all() {
+    let ctx = Context::from_headers(&make_headers()).expect("valid headers");
     assert_eq!(ctx.request_id.as_deref(), Some("req-test-001"));
     assert_eq!(
         ctx.trace_id.as_deref(),
@@ -28,9 +28,9 @@ fn from_http_headers_extracts_all() {
 }
 
 #[test]
-fn from_http_headers_empty_is_ok() {
+fn from_headers_empty_is_ok() {
     let empty = HeaderMap::new();
-    let ctx = Context::from_http_headers(&empty).expect("empty is valid");
+    let ctx = Context::from_headers(&empty).expect("empty is valid");
     assert!(ctx.request_id.is_none());
     assert!(ctx.trace_id.is_none());
     assert!(ctx.span_id.is_none());
@@ -38,10 +38,10 @@ fn from_http_headers_empty_is_ok() {
 }
 
 #[test]
-fn from_http_headers_partial() {
+fn from_headers_partial() {
     let mut h = HeaderMap::new();
     h.insert("x-trace-id", "0af7651916cd43dd8448eb211c80319c".parse().unwrap());
-    let ctx = Context::from_http_headers(&h).expect("partial is valid");
+    let ctx = Context::from_headers(&h).expect("partial is valid");
     assert!(ctx.trace_id.is_some());
     assert!(ctx.span_id.is_none());
     assert!(ctx.request_id.is_none());
@@ -49,7 +49,7 @@ fn from_http_headers_partial() {
 
 #[test]
 fn current_span_constructs() {
-    let ctx = Context::from_http_headers(&make_headers()).unwrap();
+    let ctx = Context::from_headers(&make_headers()).unwrap();
     let span = ctx.current_span();
     // Span can be entered without panicking
     let _enter = span.enter();
@@ -57,8 +57,8 @@ fn current_span_constructs() {
 
 #[test]
 fn snapshot_is_deterministic() {
-    let ctx1 = Context::from_http_headers(&make_headers()).unwrap();
-    let ctx2 = Context::from_http_headers(&make_headers()).unwrap();
+    let ctx1 = Context::from_headers(&make_headers()).unwrap();
+    let ctx2 = Context::from_headers(&make_headers()).unwrap();
     let snap1 = ctx1.snapshot();
     let snap2 = ctx2.snapshot();
     assert_eq!(snap1, snap2, "two identical contexts should produce identical snapshots");
@@ -66,7 +66,7 @@ fn snapshot_is_deterministic() {
 
 #[test]
 fn snapshot_serializable_to_json() {
-    let ctx = Context::from_http_headers(&make_headers()).unwrap();
+    let ctx = Context::from_headers(&make_headers()).unwrap();
     let snap = ctx.snapshot();
     let json = serde_json::to_string(&snap).expect("serialize");
     assert!(json.contains("req-test-001"));
@@ -75,10 +75,10 @@ fn snapshot_serializable_to_json() {
 
 #[test]
 fn merge_prefers_existing() {
-    let a = Context::from_http_headers(&make_headers()).unwrap();
+    let a = Context::from_headers(&make_headers()).unwrap();
     let mut b = HeaderMap::new();
     b.insert("x-trace-id", "ffffffffffffffffffffffffffffffff".parse().unwrap());
-    let b = Context::from_http_headers(&b).unwrap();
+    let b = Context::from_headers(&b).unwrap();
     let merged = a.merge(&b);
     // a wins because it already has a trace_id
     assert_eq!(
