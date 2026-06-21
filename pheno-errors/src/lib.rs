@@ -184,6 +184,10 @@ impl AppError {
             error.display = %self,
             "error"
         );
+        // L62 adoption (v14 cycle-3 T7): record this as a fleet-wide
+        // error metric. `pheno-otel` is already a path dep on this
+        // crate (see Cargo.toml), so no new dep is needed.
+        pheno_otel::metrics::record_error("pheno_errors.log_error", self.kind());
         self
     }
 }
