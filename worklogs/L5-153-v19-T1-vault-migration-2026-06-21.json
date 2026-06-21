@@ -1,0 +1,96 @@
+{
+  "task_id": "L5-153",
+  "task_subid": "v19-T1-vault-migration",
+  "timestamp": "2026-06-21T13:20:00Z",
+  "date": "2026-06-21",
+  "repo": "KooshaPari/phenotype-apps",
+  "category": "L5-Governance",
+  "title": "ADR-079 — Vault secrets migration roadmap (v19 T1, L50)",
+  "status": "complete",
+  "author": "forge-subagent (L5-153)",
+  "device": "macbook",
+  "device_rationale": "Documentation-only work (ADR + convention doc + smoke script + INDEX + plan edit). No cargo, no sim, no Docker-in-Docker. ~5 PR/ADR authoring actions, all macbook-safe per ADR-023 Rule 1.",
+  "device_gate_self_check": "Rule 1 PASS / Rule 2 PASS / Rule 3 PASS",
+  "schema_version": "v2.1",
+  "plan_ref": "plans/2026-06-21-v19-71-pillar-cycle-9-p0.md (Track T1)",
+  "pillar": "L50",
+  "pillar_score_target": "1.5 -> 2.0",
+  "adr_anchors": [
+    "docs/adr/2026-06-21/ADR-079-vault-migration-roadmap.md",
+    "docs/architecture/secrets-management-convention.md",
+    "docs/adr/2026-06-18/ADR-046-federation-mtls-oidc.md",
+    "docs/adr/2026-06-15/ADR-012-pheno-tracing-canonical.md",
+    "docs/adr/2026-06-17/ADR-026-factory-ai-agent-readiness.md",
+    "docs/adr/2026-06-17/ADR-027-git-lfs-3-tier-policy.md",
+    "docs/adr/2026-06-18/ADR-042-security-audit-cadence.md",
+    "docs/adr/2026-06-20/ADR-015-v2.1-worklog-schema.md",
+    "docs/adr/2026-06-20/ADR-077-slsa-l3-provenance.md",
+    "docs/adr/2026-06-20/ADR-078-cosign-keyless-signing.md"
+  ],
+  "files_written": [
+    "docs/adr/2026-06-21/ADR-079-vault-migration-roadmap.md",
+    "docs/adr/2026-06-21/INDEX.md",
+    "docs/architecture/secrets-management-convention.md",
+    "scripts/vault_smoke.sh",
+    "plans/2026-06-21-v19-71-pillar-cycle-9-p0.md",
+    "worklogs/L5-153-v19-T1-vault-migration-2026-06-21.json"
+  ],
+  "files_loc": {
+    "ADR-079-vault-migration-roadmap.md": 185,
+    "INDEX.md": 74,
+    "secrets-management-convention.md": 264,
+    "vault_smoke.sh": 84,
+    "plan_edit_lines": 12,
+    "total_loc": 619
+  },
+  "pr": {
+    "url": "https://github.com/KooshaPari/phenotype-apps/pull/107",
+    "number": 107,
+    "branch": "chore/v19-T1-vault-adr-2026-06-21",
+    "base": "main",
+    "title": "docs(adr): ADR-079 Vault secrets migration roadmap (v19 T1, L50)",
+    "reviewer": "kooshapari",
+    "state": "open",
+    "commits": 1,
+    "insertions": 623,
+    "deletions": 8,
+    "files_changed": 5
+  },
+  "follow_ups_closed": [
+    "v19 T1: L50 ADR shipped — closes 1.5 -> 2.0 score target",
+    "v19 plan ADR numbering documented (077/078 taken by 2026-06-20/ wave; T1 renumbered to ADR-079)"
+  ],
+  "open_follow_ups": [
+    {
+      "id": "L5-153-FU1",
+      "priority": "P0",
+      "description": "v19 T2-T5 must renumber to ADR-080..083 (planned as 078..080 in original v19 plan)",
+      "blocker": "needs separate T2/T3/T4/T5 subagent dispatches"
+    },
+    {
+      "id": "L5-153-FU2",
+      "priority": "P1",
+      "description": "ADR-079 references ADR-046 + ADR-012 + ADR-077/ADR-078 cross-refs; verify those still exist on main after merge (rebases can drop files)"
+    },
+    {
+      "id": "L5-153-FU3",
+      "priority": "P2",
+      "description": "Phase 0 weekly check-in: confirm vault dev cluster stood up in pheno-port-adapter per Phase 0.1"
+    }
+  ],
+  "decision_log": [
+    "Used ADR-079 instead of ADR-077 because ADR-077 is taken by 2026-06-20/ADR-077-slsa-l3-provenance.md and ADR-078 by 2026-06-20/ADR-078-cosign-keyless-signing.md. Per task constraint: 'pick next free ADR number in v19 wave (078, 079, 080)'.",
+    "Created dedicated worktree /private/tmp/v19-T1-vault-migration-2026-06-21 off chore/v19-71-pillar-cycle-9-p0-2026-06-21; rebased onto orchestrator's tip 93ca578fec before push to avoid stale-base warning.",
+    "Smoke script uses Vault dev server defaults (http://127.0.0.1:8200, VAULT_TOKEN=dev-root-token) — developer-local; CI smoke against staging is TBD in a future PR.",
+    "Convention doc §4 (OIDC binding) shows GitHub Actions example; Buildkite/Jenkins examples deferred to T3 (ADR-081)."
+  ],
+  "verification": [
+    "bash -n scripts/vault_smoke.sh -> SYNTAX OK",
+    "wc -l: ADR=185, INDEX=74, convention=264, smoke=84 (607 total non-plan LOC)",
+    "Rebased onto chore/v19-71-pillar-cycle-9-p0-2026-06-21 tip (93ca578fec) cleanly",
+    "Pushed to argis (phenotype-apps) successfully; PR #107 created",
+    "gh pr view 107 -> OPEN, base=main, head=chore/v19-T1-vault-adr-2026-06-21, author=KooshaPari"
+  ],
+  "summary": "v19 T1 (L50 Secrets Management) shipped: ADR-079 (Vault secrets migration roadmap, 4-phase 12-week rollout ending 2026-09-13), companion convention doc (path conventions + OIDC binding + rotation cadence + .env runbook), executable smoke script (bash + curl + jq; reachability + write + read + rotation), and 2026-06-21/ wave INDEX.md. PR #107 open on KooshaPari/phenotype-apps. Plan file updated to mark T1 DONE; v19 T2-T5 renumbered to ADR-080..083 (originally planned as 078..080). Cross-references: ADR-046, ADR-012, ADR-026, ADR-027, ADR-042, ADR-077/2026-06-20, ADR-078/2026-06-20, ADR-015 v2.1.",
+  "bucket_change": null
+}
