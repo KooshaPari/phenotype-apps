@@ -10,3 +10,4 @@
 | 2026-06-20 | L5-119-11D | test | add-tests | tests/test_parser.py, tests/test_emitter.py, tests/test_migrate_v20_to_v21.py | 10 unit + 4 migration cases. | macbook | pheno-worklog-schema | low | src/ | tests/ |
 | 2026-06-20 | L5-119-11D | ci | add-workflow | .github/workflows/ci.yml | pytest matrix (3.10/3.11/3.12) + ruff + coverage at 80%. | macbook | pheno-worklog-schema | low | tests/ | .github/workflows/ci.yml |
 | 2026-06-20 | L5-119-11D | docs | add-quickstart | examples/quickstart.py | 5-line quickstart (per ADR-023 quickstart rule). | macbook | pheno-worklog-schema | low | none | examples/quickstart.py |
+| 2026-06-21 | L5-123-R1 | governance | add-devcontainer | .devcontainer/devcontainer.json | R-1 bootstrap close: Python 3.12 + ruff + pylance + formatOnSave + pytest integration. | macbook | pheno-worklog-schema | low | none | .devcontainer/devcontainer.json |
