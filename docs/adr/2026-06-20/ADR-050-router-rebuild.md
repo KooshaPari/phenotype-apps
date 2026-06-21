@@ -243,7 +243,7 @@ exit criteria (`bifrost-extensions` builds + 9 plugin tests pass on v1.5.21).
 - **Decision:** **Adopted.** Best balance of ownership, cost, and risk
   for the user directive.
 
-## References
+## Cross-references
 
 - **Research (primary):** [`plans/2026-06-20-router-architecture-2026-research.md`](../../plans/2026-06-20-router-architecture-2026-research.md) — §1 current stack, §2 Bifrost drift, §4 industry trends, §5 rebuild decision, §6 architecture, §7 v11 DAG, §8 open questions
 - **Plan (primary):** [`plans/2026-06-20-v11-dag-router-rebuild.md`](../../plans/2026-06-20-v11-dag-router-rebuild.md) — L1-L6 lanes, critical path, risk register

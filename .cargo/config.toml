@@ -1,0 +1,124 @@
+# Cargo workspace configuration (v22-T5, L31).
+#
+# Source of truth for build settings across the entire monorepo.
+# All sub-Cargo.tomls inherit these unless they explicitly override.
+# Reference: ADR-040 (test coverage gates per tier),
+#            ADR-048 (substrate graduation path),
+#            .cargo/audit-rules.toml (security audit policy).
+
+[build]
+# Use the mold linker on Linux when available — 2-3x faster linking
+# for the larger workspace crates (pheno-port-adapter, pheno-otel).
+# Falls back gracefully on other platforms.
+rustflags = ["-C", "link-arg=-fuse-ld=mold"]
+incremental = true
+
+[net]
+# Default to the sparse registry (faster, fewer requests).
+git-fetch-with-cli = false
+
+[registries.crates-io]
+protocol = "sparse"
+
+[profile.dev]
+# Per ADR-042B (substrate quality bar): debug info is required for
+# good backtraces during dev. opt-level 0 keeps debug builds fast.
+debug = 1
+opt-level = 0
+incremental = true
+
+# Per ADR-040 (test coverage gates per tier):
+#   - lib (substrate core):       80% minimum coverage
+#   - framework (phenotype-*):     70% minimum coverage
+#   - federated service:          60% minimum coverage
+[profile.dev.package."*"]
+opt-level = 3
+debug = false
+
+[profile.release]
+# LTO + codegen-units=1 + strip = SOTA release builds (60s LTO verified
+# in L5-131 verification). All PR builds use this profile.
+lto = true
+codegen-units = 1
+strip = true
+opt-level = 3
+
+# For the pheno-* substrate crates (small, hot in the dep graph),
+# prefer codegen-units > 1 to parallelize compilation without losing
+# much LTO benefit.
+[profile.release.package."pheno-*"]
+codegen-units = 16
+
+# For build-time tooling (phenotype-manifest CLI, codegen scripts,
+# proc-macro crates), skip LTO entirely to keep cycle time low.
+[profile.release.package."phenotype-*"]
+codegen-units = 256
+lto = false
+
+[profile.bench]
+# Benchmark builds need debug info for flamegraph resolution + LTO
+# for accurate inlining behavior measurement.
+debug = true
+lto = "thin"
+codegen-units = 1
+
+[profile.test]
+# Faster test cycles: incremental + opt-level 0 + debuginfo disabled.
+# Use `cargo test --release` for perf-sensitive tests.
+opt-level = 0
+debug = false
+incremental = true
+
+# Per ADR-040: substrate test profile enforces stricter warnings to
+# catch regressions early.
+[profile.test.package."pheno-*"]
+debug = 1
+
+[alias]
+# Common workflow shortcuts. Used by .lefthook.yml and pheno-ci-templates.
+xtask = "run --package xtask --"
+bloat = "bloat --release --time --crates"
+outdated = ["outdated", "--workspace", "--root-deps-only"]
+udeps = "udeps --workspace"
+miri = "miri run"
+
+[env]
+# Reproducible builds: pin the RUSTC_BOOTSTRAP, RUSTFLAGS, and target.
+# CI builds use the same settings locally to avoid "works for me" CI bugs.
+RUST_BACKTRACE = "1"
+RUSTFLAGS = "-D warnings"
+CARGO_TERM_COLOR = "always"
+CARGO_TERM_PROGRESS_WHEN = "never"
+CARGO_INCREMENTAL = "1"
+
+[target.x86_64-unknown-linux-gnu]
+linker = "clang"
+rustflags = ["-C", "link-arg=-fuse-ld=mold", "-C", "target-cpu=native"]
+
+[target.aarch64-unknown-linux-gnu]
+linker = "clang"
+rustflags = ["-C", "link-arg=-fuse-ld=mold", "-C", "target-cpu=native"]
+
+[target.x86_64-apple-darwin]
+# Apple Silicon: use the system linker (mold has known issues on macOS).
+# Universal binary builds are handled in xtask, not here.
+rustflags = ["-C", "link-arg=-fuse-ld=lld"]
+
+[target.aarch64-apple-darwin]
+rustflags = ["-C", "link-arg=-fuse-ld=lld"]
+
+# ============================================================
+# Cargo workspaces (mirror the root Cargo.toml members)
+# ============================================================
+# This file is consumed by every `cargo` invocation from the repo root.
+# Individual crate Cargo.tomls may override these settings.
+#
+# v22-T5 references:
+#   - ADR-040: test coverage gates per tier
+#   - ADR-042B: substrate quality bar (formal named checks)
+#   - ADR-048: substrate graduation path (4-tier gate table)
+#
+# Maintenance:
+#   - Review quarterly (release-engineering circle owns this file)
+#   - Test changes in a feature branch before promoting
+#   - All setting changes require a CHANGELOG entry under "Build System"

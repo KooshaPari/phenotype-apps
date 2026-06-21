@@ -71,7 +71,7 @@ All scripts tested end-to-end:
 - [x] Mission 4 candidate selected with gate table
 - [x] ADR-015 v2.1 schema formal + migration script + sample + log shipped
 
-## References
+## Cross-references
 
 - `findings/2026-06-20-v12-closure-report.md`
 - `findings/2026-06-20-v12-cycle-3-re-audit.md`

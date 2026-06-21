@@ -50,7 +50,7 @@ Both are required: the 71-pillar answers *"what is the current state across the 
 - **Use only the Factory model.** Rejected: 5 levels are too coarse; we lose the fine-grained 71-pillar diagnostics.
 - **Adopt a different external model (e.g. SLSA, OWASP SAMM).** Rejected: those are security-supply-chain focused; Factory AI is the only model that scores *agent* readiness specifically.
 
-## References
+## Cross-references
 
 - [Factory AI Agent Readiness Overview](https://docs.factory.ai/web/agent-readiness/overview) — canonical external standard.
 - `audit-71-pillar-2026-06-17-wrapup.md` § 10 — full crosswalk + per-repo scoring.

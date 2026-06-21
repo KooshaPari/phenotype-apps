@@ -130,7 +130,7 @@ The top improvement priorities for the next 4 weeks are documented in `findings/
 
 See ADR-041 — 71-pillar refresh cadence (weekly, Monday 09:00 PDT).
 
-## References
+## Cross-references
 
 - `findings/71-pillar-2026-06-17-schema.md` — schema doc (SURVIVED the disk loss)
 - `findings/71-pillar-2026-06-17.md` — first cycle scorecard (SURVIVED)

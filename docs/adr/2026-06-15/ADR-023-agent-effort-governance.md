@@ -112,7 +112,7 @@ from base intent alone.**
 | FU6 | P2 | HW ledger reclassification |
 | FU7 | P1 | CODEOWNERS review for PAUSED repos — audit + update per-repo `.github/CODEOWNERS` |
 
-## References
+## Cross-references
 
 - L5-101 finding: `findings/2026-06-15-L5-101-app-governance.md`
 - L5-101 worklog: `worklogs/L5-101-app-governance-2026-06-15.json`

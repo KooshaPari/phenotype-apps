@@ -51,7 +51,7 @@ The v2.1 bump adds **one** column at position 11: `device`. The other 10 columns
 - **Add a 12th column for `runner_id` instead.** Rejected: overkill; `device: heavy-runner` is the only signal the audit needs; runner id can go in `notes` if needed.
 - **Bump to v3 instead of v2.1.** Rejected: 1-column additive change is a minor bump; v3 is reserved for breaking schema changes.
 
-## References
+## Cross-references
 
 - `pheno-worklog-schema/src/pheno_worklog_schema/schema.py` — v2.1 validator.
 - `WORKLOG_SCHEMA_2026_06_10.md` — v2.0 spec (preserved).

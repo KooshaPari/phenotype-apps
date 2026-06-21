@@ -1,0 +1,76 @@
+{
+  "$schema": "https://phenotype.dev/schemas/calendar-1.0.json",
+  "title": "Phenotype Release Train Calendar",
+  "cycle_length_weeks": 6,
+  "phases": {
+    "W1": "Plan",
+    "W2": "Develop",
+    "W3": "Test",
+    "W4": "Harden",
+    "W5": "RC",
+    "W6": "GA"
+  },
+  "current_cycle": "26.24",
+  "cycles": [
+    {
+      "cycle": "26.24",
+      "start": "2026-06-01",
+      "code_freeze": "2026-06-08T00:00:00Z",
+      "rc_tag": "v26.24.0-rc.1",
+      "rc_date": "2026-06-08",
+      "ga_tag": "v26.24.0",
+      "ga_date": "2026-06-15",
+      "captain": "release-engineering",
+      "substrate_repos": [
+        "pheno-config",
+        "pheno-context",
+        "pheno-errors",
+        "pheno-flags",
+        "pheno-port-adapter",
+        "pheno-otel",
+        "pheno-tracing",
+        "pheno-events"
+      ]
+    },
+    {
+      "cycle": "26.30",
+      "start": "2026-07-13",
+      "code_freeze": "2026-07-20T00:00:00Z",
+      "rc_tag": "v26.30.0-rc.1",
+      "rc_date": "2026-07-20",
+      "ga_tag": "v26.30.0",
+      "ga_date": "2026-07-27",
+      "captain": "release-engineering",
+      "substrate_repos": [
+        "pheno-config",
+        "pheno-context",
+        "pheno-errors",
+        "pheno-flags",
+        "pheno-port-adapter",
+        "pheno-otel",
+        "pheno-tracing",
+        "pheno-events"
+      ]
+    },
+    {
+      "cycle": "26.36",
+      "start": "2026-08-24",
+      "code_freeze": "2026-08-31T00:00:00Z",
+      "rc_tag": "v26.36.0-rc.1",
+      "rc_date": "2026-08-31",
+      "ga_tag": "v26.36.0",
+      "ga_date": "2026-09-07",
+      "captain": "release-engineering",
+      "substrate_repos": [
+        "pheno-config",
+        "pheno-context",
+        "pheno-errors",
+        "pheno-flags",
+        "pheno-port-adapter",
+        "pheno-otel",
+        "pheno-tracing",
+        "pheno-events"
+      ]
+    }
+  ]
+}
