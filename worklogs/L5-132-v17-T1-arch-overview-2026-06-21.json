@@ -1,0 +1,83 @@
+{
+  "date": "2026-06-21",
+  "task_id": "v17-T1-arch-overview",
+  "layer": "L5-132",
+  "action": "deliver",
+  "files": [
+    "docs/architecture/pheno-config.md",
+    "docs/architecture/pheno-port-adapter.md",
+    "docs/architecture/pheno-mcp-router.md"
+  ],
+  "notes": "v17-T1 L1 Architecture overview per service (3 repos). Created docs/architecture/<service>.md for pheno-config (123 lines), pheno-port-adapter (153 lines), pheno-mcp-router (181 lines). Each doc has the 4 mandated sections (L1 context, C4 Container view, key decisions, future-state) plus a Cross-references block. Cites real ADRs (014, 022, 023, 031, 037, 038, 040, 047, 048), real source files (pheno-config/src/cascade.rs:55-77, pheno-port-adapter/src/lib.rs:31-33, pheno-port-adapter/src/lib.rs:70-89, pheno-port-adapter/tests/loom.rs), real tests (pheno-config/tests/cascade_test.rs:42-109, pheno-port-adapter/tests/{hex_cache,hex_time,loom}.rs), real patches (findings/archived-repo-local-patches/2026-06-20/pheno-mcp-router/0001-...config-module.patch for the Python source-of-truth — main branch only has README.md so I cite the patch hunks). Branch chore/v17-T1-arch-overview-2026-06-21 cut from chore/v17-71-pillar-cycle-7-p0-2026-06-21 @ 5b452ce6ff. Worktree at /private/tmp/v17-T1-arch-kp71. PR opened on KooshaPari/phenotype-apps.",
+  "device": "macbook",
+  "actor": "forge-subagent",
+  "ref": "plans/2026-06-21-v17-71-pillar-cycle-7-p0.md#T1",
+  "branch": "chore/v17-T1-arch-overview-2026-06-21",
+  "commit": "TBD",
+  "pr": "TBD",
+  "verdict": "PASS",
+  "cycle": 7,
+  "pillar": "L1",
+  "sub_pillar": "architecture-overview-per-service",
+  "scope": [
+    "pheno-config",
+    "pheno-port-adapter",
+    "pheno-mcp-router"
+  ],
+  "deliverables": {
+    "docs/architecture/pheno-config.md": {
+      "lines": 123,
+      "sections": [
+        "L1 Context",
+        "C4 Container view",
+        "Key decisions",
+        "Future-state",
+        "Cross-references"
+      ]
+    },
+    "docs/architecture/pheno-port-adapter.md": {
+      "lines": 153,
+      "sections": [
+        "L1 Context",
+        "C4 Container view",
+        "Key decisions",
+        "Future-state",
+        "Cross-references"
+      ]
+    },
+    "docs/architecture/pheno-mcp-router.md": {
+      "lines": 181,
+      "sections": [
+        "L1 Context",
+        "C4 Container view",
+        "Key decisions",
+        "Future-state",
+        "Cross-references"
+      ]
+    }
+  },
+  "adrs_cited": [
+    "ADR-014",
+    "ADR-022",
+    "ADR-023",
+    "ADR-031",
+    "ADR-037",
+    "ADR-038",
+    "ADR-040",
+    "ADR-047",
+    "ADR-048"
+  ],
+  "evidence_files": [
+    "pheno-config/src/cascade.rs",
+    "pheno-config/tests/cascade_test.rs",
+    "pheno-port-adapter/src/lib.rs",
+    "pheno-port-adapter/src/ports/cache.rs",
+    "pheno-port-adapter/src/ports/mod.rs",
+    "pheno-port-adapter/tests/loom.rs",
+    "findings/archived-repo-local-patches/2026-06-20/pheno-mcp-router/0001-chore-meta-bundle-batch-with-config-module.patch",
+    "findings/archived-repo-local-patches/2026-06-20/pheno-mcp-router/0002-chore-orch-v12-s1-010-full-tier-0-hygiene-governance.patch"
+  ],
+  "open_notes": [
+    "pheno-mcp-router main branch on KooshaPari only carries README.md as of 2026-06-21; the L5-104 PRs (#1 cost/budget/quota/audit/tiers, #2 LlamaAdapter, #3 OpenAICompatAdapter) carry the source but the 3 branches are not visible via gh api branches (only main visible). Cited the patches and the linter-output.json note (PROMOTION.md Gate 1/2/3 evaluations) instead."
+  ]
+}
