@@ -9,4 +9,5 @@
 | 2026-06-20 | L5-119-11D | source | scaffold-src | src/pheno_vibecoding_guard/__init__.py, scanner.py, rules.py, __main__.py | Scanner + 4 rules + CLI; structlog wiring (ADR-036B). | macbook | pheno-vibecoding-guard | low | none | SPEC.md#rule-registry |
 | 2026-06-20 | L5-119-11D | test | add-tests | tests/test_scanner.py, tests/test_rules.py | 8 unit + rule-by-rule cases. | macbook | pheno-vibecoding-guard | low | src/ | tests/ |
 | 2026-06-20 | L5-119-11D | ci | add-workflow | .github/workflows/ci.yml | pytest matrix (3.10/3.11/3.12) + ruff + coverage at 80%. | macbook | pheno-vibecoding-guard | low | tests/ | .github/workflows/ci.yml |
+| 2026-06-21 | L5-123-12 | ci | add-devcontainer | .devcontainer/devcontainer.json | Python 3.12 devcontainer + ruff + pylance (R-1 bootstrap gap close). | macbook | pheno-vibecoding-guard | low | none | .devcontainer/devcontainer.json |
 | 2026-06-20 | L5-119-11D | docs | add-quickstart | examples/quickstart.py | 5-line quickstart (per ADR-023 quickstart rule). | macbook | pheno-vibecoding-guard | low | none | examples/quickstart.py |

@@ -17,6 +17,7 @@ the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 - `docs/governance.md` (cross-reference hub for constraining ADRs).
 - `WORKLOG.md` v2.1 schema with `device:` field (ADR-025).
 - `LICENSE-MIT` + `LICENSE-APACHE` (dual license).
+- `.devcontainer/devcontainer.json` (Python 3.12 dev container; closes R-1 gap).
 
 ## [0.0.0] — initial bootstrap
 
