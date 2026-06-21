@@ -1,0 +1,204 @@
+# v19-T4 (L67) — CHANGELOG Unreleased section automation
+#
+# Trigger: push to main. Runs scripts/auto-changelog.py, then opens (or
+# updates) a PR with the [Unreleased] section diff so reviewers eyeball
+# the changelog before it merges.
+#
+# Companion workflows:
+#   .github/workflows/changelog.yml  — tag-driven release regeneration
+#                                    (existing v12 T11, runs on `v*` tag push)
+#   .github/workflows/commitlint.yml — Conventional Commits lint (side-50 ADOPT)
+#
+# Spec: https://www.conventionalcommits.org/en/v1.0.0/
+# ADR-024 (71-pillar framework) — L67 CHANGELOG auto pillar
+# ADR-040 (test coverage gates) — stdlib Python only, per ADR-024 substrate bar
+#
+# Idempotency: if the [Unreleased] section content matches what the script
+# would produce, no commit / no PR is opened (the `actions/github-script`
+# short-circuits via empty diff detection).
+#
+# Branch protection: the bot branch `changelog-bot/unreleased` is force-pushed
+# on every run (its history is disposable). The PR is the durable artifact.
+
+name: changelog-pr
+
+on:
+  push:
+    branches: [main, master]
+
+# Cancel in-progress runs on the same ref — matches the v12 concurrency
+# pattern across the rest of the fleet.
+concurrency:
+  group: changelog-pr-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  unreleased:
+    name: Update [Unreleased] section + open PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PHENO_REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+      BOT_BRANCH: changelog-bot/unreleased
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # LFS not required for the markdown-only diff this workflow produces.
+          lfs: false
+
+      - name: Detect latest release tag
+        id: tag
+        run: |
+          # `git tag --sort=-version:refname --merged HEAD` returns tags reachable
+          # from HEAD on main (release tags always live on main per release.yml).
+          # Fallback to v0.0.0 if no tags exist (cold-start repo).
+          tag=$(git tag --sort=-version:refname --merged HEAD | head -1)
+          if [ -z "$tag" ]; then
+            echo "warn: no release tags reachable; falling back to v0.0.0 cold-start"
+            tag="v0.0.0"
+          fi
+          echo "value=$tag" >> "$GITHUB_OUTPUT"
+          echo "info: lower-bound ref = $tag"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run auto-changelog.py (no-op if up-to-date)
+        id: gen
+        run: |
+          # --dry-run emits the rendered block to stdout; we capture it to
+          # an artifact AND run a second pass (write) only if the file would
+          # actually change. This keeps the PR diff minimal and human-readable.
+          python3 scripts/auto-changelog.py \
+            --since "${{ steps.tag.outputs.value }}" \
+            --repo-url "$PHENO_REPO_URL" \
+            --dry-run > /tmp/unreleased.md
+          {
+            echo "preview<<PREVIEW_EOF"
+            cat /tmp/unreleased.md
+            echo "PREVIEW_EOF"
+          } >> "$GITHUB_OUTPUT"
+          echo "preview bytes: $(wc -c < /tmp/unreleased.md)"
+
+      - name: Apply CHANGELOG.md update
+        id: apply
+        run: |
+          set -e
+          before_hash=$(sha256sum CHANGELOG.md | awk '{print $1}')
+          python3 scripts/auto-changelog.py \
+            --since "${{ steps.tag.outputs.value }}" \
+            --repo-url "$PHENO_REPO_URL"
+          after_hash=$(sha256sum CHANGELOG.md | awk '{print $1}')
+          if [ "$before_hash" = "$after_hash" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "info: no diff — CHANGELOG.md already up-to-date. Skipping PR."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "info: CHANGELOG.md updated ($before_hash → $after_hash)."
+          fi
+
+      - name: Open or update PR
+        if: steps.apply.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const { execSync } = require('child_process');
+
+            const botBranch = process.env.BOT_BRANCH;
+            const token = process.env.GITHUB_TOKEN;
+            const repo  = context.repo;
+            const headSha = context.payload.head_commit?.id ?? context.sha;
+            const baseBranch = context.payload.ref.replace('refs/heads/', '');
+            const sinceTag = '${{ steps.tag.outputs.value }}';
+
+            // Commit CHANGELOG.md on the bot branch. The bot branch is
+            // disposable; --force-with-lease is safe because no other actor
+            // pushes to it.
+            execSync(`git config user.name "github-actions[bot]"`);
+            execSync(`git config user.email "github-actions[bot]@users.noreply.github.com"`);
+            try {
+              execSync(`git checkout -B ${botBranch} origin/${baseBranch}`);
+            } catch (_) {
+              execSync(`git checkout -B ${botBranch} ${baseBranch}`);
+            }
+            execSync(`git add CHANGELOG.md`);
+            execSync(`git commit -m "docs(changelog): refresh [Unreleased] section (auto, ${sinceTag}..HEAD) [skip ci]"`);
+            execSync(`git push --force-with-lease origin ${botBranch}`);
+
+            // Find existing open PR (if any) and update it, else create new.
+            const { data: prs } = await github.rest.pulls.list({
+              owner: repo.owner,
+              repo: repo.repo,
+              state: 'open',
+              head: `${repo.owner}:${botBranch}`,
+              base: baseBranch,
+            });
+
+            const body = [
+              'Auto-generated by `.github/workflows/changelog-pr.yml` (V19-T4, L67).',
+              '',
+              `* Triggered by: \`${context.payload.head_commit?.id?.slice(0,7) ?? 'push'}\` on \`${baseBranch}\``,
+              `* Lower-bound ref: \`${sinceTag}\``,
+              `* Head ref:       \`${headSha.slice(0,12)}\``,
+              '',
+              'Companion: `.github/workflows/changelog.yml` (tag-driven full regeneration).',
+              '',
+              '---',
+              '',
+              'Preview of the rendered `[Unreleased]` block:',
+              '',
+              '```markdown',
+              fs.readFileSync('/tmp/unreleased.md', 'utf8').trim(),
+              '```',
+            ].join('\n');
+
+            const title = 'docs(changelog): refresh [Unreleased] section';
+
+            if (prs.length > 0) {
+              const pr = prs[0];
+              await github.rest.pulls.update({
+                owner: repo.owner, repo: repo.repo,
+                pull_number: pr.number, title, body,
+              });
+              core.info(`Updated existing PR #${pr.number}`);
+            } else {
+              const { data: pr } = await github.rest.pulls.create({
+                owner: repo.owner, repo: repo.repo,
+                title, head: botBranch, base: baseBranch, body,
+                maintainer_can_modify: true,
+              });
+              core.info(`Opened PR #${pr.number}: ${pr.html_url}`);
+            }
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## CHANGELOG Unreleased automation";
+            echo "";
+            echo "* Trigger: \`${{ github.ref }}\``;
+            echo "* Lower-bound ref: \`${{ steps.tag.outputs.value }}\``;
+            echo "* Head commit:     \`${{ github.sha }}\``;
+            echo "* File changed:    \`${{ steps.apply.outputs.changed }}\``;
+            echo "";
+            echo "### Rendered preview";
+            echo "";
+            echo "<details><summary>Click to expand</summary>";
+            echo "";
+            echo "\`\`\`markdown";
+            cat /tmp/unreleased.md
+            echo "\`\`\`";
+            echo "";
+            echo "</details>";
+          } >> "$GITHUB_STEP_SUMMARY"

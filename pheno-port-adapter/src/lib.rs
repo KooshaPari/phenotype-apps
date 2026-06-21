@@ -1,3 +1,4 @@
+#![warn(missing_docs)]
 //! `pheno-port-adapter` — substrate-canonical hexagonal port traits and
 //! their concrete adapter implementations (ADR-038).
 //!
