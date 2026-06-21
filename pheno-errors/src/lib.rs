@@ -32,6 +32,15 @@
 //!
 //! Consumed by L5 #81–85 across the pheno-* fleet. See
 //! `V3_EXECUTION_LOG_2026_06_10.md` / "L3 #46" for the rollout notes.
+//!
+//! ## Companion: RFC 7807 [`Problem`]
+//!
+//! The [`rfc7807::Problem`] companion type maps every
+//! [`AppError`] variant to an HTTP status code, so HTTP
+//! services can emit `application/problem+json` responses
+//! without re-implementing the mapping at each call site.
+
+pub mod rfc7807;
 
 /// The canonical fleet-wide error type.
 ///
