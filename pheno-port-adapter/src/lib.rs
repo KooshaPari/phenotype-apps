@@ -25,6 +25,14 @@
 //! adapters do not yet emit per-operation spans — that is a tracked
 //! follow-up (v13+) so we don't blanket-spam traces for high-QPS cache
 //! paths.
+//!
+//! Per v17-T5 (L8 Observability hooks), the public transport-adapter
+//! surface is instrumented with `#[tracing::instrument]` and wired up
+//! via [`pheno_tracing`] (the canonical `TracePort` substrate, per
+//! ADR-012/036B). Callers should invoke [`init_telemetry`] once at
+//! process start before issuing the first `connect`/`health`/`disconnect`
+//! call; the returned [`pheno_tracing::adapters::InMemoryAdapter`] handle
+//! can be plugged into an OTLP exporter per the `pheno-otel` substrate.
 
 //! #![doc = "Promote to deny once cycle-3 doc audit confirms 0 missing-doc warnings."]
 
@@ -32,7 +40,12 @@
 #![deny(unsafe_code)]
 #![deny(rust_2018_idioms)]
 
+use std::sync::OnceLock;
+
 use thiserror::Error;
+
+use pheno_tracing::adapters::InMemoryAdapter;
+use pheno_tracing::port::TracePort;
 
 /// Error type for transport-level [`PortAdapter`] operations.
 #[derive(Debug, Error)]
@@ -63,10 +76,88 @@ pub struct Connection {
     pub(crate) id: String,
 }
 
+// =============================================================================
+// Observability bootstrap (v17-T5 / L8)
+//
+// [`init_telemetry`] installs a process-wide [`InMemoryAdapter`] (the
+// canonical `TracePort` impl from `pheno-tracing`, ADR-036B) and stores
+// it in a `OnceLock` so the rest of the crate can pull it via
+// [`telemetry_port`]. The OTLP wire-format export (per ADR-037) is the
+// caller's job — set the standard `OTEL_EXPORTER_OTLP_ENDPOINT` env var
+// (default `http://localhost:4317`) and plug the adapter into whatever
+// collector SDK is in use; the substrate does not bundle one to keep
+// the dependency footprint small.
+//
+// Failure to initialize the telemetry port is non-fatal: callers may
+// opt out by not invoking `init_telemetry`, in which case
+// `telemetry_port()` returns `None` and the `#[tracing::instrument]`
+// attributes short-circuit. We deliberately do not return an error from
+// `init_telemetry` because the substrate adapter constructors are
+// infallible today; the `Result` return is preserved as a forward-compat
+// seam for when a real OTLP exporter is wired in (L8 v18+).
+// =============================================================================
+
+/// Process-wide telemetry port for `pheno-port-adapter`.
+///
+/// Populated by [`init_telemetry`]; `None` until then.
+static TELEMETRY: OnceLock<InMemoryAdapter> = OnceLock::new();
+
+/// Initialize the process-wide telemetry port for `pheno-port-adapter`.
+///
+/// Installs an [`InMemoryAdapter`] (the canonical `TracePort` impl from
+/// the `pheno-tracing` substrate) and exposes it via [`telemetry_port`].
+/// Idempotent: subsequent calls return `Ok(())` without re-initializing.
+///
+/// The OTLP wire-format export lives in the `pheno-otel` substrate
+/// (ADR-037); this function only wires up the producer side. To export
+/// spans, set `OTEL_EXPORTER_OTLP_ENDPOINT` (defaults to
+/// `http://localhost:4317`) and plug the adapter into a collector SDK.
+///
+/// Errors are surfaced as [`TelemetryError`]. The current
+/// `InMemoryAdapter` constructor is infallible, so this function returns
+/// `Err` only when the substrate reports an unexpected failure (which
+/// is not expected to happen in practice).
+pub fn init_telemetry() -> Result<(), TelemetryError> {
+    let adapter = InMemoryAdapter::new();
+    let _ = TELEMETRY.set(adapter);
+    Ok(())
+}
+
+/// Error type for telemetry initialization failures.
+///
+/// Kept as a local enum (not re-exported from `pheno-tracing`) because
+/// the substrate does not yet expose its own error type — `pheno-otel`
+/// owns the OTLP wire errors. This type is a forward-compat seam:
+/// once `pheno-tracing` ships a typed error, this enum can be replaced
+/// with `pheno_tracing::Error` in a single PR.
+#[derive(Debug, thiserror::Error)]
+pub enum TelemetryError {
+    /// The `pheno-tracing` substrate reported a failure during adapter
+    /// construction. Not expected in practice (the in-memory adapter is
+    /// infallible today) but reserved for forward-compat with future
+    /// adapters that might fail (e.g. gRPC, OTLP/HTTP with TLS).
+    #[error("pheno-tracing substrate reported: {0}")]
+    Substrate(String),
+}
+
+/// Returns the process-wide telemetry port installed by
+/// [`init_telemetry`], or `None` if telemetry has not been initialized.
+pub fn telemetry_port() -> Option<&'static InMemoryAdapter> {
+    TELEMETRY.get()
+}
+
 /// Trait for pluggable transport adapters (TCP, Unix-domain, ...).
 ///
 /// Synchronous by design — the adapter itself owns its async runtime
 /// story. Async work belongs in the hex-port traits under [`ports`].
+///
+/// ## Tracing
+///
+/// Each trait method carries a `#[tracing::instrument]` attribute. On
+/// impls the attribute creates a span named after the method with the
+/// adapter's reported [`name`](Self::name) as a field; consumer code
+/// that wants per-impl spans should add the same attribute to its own
+/// adapter impls.
 pub trait PortAdapter: Send + Sync {
     /// Stable, human-readable adapter name (e.g. `"tcp"`, `"unix"`).
     /// Used in logs, metrics labels, and error messages.
@@ -75,16 +166,19 @@ pub trait PortAdapter: Send + Sync {
     /// Cheap liveness check that does not perform I/O. Returns
     /// [`AdapterError::HealthCheckFailed`] if the adapter is in a state
     /// where a subsequent [`Self::connect`] is likely to fail.
+    #[tracing::instrument(level = "debug", skip(self))]
     fn health(&self) -> Result<(), AdapterError>;
 
     /// Open a connection to `endpoint` (URI scheme chosen by the
     /// adapter — e.g. `"tcp://host:port"` for [`adapters::TcpAdapter`]).
     /// Returns a [`Connection`] handle that the caller passes to
     /// [`Self::disconnect`].
+    #[tracing::instrument(level = "info", skip(self))]
     fn connect(&self, endpoint: &str) -> Result<Connection, AdapterError>;
 
     /// Close the active connection. Idempotent: a second call on an
     /// already-disconnected adapter returns `Ok(())`.
+    #[tracing::instrument(level = "info", skip(self))]
     fn disconnect(&self) -> Result<(), AdapterError>;
 }
 

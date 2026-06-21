@@ -41,6 +41,7 @@ impl PortAdapter for TcpAdapter {
         "tcp"
     }
 
+    #[tracing::instrument(level = "debug", skip(self), fields(endpoint))]
     fn health(&self) -> Result<(), AdapterError> {
         let state = self.inner.lock().expect("tcp adapter mutex poisoned");
         let stream = state
@@ -56,6 +57,7 @@ impl PortAdapter for TcpAdapter {
         Ok(())
     }
 
+    #[tracing::instrument(level = "info", skip(self), fields(endpoint = %endpoint))]
     fn connect(&self, endpoint: &str) -> Result<Connection, AdapterError> {
         if endpoint.is_empty() {
             return Err(AdapterError::ConnectFailed("empty endpoint".to_string()));
@@ -72,6 +74,7 @@ impl PortAdapter for TcpAdapter {
         })
     }
 
+    #[tracing::instrument(level = "info", skip(self))]
     fn disconnect(&self) -> Result<(), AdapterError> {
         let mut state = self.inner.lock().expect("tcp adapter mutex poisoned");
         // `take()` drops the inner `TcpStream`, which sends FIN to the peer.

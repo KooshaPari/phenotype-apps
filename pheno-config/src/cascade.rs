@@ -52,6 +52,12 @@ pool_size = 8
 /// 2. [`Toml::file("config.toml")`] — checked-in TOML (if present).
 /// 3. [`Env::prefixed("PHENO_")`] — environment variables.
 /// 4. [`Jetbrains::default()`] — IntelliJ run-config overrides.
+///
+/// Instrumented with `#[tracing::instrument]` (L8 Observability hooks,
+/// v17-T5). The span emits at `info` level; consumers that install a
+/// `tracing` subscriber will see a span named `build_cascade` for every
+/// config load.
+#[tracing::instrument(level = "info")]
 pub fn build_cascade() -> Figment {
     Figment::new()
         // 1. Embedded defaults (lowest priority).
@@ -68,6 +74,11 @@ pub fn build_cascade() -> Figment {
 ///
 /// Useful for tests and for callers that want to inject TOML from a custom
 /// source (e.g. a bundled config blob inside a binary).
+///
+/// Instrumented with `#[tracing::instrument]` (L8 Observability hooks,
+/// v17-T5). The `toml_len` field records the size of the input payload
+/// so consumers can correlate slow loads with oversized configs.
+#[tracing::instrument(level = "info", fields(toml_len = toml.len()))]
 pub fn build_cascade_from_str(toml: &str) -> Figment {
     Figment::new()
         .merge(Toml::string(DEFAULT_TOML))

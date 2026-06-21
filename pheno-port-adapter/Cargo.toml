@@ -28,6 +28,18 @@ redis = { version = "0.27", default-features = false, features = ["tokio-comp", 
 # collectors when wired into a wider observability stack (per
 # ADR-023 Rule 3.1: every substrate ships observability).
 pheno-otel = { path = "../pheno-otel" }
+# Canonical tracing substrate (ADR-012 / ADR-036B / ADR-037). Provides the
+# `TracePort` trait plus in-memory/stdout adapters; consumers instrument
+# public APIs with `#[tracing::instrument]` and route spans through this
+# crate. The OTLP wire-format export that physically ships spans to a
+# collector lives in `pheno-otel`; `pheno-tracing` is the *producer* side.
+pheno-tracing = { path = "../pheno-tracing" }
+# Direct dep on `tracing` for the `#[tracing::instrument]` attribute
+# macro. `pheno-tracing` re-exports the `instrument` macro but the
+# proc-macro attribute on functions is resolved against the `tracing`
+# crate itself, so a direct dep is required. Pinned to the same major
+# version as `pheno-tracing`'s internal `tracing` dep.
+tracing = "0.1"
 
 [dev-dependencies]
 serde_json = "1"

@@ -1,0 +1,81 @@
+{
+  "schema_version": "v2.1",
+  "task_id": "L5-132",
+  "task_subid": "v17-T5-otel-hooks",
+  "title": "L8 Observability hooks in 3 critical crates (v17-T5, 71-pillar cycle 7)",
+  "date": "2026-06-21",
+  "timestamp_utc": "2026-06-21T20:15:00Z",
+  "actor": "forge subagent (v17-T5 OTel hooks)",
+  "device": "macbook",
+  "task": "Wire pheno-tracing (ADR-012/036B canonical substrate) into pheno-port-adapter, pheno-config, and pheno-mcp-router; add init_telemetry() with 5-line OTLP wire-up doc comment, #[tracing::instrument] on >=3 public functions per crate, and route spans through TracePort+InMemoryAdapter (with pheno-otel owning the wire-format export per ADR-037).",
+  "pr_url": null,
+  "pr_number": null,
+  "branch": "chore/v17-T5-otel-hooks-2026-06-21",
+  "commit_sha": null,
+  "files_changed": [
+    "pheno-port-adapter/Cargo.toml",
+    "pheno-port-adapter/src/lib.rs",
+    "pheno-port-adapter/src/adapters/tcp.rs",
+    "pheno-config/Cargo.toml",
+    "pheno-config/src/lib.rs",
+    "pheno-config/src/cascade.rs"
+  ],
+  "files_added": [
+    "pheno-config/Cargo.toml",
+    "pheno-config/src/lib.rs"
+  ],
+  "files_modified": [
+    "pheno-port-adapter/Cargo.toml",
+    "pheno-port-adapter/src/lib.rs",
+    "pheno-port-adapter/src/adapters/tcp.rs",
+    "pheno-config/src/cascade.rs"
+  ],
+  "diff_lines": 235,
+  "new_files": 2,
+  "worktree_path": "/private/tmp/v17-T5-otel-63cce61e",
+  "worktree_branch_base": "chore/v17-71-pillar-cycle-7-p0-2026-06-21@5b452ce6ff",
+  "remote_used": "phenotype-apps",
+  "pushed": false,
+  "pr_state": "pending",
+  "crates_modified": {
+    "pheno-port-adapter": {
+      "status": "complete",
+      "deps_added": ["pheno-tracing", "tracing"],
+      "instrumented_functions": [
+        "PortAdapter::health (trait, no-op without impl attribute)",
+        "PortAdapter::connect (trait, no-op without impl attribute)",
+        "PortAdapter::disconnect (trait, no-op without impl attribute)",
+        "TcpAdapter::health (impl, real span)",
+        "TcpAdapter::connect (impl, real span)",
+        "TcpAdapter::disconnect (impl, real span)"
+      ],
+      "init_telemetry_added": true,
+      "telemetry_error_enum_added": true,
+      "substrate_notes": "Existing pheno-otel dep retained; pheno-tracing added as the producer side per ADR-012/036B (the wire-format export substrate per ADR-037 is pheno-otel)."
+    },
+    "pheno-config": {
+      "status": "complete",
+      "deps_added": ["pheno-tracing", "tracing", "figment", "toml", "thiserror"],
+      "instrumented_functions": [
+        "build_cascade (real span)",
+        "build_cascade_from_str (real span with toml_len field)",
+        "service_name (real span)"
+      ],
+      "init_telemetry_added": true,
+      "telemetry_error_enum_added": true,
+      "substrate_notes": "pheno-config was a stub (3 files, no Cargo.toml) in the v17 branch; Cargo.toml + src/lib.rs re-created from the c583faf8c7 baseline (the cleanup commit that removed the original Cargo.toml). The original pattern (pheno-tracing as an optional dep behind a tracing feature) was simplified to a direct path dep per task instruction."
+    },
+    "pheno-mcp-router": {
+      "status": "skipped",
+      "reason": "pheno-mcp-router does not exist as a git-tracked path in the v17 branch (HEAD = chore/v17-71-pillar-cycle-7-p0-2026-06-21@5b452ce6ff). git ls-tree HEAD pheno-mcp-router returns no entries; the directory ./pheno-mcp-router is empty and untracked. The crate is canonical on KooshaPari/pheno-mcp-router (per ADR-037) but not in this monorepo. Creating a stub from scratch is out of scope for an L8 Observability task and would conflict with the canonical substrate on GitHub. Work deferred to a v18 follow-up that pulls the crate in via a path dep before applying the same pattern.",
+      "instrumented_functions": [],
+      "init_telemetry_added": false,
+      "telemetry_error_enum_added": false
+    }
+  },
+  "skipped_per_user_directive": "no cargo build, no cargo test (MacBook-unfriendly); no push to main directly (PR only)",
+  "substrate_api_deviation": "Task brief specifies 'use pheno_tracing::init_otlp' and 'Result<(), pheno_tracing::Error>' but pheno-tracing (per ADR-012/036B) does not export init_otlp or a public Error type. The substrate is the producer side; it exports TracePort + adapters (InMemoryAdapter, StdoutAdapter) but not a typed error. Local TelemetryError enum added to each crate as a forward-compat seam, doc-commented to be replaced with pheno_tracing::Error when the substrate ships one.",
+  "device": "macbook",
+  "status": "complete",
+  "summary": "v17-T5 OTel hooks shipped for 2 of 3 critical crates: pheno-port-adapter (full crate, +pheno-tracing +tracing deps, init_telemetry() + TelemetryError + telemetry_port() OnceLock, #[tracing::instrument] on PortAdapter::health/connect/disconnect trait methods + TcpAdapter impl methods, 5-line OTLP wire-up doc block) and pheno-config (stub crate, re-created Cargo.toml + new src/lib.rs that wires init_telemetry() + service_name() + cascade re-exports, plus #[tracing::instrument] on build_cascade/build_cascade_from_str/service_name in the main module surface; the original Cargo.toml was deleted in commit c583faf8c7 chore(cleanup) and never restored). pheno-mcp-router was SKIPPED because the crate is not git-tracked in the v17 branch (HEAD ls-tree returns 0 entries) and creating a stub from scratch conflicts with the canonical KooshaPari/pheno-mcp-router substrate. Worktree at /private/tmp/v17-T5-otel-63cce61e on branch chore/v17-T5-otel-hooks-2026-06-21; PR pending push to KooshaPari/phenotype-apps. Substrate API deviation: pheno-tracing does not export init_otlp or Error — local TelemetryError enum used as forward-compat seam, doc-commented in each crate."
+}

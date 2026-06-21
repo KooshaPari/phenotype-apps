@@ -1,0 +1,45 @@
+[package]
+name = "pheno-config"
+version = "0.3.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "Layered configuration cascade for the pheno-* fleet. Wraps `figment` to overlay IntelliJ run-config, env vars, and TOML files on top of compile-time defaults. 12-factor priority order: jetbrains > env > toml > default."
+repository = "https://github.com/KooshaPari/pheno-config"
+keywords = ["config", "phenotype", "pheno-config", "figment", "cascade", "12-factor"]
+categories = ["config", "rust-patterns"]
+publish = true
+rust-version = "1.75"
+
+# Empty [workspace] table declares this crate as a standalone package,
+# intentionally NOT a member of the root monorepo workspace (which
+# contains 100+ sub-crates). Consumers add it to their own workspace or
+# depend on it via a path/git dep. This mirrors the standalone pattern
+# used by `pheno-errors`, `pheno-tracing`, and `pheno-otel`.
+[workspace]
+
+[lib]
+name = "pheno_config"
+path = "src/lib.rs"
+
+[dependencies]
+# Figment is the underlying layered-config engine; `pheno-config` is a
+# thin fleet-flavoured wrapper that fixes the 4-provider cascade order
+# and ships typed defaults (DEFAULT_TOML).
+figment = { version = "0.10", features = ["env", "toml"] }
+toml = "0.8"
+thiserror = "1.0"
+# Canonical tracing substrate (ADR-012 / ADR-036B / ADR-037). The
+# `pheno-config` `build_cascade` and `build_cascade_from_str` entry
+# points are instrumented via `#[tracing::instrument]`; this dep pulls
+# in the `TracePort` trait + in-memory/stdout adapters.
+# The OTLP wire-format export that ships spans to a collector lives in
+# `pheno-otel`; `pheno-tracing` is the *producer* side.
+pheno-tracing = { path = "../pheno-tracing" }
+# Direct dep on `tracing` for the `#[tracing::instrument]` attribute
+# macro. `pheno-tracing` re-exports the `instrument` macro but the
+# proc-macro attribute on functions is resolved against the `tracing`
+# crate itself, so a direct dep is required.
+tracing = "0.1"
+
+[dev-dependencies]
+serde_json = "1.0"
