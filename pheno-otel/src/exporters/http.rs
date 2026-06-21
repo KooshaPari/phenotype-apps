@@ -3,6 +3,7 @@
 //! Wire format: `Content-Type: application/json` per the OTel spec.
 //! Retry policy: caller is responsible; this exporter is a single-shot POST.
 
+use crate::metrics;
 use crate::{ExportHandle, OtlpError, OtlpPort};
 use super::ExporterConfig;
 
@@ -64,6 +65,10 @@ impl OtlpPort for HttpExporter {
 
     fn export(&self, payload: &[u8]) -> Result<ExportHandle, OtlpError> {
         if payload.is_empty() {
+            // L62 self-adoption (v14 cycle-3 T7): record this as an
+            // exporter-level error so the fleet's error-rate panel sees
+            // `pheno_otel.http.export` / `serialize_failed`.
+            metrics::record_error("pheno_otel.http.export", "serialize_failed");
             return Err(OtlpError::SerializeFailed("empty payload".to_string()));
         }
         // Production exporters would POST here. This is a pure-Rust,

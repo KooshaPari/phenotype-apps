@@ -1,8 +1,8 @@
 //! Concrete OTLP exporter implementations.
 //!
 //! Two in-tree adapters per ADR-038:
-//! - [`StdoutExporter`] — writes OTLP/JSON to stderr (local dev, smoke tests).
-//! - [`HttpExporter`] — POSTs OTLP/JSON to an OTLP/HTTP endpoint.
+//! - `StdoutExporter` — writes OTLP/JSON to stderr (local dev, smoke tests).
+//! - `HttpExporter` — POSTs OTLP/JSON to an OTLP/HTTP endpoint.
 
 pub mod http;
 pub mod stdout;

@@ -23,6 +23,13 @@ name = "pheno_otel"
 path = "src/lib.rs"
 
 [dependencies]
+# L62 fleet-wide observability substrate: provides the standard
+# `opentelemetry::metrics::{Counter, Histogram, UpDownCounter, Meter}` API
+# plus the `pheno_otel::metrics::{record_error, record_request, ...}`
+# convenience helpers. The `metrics` feature gates the `Counter::init()` /
+# `Histogram::init()` / `UpDownCounter::init()` builders (re-exported
+# through the `pheno_otel::metrics` module). See `src/metrics.rs`.
+opentelemetry = { version = "0.24", features = ["metrics"] }
 thiserror = "2"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

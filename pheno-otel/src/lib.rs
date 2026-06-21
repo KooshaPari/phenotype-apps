@@ -11,11 +11,19 @@
 //! sibling to `pheno-tracing` (ADR-036) — `pheno-tracing` produces spans,
 //! `pheno-otel` exports them.
 //!
+//! # L62 metrics API
+//!
+//! As of v14 cycle-3 T7, the [`metrics`] module provides the canonical
+//! fleet-wide error-rate + request-rate counter surface. Call
+//! [`init`] once at process start, then use
+//! [`metrics::record_error`] / [`metrics::record_request`] from anywhere.
+//!
 //! # When to use
 //!
 //! - You need to export traces/metrics/logs in OTLP wire format.
 //! - You want a `Port` trait + `Adapter` impl shape per ADR-038.
 //! - You want to plug a custom OTLP backend without changing consumer code.
+//! - You want fleet-wide L62 error-rate + request-rate observability.
 //!
 //! # When NOT to use
 //!
@@ -84,12 +92,34 @@ pub trait OtlpPort: Send + Sync {
 /// Concrete OTLP exporters (Stdout, HTTP).
 pub mod exporters;
 
+/// L62 fleet-wide error-rate + request-rate metrics API.
+///
+/// See [`metrics::record_error`] for the high-traffic error path; the
+/// module is the canonical place fleet crates instrument their error
+/// sites. Refs: v14 cycle-3 T7, ADR-036B, ADR-042.
+pub mod metrics;
+
 /// W3C Trace Context propagator (extract/inject across HTTP headers).
 ///
 /// See [`propagation::W3CTraceContextPropagator`] for the canonical
 /// carrier-agnostic surface; consumers import this when they need to
 /// forward trace context across an HTTP or gRPC service boundary.
 pub mod propagation;
+
+/// Install the global meter used by [`metrics`].
+///
+/// Wraps `opentelemetry::global::meter(name)` and forwards the result
+/// to [`metrics::init_meter`]. Call this **once** at process start,
+/// after the OTel SDK provider is installed; subsequent calls are
+/// no-ops (the underlying [`metrics::init_meter`] is a `OnceLock`).
+///
+/// For tests or binaries that never install an SDK provider, the
+/// returned meter is a no-op and the [`metrics`] helpers stay no-ops
+/// too — no panics.
+pub fn init(service_name: &str) {
+    let meter = opentelemetry::global::meter(service_name.to_string());
+    metrics::init_meter(meter);
+}
 
 /// Build an OTel `service.name`-flavored `ExportHandle` for tests.
 pub fn test_handle(endpoint: &str) -> ExportHandle {
