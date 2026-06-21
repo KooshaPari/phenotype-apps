@@ -1,0 +1,50 @@
+# =============================================================================
+# .cargo/audit-rules.toml — cargo-deny configuration for the Phenotype fleet.
+#
+# This file is the canonical build-time gate for L52 (Encryption-at-Rest) and
+# L54 (OIDC) enforcement, per:
+#   - ADR-078 (encryption-at-rest mandate, 2026-06-21)
+#   - ADR-079 (OIDC for service-to-service, cycle 9 T3)
+#
+# It is consumed by `cargo deny check` in CI on every PR touching pheno-config,
+# pheno-port-adapter, or this file. The `[bans]` section enforces the
+# encryption-at-rest rules (Layer 2 of ADR-078 §2). Do not weaken these
+# clauses without an ADR-078.x exception per ADR-078 §11.
+#
+# Re-introduction note: `.cargo/` was deleted in v17 cycle 7; this file
+# re-introduces `.cargo/audit-rules.toml` for cargo-deny. The directory is
+# intentionally minimal — only `audit-rules.toml` lives here.
+# =============================================================================
+
+[graph]
+all-features = false
+all-targets = true
+
+[advisories]
+version = 2
+# All advisory severities (low / medium / high) treated as errors per ADR-078 §2.2.
+severity-threshold = "low"
+yanked = "warn"
+ignore = []
+
+[bans]
+multiple = "high"
+deny = [
+    { name = "openssl", reason = "use rustls instead (ADR-078 Layer 2)" },
+    { name = "native-tls", reason = "use rustls (ADR-078 Layer 2)" },
+]
+
+[licenses]
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "BSD-3-Clause",
+    "ISC",
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+
+[warnings]
+severity-threshold = "low"
