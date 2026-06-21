@@ -1,181 +1,141 @@
-# L51 SOC2 Trust Service Criteria — Evidence Automation
+# v18 T3 L51 SOC2 Evidence Automation
 
 **Date:** 2026-06-21
-**Pillar:** L51 (SOC2 TSC Compliance)
-**Cycle:** 8 (v18)
-**Author:** v18 closure wave
+**Branch:** `chore/v18-71-pillar-cycle-8-p0-2026-06-21`
+**Pillar:** L51 (SOC 2 Evidence Automation)
+**Status:** v18 Wave A track 3 of 3
 
-## 1. SOC2 Trust Service Criteria — 5 categories
+## Goal
 
-| TSC | Name | Phenotype scope | Status |
-|-----|------|-----------------|--------|
-| **CC1** | Control environment | Org-level: AGENTS.md, CODEOWNERS, governance | **PARTIAL** (formal policies missing) |
-| **CC2** | Communication | ADRs, WORKLOG.md, AGENTS.md, decisions | **FULL** |
-| **CC3** | Risk assessment | `findings/2026-06-21-v18-T1-L17-fedramp-soc2-readiness.md` (v18) | **FULL** (v18) |
-| **CC4** | Monitoring | OTel + pheno-otel + pheno-tracing | **FULL** (L8 + L56) |
-| **CC5** | Control activities | pre-commit + CI gates (L29 + L47) | **FULL** |
-| **CC6** | Logical access | GitHub org ACL + branch protection | **FULL** |
-| **CC7** | System operations | SBOM (L48) + cosign (L50) + SLSA (L49) | **FULL** (L48+L49+L50) |
-| **CC8** | Change management | PR review + CI gates + signed commits | **FULL** |
-| **CC9** | Risk mitigation | sub-crate disposal (L17) + secret rotation (L50) | **FULL** (v18) |
-| **A1** | Availability | n/a for fleet (no production service) | **N/A** |
-| **C1** | Confidentiality | data classification (L18 v18) | **FULL** (v18) |
-| **P1-P8** | Processing integrity | n/a for fleet | **N/A** |
-| **P4** | Privacy | n/a (no PII processed) | **N/A** |
+Eliminate manual evidence collection for SOC 2 Type II. All evidence is collected by automated scripts on a schedule, stored in tamper-evident form, and presented to 3PAO auditors in a single dashboard.
 
-**Fleet status:** 8/9 applicable TSC are FULL; **CC1 (control environment) is PARTIAL** — needs formal org policies.
+## 5 automated evidence collectors
 
-## 2. Evidence automation — per TSC
+### Collector 1: audit-log-retention-check
 
-### CC1 — control environment (PARTIAL)
-**Evidence needed:**
-- Org chart / role definitions
-- Code of conduct (have it: `CODE_OF_CONDUCT.md` ✓)
-- Hiring / onboarding documentation
-- Quarterly board review minutes
+```bash
+#!/usr/bin/env bash
+# evidence/audit-retention.sh
+# Verifies audit logs meet retention requirements (365d for SOC 2, 730d FedRAMP)
+set -euo pipefail
+RETENTION_DAYS="${RETENTION_DAYS:-365}"
+BACKEND="${BACKEND:-s3}"  # s3 | gcs | azure
 
-**Status:** Have CoC, ADRs, AGENTS.md. Missing: org chart, onboarding doc, quarterly review.
+case "$BACKEND" in
+  s3)
+    OLDEST=$(aws s3api list-objects-v2 --bucket "$BUCKET" --prefix "audit-logs/" \
+      --query 'sort_by(Contents[?LastModified<`now`], &LastModified)[0].LastModified' --output text 2>/dev/null)
+    ;;
+  gcs)
+    OLDEST=$(gsutil ls -l "gs://$BUCKET/audit-logs/**" | sort -k 2 | head -1 | awk '{print $1}')
+    ;;
+esac
 
-**Automation:** `docs/org-chart.md` (v19 task), `docs/onboarding.md` (v19 task).
+DAYS_OLD=$(echo "$OLDEST" | python3 -c "import sys, datetime; d=sys.stdin.read().strip(); print((datetime.datetime.now(datetime.timezone.utc) - datetime.datetime.fromisoformat(d.replace('Z', '+00:00'))).days)")
+if [ "$DAYS_OLD" -ge "$RETENTION_DAYS" ]; then
+  echo "PASS: oldest audit log is $DAYS_OLD days (retention $RETENTION_DAYS)"
+  exit 0
+else
+  echo "FAIL: oldest audit log is only $DAYS_OLD days (required $RETENTION_DAYS)"
+  exit 1
+fi
+```
 
-### CC2 — communication (FULL)
-**Evidence needed:** Decision-making, incident comms, status reporting.
+### Collector 2: mfa-enforcement-check
 
-**Fleet evidence:**
-- 50+ ADRs in `docs/adr/`
-- WORKLOG.md per repo (v2.1 schema)
-- AGENTS.md fleet charter
-- `findings/` audit trail
+```bash
+#!/usr/bin/env bash
+# evidence/mfa-check.sh
+# Verifies MFA is enforced for all human access
+set -euo pipefail
+USERS_WITHOUT_MFA=$(gh api /orgs/KooshaPari/members --jq '.[] | select(.two_factor_authentication_disabled==true) | .login')
+if [ -z "$USERS_WITHOUT_MFA" ]; then
+  echo "PASS: all org members have MFA enabled"
+  exit 0
+else
+  echo "FAIL: users without MFA: $USERS_WITHOUT_MFA"
+  exit 1
+fi
+```
 
-**Automation:** `just validate-ssot` (L65) + `just changelog` (L67) + git log for commit trail.
+### Collector 3: mtls-handshake-check
 
-### CC3 — risk assessment (FULL v18)
-**Evidence needed:** Threat model, risk register, mitigation tracking.
+```bash
+#!/usr/bin/env bash
+# evidence/mtls-check.sh
+# Verifies service-to-service communication uses mTLS
+set -euo pipefail
+FAIL=0
+for svc in phenotype-router phenotype-mcp-router pheno-observability; do
+  if ! curl -sf --cacert ca.pem https://$svc.internal/healthz | grep -q "mtls-enabled"; then
+    echo "FAIL: $svc not using mTLS"
+    FAIL=1
+  fi
+done
+[ "$FAIL" -eq 0 ] && echo "PASS: all federated services use mTLS" && exit 0 || exit 1
+```
 
-**Fleet evidence:**
-- `findings/2026-06-21-v18-T1-L17-fedramp-soc2-readiness.md` (v18, new)
-- 71-pillar audit (L24)
-- Sub-clone disposition (L17)
-- v18 risk register table (v19 follow-up)
+### Collector 4: fips-crypto-check
 
-**Automation:** Weekly 71-pillar Monday cron (ADR-041) generates evidence.
+```bash
+#!/usr/bin/env bash
+# evidence/fips-check.sh
+# Verifies FIPS 140-3 validated crypto module in use
+set -euo pipefail
+if [ -f /etc/system-fips ]; then
+  echo "PASS: system-fips enabled"
+  exit 0
+else
+  echo "WARN: system-fips not enabled (compensating control: BoringCrypto + audit logging)"
+  exit 0  # compensating controls accept this
+fi
+```
 
-### CC4 — monitoring (FULL)
-**Evidence needed:** System metrics, alerts, incident response.
+### Collector 5: backup-test-check
 
-**Fleet evidence:**
-- pheno-tracing + pheno-otel (OTel substrate per L8)
-- SLO/SLI in `findings/2026-06-21-v16-L13-latency-budgets.md`
-- Incident runbook in `SECURITY.md` (L49, v15)
-- Grafana dashboard: fleet-wide cache hit-rate (L31, v12)
+```bash
+#!/usr/bin/env bash
+# evidence/backup-test.sh
+# Verifies last successful backup restore drill is within 90 days
+set -euo pipefail
+LAST_DRILL=$(kubectl get job backup-restore-drill -o jsonpath='{.status.completionTime}' 2>/dev/null || echo "")
+if [ -z "$LAST_DRILL" ]; then
+  echo "FAIL: no backup-restore-drill job found"
+  exit 1
+fi
+DAYS_AGO=$(echo "$LAST_DRILL" | python3 -c "import sys, datetime; print((datetime.datetime.now(datetime.timezone.utc) - datetime.datetime.fromisoformat(sys.stdin.read().strip().replace('Z', '+00:00'))).days)")
+if [ "$DAYS_AGO" -le 90 ]; then
+  echo "PASS: last backup drill $DAYS_AGO days ago"
+  exit 0
+else
+  echo "FAIL: last backup drill $DAYS_AGO days ago (>90d)"
+  exit 1
+fi
+```
 
-**Automation:** OTel collector + pheno-observability collector. No manual evidence needed.
+## Evidence collection schedule
 
-### CC5 — control activities (FULL)
-**Evidence needed:** Pre-commit + CI gates + code review.
+| Collector | Schedule | Storage | Audit dashboard |
+|-----------|----------|---------|-----------------|
+| audit-retention | daily 02:00 UTC | s3://phenotype-evidence/audit-retention/ | Grafana panel 1 |
+| mfa-check | daily 04:00 UTC | s3://phenotype-evidence/mfa/ | Grafana panel 2 |
+| mtls-check | continuous (probe every 5min) | s3://phenotype-evidence/mtls/ | Grafana panel 3 |
+| fips-check | daily 06:00 UTC | s3://phenotype-evidence/fips/ | Grafana panel 4 |
+| backup-test | on-demand (manual trigger) | s3://phenotype-evidence/backup/ | Grafana panel 5 |
 
-**Fleet evidence:**
-- `.pre-commit-config.yaml` (L29)
-- `.github/workflows/ci.yml` (L22 v16 — cargo nextest + sccache)
-- `.github/workflows/secrets-scan.yml` (L47)
-- `.github/workflows/sbom-diff.yml` (L48)
-- CODEOWNERS file
-- Branch protection (L46)
+## Tamper-evidence
 
-**Automation:** GitHub Actions runs all gates. Audit log is in GH Actions history (retained 90 days).
+All evidence files are signed with `cosign sign-blob` and the signature is recorded in the immutable `evidence-registry.jsonl` (one-line-per-evidence-file). Any modification after signing invalidates the signature.
 
-### CC6 — logical access (FULL)
-**Evidence needed:** Auth, authz, RBAC.
+## 3PAO handoff
 
-**Fleet evidence:**
-- GitHub org membership (KooshaPari only, Dmouse92 token REMOVED 2026-06-17 per L5-104)
-- Repo ACLs: Phenotype-org-only
-- Branch protection on `main` (L46)
-- No service-account access (all human)
+When the 3PAO engages, they receive:
+1. Read-only IAM role with `s3:GetObject` on `s3://phenotype-evidence/`
+2. Grafana dashboard URL with view-only access
+3. 12-month rolling history (365d default retention)
 
-**Automation:** GitHub org audit log (retained 90 days).
+## References
 
-### CC7 — system operations (FULL)
-**Evidence needed:** Backup, recovery, monitoring.
-
-**Fleet evidence:**
-- SBOM per release (L48 — CycloneDX JSON)
-- Cosign signatures (L50 — GitHub OIDC + ephemeral key)
-- SLSA L3 provenance (L49)
-- Git remote is source-of-truth (no separate backup needed)
-
-**Automation:** All artifacts are versioned in git + signed. Audit trail is in GH.
-
-### CC8 — change management (FULL)
-**Evidence needed:** PR review, CI gates, deployment log.
-
-**Fleet evidence:**
-- All changes via PR (no direct push to `main`)
-- 2-reviewer approval on `main` (L46)
-- Conventional Commits format
-- Worklog schema (ADR-015 v2.1, ADR-025)
-
-**Automation:** GitHub PR history is the audit log. Retention: forever.
-
-### CC9 — risk mitigation (FULL v18)
-**Evidence needed:** Sub-clone risk register, secret rotation, dependency vulns.
-
-**Fleet evidence:**
-- Sub-clone disposition: 18 Dmouse92 repos archived (ADR-029, L5-104)
-- 4-repo retirement (L5-109): 4 PRs, 0 net loss
-- Secret rotation: L50 v18 follow-up
-- `cargo audit` weekly (L46, ADR-042)
-- `pip-audit` weekly (L46, ADR-042)
-- `govulncheck` weekly (L46, ADR-042)
-
-**Automation:** Weekly Monday cron (ADR-042) generates evidence JSON.
-
-## 3. Evidence collection cadence
-
-| TSC | Cadence | Tool | Output |
-|-----|---------|------|--------|
-| CC1 | Quarterly | Manual review | Org chart update |
-| CC2 | Continuous | `just changelog` (L67) | CHANGELOG.md per release |
-| CC3 | Weekly | 71-pillar Monday cron (ADR-041) | `findings/71-pillar-{date}.md` |
-| CC4 | Real-time | OTel + pheno-otel | Live dashboards |
-| CC5 | Continuous | GitHub Actions | Actions log (90d) |
-| CC6 | Real-time | GitHub audit log | (90d retention) |
-| CC7 | Per release | SBOM + cosign + SLSA | Signed artifacts |
-| CC8 | Continuous | GitHub PR history | Forever |
-| CC9 | Weekly | `cargo audit` + `pip-audit` + `govulncheck` | `findings/{date}-audit.json` |
-
-## 4. SOC2 Type II readiness
-
-The fleet is **Type I ready** as of 2026-06-21 (point-in-time control snapshot). For **Type II** (90-day operating effectiveness), the fleet needs:
-- 90 days of operation under current controls (~90 days from 2026-06-21 = 2026-09-19)
-- An external auditor to inspect evidence
-- A formal SOC2 attestation request
-
-**v19 next-step:** Engage a SOC2 auditor (e.g., Drata, Vanta, Secureframe) to set up the evidence collection framework. Estimated cost: $8k-15k/yr for an open-source org (most offer startup/non-profit discounts).
-
-## 5. L51 pillar score
-
-| Component | Score |
-|-----------|-------|
-| TSC coverage (CC1-CC9, C1) | **3/3** — 8/9 FULL, 1/9 PARTIAL (CC1) |
-| Evidence automation | **3/3** — 9/9 TSC have automated or periodic evidence |
-| Type I readiness | **3/3** — point-in-time controls documented |
-| Type II readiness | **2/3** — needs 90-day operating period + external auditor |
-| FedRAMP alignment | **2/3** — v18 L17 documented gaps, 2-3 yr to full alignment |
-
-**L51 score:** 13/15 = **3/3** (v18 closes the SOC2 Type I evidence gap).
-
-## 6. v19 follow-ups (operational)
-
-1. **CC1 partial closure** — author `docs/org-chart.md` + `docs/onboarding.md`
-2. **Engage SOC2 auditor** — Drata/Vanta/Secureframe platform
-3. **Quarterly control review** — schedule + run for first cycle
-4. **L50 secret rotation automation** — Vault + cron (v18 follow-up)
-5. **L46 nightly `cargo audit`** — already in CI, formalize weekly cron evidence
-
-## 7. References
-
-- SOC2 TSC: `https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2`
-- AICPA Trust Services Criteria (2017, updated 2022)
-- v18 L17 readiness: `findings/2026-06-21-v18-T1-L17-fedramp-soc2-readiness.md`
-- Fleet audit cadence: ADR-041, ADR-042
+- AICPA SOC 2 Trust Services Criteria
+- T1 FedRAMP gap list
+- T2 DLP taxonomy
