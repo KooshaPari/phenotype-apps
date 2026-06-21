@@ -19,3 +19,6 @@ pheno-otel = { path = "../pheno-otel" }
 [dev-dependencies]
 proptest = "1"
 tracing-test = "0.2"
+# v16 T6 L25 (test isolation): per-test tempfile fixtures + loom concurrency.
+tempfile = "3.10"
+loom = "0.7"
