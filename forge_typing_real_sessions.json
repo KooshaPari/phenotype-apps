@@ -1,0 +1,1419 @@
+[
+  {
+    "id": "e433e268-d54b-42c9-827e-21253bdfd862",
+    "score": 29,
+    "typos": 6,
+    "typo_list": [
+      "liely",
+      "likeyl",
+      "syntehsis",
+      "eveiw",
+      "promtps",
+      "msot"
+    ],
+    "lower_start": true,
+    "prompt": "use forge\\muse agents tor eveiw EVERY forge session in the db from the past month back to 5\\14\\26. eval what needs to be resumed msot most from THIS week most likeyl need to be resumed manually, those detected to have informally written promtps (written by me) need to be given to me in a list of forge --conversation-id [id[ for me to resume. the rest most liely syntehsis -> prompts for new resumption PLUS add to specs\\dags\\artifacts and commit + push so we have ensured it will get done at some point.",
+    "title": "Multi Agent Dag Repo Orchestration",
+    "updated": "6m ago"
+  },
+  {
+    "id": "bd9f49f9-b635-44da-968b-9f5b11dcca1a",
+    "score": 22,
+    "typos": 4,
+    "typo_list": [
+      "layre",
+      "poolyrepo",
+      "refacs",
+      "decouplig"
+    ],
+    "lower_start": true,
+    "prompt": "\u276f remember tooling modernization, e.g. make to just\\task or other, hexagonal poolyrepo refacs and other items e.g. wrap over hand roll, extensible designs, composio like decouplig by layre. cheap llm mcp as aproject needs to be merged\\cosnumed into another proejct. same goes for toehr iems. and dotn forget to deal with existing, wtrees, satqashs, prs etc to unfiy current stqate into one main you can eval and get next steps DAG more robustly\\clearly from ins uch a way that everyone can work unfiormly\\clearly agaisnt SSOT and traceable state. stabilize + finish smallest\\easiest -> optimise to fu",
+    "title": "Multi-Agent DAG Orchestration with Deduplication and Distrib...",
+    "updated": "12days 3h 40m ago"
+  },
+  {
+    "id": "82e5d42c-6f66-45da-9df1-44066d3c88e6",
+    "score": 22,
+    "typos": 4,
+    "typo_list": [
+      "layre",
+      "poolyrepo",
+      "refacs",
+      "decouplig"
+    ],
+    "lower_start": true,
+    "prompt": "\u276f remember tooling modernization, e.g. make to just\\task or other, hexagonal poolyrepo refacs and other items e.g. wrap over hand roll, extensible designs, composio like decouplig by layre. cheap llm mcp as aproject needs to be merged\\cosnumed into another proejct. same goes for toehr iems. and dotn forget to deal with existing, wtrees, satqashs, prs etc to unfiy current stqate into one main you can eval and get next steps DAG more robustly\\clearly from ins uch a way that everyone can work unfiormly\\clearly agaisnt SSOT and traceable state. stabilize + finish smallest\\easiest -> optimise to fu",
+    "title": "Cliproxyapi PlusPlus Hygiene Audit",
+    "updated": "12days 5h 10m ago"
+  },
+  {
+    "id": "16193c72-3a4c-4c13-811c-77a8c52bd303",
+    "score": 22,
+    "typos": 4,
+    "typo_list": [
+      "layre",
+      "poolyrepo",
+      "refacs",
+      "decouplig"
+    ],
+    "lower_start": true,
+    "prompt": "\u276f remember tooling modernization, e.g. make to just\\task or other, hexagonal poolyrepo refacs and other items e.g. wrap over hand roll, extensible designs, composio like decouplig by layre. cheap llm mcp as aproject needs to be merged\\cosnumed into another proejct. same goes for toehr iems. and dotn forget to deal with existing, wtrees, satqashs, prs etc to unfiy current stqate into one main you can eval and get next steps DAG more robustly\\clearly from ins uch a way that everyone can work unfiormly\\clearly agaisnt SSOT and traceable state. stabilize + finish smallest\\easiest -> optimise to fu",
+    "title": "Repo Hygiene Audit Template",
+    "updated": "12days 5h 9m ago"
+  },
+  {
+    "id": "ab9ac4da-5f52-4617-ad00-a0abcdbebf62",
+    "score": 18,
+    "typos": 3,
+    "typo_list": [
+      "adn ",
+      "coutnless",
+      "havve"
+    ],
+    "lower_start": true,
+    "prompt": "vsv\n  \u276f disk is full because of countless\n    worktrees left unfinished or\n    unpushed \\merged in repos/.claude\n    work on them in order we also havve coutnless worktrees, in Codeprojects, buried inv arious places, perhaps movement to and organization under the .claude/worktrees is better, THEN move to work on them, im pasting this to amny agents to so pick at random\nt oa void collision, lastly use subagetns haeavily for reseear ch adn planniing",
+    "title": "Worktree Cleanup Recovery Report",
+    "updated": "12days 3h 1m ago"
+  },
+  {
+    "id": "4b8bcd76-8b10-425a-b8f2-ffd36fbe22a2",
+    "score": 18,
+    "typos": 3,
+    "typo_list": [
+      "adn ",
+      "coutnless",
+      "havve"
+    ],
+    "lower_start": true,
+    "prompt": "vsv\n  \u276f disk is full because of countless\n    worktrees left unfinished or\n    unpushed \\merged in repos/.claude\n    work on them in order we also havve coutnless worktrees, in Codeprojects, buried inv arious places, perhaps movement to and organization under the .claude/worktrees is better, THEN move to work on them, im pasting this to amny agents to so pick at random\nt oa void collision, lastly use subagetns haeavily for reseear ch adn planniing",
+    "title": "GitHub Repository Consolidation and Modernization Strategy",
+    "updated": "12days 3h 23m ago"
+  },
+  {
+    "id": "6f03e5ea-d153-4ab4-beb1-0770e62eeab3",
+    "score": 18,
+    "typos": 3,
+    "typo_list": [
+      "adn ",
+      "coutnless",
+      "havve"
+    ],
+    "lower_start": true,
+    "prompt": "vsv\n  \u276f disk is full because of countless\n    worktrees left unfinished or\n    unpushed \\merged in repos/.claude\n    work on them in order we also havve coutnless worktrees, in Codeprojects, buried inv arious places, perhaps movement to and organization under the .claude/worktrees is better, THEN move to work on them, im pasting this to amny agents to so pick at random\nt oa void collision, lastly use subagetns haeavily for reseear ch adn planniing",
+    "title": "Organize Worktrees And Reclaim Disk Space",
+    "updated": "12days 3h 27m ago"
+  },
+  {
+    "id": "3d19427b-63f5-46d1-b79a-e565fc7a8fb5",
+    "score": 18,
+    "typos": 3,
+    "typo_list": [
+      "adn ",
+      "coutnless",
+      "havve"
+    ],
+    "lower_start": true,
+    "prompt": "vsv\n  \u276f disk is full because of countless\n    worktrees left unfinished or\n    unpushed \\merged in repos/.claude\n    work on them in order we also havve coutnless worktrees, in Codeprojects, buried inv arious places, perhaps movement to and organization under the .claude/worktrees is better, THEN move to work on them, im pasting this to amny agents to so pick at random\nt oa void collision, lastly use subagetns haeavily for reseear ch adn planniing",
+    "title": "Repository Consolidation and Modernization Audit",
+    "updated": "12days 3h 30m ago"
+  },
+  {
+    "id": "46b00214-a022-4571-9c50-fd7f00f94340",
+    "score": 18,
+    "typos": 3,
+    "typo_list": [
+      "adn ",
+      "coutnless",
+      "havve"
+    ],
+    "lower_start": true,
+    "prompt": "vsv\n  \u276f disk is full because of countless\n    worktrees left unfinished or\n    unpushed \\merged in repos/.claude\n    work on them in order we also havve coutnless worktrees, in Codeprojects, buried inv arious places, perhaps movement to and organization under the .claude/worktrees is better, THEN move to work on them, im pasting this to amny agents to so pick at random\nt oa void collision, lastly use subagetns haeavily for reseear ch adn planniing",
+    "title": "Conft Repository Hygiene Audit",
+    "updated": "12days 3h 44m ago"
+  },
+  {
+    "id": "0105dd75-3553-4491-a063-2974773b7211",
+    "score": 18,
+    "typos": 3,
+    "typo_list": [
+      "adn ",
+      "coutnless",
+      "havve"
+    ],
+    "lower_start": true,
+    "prompt": "vsv\n  \u276f disk is full because of countless\n    worktrees left unfinished or\n    unpushed \\merged in repos/.claude\n    work on them in order we also havve coutnless worktrees, in Codeprojects, buried inv arious places, perhaps movement to and organization under the .claude/worktrees is better, THEN move to work on them, im pasting this to amny agents to so pick at random\nt oa void collision, lastly use subagetns haeavily for reseear ch adn planniing",
+    "title": "AgentMCP Repository Hygiene Audit",
+    "updated": "12days 3h 44m ago"
+  },
+  {
+    "id": "84c54793-cc65-447d-94c0-07d24e285903",
+    "score": 18,
+    "typos": 3,
+    "typo_list": [
+      "adn ",
+      "coutnless",
+      "havve"
+    ],
+    "lower_start": true,
+    "prompt": "vsv\n  \u276f disk is full because of countless\n    worktrees left unfinished or\n    unpushed \\merged in repos/.claude\n    work on them in order we also havve coutnless worktrees, in Codeprojects, buried inv arious places, perhaps movement to and organization under the .claude/worktrees is better, THEN move to work on them, im pasting this to amny agents to so pick at random\nt oa void collision, lastly use subagetns haeavily for reseear ch adn planniing",
+    "title": "Conft-4th Hygiene Audit Review",
+    "updated": "12days 3h 45m ago"
+  },
+  {
+    "id": "c6850d9a-d205-4572-ae53-0d936f989416",
+    "score": 18,
+    "typos": 3,
+    "typo_list": [
+      "adn ",
+      "coutnless",
+      "havve"
+    ],
+    "lower_start": true,
+    "prompt": "vsv\n  \u276f disk is full because of countless\n    worktrees left unfinished or\n    unpushed \\merged in repos/.claude\n    work on them in order we also havve coutnless worktrees, in Codeprojects, buried inv arious places, perhaps movement to and organization under the .claude/worktrees is better, THEN move to work on them, im pasting this to amny agents to so pick at random\nt oa void collision, lastly use subagetns haeavily for reseear ch adn planniing",
+    "title": "Mypy Cache Hygiene Audit Template",
+    "updated": "12days 3h 45m ago"
+  },
+  {
+    "id": "365d2f41-043c-4608-aec7-932af26d3b4d",
+    "score": 18,
+    "typos": 3,
+    "typo_list": [
+      "adn ",
+      "coutnless",
+      "havve"
+    ],
+    "lower_start": true,
+    "prompt": "vsv\n  \u276f disk is full because of countless\n    worktrees left unfinished or\n    unpushed \\merged in repos/.claude\n    work on them in order we also havve coutnless worktrees, in Codeprojects, buried inv arious places, perhaps movement to and organization under the .claude/worktrees is better, THEN move to work on them, im pasting this to amny agents to so pick at random\nt oa void collision, lastly use subagetns haeavily for reseear ch adn planniing",
+    "title": "AtomsBot Codebase Hygiene Audit",
+    "updated": "12days 3h 45m ago"
+  },
+  {
+    "id": "c853f721-06d8-4b13-8cc6-745587fb0877",
+    "score": 18,
+    "typos": 3,
+    "typo_list": [
+      "adn ",
+      "coutnless",
+      "havve"
+    ],
+    "lower_start": true,
+    "prompt": "\u276f disk is full because of countless\n    worktrees left unfinished or\n    unpushed \\merged in repos/.claude\n    work on them in order we also havve coutnless worktrees, in Codeprojects, buried inv arious places, perhaps movement to and organization under the .claude/worktrees is better, THEN move to work on them, im pasting this to amny agents to so pick at randomt oa void collision, lastly use subagetns haeavily for reseear ch adn planniing",
+    "title": "Steganography and Cryptanalysis Template Refactoring",
+    "updated": "8days 16m ago"
+  },
+  {
+    "id": "e22f9b58-79a5-42e7-b674-f026b785f6fa",
+    "score": 15,
+    "typos": 2,
+    "typo_list": [
+      "incomplet",
+      "researhc"
+    ],
+    "lower_start": true,
+    "prompt": "review every forge conversation (forgecode.dv, will need to researhc how they're stored \\ how to view) and find incomplet echats in ./, ../cursor-reset-tools, and resume them headlessly",
+    "title": "GitHub Actions Reference Pin Audit",
+    "updated": "9days 30m ago"
+  },
+  {
+    "id": "bf5b6a92-3f0f-49a9-a95b-33f222c8fd10",
+    "score": 14,
+    "typos": 2,
+    "typo_list": [
+      "iirc",
+      "caht"
+    ],
+    "lower_start": true,
+    "prompt": "i gave a caht a set of urls to research from strongdim, gastown,a nd various darkfactory projects, and one by a dev named octopus iirc. i cant find it anywhere but I know I have the chat open. Yet ctrl + f in every tui pane gives 0\\0 for \"attractor\" or \"darkfactory\", and up spam on forge new temrinals does not seem to traverse to that precise prompt either. are oyu able to find the session via the forgecode.dev db (forge cli) -> then tell me what its done since. and *if* you can then use the ghostty api to check which terminal window and which pane in that window its in (or easier maybe just a",
+    "title": "untitled",
+    "updated": "7days 2h 30m ago"
+  },
+  {
+    "id": "1db882a5-db8f-422e-84e9-38fa89700e66",
+    "score": 14,
+    "typos": 2,
+    "typo_list": [
+      "iirc",
+      "caht"
+    ],
+    "lower_start": true,
+    "prompt": "i gave a caht a set of urls to research from strongdim, gastown,a nd various darkfactory projects, and one by a dev named octopus iirc. i cant find it anywhere but I know I have the chat open. Yet ctrl + f in every tui pane gives 0\\0 for \"attractor\" or \"darkfactory\", and up spam on forge new temrinals does not seem to traverse to that precise prompt either. are oyu able to find the session via the forgecode.dev db (forge cli) -> then tell me what its done since. and *if* you can then use the ghostty api to check which terminal window and which pane in that window its in (or easier maybe just a",
+    "title": "[empty]",
+    "updated": "7days 2h 43m ago"
+  },
+  {
+    "id": "dda5ec14-cdec-4051-bdcb-c1fe8e514c5b",
+    "score": 11,
+    "typos": 1,
+    "typo_list": [
+      "reusme"
+    ],
+    "lower_start": true,
+    "prompt": "reusme",
+    "title": "Engineering Governance And Architecture Refactor",
+    "updated": "10m ago"
+  },
+  {
+    "id": "90a7d689-d15b-452a-95fe-5c6d4a7c98a0",
+    "score": 11,
+    "typos": 1,
+    "typo_list": [
+      "reusme"
+    ],
+    "lower_start": true,
+    "prompt": "reusme",
+    "title": "PhenoDevOps DevHex Overlap Audit",
+    "updated": "13m ago"
+  },
+  {
+    "id": "533ed18b-ce17-44bd-b6cf-a19985abefe2",
+    "score": 11,
+    "typos": 1,
+    "typo_list": [
+      "libification"
+    ],
+    "lower_start": true,
+    "prompt": "zudit thegen fo further libification\\decomp and use of intenrnal\\extneral exisitn\\new libs or overall optimziatin of loc",
+    "title": "Build Fixes & BDD Rollout - Repository Ecosystem Cleanup",
+    "updated": "2months 16days 13h 45m 48s ago"
+  },
+  {
+    "id": "46298197-6aa4-46e2-9834-eb73f3a0a305",
+    "score": 11,
+    "typos": 1,
+    "typo_list": [
+      "reusme"
+    ],
+    "lower_start": true,
+    "prompt": "reusme",
+    "title": "# Webcam Eye Tracking Performance Optimization",
+    "updated": "6m ago"
+  },
+  {
+    "id": "dea5cc7f-f1f0-4e7f-be77-c0259cf1480a",
+    "score": 11,
+    "typos": 1,
+    "typo_list": [
+      "reusme"
+    ],
+    "lower_start": true,
+    "prompt": "reusme",
+    "title": "Resume Creation And Formatting",
+    "updated": "9m ago"
+  },
+  {
+    "id": "f329ef05-7996-4adb-88f2-061d9c675554",
+    "score": 10,
+    "typos": 1,
+    "typo_list": [
+      "na dsome"
+    ],
+    "lower_start": true,
+    "prompt": "need a strong multi-agent-multi-project DAG file in repos, I assume this will lead to sqlite but dont be locked to it otherwise. Agents will need concurrency blocking na dsome form of fuzz duplication or other similarity detections given 2 agents may create idneticAl task items that are semantically written differently. repo ownership claiming and hte same for branchs, wtrees and collection of all local projects (factoring mangled git or no git)with their branches\\wtrees and the same for remote so agents can receive the same work on my org projects or other prompt (here is that prompt at the v",
+    "title": "Multi-Agent Repo DAG Coordination",
+    "updated": "6days 10h 34m ago"
+  },
+  {
+    "id": "f437e44a-4250-406a-8733-c882ad43862c",
+    "score": 10,
+    "typos": 1,
+    "typo_list": [
+      "na dsome"
+    ],
+    "lower_start": true,
+    "prompt": "need a strong multi-agent-multi-project DAG file in repos, I assume this will lead to sqlite but dont be locked to it otherwise. Agents will need concurrency blocking na dsome form of fuzz duplication or other similarity detections given 2 agents may create idneticAl task items that are semantically written differently. repo ownership claiming and hte same for branchs, wtrees and collection of all local projects (factoring mangled git or no git)with their branches\\wtrees and the same for remote so agents can receive the same work on my org projects or other prompt (here is that prompt at the v",
+    "title": "Multi-Agent DAG With Dedup Locking",
+    "updated": "8days 7h 27m ago"
+  },
+  {
+    "id": "ed859943-bb50-4a9d-a701-9113571ef6ab",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "first research + plan",
+    "title": "Repository Modernization and Consolidation Plan",
+    "updated": "12days 20h 49m ago"
+  },
+  {
+    "id": "677cea5c-df38-403c-be5e-55a8c1a5775e",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "./exit",
+    "title": "Terminate Session Command",
+    "updated": "12days 23h 13m ago"
+  },
+  {
+    "id": "7d2951bb-4b59-4525-988e-64d567048244",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "echo hello and exit immediately",
+    "title": "Repo Hygiene Audit Report",
+    "updated": "12days 5h 55m ago"
+  },
+  {
+    "id": "28d3066d-c904-4930-8263-050f76b22b6e",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "echo hi",
+    "title": "Simple Echo Command Execution",
+    "updated": "12days 6h 17m ago"
+  },
+  {
+    "id": "33268773-49e3-4a07-acb3-a9c954584ace",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "proceed",
+    "title": "Continue Task Execution",
+    "updated": "1day 1h 28m ago"
+  },
+  {
+    "id": "87530c6a-1256-4eae-b0fd-8b1e34c502cf",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "work on civis bakcned\\sim itemsa nd help progress heavily",
+    "title": "Stranded Worktree Recovery And Disposition",
+    "updated": "1day 23h 10m ago"
+  },
+  {
+    "id": "c134f76f-efa0-412f-b6c7-b14301196254",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "resume",
+    "title": "Resume Builder And Formatter",
+    "updated": "1day 23h 20m ago"
+  },
+  {
+    "id": "8a7b6104-d576-4d0e-b9f8-d7a6ddcba5a6",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "ersujme",
+    "title": "I'd be happy to help you make significant progress on Civis ...",
+    "updated": "1day 23h 28m ago"
+  },
+  {
+    "id": "6f702a2f-b4bf-4184-aa30-4ee557eb12bb",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "echo forge_alive",
+    "title": "[empty]",
+    "updated": "1day 23h 37m ago"
+  },
+  {
+    "id": "9c962afe-fef4-455d-9735-9662042638e4",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "ersujme",
+    "title": "ADR Closeout Actions Verification Report",
+    "updated": "1day 23h 9m ago"
+  },
+  {
+    "id": "5fa20991-8b3e-477d-ad80-53972033457a",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "splice downloads are all failing in the APp, can you check logs and figure out why",
+    "title": "Splice Downloads Failing Debugging",
+    "updated": "1month 13days 21h 40m 24s ago"
+  },
+  {
+    "id": "54978fc0-3e5e-4d35-8563-8f5a0fb46d75",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "eval forgecode repo, how does compaction work at current",
+    "title": "Thegent Presplit Scope Status",
+    "updated": "1month 14days 22h 1m 24s ago"
+  },
+  {
+    "id": "c623a0e4-beed-49c1-85b6-6daf22a990e0",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "please configure claurst based on claude (their ~/.cl.... files)",
+    "title": "untitled",
+    "updated": "1month 20h 51m 24s ago"
+  },
+  {
+    "id": "3b05b057-6dd4-4743-9630-9b2f18b64521",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "please fix this real quick",
+    "title": "Codex Responses WebSocket Bug Investigation",
+    "updated": "1month 24days 17h 51m 24s ago"
+  },
+  {
+    "id": "5952e716-7995-4bf8-9ad5-6db35853028c",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "read local forgecode conversatons to surmise where you crashed when working on emlosviz to then resume va subagents",
+    "title": "I don't have the ability to access local files on your syste...",
+    "updated": "23days 21h 47m ago"
+  },
+  {
+    "id": "a6b73478-9315-4fdb-9bb4-21692821d306",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "echo forge_test_alive",
+    "title": "[empty]",
+    "updated": "23h 17m ago"
+  },
+  {
+    "id": "becb3623-175f-41e8-9661-41a109fe768a",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "work on civis bakcned\\sim itemsa nd help progress heavily",
+    "title": "Research the current state of all worktrees and non-canonica...",
+    "updated": "23h 50m ago"
+  },
+  {
+    "id": "bd58cb8f-671f-4d40-8186-799d8e03c5a9",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "resumeHIG",
+    "title": "Guardian Policy Federation Upstream Integration Fixes",
+    "updated": "23h 5m ago"
+  },
+  {
+    "id": "84228eb8-eae0-41cf-95db-f320a7968c59",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "review omnilogs.log and identify items we can improve either w\\o working on our hard fork or to take into as task items for tht fork (then actually impl)",
+    "title": "Recover Lost OmniRoute Config Data",
+    "updated": "24days 1h 47m ago"
+  },
+  {
+    "id": "395f4efe-2ac5-42ee-abb1-6212e0a2f231",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "resume",
+    "title": "I\u2019ll inspect `omnilogs.log`, extract concrete improvement it...",
+    "updated": "25days 1h 32m ago"
+  },
+  {
+    "id": "205a6ce3-ee89-4807-be68-c758578f5560",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "review claude code session jsonls, they complain about tool access, omniroute logs need to be viewed for root cause analysis",
+    "title": "I can\u2019t directly access your repos from here, but I can help...",
+    "updated": "26days 2h 13m ago"
+  },
+  {
+    "id": "a996b900-8f15-498c-839a-ad632a0cff78",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "i want to use vix agent with my claude code config defiend in ~/.claude (the omniroute)",
+    "title": "Locate Audio Visualization ForgeCode Session",
+    "updated": "27days 6h 53m ago"
+  },
+  {
+    "id": "5c11a4fe-3cfa-44e1-ac13-507720fcf163",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "consolidate\\cherrypick\\rebase\\replay and begin PRing all Agileplus branches to main, resolving code review cmts genrated\n by bots, tehn emrging (civis tracera NOT agileplus)",
+    "title": "Resume Document Generation",
+    "updated": "2days 14m ago"
+  },
+  {
+    "id": "2eee4552-2c35-476f-8ea5-38c3270aa2a6",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "echo hello",
+    "title": "Multi-Repo DAG Audit Orchestration",
+    "updated": "6days 2h 24m ago"
+  },
+  {
+    "id": "1b7eafbb-9701-44f1-8d91-1f7b1c3ada56",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "status",
+    "title": "System Status Checker",
+    "updated": "6days 6h 47m ago"
+  },
+  {
+    "id": "c006ccda-5966-4b63-a476-30c9f80865bd",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "update forge governance to strictly demand using agileplus\\phenodag + our other developed tooling to simplify work and help me repeat myself and agents repeat tehsmelves less",
+    "title": "untitled",
+    "updated": "6days 8h 20m ago"
+  },
+  {
+    "id": "6104aa00-6901-4bec-b6a1-3c60d42f9bad",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "status",
+    "title": "Untitled Task Prompt",
+    "updated": "7days 3h 51m ago"
+  },
+  {
+    "id": "68bebd47-7b5f-4aaa-ac79-e89f28051f7f",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "contiue finishing local and found in prog remote work PLUS work still in plan or other phases tow ork or research\\iterate on",
+    "title": "Build Phenodag Go Beads Wrapper",
+    "updated": "9days 11h 6m ago"
+  },
+  {
+    "id": "c56104e2-aa98-4d99-8b6b-7b2e090c833b",
+    "score": 7,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "echo test from forge",
+    "title": "Audit Workflow Runners And Mutable Refs",
+    "updated": "9days 31m ago"
+  },
+  {
+    "id": "075b50c5-07df-45a0-80eb-811589e4c132",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "ey, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             c",
+    "title": "",
+    "updated": "# Dispatch Worker Routing Pattern Design"
+  },
+  {
+    "id": "66855f2f-2780-48b1-ae32-b3ba2ccf534d",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "syn v2.0.117\n    Checking signal-hook-registry v1.4.8\n    Checking parking_lot v0.12.5\nThe code is compiling. Let me wait for it to finish and then commit the changes to HexaKit.\n\u25cf [06:55:06] Execute [/bin/zsh] cd /tmp/forgecode-test && cargo check 2>&1 | tail -10\n    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n   Compiling syn v2.0.117\n    Checking serde_json v1.0.149\nIt's still compiling. Let me wait and check if it completes.\n\u25cf [06:55:13] Execute [/bin/zsh] sleep 10 && cd /tmp/forgecode-test && cargo check 2>&1 | tail -15\nThe check com",
+    "title": "",
+    "updated": "# Repository Organization Assessment"
+  },
+  {
+    "id": "0130f9a4-2ac6-44a6-832b-69dcb347dd6d",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "t-disable, fix oxlint flags\n31c17d8d58 fix: React 19 compatibility + fumadocs updates for docs app\nba16d69ad9 ci: bootstrap GitHub Actions CI + CLAUDE.md\n1442e5af19 chore: pin actions/checkout to immutable SHA v4.1.1 (#418)\n3d1e79c4d3 chore: pin actions/checkout to immutable SHA v4.1.1\nbe79bce4fe chore: pin python version to 3.13 (admin merge)\n\u25cf [20:16:39] Execute [/bin/zsh] git stash list 2>/dev/null\nstash@{0}: WIP on chore/add-dependabot: 32106b14f7 worklog: cycle 2026-05-01 \u2014 phenoUtils crypto fix, phenoAI compile, merged PRs\nstash@{1}: WIP on docs/ci-gate-billing-exception-policy-2026-04-2",
+    "title": "",
+    "updated": "**Parallel Tool Calls and Background Task Management**"
+  },
+  {
+    "id": "04e6a4b5-1aa4-4f19-8204-1651dee9a7f8",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "codex has a app server \\ daemon system for allowing pooling of various sessions to one process for stability and resoruce fficiency does claude have a similar item, and how can we embed durability a-la event queue\\similar long-run durable state mgmt w\\o temporal\\hatchet or similar sol\nus, as a worst case of course we can use",
+    "title": "",
+    "updated": "12days 22h 35m ago"
+  },
+  {
+    "id": "b41ad19e-a7b7-4846-9fb2-50ed984b1032",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "need you batch a set of calls for codex feature enable, the cmd doesnt support batched args like i have, will need codex enable [1x feature]  codex features enable apps_mcp_path_override chronicle auth_elicitation enable_mcp_apps external_migration mentions_v2 multi_agent_v2 network_proxy remote_compaction_v2 remote_plugin responses_websocket_response_processed tool_search_always_defer_mcp_tools code_mode_only default_mode_request_user_input and then for disables: er development  true\napps                                    stable             true\nartifact                                under ",
+    "title": "Continue Multi-Phase Work Tracking",
+    "updated": "12days 3h 1m ago"
+  },
+  {
+    "id": "68eee8f5-db46-4584-acae-93599c4b0ffc",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "covery_2026-06 \u2502       \u2502                      \u2502                    \u2502\n\u2502 -06/)                          \u2502       \u2502                      \u2502                    \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 Configra patch                 \u2502 1     \u2502 with ANSI cleanup    \u2502 git apply          \u2502\n\u2502 (/tmp/configra_recovery_2026-0 \u2502       \u2502                      \u2502                    \u2502\n\u2502 6-06/)                         \u2502       \u2502                      \u2502                    \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 Mod.rs ",
+    "title": "Repository Hygiene Audit With Deep Research",
+    "updated": "12days 3h 43m ago"
+  },
+  {
+    "id": "3e61e542-0b67-4907-9276-b191c76ff03b",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "covery_2026-06 \u2502       \u2502                      \u2502                    \u2502\n\u2502 -06/)                          \u2502       \u2502                      \u2502                    \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 Configra patch                 \u2502 1     \u2502 with ANSI cleanup    \u2502 git apply          \u2502\n\u2502 (/tmp/configra_recovery_2026-0 \u2502       \u2502                      \u2502                    \u2502\n\u2502 6-06/)                         \u2502       \u2502                      \u2502                    \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 Mod.rs ",
+    "title": "Repository Hygiene Audit Template",
+    "updated": "12days 3h 44m ago"
+  },
+  {
+    "id": "3685fa03-d064-4456-ad03-450f54fb1e22",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "work on next if done -skill-20260325           [v2.2.0/MiniMax-M2.7-highspeed/17516043]\n::: \u276f find branches that need finishing or mergin, same for all local  worktree present in phenotype/**Skip to content\nKooshaPari\nagentapi-plusplus\nRepository navigation\nCode\nIssues\n223\n (223)\nPull requests\nAgents\nDiscussions\nActions\nProjects\nWiki\nSecurity\nInsights\nSettings\nBranches\nOverview\nYours\nActive\nStale\nAll\nSearch\nSearch branches...\nDefault\nBranch\nUpdated\nCheck status\nBehind\nAhead\nPull request\nAction menu\nmain\nKooshaPari\n \n8 minutes ago\nDefault\nYour branches\nBranch\nUpdated\nCheck status\nBehind\nAhead\nP",
+    "title": "Pending Branch Merge Analysis",
+    "updated": "12m ago"
+  },
+  {
+    "id": "1d5c48b1-1f17-4bb9-9a6e-f2516505309d",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "call agents to review in bg and finish the merge. codex 5.3 codex spark low exec agents, call them in a async way so you can check back later and they can work full turn to finish those items. otherwise: move to create new dag, 100 tasks, not allowed to shrink task size to fit such a QTY. Parallelism (Tree width) max 10 or whatever your fixed limit on spawning subagents is, if unlim no more than 20. if at a certain step you cannot fill your 20 you must find other tasks in repo or in kooshapari acct\\local to fill with equally sized tasks, and\\or mindful sub\\side DAGs that complement to fill the",
+    "title": "Governance Repositories CI/CD Audit",
+    "updated": "15m ago"
+  },
+  {
+    "id": "28030a4f-5420-47e9-b5d5-69bae9325bc2",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "dmouse item sout of scope. atomsbot way way out of scope until every other erpo is done first. same geos for atoms*, dino, wsm, focalpoitn, quadsgm, rip fitness ap hwledger  so take these wholly out of your dag abd mark as paused APPS (as that is what each is; phenoconfig\\all ismilar config repos -> Configra name! configra is currently a real repo that needs to be absorbed intwards for that. what is this phenoworklog and phenotype monorepo? the latter should not exist. again we only lightly use the federated handbook, specs, registry and other spine repos. pheno worklog also seems like you are",
+    "title": "Professional Resume Builder",
+    "updated": "16m ago"
+  },
+  {
+    "id": "47c5c31f-4f5d-40c4-a39f-b8ef26d55348",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "https://github.com/KooshaPari/pheno-worklog-schema and similar pheno- or phenotype- style repos need to be folded into other targets. this one maybe agileplus maybe phenotype-pm-core, unsure. do a full eval starting w\\ this one and expand to oehrs. follow proc and use forge task subagents!!!! nto allowed to work urself You are a strategic cloud coding agent performing a repository absorption and deletion-justification audit.\n\nOBJECTIVE\n\nI am absorbing this repository into a smaller set of target repositories. Your job is to determine whether this source repo can be justifiably deleted after it",
+    "title": "McpKit Absorption And Deletion Audit",
+    "updated": "17m ago"
+  },
+  {
+    "id": "bba8509a-eae2-4f9c-80c3-432da0d4630f",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "https://github.com/KooshaPari/Sidekick seems to have overlap with other repos I own, eval against both manual remote git analysis w\\ subagents AND phenotype registry repo analysis The process we follow: PROMPT You are a strategic cloud coding agent performing a repository absorption and deletion-justification audit.\n\nOBJECTIVE\n\nI am absorbing this repository into a smaller set of target repositories. Your job is to determine whether this source repo can be justifiably deleted after its intent, features, experiments, docs, specs, branches, and attempted work have either been:\n\n1. moved into tar",
+    "title": "Forge Session Resumption Agent Review",
+    "updated": "1m ago"
+  },
+  {
+    "id": "9d873d05-2fde-4d7b-a78e-8c9bbf9e8f8c",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "che compression, models)\\n\\nLet me first check the todo list and look for any session-related files or notes about this session.\",\n                \"signature\": \"d63e6b039883eef427b8b2cfceb6bcfc23d3a458c1792008d0e77d929d94ce1a\",\n                \"data\": null,\n                \"id\": null,\n                \"format\": null,\n                \"index\": null,\n                \"type_of\": null\n              }\n            ]\n          },\n          \"usage\": {\n            \"prompt_tokens\": {\n              \"actual\": 16092\n            },\n            \"completion_tokens\": {\n              \"actual\": 228\n--\n             ",
+    "title": "# Task Status Inquiry",
+    "updated": "1month 15days 12h 55m 24s ago"
+  },
+  {
+    "id": "f13ec618-4148-445e-8cca-fc14fdeb3a05",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "current stae of fe56c174- \u2502 SSH Desktop +           \u2502 resume       \u2502\n\u2502 ...       \u2502 Inference Stack         \u2502 fe56c174?",
+    "title": "Omniroute Projects State Investigation",
+    "updated": "1month 19days 18h 54m 24s ago"
+  },
+  {
+    "id": "00e35eec-322b-42c4-a566-e4e5e18d4fd0",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "state of thegent's initial massive scope presplit (this means are those now split targets also complette? at one point we designed sharecli -> merged into thegent, and maybe then decomposed, or just didnt finish unsure, but its a must finish as is any tool evolution systems\\rdirecton e,g. for node->bun and other also fix subtraction overflow issue in forge-dev",
+    "title": "untitled",
+    "updated": "1month 19days 18h 5m 24s ago"
+  },
+  {
+    "id": "d5c9cb09-599e-470c-a9fb-0498205fac92",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "forge-dev has a subtraction overflow issue regarding its agent-generated output that we fixed multiple times in our fork, i think the forge-dev bin just isnt rebuilt?",
+    "title": "Forge-Dev Binary Not Rebuilding After Overflow Fix",
+    "updated": "1month 20h 52m 24s ago"
+  },
+  {
+    "id": "7b2d87fa-c0aa-4bcc-9434-7065f9aac077",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "ey, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             c",
+    "title": "untitled",
+    "updated": "1month 24days 17h 58m 24s ago"
+  },
+  {
+    "id": "6d259bd9-a728-4c63-8947-31f9814ad9c6",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "phenotype-bus Private\nPhenotype event bus infrastructure\nrust\nmessaging\nbus\nphenotype-org\n Rust Other Updated 50 minutes ago\nphenoEvents Public\nPhenoEvents - EventBus port with hexagonal architecture\n Rust Updated  and eventra have overlap, there may be more ismilar repos, eval. and\\or repos that need lfiting via DRY + adoption of the events repo. follow: You are a strategic cloud coding agent performing a repository absorption and deletion-justification audit.\n\nOBJECTIVE\n\nI am absorbing this repository into a smaller set of target repositories. Your job is to determine whether this source rep",
+    "title": "Repository Absorption Deletion Justification Audit",
+    "updated": "20h 15m ago"
+  },
+  {
+    "id": "7f92d862-f653-46ac-b94c-46bd55210fe1",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "contentscript.js:14083 MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added. Use emitter.setMaxListeners() to increase limit\nn @ contentscript.js:14083\ncontentscript.js:14083 MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 end listeners added. Use emitter.setMaxListeners() to increase limit\nn @ contentscript.js:14083\ncontentscript.js:14083 ObjectMultiplex - orphaned data for stream \"app-init-liveness\"\nwarn @ contentscript.js:14083\ncontentscript.js:14083 ObjectMultiplex - orphaned data for stream \"app-init-liveness\"\nwarn @",
+    "title": "Orphan Substrate Crate Archival Task",
+    "updated": "20h 24m ago"
+  },
+  {
+    "id": "7ebb4206-bd00-4440-9a32-bff7e94c080a",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "many omniroute calls are currently: \nAPI KEY\nA (3de0***c871)\nCOMBO\nMain\nPIPELINE ERROR\nCopy\n{\n  \"_omniroute_truncated\": true,\n  \"reason\": \"call_log_artifact_size_limit_exceeded\"\n} evaluate. THIS IS A BUN i -g installed o,nirotue UNRELATED 100% to local code",
+    "title": "Omniroute API Call Size Limit Exceeded",
+    "updated": "21days 7h 10m ago"
+  },
+  {
+    "id": "25391b4f-e360-4c0c-ab91-af510dff1345",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "check my forgecode fork, thsi is issue may or may not be fixed in abranch or stash or wtree etc already if it snot in main, or otherwise ismply not built to replace local bin yet, \n\uea83 repos \uf418 main  \udb85\ude7a FORGE \uec19 Main HIG\n\udb80\udd3e resume\n\u25cf [19:18:07] Read Todos\n\u25cf [19:18:07] ERROR: attempt to subtract with overflow",
+    "title": "untitled",
+    "updated": "25days 5h 58m ago"
+  },
+  {
+    "id": "21d9bba3-672b-4698-8f90-cc57f60eba55",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "https://github.com/KooshaPari/pheno-worklog-schema and similar pheno- or phenotype- style repos need to be folded into other targets. this one maybe agileplus maybe phenotype-pm-core, unsure. do a full eval starting w\\ this one and expand to oehrs. follow proc and use forge task subagents!!!! nto allowed to work urself You are a strategic cloud coding agent performing a repository absorption and deletion-justification audit.\n\nOBJECTIVE\n\nI am absorbing this repository into a smaller set of target repositories. Your job is to determine whether this source repo can be justifiably deleted after it",
+    "title": "Phenotype Repo Absorption And Deletion",
+    "updated": "28m ago"
+  },
+  {
+    "id": "37a38d7f-5a97-4da2-a521-e6dfe17ab3d7",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "s/thegent/apps/byteport/backend/api/.gomodcache/golang.org/x/text@v0.17.0/internal/language/compose.go\n delete mode 100644 platforms/thegent/apps/byteport/backend/api/.gomodcache/golang.org/x/text@v0.17.0/internal/language/compose_test.go\n delete mode 100644 platforms/thegent/apps/byteport/backend/api/.gomodcache/golang.org/x/text@v0.17.0/internal/language/coverage.go\n delete mode 100644 platforms/thegent/apps/byteport/backend/api/.gomodcache/golang.org/x/text@v0.17.0/internal/language/gen.go\n delete mode 100644 platforms/thegent/apps/byteport/backend/api/.gomodcache/golang.org/x/text@v0.17.0/",
+    "title": "# PhenoKits Artifact Taxonomy and Repository Consolidation P...",
+    "updated": "2months 14days 8h 6m 48s ago"
+  },
+  {
+    "id": "88a7bbd6-5f9f-4c70-9ecb-d38e9c71a59a",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "or \"github.com/maximhq/bifrost/core\" but I moved the schemas to a \"schemas/\" subdirectory. Go is finding the real maximhq/bifrost/core module and then looking for schemas/ inside it (which doesn't exist there).\n                   I have two options:1. Change all imports                    from\n   \"github.com/maximhq/bifrost/core/schemas\"\n   to\n   \"github.com/maximhq/bifrost/core\"\n   and put schemas.go\n   directly in the\n   ArgisRoute/core/\n   directory\n2. Keep the schemas/                     subdirectory but   update the         replacement to also                   handle the /schemas       ",
+    "title": "# Swift Template Code Quality Assessment",
+    "updated": "2months 15days 19h 31m 48s ago"
+  },
+  {
+    "id": "7f7cf43e-adf1-470b-b506-a45b09c2da86",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "ey, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             c",
+    "title": "Let me check the current state of the phenotype-config crate...",
+    "updated": "2months 15days 1h 7m 48s ago"
+  },
+  {
+    "id": "3e540cbe-a371-454c-a9f5-dc0a4a8def18",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "phenoEvaluation Private archive\nPhenotype evaluation framework\ndeprecated\n Python MIT License Updated 7 hours ago\nphenotype-packs Public archive\nphenotype-packs - Phenotype ecosystem\n Rust Updated 7 hours ago\nphenotype-mcp-testing Public archive\nphenotype-mcp-testing - Phenotype ecosystem\n Rust Updated 7 hours ago\nphenotype-mcp-asset Public archive\nphenotype-mcp-asset - Phenotype ecosystem\n Rust Updated 7 hours ago\nphenotype-daemon Public archive\nphenotype-daemon - Phenotype ecosystem\n Rust Updated 7 hours ago  move to correct space if done and you are sure ntohing useful both lcoal and rmeote",
+    "title": "I'll continue working on merging the remaining PRs. Let me c...",
+    "updated": "2months 15days 20h 47m 48s ago"
+  },
+  {
+    "id": "33c207b8-31b7-40fe-9db1-8cfe049f4f17",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "forge\nLast login: Sat Apr  4 23:18:52 on ttys029\n[WARN] - (starship::utils): Executing command \"/usr/local/go/bin/go\" timed out.\n[WARN] - (starship::utils): You can set command_timeout in your config to a higher value to allow longer-running commands to keep executing.\n[WARN] - (starship::utils): Executing command \"/Users/kooshapari/.config/nvm/versions/node/v22.22.2/bin/node\" timed out.\n\ue0b6   ~/C/P/repos \ue0b4\ue0b6  main \ue0b4\ue0b6 $ \ue0b4\ue0b6   \ue0b4\ue0b6  v3.13.12 \ue0b4\ue0b6   \ue0b4\ue0b6  v1.93.0 \ue0b4 23:28\u276f forge\n _____\n|  ___|__  _ __ __ _  ___\n| |_ / _ \\| '__/ _` |/ _ \\\n|  _| (_) | | | (_| |  __/\n|_|  \\___/|_|  \\__, |\\___|\n               ",
+    "title": "I'll analyze this request using sage agents first, then impl...",
+    "updated": "2months 15days 21h 12m 48s ago"
+  },
+  {
+    "id": "3290bf7c-53d0-4795-a4ef-0d83b691fa4a",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "forge\nLast login: Sat Apr  4 23:27:43 on ttys036\n[WARN] - (starship::utils): Executing command \"/usr/local/go/bin/go\" timed out.\n[WARN] - (starship::utils): You can set command_timeout in your config to a higher value to allow longer-running commands to keep executing.\n[WARN] - (starship::utils): Executing command \"/Users/kooshapari/.config/nvm/versions/node/v22.22.2/bin/node\" timed out.\n\ue0b6   ~/C/P/repos \ue0b4\ue0b6  main \ue0b4\ue0b6 $ \ue0b4\ue0b6   \ue0b4\ue0b6  v3.13.12 \ue0b4\ue0b6   \ue0b4\ue0b6  v1.93.0 \ue0b4 23:32\u276f forge\n _____\n|  ___|__  _ __ __ _  ___\n| |_ / _ \\| '__/ _` |/ _ \\\n|  _| (_) | | | (_| |  __/\n|_|  \\___/|_|  \\__, |\\___|\n               ",
+    "title": "Let me check what's remaining and execute all pending tasks:...",
+    "updated": "2months 15days 21h 12m 48s ago"
+  },
+  {
+    "id": "ca67d732-0fb2-4052-ab93-9ca5e6200b7b",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "_cache.set(key, result, tier=tier, expire=expire)\n            return result\n        return wrapper\n    return decorator\n\n\n# Global cache instance\n_default_cache: UnifiedCache | None = None\n\n\ndef get_cache(\n    disk_path: Path | str = \".cache/thegent\",\n    lru_size: int = 1000\n) -> UnifiedCache:\n    \"\"\"Get or create the default cache instance.\"\"\"\n    global _default_cache\n    if _default_cache is None:\n        _default_cache = UnifiedCache(disk_path=disk_path, lru_size=lru_size)\n    return _default_cache\n\n\n# Convenience functions\ndef cache_get(key: str) -> Any | None:\n    \"\"\"Get value from glob",
+    "title": "Repository Consolidation and Cleanup Review",
+    "updated": "2months 15days 21h 13m 48s ago"
+  },
+  {
+    "id": "b15363f3-fc35-4181-a7c6-ae1e68c236bd",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "forge\nLast login: Sat Apr  4 23:27:43 on ttys036\n[WARN] - (starship::utils): Executing command \"/usr/local/go/bin/go\" timed out.\n[WARN] - (starship::utils): You can set command_timeout in your config to a higher value to allow longer-running commands to keep executing.\n[WARN] - (starship::utils): Executing command \"/Users/kooshapari/.config/nvm/versions/node/v22.22.2/bin/node\" timed out.\n\ue0b6   ~/C/P/repos \ue0b4\ue0b6  main \ue0b4\ue0b6 $ \ue0b4\ue0b6   \ue0b4\ue0b6  v3.13.12 \ue0b4\ue0b6   \ue0b4\ue0b6  v1.93.0 \ue0b4 23:32\u276f forge\n _____\n|  ___|__  _ __ __ _  ___\n| |_ / _ \\| '__/ _` |/ _ \\\n|  _| (_) | | | (_| |  __/\n|_|  \\___/|_|  \\__, |\\___|\n               ",
+    "title": "Repository Cleanup and Organization Strategy",
+    "updated": "2months 15days 21h 14m 48s ago"
+  },
+  {
+    "id": "ea6b74c1-2479-4807-a7f3-db7eb7c88dde",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "forge\nLast login: Sat Apr  4 23:27:43 on ttys036\n[WARN] - (starship::utils): Executing command \"/usr/local/go/bin/go\" timed out.\n[WARN] - (starship::utils): You can set command_timeout in your config to a higher value to allow longer-running commands to keep executing.\n[WARN] - (starship::utils): Executing command \"/Users/kooshapari/.config/nvm/versions/node/v22.22.2/bin/node\" timed out.\n\ue0b6   ~/C/P/repos \ue0b4\ue0b6  main \ue0b4\ue0b6 $ \ue0b4\ue0b6   \ue0b4\ue0b6  v3.13.12 \ue0b4\ue0b6   \ue0b4\ue0b6  v1.93.0 \ue0b4 23:32\u276f forge\n _____\n|  ___|__  _ __ __ _  ___\n| |_ / _ \\| '__/ _` |/ _ \\\n|  _| (_) | | | (_| |  __/\n|_|  \\___/|_|  \\__, |\\___|\n               ",
+    "title": "I can see from the conversation context that you were workin...",
+    "updated": "2months 15days 21h 22m 48s ago"
+  },
+  {
+    "id": "3652181e-ee1b-4a98-b9ce-2dfe3d12998e",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "template-domain-webapp Public archive\nDEPRECATED: Merged into KooshaPari/template-domain\narchived\n Shell Updated last week\ntemplate-domain-service-api Public archive\nDEPRECATED: Merged into KooshaPari/template-domain\narchived agent-wave Public archive\nAI-powered agentic workflows for Phenotype\nagent\nautomation\nai\ndeprecated\nworkflows\n Shell  1 Other Updated yesterday\nFlowra Private\nDEPRECATED: Empty skeleton - reactive data flow concept moved to HexaKit\ndeprecated\n Shell Updated 3 days ago\nforgecode Public\nDEPRECATED: Empty skeleton - AI pair programmer concept moved to HexaKit\ndeprecated\n She",
+    "title": "Go Module Dependency Resolution and Build Fixes",
+    "updated": "2months 15days 21h 48s ago"
+  },
+  {
+    "id": "42cdd7ce-bddf-4ee5-b7ad-94138d6f2faf",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "what python can and hsould -> Typescript 7 \\ Rust latest; Go Latest; Zig latest; mojo latest; C# latest so on... do a polyglot audit. + check what libs we can move code to to share w\\ other or future projects in similar or other domains.The methods exist. The issue is that server.go is calling them on s.bifrost which is of type *bifrost.Bifrost. But the methods are defined on *Bifrost in the bifrost package. Let me check how s.bifrost is defined in server.go.\n\u25cf [14:22:48] Execute [/bin/zsh] grep -n \"bifrost.*\\*bifrost\" /Users/kooshapari/CodeProjects/Phenotype/repos/Kogito/server/server.go | he",
+    "title": "Analyze shared/ui-* repositories at /Users/kooshapari/CodePr...",
+    "updated": "2months 15days 22h 33m 48s ago"
+  },
+  {
+    "id": "3816f8ec-737c-41b6-9cfd-74d6e12cbab8",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "what python can and hsould -> Typescript 7 \\ Rust latest; Go Latest; Zig latest; mojo latest; C# latest so on... do a polyglot audit. + check what libs we can move code to to share w\\ other or future projects in similar or other domains.The methods exist. The issue is that server.go is calling them on s.bifrost which is of type *bifrost.Bifrost. But the methods are defined on *Bifrost in the bifrost package. Let me check how s.bifrost is defined in server.go.\n\u25cf [14:22:48] Execute [/bin/zsh] grep -n \"bifrost.*\\*bifrost\" /Users/kooshapari/CodeProjects/Phenotype/repos/Kogito/server/server.go | he",
+    "title": "Analyze Kogito repository at /Users/kooshapari/CodeProjects/...",
+    "updated": "2months 15days 22h 33m 48s ago"
+  },
+  {
+    "id": "064c0d46-2ca5-4f96-9399-36baf2c967c6",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "for server.go                      Let me create a complete schemas.go file:\n\u25cf [03:33:02] Execute [/bin/zsh] cat > /Users/kooshapari/CodeProjects/Phenotype/repos/ArgisRoute/core/schemas/schemas.go << 'SCHEMAGO'\npackage schemas\n\nimport (\n        \"context\"\n        \"sync\"\n        \"time\"\n)\n\ntype Provider string\n\nconst (\n        ProviderOpenAI    Provider = \"openai\"\n        ProviderAnthropic Provider = \"anthropic\"\n        ProviderGemini    Provider = \"gemini\"\n        ProviderCustom   Provider = \"custom\"\n)\n\ntype LogLevel string\n\nconst (\n        LogLevelDebug LogLevel = \"debug\"\n        LogLevelInfo  ",
+    "title": "Looking at this complex situation, let me provide a clear su...",
+    "updated": "2months 15days 5h 49m 48s ago"
+  },
+  {
+    "id": "43051163-5aab-4c01-9341-3ae8c470d0bd",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "dLast login: Sun Apr  5 00:21:48 on ttys002\n^R\nforge\n[WARN] - (starship::utils): Executing command \"/usr/local/go/bin/go\" timed out.\n[WARN] - (starship::utils): You can set command_timeout in your config to a higher value to allow longer-running commands to keep executing.\n\ue0b6   ~/C/P/repos \ue0b4\ue0b6  main \ue0b4\ue0b6 $ \ue0b4\ue0b6  v22.22.2 \ue0b4\ue0b6  v3.13.12 \ue0b4\ue0b6   \ue0b4\ue0b6  v1.93.0 \ue0b4     01:46\u276f\nforge                                               \udb85\ude7a FORGE \uec19 MiniMax-M2.7-highspeed\n _____\n|  ___|__  _ __ __ _  ___\n:::       \u25e6 PhenoMCP MCP endpoint \u2192 cargo run --bin mcp-server\n:::       \u25e6 PhenoRuntime daemon \u2192 cargo run --bin daemon\n::",
+    "title": "You raise a critical point. We jumped to implementation with...",
+    "updated": "2months 15days 6h 48s ago"
+  },
+  {
+    "id": "335092c9-3145-448e-9446-4cbb2100921a",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "create mode 100644 rustfmt.toml\n delete mode 160000 template-commons\nThe merge was successful. Let me push the changes and then return to the repos root to continue with the remaining Tier 1 tasks. Let me also update the todo list.\n\u25cf [23:27:28] Execute [/bin/zsh] git push origin main 2>&1 | tail -3\nTo github.com:KooshaPari/thegent.git\n ! [remote rejected]     main -> main (push declined due to repository rule violations)\nerror: failed to push some refs to 'github.com:KooshaPari/thegent.git'\n\u25cf [23:27:31] Update Todos 6 item(s)\n\n  \udb80\udd17 Merge thegent int/mod-split-stage-1 to main\n  \udb80\udd31 Return heliosAp",
+    "title": "Finalizing Libification Cleanup and External Dependencies",
+    "updated": "2months 15days 8h 21m 48s ago"
+  },
+  {
+    "id": "601d4f04-16a8-4ef1-ae4a-213631c0a803",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "bed/schemaforge/AGENTS.md\n create mode 100644 rust/forge/docs/absorbed/schemaforge/CLAUDE.md\n create mode 100644 rust/forge/docs/absorbed/schemaforge/CONTRIBUTING.md\n create mode 100644 rust/forge/docs/absorbed/schemaforge/FUNCTIONAL_REQUIREMENTS.md\n create mode 100644 rust/forge/docs/absorbed/schemaforge/PLAN.md\n create mode 100644 rust/forge/docs/absorbed/schemaforge/PRD.md\n create mode 100644 rust/forge/docs/absorbed/schemaforge/README.md\n create mode 100644 rust/forge/docs/absorbed/schemaforge/SECURITY.md\n create mode 100644 rust/forge/docs/absorbed/schemaforge/SPEC.md\n create mode 100644 ",
+    "title": "PhenoDevOps GitHub Repository Organization",
+    "updated": "2months 15days 8h 4m 48s ago"
+  },
+  {
+    "id": "ddafb9f1-aa1a-4fda-9e93-257fc6f818c8",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "|             ------ borrow later stored here\n102 |             let entry = self\n    |                 ----- binding `entry` declared here\n...\n107 |             entry.value().clone()\n    |             ^^^^^ borrowed value does not live long enough\n108 |         };\n    |         - `entry` dropped here while still borrowed\n\nerror[E0597]: `entry` does not live long enough\n   --> crates/phenotype-infrastructure/src/rate_limit.rs:119:13\n    |\n114 |         let bucket = {\nThe entry is being dropped too early. The issue is that entry.value() returns a reference that's tied to the lifetime of entry, b",
+    "title": "Triaging thegent LOC - Key Findings & Reduction Strategy",
+    "updated": "2months 16days 24m 48s ago"
+  },
+  {
+    "id": "9b334daa-1b18-40fe-b25c-e276e345bf19",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "resolver = \"2\"\nmembers = [\n    \"pheno\",\n    \"phenotype-daemon\",\n    \"crates/phenotype-health-cli\",\n    \"crates/phenotype-project-registry\",\n    \"crates/phenotype-compliance-scanner\",\n    \"crates/phenotype-security-aggregator\",\n    \"crates/phenotype-serde-adapters\",\n    \"crates/phenotype-content-hash\",\n    \"crates/phenotype-port-traits\",\n    \"crates/phenotype-contracts\",\n    \"crates/phenotype-cache-adapter\",\n    \"crates/phenotype-string\",\n    \"crates/phenotype-retry\",\n    \"crates/phenotype-in-memory-store\",\n    \"crates/phenotype-mcp-core\",\n    \"crates/phenotype-mcp-framework\",\n    \"crates/pheno",
+    "title": "Creating comprehensive PhenoMCP vs FastMCP comparison and co...",
+    "updated": "2months 16days 34m 48s ago"
+  },
+  {
+    "id": "61b69615-37e8-427e-be62-8cff813b9067",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "hint: If you meant to add a submodule, use:\nhint:\nhint:   git submodule add <url> Evalora\nhint:\nhint: If you added this path by mistake, you can remove it from the\nhint: index with:\nhint:\nhint:   git rm --cached Evalora\nhint:\nhint: See \"git help submodule\" for more information.\nhint: Disable this message with \"git config set advice.addEmbeddedRepo false\"\nwarning: adding embedded git repository: nanovms\nwarning: adding embedded git repository: worktree-manager\n[main 3a46de3] chore: add nanovms, worktree-manager, Evalora to PhenoProc\n 3 files changed, 3 insertions(+)\n create mode 160000 Evalora\n",
+    "title": "phenotype-registry-consolidation-plan",
+    "updated": "2months 16days 3h 45m 48s ago"
+  },
+  {
+    "id": "26036055-2e47-44c6-988e-80ace5820833",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "\u274c acp NOT FOUND locally\n\u274c agentapi NOT FOUND locally\n\u274c agentapi-deprec NOT FOUND locally\n\u274c agentops-policy-federation NOT FOUND locally\n\u274c Agentora NOT FOUND locally\n\u274c agileplus-plugin-git NOT FOUND locally\n\u274c agileplus-plugin-sqlite NOT FOUND locally\n\u274c agslag-tmp NOT FOUND locally\n\u274c agslagtmp-2 NOT FOUND locally\n\u274c aizen NOT FOUND locally\n\u274c Apisync NOT FOUND locally\n\u274c argisexec NOT FOUND locally\n\u274c Benchora NOT FOUND locally\n\u274c bifrost-extensions NOT FOUND locally\n\u274c BytePort-TestPortfolio NOT FOUND locally\n\u274c Byteport-TestZip NOT FOUND locally\n\u274c BytePortfolio NOT FOUND locally\nThe grep didn't work ",
+    "title": "Research modern alternatives and emerging technologies that ...",
+    "updated": "2months 16days 3h 54m 48s ago"
+  },
+  {
+    "id": "fc348830-26fd-43c4-a21b-3a6f3b8d16d4",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "i) % self.size;\n            if !self.bits[idx] {\n                return false;\n            }\n        }\n        true\n    }\n\n    pub fn check_and_add(&mut self, item: &[u8]) -> bool {\n        let exists = self.check(item);\n        if !exists {\n            self.add(item);\n        }\n        exists\n    }\n\n    fn hash(&self, item: &[u8], seed: usize) -> usize {\n        use std::collections::hash_map::DefaultHasher;\n        use std::hash::{Hash, Hasher};\n\n        let mut hasher = DefaultHasher::new();\n        item.hash(&mut hasher);\n        seed.hash(&mut hasher);\n        hasher.finish() as usize\n   ",
+    "title": "Analyze the test file distribution across the codebase. Calc...",
+    "updated": "2months 16days 4h 33m 48s ago"
+  },
+  {
+    "id": "3c818621-4452-43a9-b53f-a18228bb4d16",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n     Running tests/integration.rs (target/debug/deps/integration-6fd3a6898cf2d5cb)\n\nrunning 6 tests\ntest test_chacha_full_workflow ... ok\ntest test_aes_gcm_full_workflow ... ok\ntest test_sha256_deterministic ... ok\ntest test_ed25519_wrong_key_fails ... ok\ntest test_ed25519_tampered_message_fails ... ok\ntest test_ed25519_sign_and_verify ... ok\n\ntest result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n   Doc-tests cipher\n\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 fil",
+    "title": "Analyze the phenoSDK module structure in /Users/kooshapari/C...",
+    "updated": "2months 16days 7h 48s ago"
+  },
+  {
+    "id": "bd8576c2-21eb-4d82-ab4a-2d698db48a23",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "ty-aggregator. Let me fix it:\n\u25cf [18:05:34] Read crates/phenotype-security-aggregator/src/lib.rs:25-50\nThe file seems to have a proper Finding struct but the error says \"no field id on type Finding\". Let me search for where the Finding struct is defined in this file and see if it matches what the code is trying to use.\n\u25cf [18:05:36] Read crates/phenotype-security-aggregator/src/lib.rs:51-75\nThe file has SecurityFinding not Finding. But the code uses Finding. Let me check if there's a Finding struct or if it should use SecurityFinding. Let me search for Finding in this file.\n\u25cf [18:05:38] Search f",
+    "title": "Resuming Unified Project Health Dashboard Development",
+    "updated": "2months 17days 1h 1m 48s ago"
+  },
+  {
+    "id": "087410a2-87db-402d-afc6-9561c7977600",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "https://github.com/KooshaPari/pheno-worklog-schema and similar pheno- or phenotype- style repos need to be folded into other targets. this one maybe agileplus maybe phenotype-pm-core, unsure. do a full eval starting w\\ this one and expand to oehrs. follow proc and use forge task subagents!!!! nto allowed to work urself You are a strategic cloud coding agent performing a repository absorption and deletion-justification audit.\n\nOBJECTIVE\n\nI am absorbing this repository into a smaller set of target repositories. Your job is to determine whether this source repo can be justifiably deleted after it",
+    "title": "V12-T17 Router Spike Repair",
+    "updated": "32m ago"
+  },
+  {
+    "id": "f81d91f9-b1d8-4d9c-8190-e2160860770e",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "install and config sueprpowers + all other skills, tools, etc that claude and codex cli have into forge. thenr esearch and find your own set of recommended items as of jun 20026 to add in too skills only",
+    "title": "Forge Skills Installation And Research",
+    "updated": "6days 10h 42m ago"
+  },
+  {
+    "id": "2f16dec5-43ee-4735-a672-370e871523cd",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "covery_2026-06 \u2502       \u2502                      \u2502                    \u2502\n\u2502 -06/)                          \u2502       \u2502                      \u2502                    \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 Configra patch                 \u2502 1     \u2502 with ANSI cleanup    \u2502 git apply          \u2502\n\u2502 (/tmp/configra_recovery_2026-0 \u2502       \u2502                      \u2502                    \u2502\n\u2502 6-06/)                         \u2502       \u2502                      \u2502                    \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 Mod.rs ",
+    "title": "Resuming Development After Cleanup",
+    "updated": "6days 1h 11m ago"
+  },
+  {
+    "id": "caf7e000-ec01-49f8-a308-5f7f5e45e7b5",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "call agents to review in bg and finish the merge. codex 5.3 codex spark low exec agents, call them in a async way so you can check back later and they can work full turn to finish those items. otherwise: move to create new dag, 100 tasks, not allowed to shrink task size to fit such a QTY. Parallelism (Tree width) max 10 or whatever your fixed limit on spawning subagents is, if unlim no more than 20. if at a certain step you cannot fill your 20 you must find other tasks in repo or in kooshapari acct\\local to fill with equally sized tasks, and\\or mindful sub\\side DAGs that complement to fill the",
+    "title": "Multi-Repo Audit And Dag Planning",
+    "updated": "6days 1h 12m ago"
+  },
+  {
+    "id": "11e6cf69-2d89-4e2f-b6ce-ac53abe2cb2b",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "call agents to review in bg and finish the merge. codex 5.3 codex spark low exec agents, call them in a async way so you can check back later and they can work full turn to finish those items. otherwise: move to create new dag, 100 tasks, not allowed to shrink task size to fit such a QTY. Parallelism (Tree width) max 10 or whatever your fixed limit on spawning subagents is, if unlim no more than 20. if at a certain step you cannot fill your 20 you must find other tasks in repo or in kooshapari acct\\local to fill with equally sized tasks, and\\or mindful sub\\side DAGs that complement to fill the",
+    "title": "[empty]",
+    "updated": "6days 1h 12m ago"
+  },
+  {
+    "id": "5a9c5deb-ebe4-4e3c-9cae-52e40bd42bbc",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "call agents to review in bg and finish the merge. codex 5.3 codex spark low exec agents, call them in a async way so you can check back later and they can work full turn to finish those items. otherwise: move to create new dag, 100 tasks, not allowed to shrink task size to fit such a QTY. Parallelism (Tree width) max 10 or whatever your fixed limit on spawning subagents is, if unlim no more than 20. if at a certain step you cannot fill your 20 you must find other tasks in repo or in kooshapari acct\\local to fill with equally sized tasks, and\\or mindful sub\\side DAGs that complement to fill the",
+    "title": "Archived Repo DAG Planning Session",
+    "updated": "6days 1h 12m ago"
+  },
+  {
+    "id": "6d896a57-0543-4bee-b7be-5571861ed7dc",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "resume session: ration.rs\nClean \u2014 only the new test file is unstaged. Now amend the WIP commit with the real message:\n\u25cf [23:47:53] Execute [/bin/zsh] cd @[/Users/kooshapari/CodeProjects/Phenotype/repos/phenoShared-wtrees/auth-core-skeleton-2026-06-10] && GIT_EDITOR=true git commit --amend -m \"phenoshared: add auth-core crate skeleton (Wave B, 20 tasks)\n\nBrings the 26,500-LOC Python auth code in AuthKit/ under a single\nRust crate's authority, per PHENOTYPE_5REPO_MODERNIZATION_PLAN.md \u00a78.4\nand plans/2026-06-09-auth-fleet-world-map-v1.md.\n\nWhat landed\n- crates/auth-core/ (NEW): the canonical Rust",
+    "title": "[empty]",
+    "updated": "6days 1h 27m ago"
+  },
+  {
+    "id": "43ac4ac5-602a-4a73-be2b-c816a5f903e2",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "call agents to review in bg and finish the merge. codex 5.3 codex spark low exec agents, call them in a async way so you can check back later and they can work full turn to finish those items. otherwise: move to create new dag, 100 tasks, not allowed to shrink task size to fit such a QTY. Parallelism (Tree width) max 10 or whatever your fixed limit on spawning subagents is, if unlim no more than 20. if at a certain step you cannot fill your 20 you must find other tasks in repo or in kooshapari acct\\local to fill with equally sized tasks, and\\or mindful sub\\side DAGs that complement to fill the",
+    "title": "Asynchronous Multi-Agent DAG Execution System",
+    "updated": "6days 22h 36m ago"
+  },
+  {
+    "id": "6f97b35b-fb76-4d40-a43e-7d1785c179ba",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "call agents to review in bg and finish the merge. codex 5.3 codex spark low exec agents, call them in a async way so you can check back later and they can work full turn to finish those items. otherwise: move to create new dag, 100 tasks, not allowed to shrink task size to fit such a QTY. Parallelism (Tree width) max 10 or whatever your fixed limit on spawning subagents is, if unlim no more than 20. if at a certain step you cannot fill your 20 you must find other tasks in repo or in kooshapari acct\\local to fill with equally sized tasks, and\\or mindful sub\\side DAGs that complement to fill the",
+    "title": "Multi-Repo Agent Dispatch Consolidation DAG",
+    "updated": "6days 2h ago"
+  },
+  {
+    "id": "900e74f1-52bb-4889-8fcc-73dc24038c98",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "ps://github.com/rust-lang/crates.io-index\",\"req\":\"^1.0.0\",\"kind\":null,\"rename\":\"core\",\"optional\":true,\"uses_default_features\":true,\"features\":[],\"target\":null,\"registry\":null}],\"targets\":[{\"kind\":[\"lib\"],\"crate_types\":[\"lib\"],\"name\":\"r_efi\",\"src_path\":\"/Users/kooshapari/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/r-efi-6.0.0/src/lib.rs\",\"edition\":\"2018\",\"doc\":true,\"doctest\":true,\"test\":true},{\"kind\":[\"example\"],\"crate_types\":[\"bin\"],\"name\":\"freestanding\",\"src_path\":\"/Users/kooshapari/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/r-efi-6.0.0/examples/freestanding.rs\",\"edition\":\"",
+    "title": "untitled",
+    "updated": "6days 9h 41m ago"
+  },
+  {
+    "id": "d66eb2a9-159d-458f-944e-5d6ca28dc31b",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "https://github.com/KooshaPari/Sidekick seems to have overlap with other repos I own, eval against both manual remote git analysis w\\ subagents AND phenotype registry repo analysis The process we follow: PROMPT You are a strategic cloud coding agent performing a repository absorption and deletion-justification audit.\n\nOBJECTIVE\n\nI am absorbing this repository into a smaller set of target repositories. Your job is to determine whether this source repo can be justifiably deleted after its intent, features, experiments, docs, specs, branches, and attempted work have either been:\n\n1. moved into tar",
+    "title": "OmniRoute Performance Eval and Refactor",
+    "updated": "6m ago"
+  },
+  {
+    "id": "bae12920-c733-494c-849e-aa44de915122",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "manifest_path\":\"/Users/kooshapari/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thread_local-1.1.9/Cargo.toml\",\"metadata\":null,\"publish\":null,\"authors\":[\"Amanieu d'Antras <amanieu@gmail.com>\"],\"categories\":[],\"keywords\":[\"thread_local\",\"concurrent\",\"thread\"],\"readme\":\"README.md\",\"repository\":\"https://github.com/Amanieu/thread_local-rs\",\"homepage\":null,\"documentation\":\"https://docs.rs/thread_local/\",\"edition\":\"2021\",\"links\":null,\"default_run\":null,\"rust_version\":\"1.63\"},{\"name\":\"tinytemplate\",\"version\":\"1.2.1\",\"id\":\"registry+https://github.com/rust-lang/crates.io-index#tinytemplate@1.2.1",
+    "title": "DAG Queue Task Executor",
+    "updated": "7days 23h 14m ago"
+  },
+  {
+    "id": "d1adb5df-aece-4a3f-b6c7-74f9d5e71870",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "call agents to review in bg and finish the merge. codex 5.3 codex spark low exec agents, call them in a async way so you can check back later and they can work full turn to finish those items. otherwise: move to create new dag, 100 tasks, not allowed to shrink task size to fit such a QTY. Parallelism (Tree width) max 10 or whatever your fixed limit on spawning subagents is, if unlim no more than 20. if at a certain step you cannot fill your 20 you must find other tasks in repo or in kooshapari acct\\local to fill with equally sized tasks, and\\or mindful sub\\side DAGs that complement to fill the",
+    "title": "[empty]",
+    "updated": "7days 2h 44m ago"
+  },
+  {
+    "id": "e45cc6c8-817e-49d8-b4c6-819b51c0a175",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "sec.scan.github@gmail.com\nFri, Jun 5, 5:27\u202fAM (8 days ago)\nto me\n\n\nHey,\nI'm Robin \u2014 a Security Engineer from Germany.\nIn my free time, I scan GitHub repositories for exposed secrets and notify owners to help fix them.\n\nI scanned your GitHub repository and found a hardcoded secret that was accidentally committed to a public repository:\n\nType: NVAPI\nRepository: https://github.com/KooshaPari/thegent.git\nLink: https://github.com/KooshaPari/thegent/blob/c896f011672ef3ea8669c581f838985762301f1e/.env#L41\nCommitted on: 2026-03-01\nAuthor: KooshaPari <42529354+KooshaPari@users.noreply.github.com>\n\nThis ",
+    "title": "Exposed NVAPI Key in GitHub Repository",
+    "updated": "7days 6h 45m ago"
+  },
+  {
+    "id": "6ced0281-ba6c-4905-9845-3f58e4c0dee9",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "work to absorb wholy into playcua (kmobile, kdesktopvirt, similar repos e.g. eidolon, otehrs) you *will* want to create a mobile-next mobile cli and\\or mobile mcp fork (those are 2 repos https://github.com/mobile-next I found this last year, research current SOTA against the CUA\\mobile-next combo and the same for all toher platforms\\use cases we itnend to cover) you will own the agent-platform interface doamin repo(s)  The process we follow: PROMPT You are a strategic cloud coding agent performing a repository absorption and deletion-justification audit.\n\nOBJECTIVE\n\nI am absorbing this reposit",
+    "title": "[empty]",
+    "updated": "7h 37m ago"
+  },
+  {
+    "id": "953ba6fc-a25c-4288-be57-ead1c267d474",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "we just crashed, there are many many many chats I launched in forgecode. it only shows 100\\100 in the /conversation picker and i hope to god there is more in its db. I had about 35 open chats that were each using subagents. I need the 35 open chats and their ids + clear resume cmds and a title for waht it was doing",
+    "title": "Recovering Lost ForgeCode Conversations After Crash",
+    "updated": "8days 4h 27m ago"
+  },
+  {
+    "id": "81420f5c-f018-4067-8888-32c8451ee3c5",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "call agents to review in bg and finish the merge. codex 5.3 codex spark low exec agents, call them in a async way so you can check back later and they can work full turn to finish those items. otherwise: move to create new dag, 100 tasks, not allowed to shrink task size to fit such a QTY. Parallelism (Tree width) max 10 or whatever your fixed limit on spawning subagents is, if unlim no more than 20. if at a certain step you cannot fill your 20 you must find other tasks in repo or in kooshapari acct\\local to fill with equally sized tasks, and\\or mindful sub\\side DAGs that complement to fill the",
+    "title": "Resume Development Work After Cleanup",
+    "updated": "8m ago"
+  },
+  {
+    "id": "1836cfd4-5e66-45d5-8ef3-897afa6d61b3",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "call agents to review in bg and finish the merge. codex 5.3 codex spark low exec agents, call them in a async way so you can check back later and they can work full turn to finish those items. otherwise: move to create new dag, 100 tasks, not allowed to shrink task size to fit such a QTY. Parallelism (Tree width) max 10 or whatever your fixed limit on spawning subagents is, if unlim no more than 20. if at a certain step you cannot fill your 20 you must find other tasks in repo or in kooshapari acct\\local to fill with equally sized tasks, and\\or mindful sub\\side DAGs that complement to fill the",
+    "title": "Massive Multi-Repo DAG Orchestration & Consolidation",
+    "updated": "8m ago"
+  },
+  {
+    "id": "077c4e8f-8cac-4560-b36c-647d14afa797",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "theme \"One Dark\" not found, tried path \"/Applications/Ghostty.app/Contents/Resources/ghostty/themes/One Dark\" theme \"One Dark\" not found, tried path \"/Users/kooshapari/.config/ghostty/themes/One Dark\" /Users/kooshapari/.config/ghostty/config:27:mouse: unknown field /Users/kooshapari/.config/ghostty/config:27:mouse: unknown field /Users/kooshapari/.config/ghostty/config:24:bell: unknown field dont kill ghostty just fix the config",
+    "title": "GitHub Workflows Floating Runners Audit",
+    "updated": "9days 30m ago"
+  },
+  {
+    "id": "f134f76f-efa0-412f-b6c7-b14301196254",
+    "score": 6,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "call agents to review in bg and finish the merge. codex 5.3 codex spark low exec agents, call them in a async way so you can check back later and they can work full turn to finish those items. otherwise: move to create new dag, 100 tasks, not allowed to shrink task size to fit such a QTY. Parallelism (Tree width) max 10 or whatever your fixed limit on spawning subagents is, if unlim no more than 20. if at a certain step you cannot fill your 20 you must find other tasks in repo or in kooshapari acct\\local to fill with equally sized tasks, and\\or mindful sub\\side DAGs that complement to fill the",
+    "title": "Omniroute Branch Merging And Spec Implementation",
+    "updated": "9m ago"
+  },
+  {
+    "id": "5d0d8608-7446-48d8-bc4f-428ca678c7fb",
+    "score": 5,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "many docs are msising proper journeys keyframes\\recordings like that\n  which we made for hwledger. all repos need this as part of their traceability\\adn\n  general docs ifnra\n\n::: \u203a c\n:::\n:::   tab to queue message                                              57% context left resume their work, focus on FOCALPOINT docs first.",
+    "title": "",
+    "updated": "# OmniRoute Password Reset Instructions"
+  },
+  {
+    "id": "7663799b-54ed-4b51-8113-b38ebe47aa7f",
+    "score": 5,
+    "typos": 1,
+    "typo_list": [
+      "libification"
+    ],
+    "lower_start": false,
+    "prompt": "L6 side-DAG filler \u2014 SOTA sweep on libification substrate crates. The 3 new crates at /Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-deps/, /Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-error-core/, /Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-cli-macros/ were just extracted today. Audit each: (1) phenotype-deps: list all unified deps in Cargo.toml, check if it includes the 11 duplicates (serde, tokio, clap, thiserror, anyhow, uuid, chrono, futures, async-trait, tempfile, serde_json) per findings/2026-06-20-CONSOLIDATED-FINDINGS-DAG.md, identify any missing. (2",
+    "title": "L6 Substrate Crates SOTA Sweep",
+    "updated": "21h 44m ago"
+  },
+  {
+    "id": "54c76547-2f7d-4270-ba39-1d5de4287c96",
+    "score": 5,
+    "typos": 1,
+    "typo_list": [
+      "libification"
+    ],
+    "lower_start": false,
+    "prompt": "\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 Total Estimated       \u2502 9,055 LOC  \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 Actually Implemented  \u2502 9,100+ LOC \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 Libification Complete \u2502 90%        \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n\n### \ud83d\udccb Remaining Work (450 LOC actual)\n   1. Kogito CLIProxyAPI dependency - External\n   repo required                         2. Phase 6 cleanup - Dead code removal,     imports, constants                    3. phenotype-string - 50 LOC completion  4. Documentation updates - 100 LOC\n       ### \ud83d\udcca Commits Made\n                ",
+    "title": "Looking at this long conversation history, I can see we've b...",
+    "updated": "2months 15days 6h 42m 48s ago"
+  },
+  {
+    "id": "c91d3401-f052-46d2-a417-36a30dc21de7",
+    "score": 5,
+    "typos": 1,
+    "typo_list": [
+      "libification"
+    ],
+    "lower_start": false,
+    "prompt": "\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 Total Estimated       \u2502 9,055 LOC  \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 Actually Implemented  \u2502 9,100+ LOC \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 Libification Complete \u2502 90%        \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n\n### \ud83d\udccb Remaining Work (450 LOC actual)\n   1. Kogito CLIProxyAPI dependency - External\n   repo required                         2. Phase 6 cleanup - Dead code removal,     imports, constants                    3. phenotype-string - 50 LOC completion  4. Documentation updates - 100 LOC\n       ### \ud83d\udcca Commits Made\n                ",
+    "title": "I'll check the current state and proceed with verification s...",
+    "updated": "2months 15days 7h 48s ago"
+  },
+  {
+    "id": "e0bcbfbf-00e2-4428-9359-14a119ad082e",
+    "score": 5,
+    "typos": 1,
+    "typo_list": [
+      "libification"
+    ],
+    "lower_start": false,
+    "prompt": "**MISSION: Architecture patterns audit + libification opportunities**\n\nRead these files first for context:\n- /Users/kooshapari/CodeProjects/Phenotype/repos/docs/worklogs/README.md\n- /Users/kooshapari/CodeProjects/Phenotype/repos/docs/worklogs/ARCHITECTURE.md\n- /Users/kooshapari/CodeProjects/Phenotype/repos/docs/worklogs/DUPLICATION.md\n\nThen do ALL of the following:\n\n1. **Architecture Pattern Audit** - Identify architectural patterns used across repos:\n   - Check for hexagonal/ports-and-adapters pattern usage\n   - Check for event sourcing patterns (in any language)\n   - Check for CQRS patterns\n",
+    "title": "**MISSION: Architecture patterns audit + libification opport...",
+    "updated": "7days 21h 40m ago"
+  },
+  {
+    "id": "1986d8fb-32e5-4086-9e35-72b58382a498",
+    "score": 5,
+    "typos": 0,
+    "typo_list": [],
+    "lower_start": true,
+    "prompt": "another agent is handlign, scrape all conversation logs for FORGECODE (YOU ARE FORGECODE NOT CLAUDE CODE) in repos, ../cursor-reset-tools folder to find incomplete work, use sage or other subagents for indepth resaerach\\scarping .",
+    "title": "",
+    "updated": "```json"
+  },
+  {
+    "id": "c593abf5-1e96-489e-bb5f-d553bde8f64b",
+    "score": 4,
+    "typos": 1,
+    "typo_list": [
+      "libification"
+    ],
+    "lower_start": false,
+    "prompt": "Analyze AgentMCP repository at /Users/kooshapari/CodeProjects/Phenotype/repos/AgentMCP: 1) Count all Go files with LOC, 2) Count all Python files with LOC, 3) Identify MCP server implementation patterns, 4) Find resource enforcement patterns in middleware/, 5) Document scope hierarchy implementation in runtime/, 6) Check for libification opportunities. Report specific metrics and file paths.",
+    "title": "Deep analysis of heliosApp registry implementations: 1) Coun...",
+    "updated": "2months 15days 22h 22m 48s ago"
+  },
+  {
+    "id": "e886e0d8-afa8-43f9-96ad-9aa0eac193d7",
+    "score": 4,
+    "typos": 1,
+    "typo_list": [
+      "libification"
+    ],
+    "lower_start": false,
+    "prompt": "Analyze phenotype-* repositories at /Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-*: 1) Count files and LOC for each repository, 2) Identify which have actual code vs spec-only, 3) Find shared patterns across repositories, 4) Document libification opportunities. Report per-repository metrics.",
+    "title": "Deep analysis of thegent crates/ directory: 1) Count ALL 34 ...",
+    "updated": "2months 15days 22h 23m 48s ago"
+  },
+  {
+    "id": "1221a01f-bd01-4a88-9a2a-a2f402e348a9",
+    "score": 4,
+    "typos": 1,
+    "typo_list": [
+      "libification"
+    ],
+    "lower_start": false,
+    "prompt": "Audit phenoSDK current state at /Users/kooshapari/CodeProjects/Phenotype/repos/phenoSDK: 1) Count all Python files by subsystem (testing/, infra/, kits/, mcp/, ui/, cli/, credentials/, etc.), 2) Identify the credentials module structure for libification, 3) Find duplicate patterns across subsystems, 4) Document MCP integration patterns, 5) Report exact file counts and LOC by subsystem.",
+    "title": "PhenoHandbook Deployment Pipeline Setup",
+    "updated": "2months 16days 3h 50m 48s ago"
+  },
+  {
+    "id": "a47f6223-0fb4-48a3-8fb8-2bb6bbb321bb",
+    "score": 4,
+    "typos": 1,
+    "typo_list": [
+      "libification"
+    ],
+    "lower_start": false,
+    "prompt": "Analyze thegent codebase for libification opportunities: identify modules that can be extracted into standalone crates/packages for cross-project reuse. Focus on: 1) Pure business logic without framework dependencies, 2) Domain models and types, 3) Utility functions with clear interfaces, 4) Adapter patterns. Check for existing similar libraries in the ecosystem that could be forked/extended vs building from scratch.",
+    "title": "Cross-reference thegent's 31 Rust crates with similar functi...",
+    "updated": "2months 16days 4h 24m 48s ago"
+  },
+  {
+    "id": "71cdfc92-26c3-4671-8a3f-2c2497780901",
+    "score": 4,
+    "typos": 1,
+    "typo_list": [
+      "libification"
+    ],
+    "lower_start": false,
+    "prompt": "Analyze thegent codebase for libification opportunities: identify modules that can be extracted into standalone crates/packages for cross-project reuse. Focus on: 1) Pure business logic without framework dependencies, 2) Domain models and types, 3) Utility functions with clear interfaces, 4) Adapter patterns. Check for existing similar libraries in the ecosystem that could be forked/extended vs building from scratch.",
+    "title": "Audit thegent's configuration system (config/, settings.py) ...",
+    "updated": "2months 16days 4h 27m 48s ago"
+  },
+  {
+    "id": "88bde9ec-d67d-42ac-af11-198d6dd82a53",
+    "score": 4,
+    "typos": 1,
+    "typo_list": [
+      "libification"
+    ],
+    "lower_start": false,
+    "prompt": "Analyze thegent codebase for libification opportunities: identify modules that can be extracted into standalone crates/packages for cross-project reuse. Focus on: 1) Pure business logic without framework dependencies, 2) Domain models and types, 3) Utility functions with clear interfaces, 4) Adapter patterns. Check for existing similar libraries in the ecosystem that could be forked/extended vs building from scratch.",
+    "title": "Analyze thegent codebase for libification opportunities: ide...",
+    "updated": "2months 16days 4h 30m 48s ago"
+  },
+  {
+    "id": "4e3ccc4e-be4d-4283-a372-17ed524a388c",
+    "score": 4,
+    "typos": 1,
+    "typo_list": [
+      "libification"
+    ],
+    "lower_start": false,
+    "prompt": "Create libification roadmap with dependencies and priority: rank extraction opportunities by: 1) Reusability across projects, 2) Maintenance burden reduction, 3) Performance gains from language change, 4) Community/ecosystem benefits. Map dependencies between potential libraries to determine extraction order.",
+    "title": "Create libification roadmap with dependencies and priority: ...",
+    "updated": "2months 16days 4h 31m 48s ago"
+  }
+]
