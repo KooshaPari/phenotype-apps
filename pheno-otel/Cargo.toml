@@ -26,8 +26,22 @@ path = "src/lib.rs"
 thiserror = "2"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+# v20-T5 (L23): proptest is in [dependencies] (not just [dev-dependencies])
+# so the manual `Arbitrary` impls in `src/lib.rs` for `OtlpError` and
+# `ExportHandle` compile. The proptest book requires this: a crate that
+# provides `Arbitrary` impls in src/ must have proptest as a regular
+# dep (not just a dev-dep) so the generated `impl Arbitrary` blocks can
+# reference the trait. Tests in `tests/proptest_smoke.rs` then exercise
+# these impls via `any::<T>()`.
+proptest = { version = "1.4", default-features = false, features = ["std"] }
 
 [dev-dependencies]
+# v20-T5 (L23): proptest also in dev-deps for the loom concurrency
+# tests (tests/loom_batcher.rs, tests/loom_shutdown.rs). The
+# `[dependencies]` entry above is what makes the `Arbitrary` impls
+# in src/ compile; this one is what makes the loom tests compile
+# when the `loom` cfg is enabled.
+proptest = "1.4"
 # Concurrency model checker (v14 cycle-4 T5: L25 pillar).
 # Permutation-tests the OTLP exporter's batcher flush ordering
 # (`tests/loom_batcher.rs`) and graceful shutdown signal ordering

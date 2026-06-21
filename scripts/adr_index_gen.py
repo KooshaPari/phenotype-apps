@@ -15,7 +15,7 @@ Usage:
     python3 scripts/adr_index_gen.py [--root PATH] [--out PATH]
     python3 scripts/adr_index_gen.py --check     # exit 1 if --out is stale
 
-Exit 0 on success (or fresh), 1 on stale (--check) or broken-refs detected.
+Exit 0 on success, 1 on stale (--check) or I/O error.
 """
 import argparse
 import re
@@ -157,7 +157,14 @@ def main():
 
     if args.check:
         existing = out.read_text(encoding="utf-8", errors="replace") if out.exists() else ""
-        if new_text != existing:
+        # The generator embeds the wall-clock in two places (header
+        # "Generated:" and the trailing HTML comment). Those change on every
+        # run even when content is fresh, so blank them out before diffing.
+        def _blank_ts(s: str) -> str:
+            s2 = re.sub(r"\*\*Generated:\*\*[^\n]+", "**Generated:** <ts>", s)
+            s2 = re.sub(r"<!-- generated:[^\n]+-->", "<!-- generated: <ts> -->", s2)
+            return s2
+        if _blank_ts(new_text) != _blank_ts(existing):
             print(f"STALE: {out} would change ({len(rows)} ADR rows). "
                   "Run `python3 scripts/adr_index_gen.py` to update.",
                   file=sys.stderr)
