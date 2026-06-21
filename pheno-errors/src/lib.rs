@@ -133,11 +133,15 @@ impl AppError {
 
     /// Convenience constructor for [`AppError::Domain`].
     pub fn domain(msg: impl Into<String>) -> Self {
+        // L62 (error rate) observability adoption (v14 cycle-4 T7).
+        // No-op when pheno_otel::metrics::init_meter() has not been called.
+        pheno_otel::metrics::record_error("pheno_errors.app_error", "domain");
         Self::Domain(msg.into())
     }
 
     /// Convenience constructor for [`AppError::NotFound`].
     pub fn not_found(entity: impl Into<String>, id: impl Into<String>) -> Self {
+        pheno_otel::metrics::record_error("pheno_errors.app_error", "not_found");
         Self::NotFound {
             entity: entity.into(),
             id: id.into(),
@@ -146,16 +150,19 @@ impl AppError {
 
     /// Convenience constructor for [`AppError::Conflict`].
     pub fn conflict(msg: impl Into<String>) -> Self {
+        pheno_otel::metrics::record_error("pheno_errors.app_error", "conflict");
         Self::Conflict(msg.into())
     }
 
     /// Convenience constructor for [`AppError::Validation`].
     pub fn validation(msg: impl Into<String>) -> Self {
+        pheno_otel::metrics::record_error("pheno_errors.app_error", "validation");
         Self::Validation(msg.into())
     }
 
     /// Convenience constructor for [`AppError::Storage`].
     pub fn storage(msg: impl Into<String>) -> Self {
+        pheno_otel::metrics::record_error("pheno_errors.app_error", "storage");
         Self::Storage(msg.into())
     }
 
