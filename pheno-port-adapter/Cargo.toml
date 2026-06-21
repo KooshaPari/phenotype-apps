@@ -17,4 +17,18 @@ pheno-otel = { path = "../pheno-otel" }
 
 [dev-dependencies]
 serde_json = "1"
+# Loom is a 71-pillar (L25 concurrency) permutation tester. Loom tests
+# are gated on `cfg(loom)` so the loom crate is not pulled into the
+# default build; run them with `RUSTFLAGS="--cfg loom" cargo test
+# --test loom_<name> --release`. See `findings/2026-06-21-L25-loom-tests.md`
+# for the test matrix and v14 cycle-4 T5 closure.
+loom = "0.7"
+
+# Heavy runtime dev-deps (tokio) are pulled in only when the loom cfg is
+# NOT set. This avoids the tokio-1.x-does-not-compile-under-loom issue
+# (task::local references AtomicWaker which is gated on `not(loom)`) and
+# lets the loom tests build a self-contained sync-only subset of the
+# crate. The default `cargo test` (without `--cfg loom`) still gets the
+# full tokio test surface.
+[target.'cfg(not(loom))'.dev-dependencies]
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
