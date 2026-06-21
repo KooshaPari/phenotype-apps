@@ -1,0 +1,20 @@
+[package]
+name = "pheno-chaos-macros"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+description = "Proc-macro crate backing the `#[chaos_test]` attribute on `pheno-chaos`. Generates a fault-injection wrapper that runs the annotated body, randomly injects a configured fault, and asserts recovery within a per-fault SLO."
+
+[lib]
+proc-macro = true
+
+[dependencies]
+# proc-macro2 + syn + quote are the de-facto trio for Rust proc macros.
+# They are not part of the runtime contract — they only run at compile
+# time, so they don't widen the std + libc runtime surface of
+# pheno-chaos itself.
+proc-macro2 = "1"
+syn = { version = "2", features = ["full"] }
+quote = "1"

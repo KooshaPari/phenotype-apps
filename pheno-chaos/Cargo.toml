@@ -1,0 +1,22 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/pheno-chaos",
+    "crates/pheno-chaos-macros",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.82"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[workspace.dependencies]
+# Single crate-level libc pin (ADR-040 substrate quality bar).
+libc = "0.2"
+# Internal proc-macro crate. Exposed under two names so the
+# V20-T3 brief's `chaos = { dep }` convention (re-export under the
+# `chaos` identifier inside the lib crate) resolves cleanly.
+pheno-chaos-macros = { path = "crates/pheno-chaos-macros", version = "0.1.0" }
+chaos = { path = "crates/pheno-chaos-macros", version = "0.1.0" }

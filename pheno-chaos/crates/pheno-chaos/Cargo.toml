@@ -1,0 +1,29 @@
+[package]
+name = "pheno-chaos"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+description = "Chaos engineering substrate for Rust services. Application-layer fault injection (network latency, connection drop, CPU spike) with #[chaos_test] proc-macro harness. std + libc only — no kernel modules, no root."
+
+[lib]
+name = "pheno_chaos"
+path = "src/lib.rs"
+
+[dependencies]
+# ADR-040: only std + libc for fault injection. We deliberately avoid
+# tokio/async-std here so the substrate is runtime-agnostic — the
+# #[chaos_test] macro drives a synchronous executor on a std::thread.
+libc = { workspace = true }
+
+# Internal proc-macro crate, re-exported under the `chaos`
+# identifier from lib.rs (`pub use chaos::chaos_test;`). The Cargo
+# dep name is `pheno-chaos-macros` (canonical crate name); the
+# `chaos` identifier at the lib level matches the `chaos = { dep }`
+# convention called out in the V20-T3 brief.
+pheno-chaos-macros = { workspace = true }
+
+[dev-dependencies]
+# Used by tests/ to verify the macro emits correctly-named #[test]
+# fns; the harness runs on `cargo test --test ...` only.
