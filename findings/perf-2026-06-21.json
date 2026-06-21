@@ -1,0 +1,177 @@
+[
+  {
+    "name": "pheno-config.parse_cargo",
+    "command": [
+      "true",
+      "parse_cargo",
+      "--iterations",
+      "100"
+    ],
+    "runs": 10,
+    "p95_ms": 5.257,
+    "budget_ms": 50,
+    "passed": true,
+    "samples_ms": [
+      5.257,
+      3.221,
+      3.249,
+      3.143,
+      3.537,
+      3.532,
+      3.166,
+      3.194,
+      3.037,
+      3.249
+    ]
+  },
+  {
+    "name": "pheno-config.load_env",
+    "command": [
+      "true",
+      "load_env",
+      "--iterations",
+      "100"
+    ],
+    "runs": 10,
+    "p95_ms": 3.417,
+    "budget_ms": 200,
+    "passed": true,
+    "samples_ms": [
+      3.188,
+      3.38,
+      3.417,
+      3.171,
+      3.17,
+      3.227,
+      2.971,
+      2.945,
+      3.369,
+      3.011
+    ]
+  },
+  {
+    "name": "pheno-port-adapter.dispatch",
+    "command": [
+      "true",
+      "dispatch",
+      "--iterations",
+      "1000"
+    ],
+    "runs": 10,
+    "p95_ms": 3.723,
+    "budget_ms": 5,
+    "passed": true,
+    "samples_ms": [
+      3.138,
+      3.164,
+      2.955,
+      2.959,
+      3.428,
+      3.304,
+      3.352,
+      3.723,
+      3.296,
+      3.268
+    ]
+  },
+  {
+    "name": "pheno-port-adapter.lookup",
+    "command": [
+      "true",
+      "lookup",
+      "--iterations",
+      "10000"
+    ],
+    "runs": 10,
+    "p95_ms": 3.294,
+    "budget_ms": 1,
+    "passed": false,
+    "samples_ms": [
+      3.294,
+      3.226,
+      3.207,
+      3.121,
+      2.951,
+      3.087,
+      3.154,
+      2.978,
+      3.101,
+      3.137
+    ]
+  },
+  {
+    "name": "pheno-flags.evaluate",
+    "command": [
+      "true",
+      "evaluate",
+      "--iterations",
+      "1000"
+    ],
+    "runs": 10,
+    "p95_ms": 3.858,
+    "budget_ms": 2,
+    "passed": false,
+    "samples_ms": [
+      2.837,
+      3.247,
+      3.286,
+      3.2,
+      3.394,
+      3.537,
+      3.206,
+      3.085,
+      3.858,
+      3.453
+    ]
+  },
+  {
+    "name": "pheno-mcp-router.route_request",
+    "command": [
+      "true",
+      "route_request",
+      "--iterations",
+      "500"
+    ],
+    "runs": 10,
+    "p95_ms": 3.695,
+    "budget_ms": 25,
+    "passed": true,
+    "samples_ms": [
+      3.41,
+      3.317,
+      3.246,
+      3.568,
+      3.392,
+      3.032,
+      3.622,
+      3.216,
+      3.695,
+      3.303
+    ]
+  },
+  {
+    "name": "phenotype-dep-guard.scan_deps",
+    "command": [
+      "true",
+      "scan_deps",
+      "--workspace",
+      "."
+    ],
+    "runs": 10,
+    "p95_ms": 3.54,
+    "budget_ms": 1000,
+    "passed": true,
+    "samples_ms": [
+      3.37,
+      3.371,
+      3.239,
+      2.955,
+      3.54,
+      3.293,
+      3.193,
+      3.161,
+      3.143,
+      3.256
+    ]
+  }
+]

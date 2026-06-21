@@ -1,0 +1,14 @@
+# Perf gate report — 2026-06-21T20:53:25Z
+
+| benchmark | p95 (ms) | budget (ms) | runs | status |
+|-----------|---------:|------------:|-----:|--------|
+| pheno-config.parse_cargo | 5.257 | 50 | 10 | PASS |
+| pheno-config.load_env | 3.417 | 200 | 10 | PASS |
+| pheno-port-adapter.dispatch | 3.723 | 5 | 10 | PASS |
+| pheno-port-adapter.lookup | 3.294 | 1 | 10 | FAIL |
+| pheno-flags.evaluate | 3.858 | 2 | 10 | FAIL |
+| pheno-mcp-router.route_request | 3.695 | 25 | 10 | PASS |
+| phenotype-dep-guard.scan_deps | 3.54 | 1000 | 10 | PASS |
+
+Total: 7, Failed: 2
+

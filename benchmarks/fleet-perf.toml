@@ -1,0 +1,83 @@
+# benchmarks/fleet-perf.toml — v19 T4 (L19 Performance Benchmarking Infrastructure)
+# Authority: ADR-040 (test coverage gates per tier) + v19 71-pillar cycle 9 P0 plan §2 Track T4.
+# Declarative manifest of fleet-wide perf benchmarks. p95 latency budgets per method.
+# Consumed by scripts/perf_gate.py and .github/workflows/perf-gate.yml (nightly + on-PR).
+#
+# Schema per entry:
+#   p95_budget_ms  (int, required) — p95 latency ceiling for the method
+#   command        (string)        — binary to invoke; defaults to `true` (no-op stub)
+#   args           ([string])      — args passed to command; defaults to []
+#   runs           (int)           — sample count for p95; inherits [defaults.runs]
+#   description    (string)        — human-readable summary for the report
+#
+# To wire a real benchmark, replace the `command` value with the crate's bench binary,
+# e.g. `cargo run --release --bin pheno-config-bench -- parse_cargo`.
+
+[meta]
+version = "1.0"
+owner = "perf-platform-circle"
+refresh = "weekly-monday-0900-PDT"
+schema_doc = "https://docs.factory.ai/web/agent-readiness/overview (ADR-026 crosswalk)"
+
+[defaults]
+runs = 10
+warmup = 2
+unit = "ms"
+command = "true"
+
+# ---------- pheno-config ----------
+# Two hot paths: TOML/Cargo.toml parsing and 12-factor env cascade.
+
+[pheno-config.parse_cargo]
+p95_budget_ms = 50
+command = "true"
+args = ["parse_cargo", "--iterations", "100"]
+description = "TOML/Cargo.toml parse p95 (cfg + workspace discovery)"
+
+[pheno-config.load_env]
+p95_budget_ms = 200
+command = "true"
+args = ["load_env", "--iterations", "100"]
+description = "env-var + 12-factor cascade load p95"
+
+# ---------- pheno-port-adapter ----------
+# Hot paths: dispatch (call path) + lookup (registry query).
+
+[pheno-port-adapter.dispatch]
+p95_budget_ms = 5
+command = "true"
+args = ["dispatch", "--iterations", "1000"]
+description = "port dispatch p95 (call path through adapter chain)"
+
+[pheno-port-adapter.lookup]
+p95_budget_ms = 1
+command = "true"
+args = ["lookup", "--iterations", "10000"]
+description = "port registry lookup p95 (name → impl resolution)"
+
+# ---------- pheno-flags ----------
+# Single hot path: feature flag evaluation in the request critical path.
+
+[pheno-flags.evaluate]
+p95_budget_ms = 2
+command = "true"
+args = ["evaluate", "--iterations", "1000"]
+description = "feature flag evaluate p95 (boolean + percentage rules)"
+
+# ---------- pheno-mcp-router ----------
+# Hot path: route_request is the per-request cost (parse + plugin chain + dispatch).
+
+[pheno-mcp-router.route_request]
+p95_budget_ms = 25
+command = "true"
+args = ["route_request", "--iterations", "500"]
+description = "MCP route_request p95 (parse → plugin chain → adapter dispatch)"
+
+# ---------- phenotype-dep-guard ----------
+# One hot path: full workspace dep scan. Higher budget reflects wall-clock scope.
+
+[phenotype-dep-guard.scan_deps]
+p95_budget_ms = 1000
+command = "true"
+args = ["scan_deps", "--workspace", "."]
+description = "dependency scan p95 (Cargo.lock + manifest + advisory DB)"
