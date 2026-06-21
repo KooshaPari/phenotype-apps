@@ -58,10 +58,22 @@ impl PortAdapter for TcpAdapter {
 
     fn connect(&self, endpoint: &str) -> Result<Connection, AdapterError> {
         if endpoint.is_empty() {
+            // L62 (error rate) observability adoption (v14 cycle-4 T7).
+            // No-op when pheno_otel::init() has not been called.
+            pheno_otel::metrics::record_error(
+                "pheno_port_adapter.tcp.connect",
+                "empty_endpoint",
+            );
             return Err(AdapterError::ConnectFailed("empty endpoint".to_string()));
         }
-        let stream = TcpStream::connect(endpoint)
-            .map_err(|e| AdapterError::ConnectFailed(format!("{endpoint}: {e}")))?;
+        let stream = TcpStream::connect(endpoint).map_err(|e| {
+            // L62 (error rate) observability adoption (v14 cycle-4 T7).
+            pheno_otel::metrics::record_error(
+                "pheno_port_adapter.tcp.connect",
+                "connect_failed",
+            );
+            AdapterError::ConnectFailed(format!("{endpoint}: {e}"))
+        })?;
         let mut state = self.inner.lock().expect("tcp adapter mutex poisoned");
         // Replace any previously held stream; we don't surface the old id
         // because the trait has no way to return two values.
