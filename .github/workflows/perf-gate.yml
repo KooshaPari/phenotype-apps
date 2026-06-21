@@ -1,17 +1,24 @@
 # Fleet perf gate — v19 T4 (L19 Performance Benchmarking Infrastructure deepening)
-# Authority: ADR-040 (test coverage gates per tier) + v19 71-pillar cycle 9 P0 plan §2 Track T4
-# Runs benchmarks/fleet-perf.toml via scripts/perf_gate.py; fails the build if any p95 drifts above budget.
-# Schedule: nightly 06:00 UTC + PR (perf/**, pheno-*/**, phenotype-/**) + manual dispatch.
+# Authority: ADR-040 (test coverage gates per tier) + v19 71-pillar cycle 9 plan §2 Track T4.
+# Builds scripts/perf-gate (Rust) and runs the `perf_gate` binary against
+# benchmarks/fleet-perf.toml. Fails the build on hard regressions; uploads
+# the JSON verdict as a workflow artifact for downstream consumers.
 name: Fleet perf gate
+
 on:
+  push:
+    branches: [main]
+    paths:
+      - "benchmarks/fleet-perf.toml"
+      - ".github/workflows/perf-gate.yml"
+      - "scripts/perf-gate/**"
   schedule:
     - cron: "0 6 * * *"
-  pull_request:
-    paths:
-      - "benchmarks/**"
-      - "pheno-*/**"
-      - "phenotype-*/**"
   workflow_dispatch:
+
+concurrency:
+  group: perf-gate-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -25,24 +32,44 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Setup Python
-        uses: actions/setup-python@v5
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
         with:
-          python-version: "3.12"
-          cache: pip
-      - name: Install tomli (Python <3.11 fallback)
-        run: pip install tomli
-      - name: Run perf gate
-        id: gate
+          toolchain: stable
+
+      - name: Cache cargo build artifacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: scripts/perf-gate -> target
+
+      - name: Build perf-gate (release)
+        working-directory: scripts/perf-gate
+        run: cargo build --release
+
+      - name: Run perf gate (human-readable text)
+        working-directory: scripts/perf-gate
         run: |
-          python scripts/perf_gate.py \
-            --manifest benchmarks/fleet-perf.toml \
-            2>&1 | tee findings/perf-$(date -u +%Y-%m-%d).txt
+          mkdir -p findings
+          ./target/release/perf_gate \
+            --budgets ../../benchmarks/fleet-perf.toml \
+            2>&1 | tee ../../findings/perf-gate-result.txt
         continue-on-error: false
-      - name: Upload perf results artifact
+
+      - name: Run perf gate (JSON artifact)
+        working-directory: scripts/perf-gate
+        if: always()
+        run: |
+          mkdir -p findings
+          ./target/release/perf_gate \
+            --budgets ../../benchmarks/fleet-perf.toml \
+            --format json \
+            > ../../findings/perf-gate-result.json || true
+
+      - name: Upload perf-gate verdict artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: perf-results-${{ github.run_id }}
-          path: findings/perf-*.txt
+          name: perf-gate-result-${{ github.run_id }}
+          path: findings/perf-gate-result.json
           if-no-files-found: warn
