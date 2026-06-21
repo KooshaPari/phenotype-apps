@@ -56,7 +56,7 @@ pub enum DocKind {
 
 /// Body is a tagged enum containing the variant-specific content.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "kind")]
+#[serde(tag = "kind", content = "content")]
 pub enum Body {
     #[serde(rename = "Rule")]
     Rule(Box<RuleIr>),
