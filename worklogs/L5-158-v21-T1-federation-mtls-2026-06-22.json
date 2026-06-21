@@ -1,0 +1,100 @@
+{
+  "task_id": "L5-158",
+  "task_subid": "v21-T1-federation-mtls",
+  "date": "2026-06-22",
+  "repo": "KooshaPari/phenotype-apps",
+  "category": "L5-Governance",
+  "title": "ADR-046 federation mTLS architecture (v21 cycle-11 P0 carry-over)",
+  "status": "complete",
+  "author": "KooshaPari",
+  "device": "macbook",
+  "device_rationale": "Pure doc authoring (Markdown + gh api); zero cargo / dind / sim / heavy cargo test --workspace",
+  "device_gate_self_check": "Rule 1 PASS / Rule 2 N/A / Rule 3 PASS",
+  "schema_version": "v2.1",
+  "adr_anchors": [
+    "docs/adr/2026-06-22/ADR-046-federation-mtls.md",
+    "docs/adr/2026-06-22/INDEX.md",
+    "docs/adr/2026-06-22/ADR-081-v20-cycle-10-p1-reduction.md",
+    "docs/adr/2026-06-21/ADR-079-oidc-federation-reference.md",
+    "docs/adr/2026-06-18/ADR-046-federation-mtls-oidc.md",
+    "docs/adr/2026-06-18/ADR-051-bifrost-as-library.md",
+    "docs/adr/2026-06-18/ADR-049-app-substrate-drift-detector.md"
+  ],
+  "deliverables": {
+    "adr_file": "docs/adr/2026-06-22/ADR-046-federation-mtls.md",
+    "adr_line_count": 327,
+    "index_file": "docs/adr/2026-06-22/INDEX.md",
+    "index_line_count": 84,
+    "pr_url": "https://github.com/KooshaPari/phenotype-apps/pull/122",
+    "branch": "docs/adr-046-federation-mtls-2026-06-22",
+    "initial_commit_sha": "1289d020e6e9dfba952f34f60473042eca89b403",
+    "rebased_adr_sha": "ca4db2cac5",
+    "rebased_worklog_sha": "2698e0719e2aa6fd8cc656b9c85675079ab06fcd",
+    "current_remote_sha": "2698e0719e2aa6fd8cc656b9c85675079ab06fcd",
+    "pr_diff_after_rebase": "501 additions, 0 deletions (3 files: ADR-046 + INDEX.md + worklog JSON)"
+  },
+  "sections_authored": {
+    "context": "Identifies 3 failure modes (no uniform identity, ad-hoc cert rotation, undefined root CA federation) and explains why ADR-046b / ADR-046c are needed as companions.",
+    "decision": "6 sub-decisions: mTLS mandatory, 90-day leaf max with 60-day re-issue trigger, federation root CA with explicit allow-list, SHA-256 SPKI key pinning with 180-day rotation, OCSP+CRL revocation with 2s fail-closed, failure-mode matrix.",
+    "consequences": "Positive (uniform identity, bounded blast radius, audit trail, standards alignment) + Negative (operational overhead, OCSP dependency, pin mgmt burden) + Neutral (intra-org unchanged, polyglot lib choice).",
+    "alternatives": "5 rejected: WebPKI-only mTLS, JWT bearer tokens only, Wireguard/IPsec tunnels, cloud-provider-native federation, status quo (static API keys).",
+    "companions": "ADR-046b (OIDC federation reference impl) and ADR-046c (peer-to-peer federation topology) listed as forthcoming companions."
+  },
+  "standards_adopted": [
+    "OWASP ASVS v4.0.3 §6.4 (Cryptographic Storage & Transport)",
+    "NIST SP 800-57 Part 1 Rev. 5 §5.6 (Cryptographic Periods)",
+    "NIST SP 800-52 Rev. 2 §3.5 (Certificate Validation)",
+    "CNCF Cloud Native Security Whitepaper §4.3 / §4.4",
+    "SPIFFE Trust Domain Federation spec",
+    "Mozilla TLS Config v5 (Intermediate profile)"
+  ],
+  "pillars_touched": [
+    {"pillar": "L54", "name": "Federation mTLS + OIDC", "current_score": 2.0, "target_score": 3.0, "rationale": "ADR-046 sets mTLS substrate; ADR-046b (OIDC) and ADR-046c (p2p topology) close the remaining L54 gap at v21 cycle-11."},
+    {"pillar": "L48", "name": "Dependency auditing — transitive trust", "current_score": null, "target_score": null, "rationale": "Federation root CA allow-list + drift-detector per ADR-049 addresses transitive trust auditing."}
+  ],
+  "push_strategy": {
+    "method": "ADR-027 Tier 2 (governance-doc bypass)",
+    "flags": ["--recurse-submodules=no", "--no-verify"],
+    "lfs_config": "lfs.allowincompletepush=true (set per AGENTS.md REBASE + PUSH RESOLVED note 2026-06-18 22:58 PDT)",
+    "force_with_lease": "USED on second push (after rebase onto current origin/main)",
+    "post_rebase_push_outcome": "PR #122 now shows clean 501 additions / 0 deletions (was 33,512 before rebase due to staging commits)"
+  },
+  "rebase_note": {
+    "issue": "Initial branch base (aa1a38c69b, stage 7 staging commit) was 1 commit behind current origin/main. Origin/main advanced by 5 commits (v20 final closure, v19 closure, feat(adr-lint), detect-secrets, deny) between worktree creation and first push. Initial push succeeded but PR diff was polluted by 23 'staging' commits unique to this branch (v19/v20 closure artifacts) + 20 commits unique to origin/main, totaling 33,512 additions vs the 501 lines actually authored.",
+    "resolution": "Used `git rebase --onto origin/main aa1a38c69b HEAD` to replay ONLY my 2 authored commits onto current origin/main, dropping the 23 staging commits (orphaned v19/v20 closure content that should have been merged to main but never was). Branch now points to 2698e0719e (rebased tip) on top of d51389f6b3 (current origin/main tip).",
+    "safety": "No 'do_not_touch' files affected. argis-extensions/, Civis/, FLEET_DAG.db untouched. Other branches (parallel agents' v20 work) untouched. The staging commits dropped from this branch are orphaned content (not on origin/main, not on any other branch except partial overlap with docs/v20-l1-adr-index-2026-06-22 at commit 304bb7f063) — they remain in git reflog for recovery if needed.",
+    "force_push": "git push origin docs/adr-046-federation-mtls-2026-06-22 --force-with-lease --recurse-submodules=no --no-verify (succeeded; remote now at 2698e0719e)"
+  },
+  "remote_config_cleanup": {
+    "issue": "Two malformed remotes in local .git/config: 'argisgit@github.com:KooshaPari/argis-extensions.git' and 'origingit@github.com:KooshaPari/phenotype-apps.git' (names with @ instead of :, URLs concatenated).",
+    "action": "Removed both malformed remotes via `git remote remove`; canonical `argis` and `origin` (and inherited `phenotype-apps`) remotes retained.",
+    "side_effect": "None — invalid remotes were unreachable; canonical remotes unaffected."
+  },
+  "files_written": [
+    "docs/adr/2026-06-22/ADR-046-federation-mtls.md",
+    "docs/adr/2026-06-22/INDEX.md",
+    "worklogs/L5-158-v21-T1-federation-mtls-2026-06-22.json"
+  ],
+  "test_results": {
+    "adr_structure": "PASS: 4 mandatory sections (Context / Decision / Consequences / Alternatives) plus Companion ADRs and Cross-references appendices",
+    "adr_line_count": "PASS: 327 lines (target ~200; depth-driven growth accepted)",
+    "index_includes_adr_046": "PASS: INDEX.md row 60-78 includes ADR-046 alongside ADR-081",
+    "cross_refs": "PASS: 12 cross-references (AGENTS.md, ADR-012/036B, ADR-040, ADR-042, ADR-049, ADR-051, ADR-079, ADR-081, 71-pillar schema, NIST SP 800-57, OWASP ASVS, NIST SP 800-52)",
+    "git_push": "PASS: origin/docs/adr-046-federation-mtls-2026-06-22 == 1289d020e6",
+    "gh_pr_create": "PASS: PR #122 OPEN at https://github.com/KooshaPari/phenotype-apps/pull/122",
+    "worklog_self_check": "PASS: v2.1 schema fields present (device, device_rationale, device_gate_self_check, schema_version)"
+  },
+  "open_follow_ups": [
+    {"id": "L5-158-FU1", "priority": "P0", "description": "Author ADR-046b (OIDC federation reference implementation; companion to ADR-046; references ADR-079 pheno-context/src/oidc.rs shape)", "owner": "next subagent dispatch"},
+    {"id": "L5-158-FU2", "priority": "P0", "description": "Author ADR-046c (peer-to-peer federation topology; hub-and-spoke vs mesh failover semantics)", "owner": "next subagent dispatch"},
+    {"id": "L5-158-FU3", "priority": "P1", "description": "Add ADR-046 row to docs/adr/INDEX.md (top-level pillar-grouped index); depends on parallel agent's INDEX.md being merged first", "blocker": "v20 T1 INDEX.md merge"},
+    {"id": "L5-158-FU4", "priority": "P2", "description": "Update AGENTS.md § Active ADRs to note that v21 cycle-11 P0 carry-over ADR-046 is now authored (move from 'planned' to 'accepted')", "depends_on": "PR #122 merge"}
+  ],
+  "do_not_touch": [
+    "argis-extensions/ (parallel agents' work)",
+    "Civis/ (out of scope per task constraints)",
+    "FLEET_DAG.db (out of scope)",
+    "Any branch other than docs/adr-046-federation-mtls-2026-06-22 (no PRs merged, no other commits)"
+  ],
+  "summary": "ADR-046 federation mTLS architecture authored as v21 cycle-11 P0 carry-over from v20 cycle-10 P1 net-new federation/interop track. 327-line pure-doc ADR covers mTLS mandatory for cross-org calls, 90-day max leaf cert lifetime, federation root CA with explicit allow-list, SHA-256 SPKI key pinning, OCSP+CRL revocation, 6-row failure-mode matrix, 6 industry standards (OWASP ASVS, NIST SP 800-57, NIST SP 800-52, CNCF, SPIFFE, Mozilla), 5 rejected alternatives. Companion ADRs (ADR-046b OIDC reference impl + ADR-046c p2p topology) cross-referenced as forthcoming. PR #122 OPEN at https://github.com/KooshaPari/phenotype-apps/pull/122. Branch docs/adr-046-federation-mtls-2026-06-22 pushed to origin (commit 1289d020e6). Worktree cleanup pending."
+}
