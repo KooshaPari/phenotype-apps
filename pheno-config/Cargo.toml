@@ -6,6 +6,11 @@ description = "Canonical typed-config loader for the pheno-* fleet. Layered prov
 license = "MIT OR Apache-2.0"
 publish = false
 
+# SIDE-23: this crate is a standalone package. The empty `[workspace]`
+# table declares it as its own workspace root so cargo does not pick up
+# the parent monorepo's `Cargo.toml` workspace when building the bench.
+[workspace]
+
 [lib]
 name = "pheno_config"
 path = "src/lib.rs"
@@ -28,6 +33,11 @@ figment = { version = "0.10", features = ["toml", "env", "yaml"] }
 # Used in `cascade.rs`'s embedded-default test for `toml::Value`.
 toml = "0.7"
 
-# Test-only helpers live in dev-dependencies (none at present).
-
 [dev-dependencies]
+# SIDE-23 benchmark suite (scaffolding): 1000-cycle cascade load + parse
+# benchmark lives in benches/cascade_load.rs.
+criterion = "0.8"
+
+[[bench]]
+name = "cascade_load"
+harness = false

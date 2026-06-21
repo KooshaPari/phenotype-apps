@@ -1,0 +1,93 @@
+{
+  "schema_version": "2.1",
+  "task_id": "v21-cycle-11-71-pillar-p1-orchestrator",
+  "date": "2026-06-22",
+  "device": "macbook",
+  "actor": "kooshapari",
+  "role": "orchestrator",
+  "cycle": 11,
+  "scope": "P1 reduction (extends v20 cycle 10 P1 reduction)",
+  "wave": "v21",
+  "branch": "feat/v21-71-pillar-cycle-11-p1-2026-06-22",
+  "tracks": [
+    {
+      "id": "T1",
+      "pillar": "L48",
+      "title": "SBOM diff gate",
+      "agent": "orch-v21-T1-L48-sbom-diff",
+      "repo": "pheno-port-adapter",
+      "score_before": 2,
+      "score_target": 3,
+      "eta_weeks": 1,
+      "status": "dispatched"
+    },
+    {
+      "id": "T2",
+      "pillar": "L51",
+      "title": "SOC2 evidence automation",
+      "agent": "orch-v21-T2-L51-soc2-evidence",
+      "repo": "pheno-evidence-collector (new)",
+      "score_before": 2,
+      "score_target": 3,
+      "eta_weeks": 1,
+      "status": "dispatched"
+    },
+    {
+      "id": "T3",
+      "pillar": "L33",
+      "title": "SIGHUP hot-reload",
+      "agent": "orch-v21-T3-L33-sighup-reload",
+      "repo": "pheno-config",
+      "score_before": 2,
+      "score_target": 3,
+      "eta_weeks": 1,
+      "status": "dispatched"
+    },
+    {
+      "id": "T4",
+      "pillar": "L37",
+      "title": "devcontainer cross-repo",
+      "agent": "orch-v21-T4-L37-devcontainer",
+      "repo": "pheno-events, pheno-predict, pheno-secret-scan",
+      "score_before": 2,
+      "score_target": 3,
+      "eta_days": 2,
+      "status": "dispatched"
+    },
+    {
+      "id": "T5",
+      "pillar": "L34",
+      "title": "release.yml coverage",
+      "agent": "orch-v21-T5-L34-release-yml",
+      "repo": "5 fleet-critical crates",
+      "score_before": 2,
+      "score_target": 3,
+      "eta_weeks": 1,
+      "status": "dispatched"
+    }
+  ],
+  "inherits_from": "v20 cycle 10 P1 deepening",
+  "blocked_by": [],
+  "blocks": ["v22 cycle 12 P1 deepening"],
+  "fleet_state_at_start": {
+    "p0_pillars": "47/47 (100% — saturated, terminal)",
+    "p1_pillars_avg": 2.4,
+    "p1_pillars_target": 3.0,
+    "fleet_mean": 2.94,
+    "domains_saturated": ["AX", "Q/C", "DX", "UX", "OBS", "DOC", "GOV"],
+    "domains_weak": ["SEC (2.70)", "PERF (2.85)"]
+  },
+  "device_compliance": {
+    "device": "macbook",
+    "scope": "macbook-safe governance slice (planning, ADRs, worklogs, dispatch)",
+    "all_dispatch_via_subagents": true,
+    "heavy_work_subagents": ["orch-v21-T1 through T5"]
+  },
+  "notes": [
+    "v21 = v20 continuation. v20 closed cycle 10 with 5 findings + 3 implementation commits + 5 active subagents.",
+    "All 5 v21 tracks dispatched in parallel — max width 5 (load avg still 200+ from v20).",
+    "P0 already at 100% (47/47) per cycle 7 closure. v21 deepens P1 pillars toward 3/3.",
+    "Fork-guardian daemon protects forge/ghostty/claude from any fork-bomb false positive.",
+    "Worklog v2.1 schema with device: field per ADR-025."
+  ]
+}
