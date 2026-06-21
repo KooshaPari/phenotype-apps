@@ -1,0 +1,10 @@
+name: chaos
+on: [push, pull_request]
+
+jobs:
+  chaos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test --release --tests -- --test-threads=1 chaos_
