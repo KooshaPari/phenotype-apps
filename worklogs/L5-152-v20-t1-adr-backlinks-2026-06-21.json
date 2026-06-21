@@ -1,0 +1,58 @@
+{
+  "schema_version": "v2.1",
+  "task_id": "L5-152",
+  "task_subid": "v20-t1-adr-backlinks-fix",
+  "date": "2026-06-21",
+  "device": "macbook",
+  "device_rationale": "Pure markdown / shell scripts. No cargo/dind/sim. Restored script via git show, then re-ran.",
+  "status": "complete",
+  "title": "v20 T1 L1 ADR index — fix 7 broken cross-references",
+  "adr_anchors": [
+    "ADR-024 (71-pillar framework)",
+    "ADR-017 (settly-archive v6 closure)",
+    "ADR-018 (PRCP pattern v6 closure)",
+    "ADR-036B (pheno-tracing substrate canonical)",
+    "ADR-041B (substrate-audit-cadence)",
+    "ADR-042B (substrate-quality-bar)"
+  ],
+  "files_written": [
+    "docs/adr/2026-06-15/ADR-017-settly-archive-v6.md",
+    "docs/adr/2026-06-15/ADR-018-prcp-pattern-v6.md",
+    "docs/adr/2026-06-18/ADR-036B-pheno-tracing-substrate-canonical.md",
+    "scripts/adr_backlink_check.py (restored from commit 3b647bcb2e)"
+  ],
+  "files_renamed": [
+    "docs/adr/2026-06-18/ADR-041-substrate-audit-cadence.md → ADR-041B-substrate-audit-cadence.md",
+    "docs/adr/2026-06-18/ADR-042-substrate-quality-bar.md → ADR-042B-substrate-quality-bar.md"
+  ],
+  "follow_ups_closed": [
+    "v20-plan-T1-L1 (broken ADR backlinks — 7 unresolved cross-refs → 0)"
+  ],
+  "open_follow_ups": [
+    "v20-T2 (L44 flamegraph — heavy-runner, tracing-baseline.svg pending)",
+    "v20-T3 (L51 chaos broker — heavy-runner, Docker dep)",
+    "v20-T4 (L11 chaos props — heavy-runner, network sim)",
+    "v20-T5 (L23 proptest × 4 missing crates — pheno-config/pheno-errors/pheno-otel/pheno-tracing)",
+    "v20 plan §Wave E (closure: cycle-10 probe, v21 plan, AGENTS.md refresh)"
+  ],
+  "test_results": {
+    "adr_backlink_check": "PASS (0 broken refs, 50 ADR files)",
+    "adr_index_gen": "PASS (regenerated INDEX.md)",
+    "script_compile": "PASS (py_compile)",
+    "json_validity": "PASS (this file)"
+  },
+  "device_gate_self_check": {
+    "rule_1_device_fit": "PASS — markdown + 1 stdlib script (~165 LoC). No cargo/dind/sim.",
+    "rule_2_app_triage": "N/A — no app repo touched.",
+    "rule_3_substrate": "PASS — all writes to monorepo-native docs/adr/ + scripts/.",
+    "rule_31_quality_bar": "PASS — spec (ADR format Nygard), docs (REFs sections), tests (backlink check passes), observability (otlp via pheno-tracing — n/a here)."
+  },
+  "v20_p1_status": {
+    "T1_L1_ADR_index": "COMPLETE — gate passes, 0 broken refs",
+    "T2_L44_flamegraph": "PENDING — heavy-runner (tracing-baseline.svg + benchmarks)",
+    "T3_L51_chaos_broker": "PENDING — heavy-runner (Docker + flight-sql)",
+    "T4_L11_chaos_props": "PENDING — heavy-runner (network sim)",
+    "T5_L23_proptest": "PARTIAL — 4 of 8 crates done; pheno-config/pheno-errors/pheno-otel/pheno-tracing missing"
+  },
+  "commit": "16fdae3934"
+}
