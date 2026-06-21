@@ -1,0 +1,30 @@
+[package]
+name = "pheno-context"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+rust-version = "1.82"
+description = "Canonical request context for the pheno-* fleet. Builder, header extraction, and structured metadata."
+keywords = ["context", "request", "headers", "phenotype", "tracing"]
+categories = ["web-programming", "data-structures"]
+publish = false
+
+[lib]
+name = "pheno_context"
+path = "src/lib.rs"
+
+[dependencies]
+thiserror = { workspace = true }
+http = "1.1"
+# v20-T5 (L23): proptest is in [dependencies] (not just [dev-dependencies])
+# so the manual `Arbitrary` impls for `Context` and `ContextError` in
+# `src/lib.rs` compile. Tests in `tests/proptest_smoke.rs` exercise these
+# impls via `any::<Context>()`.
+proptest = "1.4"
+
+[dev-dependencies]
+http = "1.1"
+# v20-T5 (L23): integration tests in `tests/proptest_smoke.rs` use
+# `proptest::prelude::*` directly — proptest is in [dependencies] for
+# the src/ impls and re-listed here for clarity at the test scope.
+proptest = "1.4"

@@ -1,0 +1,118 @@
+# Fleet substrate scanners — pheno-predict (L72/ADR-047), pheno-drift-detector (L74/ADR-049),
+# pheno-framework-lint (L73/ADR-048). Cron deployment per ADR-044. Owner: worklog-schema circle.
+# Cadence: Mon 09:00 PDT (predict + framework-lint); Wed 09:00 PDT (drift detector).
+name: Fleet substrate scanners (ADR-044)
+
+on:
+  schedule:
+    - cron: "0 16 * * 1"  # Mon 16:00 UTC = 09:00 PDT — pheno-predict + pheno-framework-lint
+    - cron: "0 16 * * 3"  # Wed 16:00 UTC = 09:00 PDT — pheno-drift-detector
+  workflow_dispatch:
+    inputs:
+      tool:
+        description: "Which tool to run"
+        type: choice
+        required: true
+        default: all
+        options:
+          - all
+          - pheno-predict
+          - pheno-drift-detector
+          - pheno-framework-lint
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pheno-predict:
+    if: ${{ github.event.inputs.tool == 'all' || github.event.inputs.tool == 'pheno-predict' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b
+        with: { python-version: "3.12" }
+      - name: Run pheno-predict scan (ADR-047 / L72)
+        id: predict
+        continue-on-error: true
+        run: |
+          python3 pheno-predict/pheno_predict.py scan \
+            --target . \
+            --baseline pheno-config pheno-port-adapter pheno-context pheno-tracing pheno-flags \
+            --threshold 0.5 --format md \
+            --out findings/predict-candidates-$(date +%Y%m%d).md
+      - name: Upload pheno-predict artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pheno-predict-${{ github.run_id }}
+          path: findings/predict-candidates-*.md
+          retention-days: 30
+      - name: File issue on hit
+        if: steps.predict.outcome == 'failure'
+        uses: peter-evans/create-issue-from-file@ce4f0c10bc95a4d514e3e3b15e3948263ee2ace3
+        with:
+          title: "pheno-predict candidates — run ${{ github.run_id }}"
+          content-filepath: findings/predict-candidates-*.md
+          labels: fleet,substrate,predict,adr-047
+
+  pheno-drift-detector:
+    if: ${{ github.event.inputs.tool == 'all' || github.event.inputs.tool == 'pheno-drift-detector' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b
+        with: { python-version: "3.12" }
+      - name: Run pheno-drift-detector scan (ADR-049 / L74)
+        id: drift
+        continue-on-error: true
+        run: |
+          python3 pheno-drift-detector/pheno_drift_detector.py scan \
+            --root . --format md \
+            --out findings/drift-hits-$(date +%Y%m%d).md
+      - name: Upload drift artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pheno-drift-detector-${{ github.run_id }}
+          path: findings/drift-hits-*.md
+          retention-days: 30
+      - name: File issue on hit
+        if: steps.drift.outcome == 'failure'
+        uses: peter-evans/create-issue-from-file@ce4f0c10bc95a4d514e3e3b15e3948263ee2ace3
+        with:
+          title: "pheno-drift-detector hits — run ${{ github.run_id }}"
+          content-filepath: findings/drift-hits-*.md
+          labels: fleet,substrate,drift,adr-049
+
+  pheno-framework-lint:
+    if: ${{ github.event.inputs.tool == 'all' || github.event.inputs.tool == 'pheno-framework-lint' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b
+        with: { python-version: "3.12" }
+      - name: Run pheno-framework-lint check (ADR-048 / L73)
+        id: lint
+        continue-on-error: true
+        run: |
+          python3 pheno-framework-lint/pheno_framework_lint.py check . \
+            --format md \
+            --out findings/framework-lint-$(date +%Y%m%d).md
+      - name: Upload framework-lint artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pheno-framework-lint-${{ github.run_id }}
+          path: findings/framework-lint-*.md
+          retention-days: 30
+      - name: File issue on tier-mismatch
+        if: steps.lint.outcome == 'failure'
+        uses: peter-evans/create-issue-from-file@ce4f0c10bc95a4d514e3e3b15e3948263ee2ace3
+        with:
+          title: "pheno-framework-lint tier-mismatch — run ${{ github.run_id }}"
+          content-filepath: findings/framework-lint-*.md
+          labels: fleet,substrate,framework-lint,adr-048

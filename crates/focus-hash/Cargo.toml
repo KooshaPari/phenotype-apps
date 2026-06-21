@@ -1,0 +1,13 @@
+[package]
+name = "focus-hash"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+phenotype-crypto = { path = "../phenotype-crypto" }
+focus-errors = { path = "../focus-errors" }
+focus-result = { path = "../focus-result" }
+hex = "0.4"
+
+[dev-dependencies]
+focus-errors = { path = "../focus-errors" }

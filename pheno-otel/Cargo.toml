@@ -42,6 +42,11 @@ proptest = { version = "1.4", default-features = false, features = ["std"] }
 # in src/ compile; this one is what makes the loom tests compile
 # when the `loom` cfg is enabled.
 proptest = "1.4"
+# v20-T3 (L36) — chaos-injection substrate; the
+# `tests/chaos_async_panic.rs` adoption test injects an
+# `AsyncPanic` fault and asserts the runtime surfaces it
+# through `chaos_injection::inject`.
+chaos-injection = { path = "../chaos-injection" }
 # Concurrency model checker (v14 cycle-4 T5: L25 pillar).
 # Permutation-tests the OTLP exporter's batcher flush ordering
 # (`tests/loom_batcher.rs`) and graceful shutdown signal ordering

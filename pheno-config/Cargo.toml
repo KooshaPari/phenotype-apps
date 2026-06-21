@@ -32,11 +32,28 @@ figment = { version = "0.10", features = ["toml", "env", "yaml"] }
 
 # Used in `cascade.rs`'s embedded-default test for `toml::Value`.
 toml = "0.7"
+# v20-T5 (L23): proptest is in [dependencies] (not just [dev-dependencies])
+# so the manual `Arbitrary` impl for `ApiKey` in `src/secrets.rs` compiles.
+# The impl lives outside the `#[cfg(test)]` mod (after the v20-T5 fix) so
+# integration tests in `tests/proptest_smoke.rs` can use `any::<ApiKey>()`.
+# Per the proptest book: a crate that provides `Arbitrary` impls in src/
+# must have proptest as a regular dep.
+proptest = { version = "1.4", default-features = false, features = ["std"] }
 
 [dev-dependencies]
+# v20-T5 (L23): proptest is also in [dev-dependencies] for integration
+# tests in `tests/`. (The proptest entry in [dependencies] is what makes
+# the src/ impls compile; this one is redundant at runtime but matches
+# the task brief's "proptest in dev-dependencies" pattern.)
+proptest = "1.4"
 # SIDE-23 benchmark suite (scaffolding): 1000-cycle cascade load + parse
 # benchmark lives in benches/cascade_load.rs.
 criterion = "0.8"
+# v20-T3 (L36) — chaos-injection substrate; the
+# `tests/chaos_disk_full.rs` adoption test injects a
+# `DiskFull` fault and asserts the runtime surfaces it
+# through `chaos_injection::inject`.
+chaos-injection = { path = "../chaos-injection" }
 
 [[bench]]
 name = "cascade_load"

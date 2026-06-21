@@ -101,6 +101,47 @@ pub mod adapters;
 // (not nested) so adding a new port doesn't break import paths.
 pub use ports::{CacheError, HexCachePort, HexTimePort};
 
+// ---------------------------------------------------------------------------
+// proptest::Arbitrary impls (v20-T5 / L23)
+// ---------------------------------------------------------------------------
+
+impl proptest::arbitrary::Arbitrary for AdapterError {
+    type Parameters = ();
+    type Strategy = proptest::strategy::BoxedStrategy<Self>;
+
+    fn arbitrary_with((): Self::Parameters) -> Self::Strategy {
+        use proptest::strategy::Strategy;
+        proptest::prop_oneof![
+            proptest::string::string_regex("[A-Za-z0-9 _\\-\\.]{1,80}")
+                .expect("adapter_error regex")
+                .prop_map(Self::ConnectFailed)
+                .boxed(),
+            proptest::string::string_regex("[A-Za-z0-9 _\\-\\.]{1,80}")
+                .expect("adapter_error regex")
+                .prop_map(Self::DisconnectFailed)
+                .boxed(),
+            proptest::string::string_regex("[A-Za-z0-9 _\\-\\.]{1,80}")
+                .expect("adapter_error regex")
+                .prop_map(Self::HealthCheckFailed)
+                .boxed(),
+            proptest::strategy::Just(Self::Timeout).boxed(),
+        ]
+    }
+}
+
+impl proptest::arbitrary::Arbitrary for Connection {
+    type Parameters = ();
+    type Strategy = proptest::strategy::BoxedStrategy<Self>;
+
+    fn arbitrary_with((): Self::Parameters) -> Self::Strategy {
+        use proptest::strategy::Strategy;
+        proptest::string::string_regex("[a-z]{1,3}://[A-Za-z0-9_\\-\\.]{1,32}(:[0-9]{1,5})?")
+            .expect("connection id regex")
+            .prop_map(|id| Connection { id })
+            .boxed()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

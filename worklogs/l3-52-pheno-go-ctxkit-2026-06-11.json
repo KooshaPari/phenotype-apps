@@ -1,0 +1,116 @@
+{
+  "task_id": "L3-52",
+  "date": "2026-06-11",
+  "title": "Author canonical pheno-go-ctxkit Go module (request_id + slog middleware)",
+  "status": "completed",
+  "branch": "chore/l3-52-pheno-go-ctxkit-2026-06-11",
+  "commit": "e8d1b4e8f3",
+  "author": "forge",
+  "refs": {
+    "dag": "FLEET_100TASK_DAG_V3.md#L3-#52",
+    "downstream": [
+      "L4 pheno-go HTTP services",
+      "L5 pheno-go integration crates"
+    ],
+    "sibling_tasks": [
+      "L3-#46 (pheno-errors Rust)",
+      "L3-#47 (pheno-tracing Rust)",
+      "L3-#48 (pheno-config Rust)",
+      "L3-#49 (pheno-otel Rust)",
+      "L3-#50 (pheno-cli-base)",
+      "L3-#51 (pheno-fastapi-base)",
+      "L3-#53 (pheno-zod-pydantic)",
+      "L3-#54 (pheno-tower-stack)",
+      "L3-#55 (pheno-ssot-template)",
+      "L3-#56 (pheno-flags)",
+      "L3-#57 (pheno-plugin-registry)"
+    ]
+  },
+  "summary": "Authored the canonical pheno-go-ctxkit Go module: a stdlib-only context package providing per-request UUID v4 identifiers, a slog.Logger accessor with slog.Default() fallback, and an http.Handler middleware that wires both together and emits a single structured 'request.complete' log line per request. The package depends only on the Go standard library; the UUID v4 is generated from crypto/rand + encoding/hex with no third-party dependency.",
+  "scope": {
+    "created": [
+      "pheno-go-ctxkit/go.mod",
+      "pheno-go-ctxkit/ctxkit/ctxkit.go",
+      "pheno-go-ctxkit/ctxkit/ctxkit_test.go"
+    ],
+    "modified": []
+  },
+  "public_api": {
+    "WithRequestID": "func WithRequestID(ctx context.Context, id string) context.Context — stores id in ctx under an unexported key. Empty id is a no-op (ctx returned unchanged) so callers can chain calls without checking.",
+    "RequestID": "func RequestID(ctx context.Context) string — extracts the id stored by WithRequestID or Middleware. Returns '' on a nil context or when the key is missing.",
+    "NewRequestID": "func NewRequestID() string — returns a freshly-generated RFC 4122 v4 UUID rendered as 8-4-4-4-12 hex (e.g. f47ac10b-58cc-4372-a567-0e02b2c3d479). Reads 16 bytes from crypto/rand, sets the version (4) and variant (RFC 4122) nibbles per RFC 4122 §4.4 / §4.1.1, formats with encoding/hex. Time-derived fallback if crypto/rand.Read ever fails.",
+    "WithLogger": "func WithLogger(ctx context.Context, logger *slog.Logger) context.Context — stores *slog.Logger in ctx. Nil logger is a no-op (mirrors WithRequestID's empty-id contract).",
+    "Logger": "func Logger(ctx context.Context) *slog.Logger — extracts the *slog.Logger stored by WithLogger or Middleware. Falls back to slog.Default() on nil ctx, missing key, or wrong type so callers can log unconditionally without a nil check.",
+    "Background": "func Background() context.Context — shorthand for context.Background() pre-populated with a fresh request_id. For code paths that need a request id outside of an HTTP request (CLI entry points, queue workers, tests).",
+    "Middleware": "func Middleware(next http.Handler) http.Handler — http middleware that (1) reads X-Request-ID header, falling back to any id already present on r.Context() and finally to a fresh NewRequestID(); (2) stores the id in r.Context() via WithRequestID; (3) builds a child slog.Logger with request_id attr and stashes it via WithLogger; (4) echoes the id on the response X-Request-ID header; (5) defers a single slog.LogAttrs at LevelInfo with the message 'request.complete' and the attributes method (string), path (string), status (int), duration_ms (int64). Never panics on malformed input. Does not log request bodies.",
+    "HeaderRequestID": "const HeaderRequestID = \"X-Request-ID\" — the canonical HTTP header used to propagate a request id across process boundaries. Exposed so tests and downstream code can use the same constant."
+  },
+  "dependencies": {
+    "stdlib": [
+      "context",
+      "crypto/rand",
+      "encoding/hex",
+      "fmt",
+      "log/slog",
+      "net/http",
+      "time"
+    ],
+    "third_party": []
+  },
+  "test_results": {
+    "command": "go test -race -count=1 ./...  (from pheno-go-ctxkit/)",
+    "top_level_tests": 6,
+    "subtests": 10,
+    "passed": 16,
+    "failed": 0,
+    "vet_clean": true
+  },
+  "test_coverage": [
+    "TestNewRequestIDIsUnique — 256 iterations: each id matches the uuidV4Pattern (8-4-4-4-12 hex with version=4 and variant in {8,9,a,b}); no duplicates",
+    "TestWithRequestIDRoundTrip/stores_and_retrieves — WithRequestID(ctx, 'abc-123') followed by RequestID(ctx) returns 'abc-123'",
+    "TestWithRequestIDRoundTrip/empty_id_is_a_noop — WithRequestID(ctx, '') on a ctx that already has an id leaves the id intact",
+    "TestWithRequestIDRoundTrip/missing_key_returns_empty_string — RequestID on context.Background() returns ''",
+    "TestWithRequestIDRoundTrip/nil_ctx_returns_empty_string — RequestID(nil) returns '' (the ctx == nil guard)",
+    "TestWithLoggerRoundTrip/stores_and_retrieves — WithLogger(ctx, custom) followed by Logger(ctx) returns the same *slog.Logger pointer",
+    "TestWithLoggerRoundTrip/nil_logger_is_a_noop — WithLogger(ctx, nil) on a ctx that already has a logger leaves the logger intact",
+    "TestWithLoggerRoundTrip/missing_logger_falls_back_to_slog_default — Logger on a bare context returns slog.Default()",
+    "TestWithLoggerRoundTrip/nil_ctx_falls_back_to_slog_default — Logger(nil) returns slog.Default()",
+    "TestBackgroundReturnsContextWithRequestID — Background().RequestID matches the uuidV4Pattern; ctx is fresh (no inherited cancellation)",
+    "TestMiddlewareInjectsRequestID/honours_inbound_X_Request_ID — handler sees the inbound X-Request-ID header value in r.Context(); response also carries the same header value",
+    "TestMiddlewareInjectsRequestID/generates_UUID_v4_when_header_missing — handler sees a freshly-generated UUID v4 in r.Context(); response carries the same id",
+    "TestMiddlewareEmitsRequestCompleteLog — parses the JSON log output; asserts exactly one record with msg='request.complete' carrying method=POST, path=/widgets, status=418, a duration_ms int; asserts the handler-emitted 'handler.tick' record also carries request_id='log-test-id' (proves the scoped logger is reachable from the downstream handler)"
+  ],
+  "verification": {
+    "go_test": "ok  github.com/kooshapari/pheno-go-ctxkit/ctxkit  (1.488s) — 6 top-level tests, 10 subtests, 0 failures",
+    "go_test_verbose": "All 6 top-level tests and 10 subtests PASS (TestNewRequestIDIsUnique, TestWithRequestIDRoundTrip[4 subtests], TestWithLoggerRoundTrip[4 subtests], TestBackgroundReturnsContextWithRequestID, TestMiddlewareInjectsRequestID[2 subtests], TestMiddlewareEmitsRequestCompleteLog)",
+    "go_vet": "exit 0, no output (clean)",
+    "go_version": "go1.26.2 darwin/arm64",
+    "test_command_exact": "go test -race -count=1 ./...  (run from pheno-go-ctxkit/)",
+    "vet_command_exact": "go vet ./...  (run from pheno-go-ctxkit/)"
+  },
+  "design_decisions": {
+    "package_layout": "pheno-go-ctxkit/ctxkit/ — Go convention puts the package in a subdirectory matching its import path (github.com/kooshapari/pheno-go-ctxkit/ctxkit). The go.mod is at pheno-go-ctxkit/ root per the L3-#52 spec; consumers add 'github.com/kooshapari/pheno-go-ctxkit/ctxkit' to their imports.",
+    "stdlib_only": "Task spec said 'UUID v4 via stdlib crypto/rand+encoding/hex, NO uuid dep'. crypto/rand is the OS CSPRNG (getrandom(2) on linux, SecRandomCopyBytes on darwin); 16 random bytes give ~122 bits of entropy, more than enough to make collisions astronomically unlikely. The 4-bit version (0x4) and 2-bit variant (0b10) nibbles are set by hand per RFC 4122 §4.4.",
+    "nil_safety": "Both RequestID and Logger accept a nil context.Context and return a safe zero value ('' / slog.Default()) so callers can chain operations without a guard. WithRequestID and WithLogger treat their zero values (empty id / nil logger) as no-ops, which matches the stdlib's http.Request.Context / request.WithContext ergonomics.",
+    "no_magic_in_Middleware": "The middleware's id resolution order is documented as a numbered list in the godoc: (1) inbound X-Request-ID header, (2) any id already on r.Context(), (3) freshly generated. The order matters because inbound headers are the cross-process correlation source of truth; only when none is present do we fall back to a pre-set value (e.g. from a server-side retry wrapper) and only then to a new id.",
+    "slog_LogAttrs": "Task spec said 'defers slog.LogAttrs \"request.complete\" with method/path/status/duration_ms'. Using slog.Logger.LogAttrs (not Info/Info with ...) is deliberate: it accepts a pre-built []slog.Attr slice, which is the zero-allocation path for the hot request path. The four required attributes are emitted as slog.String / slog.Int / slog.Int64 with stable, snake_case keys.",
+    "status_recorder": "A minimal http.ResponseWriter decorator (statusRecorder) captures the status code so the deferred LogAttrs can include it. The WriteHeader / Write methods are overridden; everything else is delegated to the embedded http.ResponseWriter. This is the standard pattern for net/http access logging.",
+    "HeaderRequestID_export": "The constant is exported so tests, downstream services, and the orchestrator can use the same value without stringly-typed duplication. The package-level constant guards against typos creeping into the codebase."
+  },
+  "re_exports": "The package re-exports nothing — the API is the seven top-level functions / the one constant. Consumers should import 'github.com/kooshapari/pheno-go-ctxkit/ctxkit' and call them as ctxkit.Middleware, ctxkit.RequestID, etc.",
+  "idempotency": "All exported functions are pure with respect to their inputs: NewRequestID has no global state (the only random source is crypto/rand), WithRequestID/WithLogger always return a fresh context.Context, and Middleware's status recorder is constructed per-request. Re-running a request through the middleware twice produces two independent log lines, not one shared line — exactly what HTTP access logging wants.",
+  "consolidation_targets": [
+    "phenotype-bus (phenotype-bus/) — also has an X-Request-ID header convention; pheno-go-ctxkit's HeaderRequestID constant matches its inbound/outbound contract",
+    "pheno-otel (L3-#49) — for OTel-based request tracing, the request_id emitted here is the value the L3-#49 trace_id would be derived from (or vice versa); they are intentionally kept in separate crates to keep the stdlib-only dependency contract for pheno-go-ctxkit"
+  ],
+  "downstream_consumers": [
+    "L4 pheno-go HTTP services — can now do `import \"github.com/kooshapari/pheno-go-ctxkit/ctxkit\"` and wrap their mux with `ctxkit.Middleware(...)`. Inside a handler: `id := ctxkit.RequestID(r.Context())` and `log := ctxkit.Logger(r.Context())` are always safe to call.",
+    "L5 pheno-go integration crates — can use `ctxkit.Background()` for CLI entry points and queue workers that need a request id outside of an HTTP request, then plumb it into an `*http.Request` via `r.WithContext(ctxkit.WithRequestID(r.Context(), id))`."
+  ],
+  "no_touch": [
+    "Other L3 tasks (L3-#46 pheno-errors, L3-#47 pheno-tracing, L3-#48 pheno-config, L3-#49 pheno-otel, L3-#50 pheno-cli-base, L3-#51 pheno-fastapi-base, L3-#53 pheno-zod-pydantic, L3-#54 pheno-tower-stack, L3-#55 pheno-ssot-template, L3-#56 pheno-flags, L3-#57 pheno-plugin-registry)",
+    "Root go.mod / Cargo.toml — pheno-go-ctxkit is a standalone module, not a workspace member of any existing Go workspace",
+    "phenotype-bus and any other pre-existing Go request-id helpers (left in place; pheno-go-ctxkit is the canonical new path)"
+  ],
+  "notes": "The Go module is placed at pheno-go-ctxkit/ (matching the L3-#52 spec verbatim) with the package in the ctxkit/ subdirectory so the import path is github.com/kooshapari/pheno-go-ctxkit/ctxkit — this follows the standard Go convention where the directory name and the package name match. go.mod declares module github.com/kooshapari/pheno-go-ctxkit and go 1.22 (matches the spec's go directive). No external dependencies: the import block in ctxkit.go is stdlib-only (context, crypto/rand, encoding/hex, fmt, log/slog, net/http, time). Test file uses stdlib testing only (no testify, per spec). `go test -race -count=1 ./...` and `go vet ./...` both run from the pheno-go-ctxkit/ directory, exactly as the task spec prescribed. The test for the request.complete log line uses a safeBuffer wrapper around bytes.Buffer with a sync.Mutex so the slog JSON handler stays race-free under -race; the underlying bytes.Buffer is not safe for concurrent use. The middleware's id resolution is documented as a numbered list in the godoc so a future maintainer reading the source doesn't have to re-derive the order."
+}

@@ -105,6 +105,57 @@ pub fn test_handle(endpoint: &str) -> ExportHandle {
     }
 }
 
+// ---------------------------------------------------------------------------
+// proptest::Arbitrary impls (v20-T5 / L23)
+// ---------------------------------------------------------------------------
+
+impl proptest::arbitrary::Arbitrary for OtlpError {
+    type Parameters = ();
+    type Strategy = proptest::strategy::BoxedStrategy<Self>;
+
+    fn arbitrary_with((): Self::Parameters) -> Self::Strategy {
+        use proptest::strategy::Strategy;
+        proptest::prop_oneof![
+            proptest::string::string_regex("[A-Za-z0-9 _\\-\\.]{1,80}")
+                .expect("otlp_error regex")
+                .prop_map(Self::SerializeFailed)
+                .boxed(),
+            proptest::string::string_regex("[A-Za-z0-9 _\\-\\.]{1,80}")
+                .expect("otlp_error regex")
+                .prop_map(Self::Transport)
+                .boxed(),
+            proptest::string::string_regex("[A-Za-z0-9 _\\-\\.]{1,80}")
+                .expect("otlp_error regex")
+                .prop_map(Self::NotConfigured)
+                .boxed(),
+            proptest::string::string_regex("[A-Za-z0-9 _\\-\\.]{1,80}")
+                .expect("otlp_error regex")
+                .prop_map(Self::InvalidAttribute)
+                .boxed(),
+        ]
+    }
+}
+
+impl proptest::arbitrary::Arbitrary for ExportHandle {
+    type Parameters = ();
+    type Strategy = proptest::strategy::BoxedStrategy<Self>;
+
+    fn arbitrary_with((): Self::Parameters) -> Self::Strategy {
+        use proptest::strategy::Strategy;
+        (
+            proptest::string::string_regex("(http|https)://[A-Za-z0-9_\\-\\.]{1,32}(:[0-9]{2,5})?")
+                .expect("endpoint regex"),
+            proptest::string::string_regex("[a-z][a-z0-9_\\-]{0,32}")
+                .expect("service_name regex"),
+        )
+            .prop_map(|(endpoint, service_name)| ExportHandle {
+                endpoint,
+                service_name,
+            })
+            .boxed()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1",
+  "script": "test-all",
+  "timestamp_utc": "2026-06-21T22:46:13Z",
+  "workspace_root": "/Users/kooshapari/CodeProjects/Phenotype/repos",
+  "result_file": "2026-06-21.json",
+  "toolchain": {
+    "rust": "rustc 1.95.0 (59807616e 2026-04-14) (Homebrew)",
+    "python": "Python 3.14.5"
+  },
+  "summary": {
+    "crates_total": 3,
+    "crates_passed": 0,
+    "crates_failed": 1,
+    "crates_skipped": 2,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_ignored": 0,
+    "first_failure": "pheno-port-adapter"
+  },
+  "crates": [
+{"crate":"pheno-drift-detector","language":"unknown","status":"skipped","reason":"no test manifest","passed":0,"failed":0,"ignored":0,"duration_ms":0,"exit_code":-1,"log_file":"logs/2026-06-21/pheno-drift-detector.log","command":""},
+{"crate":"pheno-framework-lint","language":"unknown","status":"skipped","reason":"no test manifest","passed":0,"failed":0,"ignored":0,"duration_ms":0,"exit_code":-1,"log_file":"logs/2026-06-21/pheno-framework-lint.log","command":""},
+{"crate":"pheno-port-adapter","language":"rust","status":"failed","passed":0,"failed":0,"ignored":0,"duration_ms":1054,"exit_code":101,"log_file":"logs/2026-06-21/pheno-port-adapter.log","command":"cargo test --no-fail-fast --color=never"}
+  ]
+}

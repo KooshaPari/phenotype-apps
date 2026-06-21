@@ -1,0 +1,7 @@
+# Deep work starter example for focus-lang parser coverage.
+
+project = "deep-work"
+
+plan = task(title="Prepare deep work block", minutes=15, priority=0.6)
+focus = task(title="Execute deep work block", minutes=90, priority=0.95)
+reward("deep-work-complete", credits=50, streak=1)

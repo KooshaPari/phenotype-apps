@@ -1,179 +1,285 @@
 #!/usr/bin/env python3
-"""
-adr_index_gen.py - Regenerate docs/adr/INDEX.md (chronological table).
+r"""scripts/adr_index_gen.py — Regenerate the canonical docs/adr/INDEX.md.
 
-Scans docs/adr/**/*.md for ADR files, extracts ADR number, title, status,
-date, scope summary, and supersedes-link from each, and writes a single
-chronological Markdown table to docs/adr/INDEX.md.
-
-Status values are normalized to one of: PROPOSED, ACCEPTED, SUPERSEDED,
-ACCEPTED (CLOSED), or the raw value if unrecognized. The pillar-grouped
-view (hand-curated) lives at docs/adr/INDEX-by-pillar.md; this script
-writes only the chronological table.
+Authority: v20 cycle-10 71-pillar plan § Track T1 (L1 Architecture
+ADR consolidation, score 2.5 → 3.0). See AGENTS.md § "App substrate
+placement" and `findings/71-pillar-2026-06-17-schema.md` § AX (L1-L12)
+for context.
 
 Usage:
-    python3 scripts/adr_index_gen.py [--root PATH] [--out PATH]
-    python3 scripts/adr_index_gen.py --check     # exit 1 if --out is stale
-
-Exit 0 on success, 1 on stale (--check) or I/O error.
+    python3 scripts/adr_index_gen.py                  # writes docs/adr/INDEX.md
+    python3 scripts/adr_index_gen.py --out <path>     # custom output path
+    python3 scripts/adr_index_gen.py --check         # exit 1 if INDEX.md is stale
+    python3 scripts/adr_index_gen.py --quiet         # no banner / progress
 """
+from __future__ import annotations
+
 import argparse
+import datetime as _dt
 import re
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
+from typing import Iterable, NamedTuple
 
-ADR_NUM_RE = re.compile(r"ADR-(\d{3})")
-H1_RE = re.compile(r"^#\s+ADR-\d+[^\n]*", re.MULTILINE)
-STATUS_RE = re.compile(
-    r"\*\*\s*Status\*\*?\s*[:|]\s*\*?\*?([A-Za-z][A-Za-z0-9 ()/—\-]*)", re.MULTILINE
+REPO_ROOT = Path(__file__).resolve().parent.parent
+ADR_ROOT = REPO_ROOT / "docs" / "adr"
+DEFAULT_OUT = ADR_ROOT / "INDEX.md"
+
+# Matches an ADR-### or ADR-###B reference in body text. Case-insensitive.
+ADR_REF_RE = re.compile(r"\bADR-(\d+)(B?)\b", re.IGNORECASE)
+ADR_FILENAME_RE = re.compile(r"^ADR-(\d+)(B?)-.+\.md$", re.IGNORECASE)
+H1_RE = re.compile(r"^#\s+(.+?)\s*$", re.MULTILINE)
+INLINE_STATUS_RE = re.compile(
+    r"Status\s*:\s*\**\s*(?:\**\s*)?(?P<status>[A-Za-z][A-Za-z0-9_ \-/()\[\].|]*?)\**"
+    r"\s*(?:\([^)]*\))?\s*(?:[—–-]\s*\d{4}-\d{2}-\d{2})?"
+    r"(?:\s*\([^)]*\))?\s*$"
 )
-DATE_RE = re.compile(r"\*\*\s*Date\*\*?\s*[:|]\s*\*?\*?(\d{4}-\d{2}-\d{2})", re.MULTILINE)
-SUPERSEDES_RE = re.compile(r"\*\*\s*Supersedes\*\*?\s*[:|]\s*([^\n]+)")
-SUMMARY_RE = re.compile(r"^##\s+Context\s*\n+([^\n#][^\n]*)", re.MULTILINE)
+TABLE_STATUS_RE = re.compile(
+    r"\|\s*\**\s*Status\s*\**\s*\|\s*\**\s*(?P<status>[A-Za-z][A-Za-z0-9_ \-/()\[\].|]*?)"
+    r"\s*(?:\([^)]*\))?\s*(?:[—–-]\s*\d{4}-\d{2}-\d{2})?"
+    r"(?:\s*\([^)]*\))?\s*\|"
+)
+DATE_INLINE_RE = re.compile(
+    r"^\*?\*?Date\*?\*?\s*[:=]\s*(\d{4}-\d{2}-\d{2})",
+    re.MULTILINE,
+)
 
 
-def parse_adr(path: Path):
-    """Return dict for one ADR file, or None if filename is not an ADR."""
-    m = ADR_NUM_RE.search(path.name)
-    if not m:
-        return None
-    num = int(m.group(1))
-    text = path.read_text(encoding="utf-8", errors="replace")
-
-    h1 = H1_RE.search(text)
-    title = h1.group(0).lstrip("# ").strip() if h1 else path.stem
-    title = re.sub(r"^ADR-\d+[\s:—\-]+", "", title).strip()
-
-    status = STATUS_RE.search(text)
-    status_raw = status.group(1).strip() if status else "UNKNOWN"
-
-    date = DATE_RE.search(text)
-    date_str = date.group(1) if date else ""
-
-    sup = SUPERSEDES_RE.search(text)
-    sup_str = sup.group(1).strip() if sup else ""
-
-    sm = SUMMARY_RE.search(text)
-    summary = " ".join(sm.group(1).split())[:240] if sm else ""
-
-    return {
-        "num": num,
-        "title": title,
-        "status": status_raw,
-        "date": date_str,
-        "summary": summary,
-        "supersedes": sup_str,
-        "rel_path": str(path),
-    }
+class AdrRecord(NamedTuple):
+    adr_number: str
+    adr_id: str
+    title: str
+    date: str
+    status: str
+    crossref_count: int
+    relpath: str
 
 
-def normalize_status(s: str) -> str:
-    """Map raw status text to a canonical display value."""
-    u = s.upper()
-    if "SUPERSEDED" in u:
-        return "SUPERSEDED"
-    if "PROPOSED" in u:
+def _normalise_status(raw):
+    if not raw:
+        return "UNKNOWN"
+    s = raw.strip()
+    upper = s.upper()
+    for bucket in ("ACCEPTED", "PROPOSED", "SUPERSEDED", "REJECTED", "DEPRECATED", "DRAFT"):
+        if upper == bucket:
+            return bucket
+    if upper.startswith("ACCEPT"):
+        return "ACCEPTED (CLOSED)" if "CLOSED" in upper else "ACCEPTED"
+    if upper.startswith("PROPOS"):
         return "PROPOSED"
-    if "ACCEPTED" in u or "CLOSED" in u:
-        return "ACCEPTED" if "CLOSED" not in u else "ACCEPTED (CLOSED)"
-    return s
+    if upper.startswith("SUPERSED"):
+        return "SUPERSEDED"
+    if upper.startswith("REJECT"):
+        return "REJECTED"
+    if upper.startswith("DEPRECAT"):
+        return "DEPRECATED"
+    if upper.startswith("DRAFT"):
+        return "DRAFT"
+    if upper.startswith("CLOSED"):
+        return "ACCEPTED (CLOSED)"
+    return upper
 
 
-def render_table(rows, root: str) -> str:
-    """Return the full chronological INDEX.md body as a single string."""
-    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    lines = [
-        "# ADR Index - Chronological Cross-Reference",
-        "",
-        f"**Generated:** {now}  ",
-        f"**Source:** {len(rows)} ADR file(s) under `{root}/`  ",
-        "**Generator:** `scripts/adr_index_gen.py` (v20 T1)  ",
-        "**Pillar-grouped view:** `docs/adr/INDEX-by-pillar.md` (hand-curated)  ",
-        "**Backlink validator:** `scripts/adr_backlink_check.py`  ",
-        "",
-        "## Master Table",
-        "",
-        "| # | ADR | Date | Status | Title | Scope summary | Supersedes |",
-        "|---:|-----|------|--------|-------|---------------|------------|",
-    ]
-    for r in rows:
-        s = normalize_status(r["status"])
-        summary = r["summary"].replace("|", "\\|")
-        sup = r["supersedes"].replace("|", "\\|") or "-"
-        title = r["title"][:80].replace("|", "\\|")
+def discover_adr_files(adr_root):
+    if not adr_root.exists():
+        return []
+    found = []
+    for path in sorted(adr_root.rglob("ADR-*.md")):
+        if path.name.upper() == "INDEX.MD":
+            continue
+        if not ADR_FILENAME_RE.match(path.name):
+            continue
+        found.append(path)
+    return found
+
+
+def parse_adr(path, adr_root):
+    rel = path.relative_to(REPO_ROOT)
+    m = ADR_FILENAME_RE.match(path.name)
+    assert m is not None
+    num, suffix = m.group(1), m.group(2)
+    adr_id = f"ADR-{num}{suffix}"
+    adr_number = f"{num}{suffix}"
+    text = path.read_text(encoding="utf-8", errors="replace")
+    title_match = H1_RE.search(text)
+    if title_match:
+        raw_title = title_match.group(1).strip()
+        prefix_re = re.compile(rf"^ADR-\d+B?\s*[:—–-]\s*", re.IGNORECASE)
+        cleaned = prefix_re.sub("", raw_title, count=1)
+        title = cleaned.strip() or raw_title
+    else:
+        title = path.stem.split("-", 1)[-1].replace("-", " ").title()
+    parent = path.parent
+    if parent == adr_root:
+        date_match = DATE_INLINE_RE.search(text)
+        date = date_match.group(1) if date_match else "pre-wave"
+    else:
+        if re.match(r"^\d{4}-\d{2}-\d{2}$", parent.name):
+            date = parent.name
+        else:
+            date_match = DATE_INLINE_RE.search(text)
+            date = date_match.group(1) if date_match else "unknown"
+    status = "Unknown"
+    for line in text.splitlines():
+        tm = TABLE_STATUS_RE.search(line)
+        if tm:
+            status = tm.group("status").strip()
+            break
+        im = INLINE_STATUS_RE.search(line)
+        if im:
+            status = im.group("status").strip()
+            break
+    status = _normalise_status(status)
+    self_id = adr_id.upper()
+    self_base = f"ADR-{num}".upper()
+    crossref_count = 0
+    for ref in ADR_REF_RE.finditer(text):
+        ref_num = ref.group(1)
+        ref_id = f"ADR-{ref_num}{ref.group(2)}".upper()
+        if ref_id == self_id:
+            continue
+        if ref_id == self_base:
+            continue
+        crossref_count += 1
+    return AdrRecord(adr_number=adr_number, adr_id=adr_id, title=title,
+                     date=date, status=status, crossref_count=crossref_count,
+                     relpath=str(rel))
+
+
+def render_index(records, generated_at):
+    recs = sorted(records, key=lambda r: (r.date, r.adr_number))
+    total = len(recs)
+    by_status = {}
+    for r in recs:
+        by_status[r.status.upper()] = by_status.get(r.status.upper(), 0) + 1
+    status_summary = ", ".join(
+        f"{count} {status}"
+        for status, count in sorted(by_status.items(), key=lambda kv: (-kv[1], kv[0]))
+    )
+    lines = []
+    lines.append("# ADR Index — Canonical Cross-Reference")
+    lines.append("")
+    lines.append(
+        "This is the **single canonical entry point** for every Architecture "
+        "Decision Record in the `docs/adr/` tree. It is regenerated by "
+        "`scripts/adr_index_gen.py`; do not hand-edit. The CI workflow "
+        "`.github/workflows/adr-lint.yml` runs the generator on every PR "
+        "that touches `docs/adr/**` or `scripts/adr_*.py` and fails if the "
+        "committed `docs/adr/INDEX.md` is out of date."
+    )
+    lines.append("")
+    lines.append(f"**Total ADRs indexed:** {total}")
+    lines.append(f"**Status breakdown:** {status_summary}")
+    lines.append("")
+    lines.append(
+        "Authority: v20 cycle-10 71-pillar plan § Track T1 (L1 Architecture "
+        "ADR consolidation; score 2.5 → 3.0). Refresh cadence: weekly "
+        "Monday 09:00 PDT (per ADR-041). The `adr-lint` workflow provides "
+        "a per-PR freshness gate."
+    )
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    lines.append("## Index table (chronological, oldest first)")
+    lines.append("")
+    lines.append("| ADR# | Title | Date | Status | Cross-refs count |")
+    lines.append("|------|-------|------|--------|------------------|")
+    for r in recs:
+        title = r.title
+        if len(title) > 110:
+            title = title[:107] + "..."
+        title = title.replace("|", "\\|")
+        link = f"[{r.adr_id}]({r.relpath})"
         lines.append(
-            f"| {r['num']:03d} | "
-            f"[{r['num']:03d}]({r['rel_path']}) | "
-            f"{r['date']} | {s} | {title} | "
-            f"{summary[:200]} | {sup[:60]} |"
+            f"| {link} | {title} | {r.date} | {r.status} | "
+            f"{r.crossref_count} |"
         )
-    lines.extend([
-        "",
-        "---",
-        "",
-        "## Notes",
-        "",
-        "- This file is **auto-generated** by `scripts/adr_index_gen.py`. "
-        "Do not edit by hand; the `adr-lint` CI workflow fails if it "
-        "drifts from the on-disk ADRs.",
-        "- The hand-curated **pillar-grouped** view lives at "
-        "`docs/adr/INDEX-by-pillar.md` (per ADR-024 + ADR-041; cadence: "
-        "weekly Mon 09:00 PDT).",
-        "- ADR numbers may collide across date directories (e.g. ADR-077 "
-        "in `2026-06-20/` is SLSA, ADR-077 in `2026-06-21/` is Vault). "
-        "Disambiguation is by file path.",
-        "- Cross-references in ADR bodies are validated by "
-        "`scripts/adr_backlink_check.py` (run on every ADR-touching PR).",
-        "",
-        f"<!-- generated: {now} by scripts/adr_index_gen.py -->",
-    ])
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    lines.append("## How to use this index")
+    lines.append("")
+    lines.append("- **Read an ADR.** Click the ADR link in the table to open the file.")
+    lines.append(
+        "- **Find cross-refs.** The `Cross-refs count` column counts outgoing "
+        "ADR-### mentions in this ADR's body (siblings it cites). A high "
+        "number (>10) means the ADR is load-bearing in the fleet — read it "
+        "before changing it. Run "
+        "`python3 scripts/adr_backlink_check.py --verbose` for the incoming "
+        "direction (which ADRs cite this one)."
+    )
+    lines.append(
+        "- **Check freshness.** The `adr-lint` CI workflow regenerates this "
+        "file and fails if it differs from the committed version. Add a new "
+        "ADR + regen = a clean PR."
+    )
+    lines.append(
+        "- **Verify backlinks.** `python3 scripts/adr_backlink_check.py` "
+        "walks every ADR file, extracts `ADR-###` mentions, and exits 1 if "
+        "any reference points to a non-existent file. Run it locally "
+        "before opening a PR."
+    )
+    lines.append("")
+    lines.append("## Conventions")
+    lines.append("")
+    lines.append(
+        "- ADR files live at `docs/adr/<YYYY-MM-DD>/ADR-NNN-slug.md` "
+        "(preferred) or `docs/adr/ADR-NNN-slug.md` (legacy root-level; "
+        "ADR-006..008 today)."
+    )
+    lines.append(
+        "- Filename pattern: `ADR-<3-digit-number>(B?)-<kebab-slug>.md`. "
+        "The optional `B` suffix is reserved for ADRs that disambiguate a "
+        "series-number collision (e.g. ADR-050 router rebuild vs ADR-050 "
+        "T12-closure)."
+    )
+    lines.append(
+        "- Each ADR SHOULD have a `## Cross-references` section listing "
+        "2-5 of the most-relevant sibling ADRs. The `adr-lint` workflow "
+        "does not enforce this today; `adr_backlink_check.py --verbose` "
+        "will report it as INFO."
+    )
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    lines.append("<!-- generated: " + generated_at.isoformat(timespec="seconds") + " -->")
+    lines.append("<!-- source: scripts/adr_index_gen.py | do not edit by hand -->")
+    lines.append("")
     return "\n".join(lines)
 
 
 def main():
-    p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    p.add_argument("--root", default="docs/adr", help="ADR root directory")
-    p.add_argument("--out", default="docs/adr/INDEX.md", help="Output path")
-    p.add_argument(
-        "--check",
-        action="store_true",
-        help="Exit 1 if --out would change; do not write the file",
+    parser = argparse.ArgumentParser(
+        description="Regenerate the canonical docs/adr/INDEX.md from ADR files.",
     )
-    args = p.parse_args()
-
-    root = Path(args.root)
-    if not root.is_dir():
-        print(f"ERROR: ADR root {root} does not exist", file=sys.stderr)
+    parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    parser.add_argument("--root", type=Path, default=ADR_ROOT)
+    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--quiet", action="store_true")
+    args = parser.parse_args()
+    if not args.root.exists():
+        print(f"ERROR: {args.root} does not exist", file=sys.stderr)
         return 2
-
-    files = sorted(root.rglob("ADR-*.md"))
-    rows = [r for r in (parse_adr(f) for f in files) if r is not None]
-    rows.sort(key=lambda r: (r["num"], r["rel_path"]))
-
-    out = Path(args.out)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    new_text = render_table(rows, args.root)
-
+    files = discover_adr_files(args.root)
+    if not args.quiet:
+        print(f"[adr_index_gen] discovered {len(files)} ADR file(s) under {args.root}")
+    records = [parse_adr(p, args.root) for p in files]
+    generated_at = _dt.datetime.now(_dt.timezone.utc)
+    body = render_index(records, generated_at)
     if args.check:
-        existing = out.read_text(encoding="utf-8", errors="replace") if out.exists() else ""
-        # The generator embeds the wall-clock in two places (header
-        # "Generated:" and the trailing HTML comment). Those change on every
-        # run even when content is fresh, so blank them out before diffing.
-        def _blank_ts(s: str) -> str:
-            s2 = re.sub(r"\*\*Generated:\*\*[^\n]+", "**Generated:** <ts>", s)
-            s2 = re.sub(r"<!-- generated:[^\n]+-->", "<!-- generated: <ts> -->", s2)
-            return s2
-        if _blank_ts(new_text) != _blank_ts(existing):
-            print(f"STALE: {out} would change ({len(rows)} ADR rows). "
-                  "Run `python3 scripts/adr_index_gen.py` to update.",
-                  file=sys.stderr)
-            return 1
-        print(f"OK: {out} is fresh ({len(rows)} ADR rows).")
-        return 0
-
-    out.write_text(new_text + "\n", encoding="utf-8")
-    print(f"Wrote {out} ({len(rows)} rows)")
+        existing = args.out.read_text(encoding="utf-8") if args.out.exists() else ""
+        existing_normalized = re.sub(r"<!-- generated: .*? -->", "<!-- generated: ... -->", existing)
+        new_normalized = re.sub(r"<!-- generated: .*? -->", "<!-- generated: ... -->", body)
+        if existing_normalized == new_normalized:
+            if not args.quiet:
+                print(f"[adr_index_gen] OK: {args.out} is up to date ({len(records)} ADRs)")
+            return 0
+        print(f"STALE: {args.out} would change.", file=sys.stderr)
+        return 1
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text(body, encoding="utf-8")
+    if not args.quiet:
+        print(f"[adr_index_gen] wrote {args.out} ({len(records)} ADRs)")
     return 0
 
 

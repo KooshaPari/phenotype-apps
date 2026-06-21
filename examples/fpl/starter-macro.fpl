@@ -1,0 +1,7 @@
+# Starter macro example for focus-lang parser coverage.
+# Kept intentionally small so compile-time include_str! tests validate syntax stability.
+
+project = "phenotype-apps"
+
+starter = task(title="Start focused work", minutes=25, priority=0.7)
+reward("starter-complete", credits=10, streak=1)

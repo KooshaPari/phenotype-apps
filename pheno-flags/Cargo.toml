@@ -1,0 +1,26 @@
+[workspace]
+
+[package]
+name = "pheno-flags"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+rust-version = "1.82"
+description = "Canonical synchronous, in-memory feature-flag set for the Phenotype monorepo. Reads boolean flags from environment variables with a configurable prefix."
+keywords = ["phenotype", "feature-flags", "config", "env", "ff-free"]
+categories = ["config", "development-tools"]
+publish = false
+
+[lib]
+name = "pheno_flags"
+path = "src/lib.rs"
+
+[dependencies]
+thiserror = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+proptest = "1.4"
+proptest-derive = "0.5"
+
+[dev-dependencies]
+loom = "0.7"

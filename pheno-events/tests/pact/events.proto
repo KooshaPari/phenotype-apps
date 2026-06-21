@@ -1,0 +1,119 @@
+// =====================================================================
+//  events.proto — pheno-events wire-contract reference
+// =====================================================================
+//
+// This file is **documentation-only**. It does NOT drive any code-gen;
+// the canonical types live in `src/core/mod.rs` (Rust) and are mirrored
+// here in protobuf-like notation so the contract is readable across
+// language boundaries.
+//
+// The real contract is enforced at test time by the Pact scenarios in:
+//
+//   - tests/pact/provider.rs    (HTTP request/response surface)
+//   - tests/pact/consumer.rs    (async message surface)
+//
+// If you change a field here, regenerate the Rust type and update the
+// matching `json_pattern!` / `message_interaction` body in those files.
+//
+// ADR: docs/adr/2026-06-17/ADR-084 (L27 contract tests)
+// =====================================================================
+
+syntax = "proto3";
+
+package pheno.events.v1;
+
+// ---------------------------------------------------------------------
+// EventEnvelope — the canonical wire-level event carrier.
+//
+// Every cross-service event in the `pheno-*` fleet is wrapped in an
+// EventEnvelope. The fields are immutable once constructed; the
+// `EventEnvelope::builder` is the only sanctioned construction path
+// (it enforces `event_type` non-empty, `source` non-empty,
+// `schema_version >= 1`).
+// ---------------------------------------------------------------------
+message EventEnvelope {
+  // UUIDv7 — time-ordered id assigned at construction time (NOT by the
+  // caller). The `version` MUST be 7 so consumers can sort by id.
+  string id = 1;
+
+  // Short, machine-readable event name (e.g. "user.created").
+  // MUST be non-empty after trimming.
+  string event_type = 2;
+
+  // Identifier of the publishing service (e.g. "accounts").
+  // MUST be non-empty after trimming.
+  string source = 3;
+
+  // RFC3339 UTC timestamp set at construction time.
+  string timestamp = 4;
+
+  // Optional parent event id (for distributed tracing).
+  optional string causation_id = 5;
+
+  // Optional correlation id for grouping related events.
+  optional string correlation_id = 6;
+
+  // Monotonically increasing per `event_type`, enforced by the schema
+  // registry. MUST be >= 1.
+  uint32 schema_version = 7;
+
+  // Arbitrary JSON-shaped body, validated against the registered schema
+  // (if any) by the schema registry.
+  bytes payload = 8; // serialized JSON
+}
+
+// ---------------------------------------------------------------------
+// Ack — acknowledgement of a published event.
+//
+// Returned from the bus's HTTP POST /events endpoint to confirm the
+// event has been accepted (and whether it was a duplicate).
+// ---------------------------------------------------------------------
+message Ack {
+  // The event id that was acknowledged (matches the `id` of the
+  // EventEnvelope that was published).
+  string event_id = 1;
+
+  // `true` if this id had already been published previously (the bus
+  // chose to ignore the duplicate rather than re-queue it).
+  bool duplicate = 2;
+}
+
+// ---------------------------------------------------------------------
+// Wire transport shapes
+// ---------------------------------------------------------------------
+//
+// 1. event_published — synchronous HTTP request/response.
+//
+//    POST /events
+//    Content-Type: application/json
+//    Body: EventEnvelope (JSON)
+//    -> 200 OK
+//       Content-Type: application/json
+//       Body: Ack (JSON)
+//
+// 2. event_subscribed — async message (V4 pact).
+//
+//    Bus -> Subscriber
+//    Content-Type: application/json
+//    Body: EventEnvelope (JSON)
+//
+// 3. event_replay_from_offset — synchronous HTTP request/response.
+//
+//    GET /events?offset=<u64>
+//    -> 200 OK
+//       Content-Type: application/json
+//       Body: [EventEnvelope, ...]   // ordered, offset is inclusive
+//
+// ---------------------------------------------------------------------
+// Provider / consumer roles
+// ---------------------------------------------------------------------
+//
+//   Provider: the event-bus (the system that accepts publishes and
+//             delivers subscriptions).
+//   Consumer: a subscriber service that publishes events and consumes
+//             them via subscribe or replay.
+//
+// The pact file produced by the consumer-side test asserts what the
+// subscriber expects from the bus. The pact_verifier CLI replays the
+// recorded interactions against the real bus implementation to confirm
+// the bus honours the contract.

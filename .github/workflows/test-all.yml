@@ -1,0 +1,102 @@
+# Workspace-level test runner — SIDE-20 (2026-06-22).
+#
+# Runs scripts/test-all.sh on every push to main and uploads the JSON
+# report + per-crate logs as workflow artifacts. Aggregates pass/fail
+# counts across all pheno-* crates visible in the checkout.
+#
+# Authority: SIDE-20. See findings/2026-06-22-SIDE-20-test-runner.md.
+name: test-all
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: test-all-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test-all:
+    name: pheno-* test runner
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+
+      - name: Cache cargo build artifacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            pheno-config -> target
+            pheno-context -> target
+            pheno-errors -> target
+            pheno-flags -> target
+            pheno-otel -> target
+            pheno-port-adapter -> target
+            pheno-tracing -> target
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest pytest-cov
+
+      - name: Run test-all
+        run: |
+          bash scripts/test-all.sh --no-fail-fast
+        env:
+          CARGO_TERM_COLOR: never
+          RUST_BACKTRACE: 1
+          PYTHONDONTWRITEBYTECODE: 1
+
+      - name: Upload JSON report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ github.run_id }}
+          path: test-results/*.json
+          if-no-files-found: warn
+
+      - name: Upload per-crate logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs-${{ github.run_id }}
+          path: test-results/logs/
+          if-no-files-found: warn
+
+      - name: Summary
+        if: always()
+        run: |
+          if [[ -f test-results/$(date -u +%Y-%m-%d).json ]]; then
+            jq -r '
+              "### test-all summary\n" +
+              "| metric | value |\n" +
+              "|--------|-------|\n" +
+              "| crates total   | \(.summary.crates_total) |\n" +
+              "| crates passed  | \(.summary.crates_passed) |\n" +
+              "| crates failed  | \(.summary.crates_failed) |\n" +
+              "| crates skipped | \(.summary.crates_skipped) |\n" +
+              "| tests passed   | \(.summary.tests_passed) |\n" +
+              "| tests failed   | \(.summary.tests_failed) |\n" +
+              "| tests ignored  | \(.summary.tests_ignored) |\n" +
+              (if .summary.first_failure != "" then "| first failure | \(.summary.first_failure) |\n" else "" end)
+            ' test-results/$(date -u +%Y-%m-%d).json >> "$GITHUB_STEP_SUMMARY"
+          fi

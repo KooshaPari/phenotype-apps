@@ -144,6 +144,50 @@ impl_secret_new_expose!(DbPassword);
 impl_secret_fmt!(DbPassword);
 
 // ---------------------------------------------------------------------------
+// proptest::Arbitrary impls (v20-T5 / L23)
+// ---------------------------------------------------------------------------
+
+/// Helper strategy: any non-empty ASCII string.
+///
+/// `ApiKey::new` panics on empty input (ADR-078 §2.1 tripwire), so the
+/// `Arbitrary` impl cannot delegate to the built-in `string` strategy
+/// (which can produce the empty string). The "alphanumeric 1..=64"
+/// range keeps generated secrets realistic without being too narrow.
+fn non_empty_ascii_string() -> proptest::strategy::BoxedStrategy<String> {
+    use proptest::strategy::Strategy;
+    proptest::string::string_regex("[A-Za-z0-9_\\-]{1,64}")
+        .expect("non_empty_ascii_string: regex must be valid")
+        .boxed()
+}
+
+impl proptest::arbitrary::Arbitrary for ApiKey {
+    type Parameters = ();
+    type Strategy = proptest::strategy::BoxedStrategy<Self>;
+
+    fn arbitrary_with((): Self::Parameters) -> Self::Strategy {
+        non_empty_ascii_string().prop_map(Self::new).boxed()
+    }
+}
+
+impl proptest::arbitrary::Arbitrary for BearerToken {
+    type Parameters = ();
+    type Strategy = proptest::strategy::BoxedStrategy<Self>;
+
+    fn arbitrary_with((): Self::Parameters) -> Self::Strategy {
+        non_empty_ascii_string().prop_map(Self::new).boxed()
+    }
+}
+
+impl proptest::arbitrary::Arbitrary for DbPassword {
+    type Parameters = ();
+    type Strategy = proptest::strategy::BoxedStrategy<Self>;
+
+    fn arbitrary_with((): Self::Parameters) -> Self::Strategy {
+        non_empty_ascii_string().prop_map(Self::new).boxed()
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
 
