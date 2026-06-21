@@ -1,0 +1,117 @@
+{
+  "schema_version": "v2.1",
+  "schema_ref": "ADR-015 v2.1 (worklog schema, ADR-025 deprecation of v2.0 on 2026-06-22)",
+  "task_id": "L5-154",
+  "task_name": "v19-T2-encryption-at-rest",
+  "cycle": "9",
+  "wave": "v19",
+  "track": "T2",
+  "pillar": "L52",
+  "pillar_name": "Encryption-at-Rest",
+  "date": "2026-06-21",
+  "timestamp": "2026-06-21T13:25:00Z",
+  "device": "macbook",
+  "agent": "forge",
+  "agent_id": "L5-154",
+  "sponsors": ["L5-150", "L5-151", "L5-153"],
+  "author": "kooshapari",
+  "plan_ref": "plans/2026-06-21-v19-71-pillar-cycle-9-p0.md § T2",
+  "finding_ref": "findings/2026-06-21-v18-cycle-8-probe.md § 6 finding 2",
+  "layer": "L5",
+  "files_changed": [
+    {
+      "path": "docs/adr/2026-06-21/ADR-080-encryption-at-rest-mandate.md",
+      "action": "added",
+      "loc": 371,
+      "lines_added": 371
+    },
+    {
+      "path": "docs/adr/2026-06-21/INDEX.md",
+      "action": "added",
+      "loc": 37,
+      "lines_added": 37
+    },
+    {
+      "path": "plans/2026-06-21-v19-71-pillar-cycle-9-p0.md",
+      "action": "modified",
+      "lines_added": 31,
+      "lines_removed": 14
+    }
+  ],
+  "summary": "Authored ADR-080 encryption-at-rest mandate (L52 fleet-wide policy) with 3-phase rollout keyed to ADR-079 (Vault) Phase 1 GA. Mandates AEAD (AES-256-GCM / ChaCha20-Poly1305 / SQLCipher) for 4 fleet-critical substrates: pheno-otel traces, pheno-events journals, pheno-predict state caches, phenotype-registry SQLite. Authoritative sources: NIST SP 800-57 Part 1 Rev. 5, NIST SP 800-38D, CIS Benchmark v8.",
+  "adr_number": "080",
+  "adr_path": "docs/adr/2026-06-21/ADR-080-encryption-at-rest-mandate.md",
+  "adr_status": "PROPOSED",
+  "score_target": {
+    "pillar": "L52",
+    "from": 1.5,
+    "to": 2.0,
+    "rationale": "Closes v18 cycle-8 probe §6 finding 2"
+  },
+  "branch": "docs/v19-T2-encryption-at-rest-mandate-2026-06-21",
+  "base_branch": "main",
+  "commit_sha": "c5d86142f2",
+  "pr_url": "https://github.com/KooshaPari/phenotype-apps/pull/113",
+  "pr_number": 113,
+  "pr_status": "OPEN",
+  "reviewer": "kooshapari",
+  "depends_on": [
+    {
+      "adr": "ADR-079",
+      "subject": "Vault migration roadmap",
+      "type": "hard",
+      "note": "Phase 2 of this mandate cannot start until ADR-079 Phase 1 exit gate (14 consecutive days green `vault status`)"
+    }
+  ],
+  "related_adrs": [
+    "ADR-046 (Federation mTLS+OIDC)",
+    "ADR-042 (Security audit cadence)",
+    "ADR-041 (71-pillar refresh cadence)",
+    "ADR-035 (Configra migration gates)",
+    "ADR-027 (LFS policy)",
+    "ADR-012 (pheno-tracing canonical)",
+    "ADR-013 (pheno-mcp-router canonical)",
+    "ADR-018 (PRCP / data classification)",
+    "ADR-040 (test coverage gates per tier)",
+    "ADR-023 (agent-effort governance)"
+  ],
+  "out_of_scope": [
+    ".cargo/audit-rules.toml (50 LOC) — separate PR per plan § T2.2",
+    "pheno-config/src/secrets.rs ZeroizeOnDrop (~50 LOC) — separate PR per plan § T2.3",
+    "Per-substrate AEAD port PRs (4 PRs, one per substrate) — separate PRs in Phase 1"
+  ],
+  "followups": [
+    {
+      "phase": 1,
+      "title": "pheno_rest::Cipher trait + 4 substrate AEAD ports",
+      "pr_count_estimate": 5,
+      "wall_clock_weeks": 2,
+      "exit_gate": "All 4 substrates refuse plaintext fallback in release builds; 5000 proptest cases pass"
+    },
+    {
+      "phase": 2,
+      "title": "Vault Transit integration",
+      "pr_count_estimate": 4,
+      "wall_clock_weeks": 4,
+      "pre_condition": "ADR-079 Phase 1 GA (14d green vault status)",
+      "exit_gate": "All 4 substrates default to Vault transit; Argon2id fallback disabled by default in release"
+    },
+    {
+      "phase": 3,
+      "title": "Detection + audit + FedRAMP/SOC2 evidence",
+      "pr_count_estimate": 3,
+      "wall_clock_weeks": 2,
+      "exit_gate": "L52 score >= 2.0 in 71-pillar refresh 2026-08-04"
+    }
+  ],
+  "notes": [
+    "Numbering deviation: plan assigned ADR-078 to T2; task spec assigned ADR-080 (after ADR-079 = Vault). Index.md and ADR-080 follow task-spec numbering. Plan file § 9.4 documents the discrepancy for orchestrator reconciliation.",
+    "ADR-079 cross-referenced as Vault migration per task spec. Orchestrator working-copy draft ADR-077 is the operational Vault plan; both are compatible.",
+    "Worktree created at /private/tmp/v19-T2-encryption-rest-2026-06-21 from main (6bc3b866f3). No work done on orchestrator's branch."
+  ],
+  "verdict": "PASS",
+  "next_steps": [
+    "Wait for @kooshapari PR review.",
+    "Orchestrator: reconcile ADR numbering (080 = encryption per task spec vs 077/078 in orchestrator working-copy drafts) at PR-merge time."
+  ]
+}
