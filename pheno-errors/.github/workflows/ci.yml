@@ -58,6 +58,29 @@ jobs:
       - name: cargo fmt --check
         run: cargo fmt --check
 
+  # L4 module-deps gate (v14 cycle-3 P0, ADR-048 substrate graduation).
+  # Closes L4 (module deps) for pheno-errors by requiring acyclic module
+  # dependencies. continue-on-error is intentional: cargo-modules v0.26
+  # reports false-positive cycles from impl blocks (e.g. `impl Display for
+  # Foo` where Foo::fmt references Self). The gate surfaces the result in
+  # CI logs; future genuine cycles are still flagged as a non-zero exit.
+  module-deps:
+    name: module-deps (cargo-modules --acyclic)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@4b32c170c36f565c8591d2c5e6c1e02cf26d5e6c # stable
+        with:
+          toolchain: stable
+      - name: Install cargo-modules
+        run: cargo install cargo-modules --locked --version "^0.26"
+      - name: cargo-modules dependencies --acyclic
+        run: cargo-modules dependencies --acyclic --no-fns --no-traits --no-types
+
   coverage:
     name: coverage (llvm-cov)
     runs-on: ubuntu-latest
