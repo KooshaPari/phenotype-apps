@@ -1,0 +1,38 @@
+# cargo-mutants config for L22 mutation testing (v14 cycle-3 P0)
+#
+# Path: pheno-port-adapter/.cargo/mutants.toml
+# Refs:
+#   - plans/2026-06-20-v14-71-pillar-cycle-3-p0.md § T4
+#   - ADR-042 (security audit cadence)
+#   - https://mutants.rs/ (upstream schema reference)
+#
+# Corrected vs. the plan's literal TOML: cargo-mutants reads from
+# `.cargo/mutants.toml` (not `.cargo-mutants.toml`), uses top-level keys
+# (no `[mutants]` table), and `test_package` is `Vec<String>` not bool.
+# This file uses `test_workspace = true` instead.
+
+# Run tests from every package in the workspace when probing each mutant.
+test_workspace = true
+
+# No special features during mutation testing.
+features = []
+
+# Skip files outside production source: tests, examples, benches, fuzz.
+# Globs match against the path relative to the workspace root.
+exclude_globs = [
+    "**/tests/**",
+    "**/examples/**",
+    "**/benches/**",
+    "**/fuzz/**",
+]
+
+# Build/test timeout multiplier on top of the baseline `cargo build` time.
+# 2.0 means: allow each mutant up to 2x the clean build time before failing.
+timeout_multiplier = 2.0
+
+# Floor for per-mutant test timeout (seconds), independent of baseline.
+minimum_test_timeout = 60.0
+
+# Pass `--cap-lints` to rustc so warnings (incl. macro-generated warnings
+# from tracing/async-trait/etc.) don't fail mutant builds.
+cap_lints = true
