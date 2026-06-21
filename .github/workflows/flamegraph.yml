@@ -1,0 +1,221 @@
+# .github/workflows/flamegraph.yml — v20 T2 L44 weekly flamegraph trend tracker
+#
+# Authority: v20 71-pillar cycle 10 P1 plan §2 Track T2 + ADR-040 + ADR-041
+# (71-pillar refresh cadence: weekly Monday 09:00 PDT ≈ Sundays 02:00 UTC
+# so the run finishes before the Monday standup).
+#
+# Supersedes the v17 nightly workflow which targeted pheno-flags /
+# pheno-port-adapter / pheno-config with simple byte-size checks. The v20
+# version:
+#   1. Runs on a weekly cadence (Sundays 02:00 UTC, per ADR-041)
+#   2. Targets the 3 fleet-critical substrate crates
+#      (pheno-config, pheno-tracing, pheno-mcp-router)
+#   3. Tracks frame count + byte size deltas against the committed baseline
+#   4. Opens / updates the `flamegraph-trends` issue on >20% drift
+#
+# Triggers:
+#   1. schedule — Sundays 02:00 UTC, weekly trend tracking
+#   2. workflow_dispatch — manual run (e.g. after landing an optimization)
+#
+# Behavior per run:
+#   1. Builds cargo-flamegraph from source on ubuntu-latest (perf entitlement).
+#   2. Runs run-flamegraph.sh for each of the 3 fleet-critical crates.
+#   3. For each crate, computes:
+#        - frame count (number of <rect> elements in the SVG)
+#        - SVG byte size
+#        - Delta vs the previously committed baseline
+#   4. If |delta_frames| > 20% OR |delta_bytes| > 20% for any crate, opens or updates
+#      the `flamegraph-trends` issue with the regression / improvement table
+#      and links to the uploaded SVG artifacts.
+#
+# Outputs:
+#   - artifacts: flamegraph-trends-<run_id>.{svg,json}  (one per crate + summary)
+#   - log:        flamegraph-trends/<date>.json         (full per-crate delta table)
+#   - issue:      flamegraph-trends                    (only on drift)
+name: flamegraph
+
+on:
+  schedule:
+    - cron: "0 2 * * 0"  # Sundays 02:00 UTC, weekly (ADR-041 cadence)
+  workflow_dispatch:
+    inputs:
+      crates:
+        description: "Comma-separated crate list (default: pheno-config,pheno-tracing,pheno-mcp-router)"
+        required: false
+        default: "pheno-config,pheno-tracing,pheno-mcp-router"
+      synthetic_only:
+        description: "Skip the real run; emit synthetic baseline SVGs only (for offline testing)"
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: flamegraph
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  flamegraph-trends:
+    name: flamegraph-trends (ubuntu-latest)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Cache cargo + flamegraph install
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            ~/.cargo/bin/cargo-flamegraph -> target
+            ~/.cargo/registry -> target
+
+      - name: Install cargo-flamegraph
+        run: |
+          cargo install flamegraph --locked --quiet
+
+      - name: Allow unprivileged perf
+        # `cargo flamegraph` shells out to `perf record`, which needs
+        # kernel.perf_event_paranoid <= 1 on most distros. CI runners
+        # default to 4 (locked down); we relax it just for this job.
+        run: |
+          echo 1 | sudo tee /proc/sys/kernel/perf_event_paranoid
+
+      - name: Determine crate list
+        id: crates
+        run: |
+          if [ -n "${{ inputs.crates }}" ]; then
+            echo "list=${{ inputs.crates }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "list=pheno-config,pheno-tracing,pheno-mcp-router" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run flamegraph per crate
+        env:
+          FLAMEGRAPH_SYNTHETIC: ${{ inputs.synthetic_only && '1' || '0' }}
+        run: |
+          mkdir -p flamegraph-trends
+          stamp=$(date -u +%Y-%m-%dT%H-%M-%SZ)
+          json_path="flamegraph-trends/${stamp}.json"
+          echo "{" > "$json_path"
+          first=1
+          IFS=',' read -ra CRATES <<< "${{ steps.crates.outputs.list }}"
+          for crate in "${CRATES[@]}"; do
+            echo "[flamegraph] running for crate: $crate"
+            bash benchmarks/flamegraph/run-flamegraph.sh "$crate"
+            svg="benchmarks/flamegraph/${crate}-baseline.svg"
+            bytes=$(wc -c <"$svg" | tr -d ' ')
+            frames=$(grep -c "<rect " "$svg" || echo 0)
+            base_bytes=$(git show "HEAD:benchmarks/flamegraph/${crate}-baseline.svg" 2>/dev/null \
+                         | wc -c | tr -d ' ' || echo 0)
+            base_frames=$(git show "HEAD:benchmarks/flamegraph/${crate}-baseline.svg" 2>/dev/null \
+                          | grep -c "<rect " || echo 0)
+            # Compute deltas as percentages (0 if no baseline).
+            d_bytes=$(awk -v b="${base_bytes}" -v n="${bytes}" 'BEGIN{if(b>0) printf "%.2f", (n-b)*100.0/b; else print "0"}')
+            d_frames=$(awk -v b="${base_frames}" -v n="${frames}" 'BEGIN{if(b>0) printf "%.2f", (n-b)*100.0/b; else print "0"}')
+            if [ "$first" -eq 1 ]; then first=0; else echo "," >> "$json_path"; fi
+            cat >> "$json_path" <<EOF
+            "${crate}": {
+              "bytes": ${bytes},
+              "frames": ${frames},
+              "baseline_bytes": ${base_bytes},
+              "baseline_frames": ${base_frames},
+              "delta_bytes_pct": ${d_bytes},
+              "delta_frames_pct": ${d_frames}
+            }
+          EOF
+            cp "$svg" "flamegraph-trends/${crate}-${stamp}.svg"
+          done
+          echo "}" >> "$json_path"
+          echo "[flamegraph] trends json: $json_path"
+          cat "$json_path"
+
+      - name: Detect drift (>20% on any dimension)
+        id: drift
+        run: |
+          latest=$(ls -t flamegraph-trends/*.json | head -1)
+          echo "drift detection against: $latest"
+          drifted=$(python3 - "$latest" <<'PY'
+          import json, sys
+          with open(sys.argv[1]) as f:
+              data = json.load(f)
+          THRESHOLD = 20.0
+          out = []
+          for crate, m in data.items():
+              for dim in ("delta_bytes_pct", "delta_frames_pct"):
+                  v = abs(float(m.get(dim, 0)))
+                  if v > THRESHOLD:
+                      out.append(f"{crate}|{dim}|{v:.2f}")
+          print("\n".join(out))
+          PY
+          )
+          if [ -n "$drifted" ]; then
+            echo "drift=true" >> "$GITHUB_OUTPUT"
+            echo "drifted_rows<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$drifted" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          else
+            echo "drift=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload flamegraph artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flamegraph-trends-${{ github.run_id }}
+          path: |
+            flamegraph-trends/*.svg
+            flamegraph-trends/*.json
+          if-no-files-found: warn
+
+      - name: Open / update flamegraph-trends issue on drift
+        if: steps.drift.outputs.drift == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          rows=$(cat <<'EOF'
+          | crate | dim | delta | threshold |
+          |-------|-----|------:|----------:|
+          EOF
+          )
+          while IFS='|' read -r crate dim pct; do
+            [ -z "$crate" ] && continue
+            rows="${rows}
+          | ${crate} | ${dim} | ${pct}% | 20% |"
+          done <<< "${{ steps.drift.outputs.drifted_rows }}"
+          issue_title="flamegraph-trends — drift detected (${{ github.run_id }})"
+          issue_body=$(cat <<EOF
+          Flamegraph drift detected on run [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+
+          ${rows}
+
+          Full delta table: see artifact \`flamegraph-trends-${{ github.run_id }}\` (JSON + per-crate SVGs).
+
+          Next steps:
+          1. Open the SVG artifact for the drifted crate.
+          2. Find the new red frames near the bottom of the stack.
+          3. Cross-reference with the opportunities backlog: \`findings/2026-06-22-v20-T2-L44-opportunities.md\`.
+          4. Land a P0/P1 fix in the next cycle (or explain the intentional change in a comment).
+          EOF
+          )
+          # Upsert: look for an existing open issue with this title; if found,
+          # comment on it instead of opening a new one.
+          existing=$(gh issue list --state open --search "flamegraph-trends in:title" --json number --jq '.[].number' | head -1 || true)
+          if [ -n "$existing" ]; then
+            echo "found existing flamegraph-trends issue #$existing; commenting instead"
+            gh issue comment "$existing" --body "$issue_body"
+          else
+            echo "opening new flamegraph-trends issue"
+            gh issue create --title "$issue_title" --body "$issue_body" --label "governance,flamegraph" || true
+          fi

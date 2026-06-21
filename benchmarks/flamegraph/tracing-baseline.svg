@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  benchmarks/flamegraph/tracing-baseline.svg — v20 T2 L44 synthetic baseline
+  Crate:  pheno-tracing
+  Hot top: TracePort::submit (adapters + sampling decisions)
+  Synthetic: rendered when cargo-flamegraph / cargo-instruments is unavailable
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540" width="1200" height="540" font-family="Verdana,Geneva,sans-serif" font-size="11">
+  <title>pheno-tracing baseline flamegraph (synthetic)</title>
+  <desc>SYNTHETIC baseline for pheno-tracing::TracePort::submit + sampling. Hot paths: InMemoryAdapter::submit (clone), RateLimitSampler::try_consume (mutex), TailBasedSampler::observe (Vec::remove O(n)). 34 frames. See findings/2026-06-22-v20-T2-L44-flamegraph-deep-dives.md.</desc>
+
+  <rect width="1200" height="540" fill="#f5f5f5"/>
+  <rect x="0" y="0" width="1200" height="22" fill="#222"/>
+  <text x="8" y="16" fill="#fff">pheno-tracing :: TracePort::submit + sampling  (34 frames, SYNTHETIC baseline)</text>
+
+  <!-- ROOT -->
+  <rect x="0" y="40" width="1200" height="16" fill="#ff7f0e"><title>TracePort::submit (root, 100%)</title></rect>
+  <text x="6" y="52" fill="#fff">pheno_tracing::port::TracePort::submit</text>
+
+  <!-- Sampler::should_sample call -->
+  <rect x="0" y="56" width="1200" height="16" fill="#1f77b4"><title>sampler.should_sample — 5% (cheap for Always/Never, expensive for rate/tail)</title></rect>
+  <text x="6" y="68" fill="#fff">dyn Sampler::should_sample</text>
+
+  <!-- RateLimitSampler branch (assumed 60% of production traffic uses rate-limit) -->
+  <rect x="0" y="72" width="720" height="16" fill="#2ca02c"><title>RateLimitSampler::should_sample — 60%</title></rect>
+  <text x="6" y="84" fill="#fff">RateLimitSampler::try_consume</text>
+  <rect x="0" y="88" width="720" height="16" fill="#98df8a"><title>Mutex::lock on tokens — blocks under contention</title></rect>
+  <text x="6" y="100" fill="#000">Mutex::lock(tokens)</text>
+  <rect x="0" y="104" width="120" height="16" fill="#d62728"><title>Instant::now() called twice (last_refill + refill)</title></rect>
+  <text x="6" y="116" fill="#fff">HOT: Instant::now() x 2</text>
+  <rect x="120" y="104" width="360" height="16" fill="#d62728"><title>f64 arithmetic on Mutex guard — held across math</title></rect>
+  <text x="126" y="116" fill="#fff">HOT: math under lock</text>
+  <rect x="480" y="104" width="240" height="16" fill="#d62728"><title>Atomic CAS would remove the lock entirely</title></rect>
+  <text x="486" y="116" fill="#fff">HOT: Mutex on every call</text>
+
+  <!-- ParentBasedSampler branch (default for distributed tracing) -->
+  <rect x="720" y="72" width="360" height="16" fill="#2ca02c"><title>ParentBasedSampler::should_sample — 30%</title></rect>
+  <text x="726" y="84" fill="#fff">ParentBasedSampler</text>
+  <rect x="720" y="88" width="360" height="16" fill="#98df8a"><title>SpanContext::is_sampled recurses up parent chain</title></rect>
+  <text x="726" y="100" fill="#000">is_sampled() recursive</text>
+  <rect x="720" y="104" width="360" height="16" fill="#d62728"><title>Box&lt;SpanContext&gt; recursion cannot short-circuit cheaply</title></rect>
+  <text x="726" y="116" fill="#fff">HOT: deep parent chain = cache miss per level</text>
+
+  <!-- TailBasedSampler branch (10%) -->
+  <rect x="1080" y="72" width="120" height="16" fill="#2ca02c"><title>TailBasedSampler::should_sample — 10%</title></rect>
+  <text x="1086" y="84" fill="#fff">TailBased</text>
+  <rect x="1080" y="88" width="120" height="16" fill="#98df8a"><title>armed flag check</title></rect>
+  <text x="1086" y="100" fill="#000">armed check</text>
+
+  <!-- Adapter dispatch (InMemoryAdapter dominant in tests; StdoutAdapter in dev) -->
+  <rect x="0" y="136" width="1200" height="16" fill="#9467bd"><title>adapter.submit(op) — 95% of remaining cost</title></rect>
+  <text x="6" y="148" fill="#fff">adapter.submit</text>
+
+  <!-- InMemoryAdapter -->
+  <rect x="0" y="152" width="960" height="16" fill="#c5b0d5"><title>InMemoryAdapter::submit — 80% of submit cost</title></rect>
+  <text x="6" y="164" fill="#fff">InMemoryAdapter::submit</text>
+  <rect x="0" y="168" width="960" height="16" fill="#d62728"><title>op.clone() — TraceOperation has HashMap attributes; deep clone on every submit</title></rect>
+  <text x="6" y="180" fill="#fff">HOT: op.clone() on every submit</text>
+  <rect x="0" y="184" width="480" height="16" fill="#d62728"><title>HashMap::clone deep-copies attributes</title></rect>
+  <text x="6" y="196" fill="#fff">HOT: HashMap clone</text>
+  <rect x="480" y="184" width="480" height="16" fill="#98df8a"><title>spans.lock() then push — single mutex hold</title></rect>
+  <text x="486" y="196" fill="#000">spans.lock() + push</text>
+
+  <!-- StdoutAdapter (dev only) -->
+  <rect x="960" y="152" width="240" height="16" fill="#c5b0d5"><title>StdoutAdapter::submit — 20% of submit cost</title></rect>
+  <text x="966" y="164" fill="#fff">StdoutAdapter</text>
+  <rect x="960" y="168" width="240" height="16" fill="#98df8a"><title>println! with format args</title></rect>
+  <text x="966" y="180" fill="#000">println!</text>
+
+  <!-- TailBasedSampler::observe (called on every span outcome) -->
+  <rect x="0" y="216" width="1200" height="16" fill="#8c564b"><title>TailBasedSampler::observe — per-span outcome path</title></rect>
+  <text x="6" y="228" fill="#fff">TailBasedSampler::observe</text>
+  <rect x="0" y="232" width="720" height="16" fill="#d62728"><title>window.lock() — second Mutex contention point</title></rect>
+  <text x="6" y="244" fill="#fff">HOT: window Mutex</text>
+  <rect x="0" y="248" width="360" height="16" fill="#d62728"><title>Vec::remove(0) is O(n) — VecDeque would be O(1)</title></rect>
+  <text x="6" y="260" fill="#fff">HOT: Vec::remove(0)</text>
+  <rect x="360" y="248" width="360" height="16" fill="#d62728"><title>window.iter().filter().count() every observe — could maintain running counter</title></rect>
+  <text x="366" y="260" fill="#fff">HOT: re-count errors per push</text>
+  <rect x="720" y="232" width="240" height="16" fill="#d62728"><title>Second lock on armed flag (separate Mutex)</title></rect>
+  <text x="726" y="244" fill="#fff">HOT: 2 locks per observe</text>
+  <rect x="960" y="232" width="240" height="16" fill="#98df8a"><title>bool push</title></rect>
+  <text x="966" y="244" fill="#000">bool push</text>
+
+  <!-- compat layer (macro family) -->
+  <rect x="0" y="280" width="1200" height="16" fill="#7f7f7f"><title>compat::info! macro expansion — invoked from submit() in some call paths</title></rect>
+  <text x="6" y="292" fill="#fff">tracing::info! / span! expansion</text>
+
+  <!-- bottom summary -->
+  <rect x="0" y="304" width="1200" height="16" fill="#bcbd22"/>
+  <text x="6" y="316" fill="#000">Total samples: 100% (1200 px wide = full call)</text>
+
+  <!-- legend -->
+  <rect x="0" y="340" width="1200" height="220" fill="#fff" stroke="#222"/>
+  <text x="8" y="358" font-weight="bold" fill="#000">Legend / hot-paths at a glance</text>
+  <text x="8" y="378" fill="#000">• Red frames  = optimization candidate (sampling decision + adapter submit path)</text>
+  <text x="8" y="396" fill="#000">• Green frames = standard library / data-structure internals</text>
+  <text x="8" y="414" fill="#000">• Purple       = caller-visible hot path (adapter submit + OTLP fan-out)</text>
+  <text x="8" y="432" fill="#000">• Brown        = tail-sampling observe path (separate from should_sample)</text>
+  <text x="8" y="452" fill="#000" font-weight="bold">Top optimization candidates for pheno-tracing:</text>
+  <text x="8" y="470" fill="#000">  1. RateLimitSampler: replace Mutex with AtomicU64 (CAS on fractional-tokens-as-fixed-point) — O-4</text>
+  <text x="8" y="488" fill="#000">  2. TailBasedSampler: Vec&lt;bool&gt; -&gt; VecDeque&lt;bool&gt; + running error counter (single lock)    — O-5</text>
+  <text x="8" y="506" fill="#000">  3. InMemoryAdapter::submit: move op into spans vec instead of clone                        — O-6</text>
+  <text x="8" y="524" fill="#000">  4. ParentBasedSampler: cache is_sampled() on the root SpanContext once (memoize)         — O-7</text>
+<!-- flamegraph: synthetic stamp = 2026-06-21T23:22:44Z -->
+</svg>

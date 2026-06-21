@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  benchmarks/flamegraph/mcp-router-baseline.svg — v20 T2 L44 synthetic baseline
+  Crate:  pheno-mcp-router
+  Hot top: route_request (decision layer: LlmPort + cost/budget/quota/audit middleware)
+  Synthetic: rendered when cargo-flamegraph / cargo-instruments is unavailable
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 580" width="1200" height="580" font-family="Verdana,Geneva,sans-serif" font-size="11">
+  <title>pheno-mcp-router baseline flamegraph (synthetic)</title>
+  <desc>SYNTHETIC baseline for pheno-mcp-router::route_request. Hot paths: provider-registry linear scan, 4-stage middleware chain (budget->quota->cost->audit), OTLP span emit per dispatch. 31 frames. See findings/2026-06-22-v20-T2-L44-flamegraph-deep-dives.md.</desc>
+
+  <rect width="1200" height="580" fill="#f5f5f5"/>
+  <rect x="0" y="0" width="1200" height="22" fill="#222"/>
+  <text x="8" y="16" fill="#fff">pheno-mcp-router :: route_request  (31 frames, SYNTHETIC baseline)</text>
+
+  <!-- ROOT -->
+  <rect x="0" y="40" width="1200" height="16" fill="#ff7f0e"><title>route_request (root, 100%) — per-request hot path</title></rect>
+  <text x="6" y="52" fill="#fff">pheno_mcp_router::route::route_request</text>
+
+  <!-- Provider registry resolve (polyglot registry; see KD-2 in architecture doc) -->
+  <rect x="0" y="56" width="1200" height="16" fill="#1f77b4"><title>LlmPort::resolve (provider + model selection) — 35% of route_request</title></rect>
+  <text x="6" y="68" fill="#fff">LlmPort::resolve(policy, ctx, budget_hint)</text>
+
+  <rect x="0" y="72" width="1200" height="16" fill="#98df8a"><title>provider_registry.iter() — currently a Vec, scanned linearly</title></rect>
+  <text x="6" y="84" fill="#000">provider_registry scan</text>
+  <rect x="0" y="88" width="600" height="16" fill="#d62728"><title>Vec&lt;ProviderEntry&gt; linear scan — HashMap keyed by (provider,model) would be O(1)</title></rect>
+  <text x="6" y="100" fill="#fff">HOT: linear provider scan</text>
+  <rect x="600" y="88" width="360" height="16" fill="#d62728"><title>policy predicate evaluated for every entry before short-circuit</title></rect>
+  <text x="606" y="100" fill="#fff">HOT: predicate before break</text>
+  <rect x="960" y="88" width="240" height="16" fill="#98df8a"><title>cached selection per (tenant, model) — first-call only</title></rect>
+  <text x="966" y="100" fill="#000">tenant cache hit path</text>
+
+  <!-- Middleware chain: budget -> quota -> cost -> audit (per KD-9 fail-closed order) -->
+  <rect x="0" y="104" width="1200" height="16" fill="#9467bd"><title>middleware::chain — 45% of route_request</title></rect>
+  <text x="6" y="116" fill="#fff">middleware chain (4 stages)</text>
+
+  <!-- budget stage -->
+  <rect x="0" y="120" width="1200" height="16" fill="#c5b0d5"><title>BudgetMiddleware::check — 25% (early-exit when over budget)</title></rect>
+  <text x="6" y="132" fill="#fff">BudgetMiddleware::check</text>
+  <rect x="0" y="136" width="480" height="16" fill="#d62728"><title>spent_usd counter — Mutex&lt;u64&gt; hot path; AtomicU64 would suffice</title></rect>
+  <text x="6" y="148" fill="#fff">HOT: Mutex&lt;u64&gt; on every request</text>
+  <rect x="480" y="136" width="240" height="16" fill="#98df8a"><title>limit lookup (HashMap&lt;Scope, Budget&gt;)</title></rect>
+  <text x="486" y="148" fill="#000">limit lookup</text>
+  <rect x="720" y="136" width="240" height="16" fill="#d62728"><title>BudgetExceed -> returns before quota/cost/audit (good: short-circuits)</title></rect>
+  <text x="726" y="148" fill="#fff">SHORT-CIRCUIT: over_budget</text>
+  <rect x="960" y="136" width="240" height="16" fill="#98df8a"><title>scope key hash</title></rect>
+  <text x="966" y="148" fill="#000">scope hash</text>
+
+  <!-- quota stage -->
+  <rect x="0" y="152" width="1200" height="16" fill="#c5b0d5"><title>QuotaMiddleware::check — 20%</title></rect>
+  <text x="6" y="164" fill="#fff">QuotaMiddleware::check</text>
+  <rect x="0" y="168" width="480" height="16" fill="#d62728"><title>rate limiter: Mutex on sliding window of timestamps</title></rect>
+  <text x="6" y="180" fill="#fff">HOT: rate-limiter Mutex</text>
+  <rect x="480" y="168" width="240" height="16" fill="#98df8a"><title>tenant key lookup</title></rect>
+  <text x="486" y="180" fill="#000">tenant lookup</text>
+  <rect x="720" y="168" width="240" height="16" fill="#98df8a"><title>sliding window eviction (VecDeque drain)</title></rect>
+  <text x="726" y="180" fill="#000">window eviction</text>
+  <rect x="960" y="168" width="240" height="16" fill="#98df8a"><title>retry-after computation</title></rect>
+  <text x="966" y="180" fill="#000">retry-after</text>
+
+  <!-- cost stage -->
+  <rect x="0" y="184" width="1200" height="16" fill="#c5b0d5"><title>CostMiddleware::estimate — 15%</title></rect>
+  <text x="6" y="196" fill="#fff">CostMiddleware::estimate</text>
+  <rect x="0" y="200" width="360" height="16" fill="#98df8a"><title>tokens_in / tokens_out estimation</title></rect>
+  <text x="6" y="212" fill="#000">token estimate</text>
+  <rect x="360" y="200" width="360" height="16" fill="#d62728"><title>per-model rate table: HashMap&lt;ModelId, Rate&gt; lookup</title></rect>
+  <text x="366" y="212" fill="#fff">HOT: rate table lookup</text>
+  <rect x="720" y="200" width="240" height="16" fill="#98df8a"><title>multiplier (spot / commit)</title></rect>
+  <text x="726" y="212" fill="#000">multiplier</text>
+  <rect x="960" y="200" width="240" height="16" fill="#98df8a"><title>cost_actual round-trip back to caller</title></rect>
+  <text x="966" y="212" fill="#000">cost_actual</text>
+
+  <!-- audit stage -->
+  <rect x="0" y="216" width="1200" height="16" fill="#c5b0d5"><title>AuditMiddleware::emit — 20% (per KD-4 OTLP span per dispatch)</title></rect>
+  <text x="6" y="228" fill="#fff">AuditMiddleware::emit</text>
+  <rect x="0" y="232" width="600" height="16" fill="#d62728"><title>OTLP span emit is synchronous; batch buffer would absorb bursts</title></rect>
+  <text x="6" y="244" fill="#fff">HOT: sync OTLP emit per dispatch</text>
+  <rect x="600" y="232" width="360" height="16" fill="#98df8a"><title>span attrs: tokens_in/out, cost_actual, provider, model</title></rect>
+  <text x="606" y="244" fill="#000">span attrs</text>
+  <rect x="960" y="232" width="240" height="16" fill="#98df8a"><title>tracing-subscriber sink</title></rect>
+  <text x="966" y="244" fill="#000">subscriber sink</text>
+
+  <!-- Adapter dispatch (Llama or OpenAICompat) -->
+  <rect x="0" y="256" width="1200" height="16" fill="#8c564b"><title>Adapter::dispatch — 20% of route_request</title></rect>
+  <text x="6" y="268" fill="#fff">adapter.dispatch(LlmPort::complete)</text>
+
+  <!-- OpenAICompatAdapter (assumed 70% of prod) -->
+  <rect x="0" y="272" width="840" height="16" fill="#c49c94"><title>OpenAICompatAdapter::complete — 70%</title></rect>
+  <text x="6" y="284" fill="#fff">OpenAICompatAdapter::complete</text>
+  <rect x="0" y="288" width="240" height="16" fill="#98df8a"><title>HTTP req build (reqwest)</title></rect>
+  <text x="6" y="300" fill="#000">HTTP req build</text>
+  <rect x="240" y="288" width="360" height="16" fill="#d62728"><title>retry/backoff on 429/5xx — max 3 retries, exponential</title></rect>
+  <text x="246" y="300" fill="#fff">HOT: 429/5xx backoff</text>
+  <rect x="600" y="288" width="240" height="16" fill="#98df8a"><title>JSON serde round-trip</title></rect>
+  <text x="606" y="300" fill="#000">JSON serde</text>
+
+  <!-- LlamaAdapter (30%) -->
+  <rect x="840" y="272" width="360" height="16" fill="#c49c94"><title>LlamaAdapter::complete — 30%</title></rect>
+  <text x="846" y="284" fill="#fff">LlamaAdapter::complete</text>
+  <rect x="840" y="288" width="180" height="16" fill="#98df8a"><title>server mode HTTP</title></rect>
+  <text x="846" y="300" fill="#000">server HTTP</text>
+  <rect x="1020" y="288" width="180" height="16" fill="#98df8a"><title>direct mode stdin</title></rect>
+  <text x="1026" y="300" fill="#000">direct stdin</text>
+
+  <!-- Response path (cost_actual + trace close) -->
+  <rect x="0" y="320" width="1200" height="16" fill="#7f7f7f"><title>response + audit close — return path</title></rect>
+  <text x="6" y="332" fill="#fff">response assembly</text>
+
+  <!-- bottom summary -->
+  <rect x="0" y="344" width="1200" height="16" fill="#bcbd22"/>
+  <text x="6" y="356" fill="#000">Total samples: 100% (1200 px wide = full call)</text>
+
+  <!-- legend -->
+  <rect x="0" y="380" width="1200" height="180" fill="#fff" stroke="#222"/>
+  <text x="8" y="398" font-weight="bold" fill="#000">Legend / hot-paths at a glance</text>
+  <text x="8" y="418" fill="#000">• Red frames  = optimization candidate (polyglot registry + middleware + retry)</text>
+  <text x="8" y="436" fill="#000">• Green frames = standard library / reqwest / JSON serde</text>
+  <text x="8" y="454" fill="#000">• Purple       = caller-visible hot path (middleware chain)</text>
+  <text x="8" y="472" fill="#000">• Brown        = adapter dispatch + audit emit (per-request wall cost)</text>
+  <text x="8" y="492" fill="#000" font-weight="bold">Top optimization candidates for pheno-mcp-router:</text>
+  <text x="8" y="510" fill="#000">  1. provider_registry: Vec -&gt; HashMap&lt;(Provider,Model), Entry&gt; for O(1) lookup        — O-8</text>
+  <text x="8" y="528" fill="#000">  2. BudgetMiddleware + QuotaMiddleware: Mutex -&gt; AtomicU64 (sharded per scope)          — O-9</text>
+  <text x="8" y="546" fill="#000">  3. AuditMiddleware: batch OTLP span emission (per-dequeue flush, max 100ms)          — O-10</text>
+<!-- flamegraph: synthetic stamp = 2026-06-21T23:22:44Z -->
+</svg>

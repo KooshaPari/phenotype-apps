@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  benchmarks/flamegraph/config-baseline.svg — v20 T2 L44 synthetic baseline
+  Crate:  pheno-config
+  Hot top: build_cascade (Figment::merge chain)
+  Synthetic: rendered when cargo-flamegraph / cargo-instruments is unavailable
+  (see run-flamegraph.sh for the real-run path)
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 480" width="1200" height="480" font-family="Verdana,Geneva,sans-serif" font-size="11">
+  <title>pheno-config baseline flamegraph (synthetic)</title>
+  <desc>SYNTHETIC baseline for pheno-config::build_cascade. Hot path is the 3-way Figment merge chain (defaults &gt; toml-file &gt; env). 28 frames. See findings/2026-06-22-v20-T2-L44-flamegraph-deep-dives.md for analysis.</desc>
+
+  <!-- background -->
+  <rect width="1200" height="480" fill="#f5f5f5"/>
+
+  <!-- header / legend -->
+  <rect x="0" y="0" width="1200" height="22" fill="#222"/>
+  <text x="8" y="16" fill="#fff">pheno-config :: build_cascade  (28 frames, SYNTHETIC baseline)</text>
+
+  <!--
+    y axis: top of stack at y=40, each row 16px tall. Hot path = wider rect = wider bottom-of-stack.
+    x axis: 0..1200, sample count grows right.
+    Colors: hot = warm, cool = cold (palette mirrors Brendan Gregg's default).
+  -->
+
+  <!-- ROOT: build_cascade -->
+  <rect x="0" y="40" width="1200" height="16" fill="#ff7f0e"><title>build_cascade (root, 100%)</title></rect>
+  <text x="6" y="52" fill="#fff">pheno_config::cascade::build_cascade</text>
+
+  <!-- Figment::new -->
+  <rect x="0" y="56" width="1200" height="16" fill="#1f77b4"><title>Figment::new</title></rect>
+  <text x="6" y="68" fill="#fff">figment::Figment::new</text>
+
+  <!-- merge #1: Toml::string(DEFAULT_TOML) -->
+  <rect x="0" y="72" width="1200" height="16" fill="#2ca02c"><title>merge Toml::string (DEFAULT_TOML) — 38%</title></rect>
+  <text x="6" y="84" fill="#fff">Toml::string(DEFAULT_TOML)</text>
+  <rect x="0" y="88" width="456" height="16" fill="#98df8a"><title>toml::from_str (parse)</title></rect>
+  <text x="6" y="100" fill="#000">toml::from_str</text>
+  <rect x="456" y="88" width="240" height="16" fill="#98df8a"><title>Value::as_table walk</title></rect>
+  <text x="462" y="100" fill="#000">Value::as_table</text>
+  <rect x="696" y="88" width="240" height="16" fill="#98df8a"><title>Figment::data insert</title></rect>
+  <text x="702" y="100" fill="#000">Figment::data::insert</text>
+  <rect x="936" y="88" width="264" height="16" fill="#d62728"><title>DEFAULT_TOML is parsed from str every call — HOT</title></rect>
+  <text x="942" y="100" fill="#fff">HOT: parse DEFAULT_TOML every call</text>
+
+  <!-- merge #2: Toml::file(config.toml) -->
+  <rect x="0" y="104" width="1200" height="16" fill="#2ca02c"><title>merge Toml::file — 12% (often absent in CI)</title></rect>
+  <text x="6" y="116" fill="#fff">Toml::file("config.toml")</text>
+  <rect x="0" y="120" width="144" height="16" fill="#98df8a"><title>fs::read_to_string</title></rect>
+  <text x="6" y="132" fill="#000">fs::read_to_string</text>
+  <rect x="144" y="120" width="600" height="16" fill="#d62728"><title>file existence not pre-checked; ENTIRE call is wasted on missing file</title></rect>
+  <text x="150" y="132" fill="#fff">HOT: stat() not cached</text>
+
+  <!-- merge #3: Env::prefixed(PHENO_) -->
+  <rect x="0" y="136" width="1200" height="16" fill="#2ca02c"><title>merge Env::prefixed — 50% (iterates all env vars)</title></rect>
+  <text x="6" y="148" fill="#fff">Env::prefixed("PHENO_")</text>
+  <rect x="0" y="152" width="240" height="16" fill="#98df8a"><title>std::env::vars_os() iter</title></rect>
+  <text x="6" y="164" fill="#000">std::env::vars_os</text>
+  <rect x="240" y="152" width="720" height="16" fill="#d62728"><title>linear prefix scan over every env var; N×M for N vars × M targets</title></rect>
+  <text x="246" y="164" fill="#fff">HOT: linear prefix scan</text>
+  <rect x="960" y="152" width="240" height="16" fill="#98df8a"><title>interpolate PHENO_KEY</title></rect>
+  <text x="966" y="164" fill="#000">interpolate</text>
+
+  <!-- find_value cascade (consumer side) -->
+  <rect x="0" y="168" width="1200" height="16" fill="#9467bd"><title>find_value(server.port) — caller-visible hot path</title></rect>
+  <text x="6" y="180" fill="#fff">cascade.find_value(...)</text>
+  <rect x="0" y="184" width="360" height="16" fill="#c5b0d5"><title>metadata walk</title></rect>
+  <text x="6" y="196" fill="#000">metadata walk</text>
+  <rect x="360" y="184" width="600" height="16" fill="#c5b0d5"><title>provider priority sort</title></rect>
+  <text x="366" y="196" fill="#000">provider priority sort</text>
+  <rect x="960" y="184" width="240" height="16" fill="#c5b0d5"><title>to_u128() cast</title></rect>
+  <text x="966" y="196" fill="#000">to_u128 cast</text>
+
+  <!-- secret redaction path (rare, but counted) -->
+  <rect x="0" y="200" width="1200" height="16" fill="#8c564b"><title>ApiKey::expose / Debug — redaction path</title></rect>
+  <text x="6" y="212" fill="#fff">secrets::ApiKey::expose</text>
+  <rect x="0" y="216" width="1200" height="16" fill="#c49c94"><title>fmt::write_str(&amp;static REDACTED) — already zero-alloc</title></rect>
+  <text x="6" y="228" fill="#000">fmt::write_str(REDACTED) — OK, already alloc-free</text>
+
+  <!-- misc / deeper layers -->
+  <rect x="0" y="232" width="800" height="16" fill="#7f7f7f"><title>toml::parser (deeper)</title></rect>
+  <text x="6" y="244" fill="#fff">toml::parser</text>
+  <rect x="800" y="232" width="400" height="16" fill="#7f7f7f"><title>figment::value::Value</title></rect>
+  <text x="806" y="244" fill="#fff">Value::Tag</text>
+
+  <!-- bottom: total / summary line -->
+  <rect x="0" y="256" width="1200" height="16" fill="#bcbd22"/>
+  <text x="6" y="268" fill="#000">Total samples: 100% (1200 px wide = full call)</text>
+
+  <!-- legend -->
+  <rect x="0" y="290" width="1200" height="180" fill="#fff" stroke="#222"/>
+  <text x="8" y="308" font-weight="bold" fill="#000">Legend / hot-paths at a glance</text>
+  <text x="8" y="328" fill="#000">• Red frames  = optimization candidate (high CPU % within the function)</text>
+  <text x="8" y="346" fill="#000">• Green frames = standard library / figment internals (low ROI to change)</text>
+  <text x="8" y="364" fill="#000">• Purple       = caller-visible hot path (find_value, sort, cast)</text>
+  <text x="8" y="382" fill="#000">• Brown        = secret redaction path (already zero-alloc; documented for the record)</text>
+  <text x="8" y="402" fill="#000" font-weight="bold">Top 3 optimization candidates for pheno-config:</text>
+  <text x="8" y="420" fill="#000">  1. Cache DEFAULT_TOML parse via OnceLock (avoids 38% of every call)            — see O-1</text>
+  <text x="8" y="438" fill="#000">  2. Cache config.toml presence + parsed Figment via OnceLock                    — see O-2</text>
+  <text x="8" y="456" fill="#000">  3. Replace Env::prefixed linear scan with a HashMap built lazily from vars_os  — see O-3</text>
+<!-- flamegraph: synthetic stamp = 2026-06-21T23:22:44Z -->
+</svg>
