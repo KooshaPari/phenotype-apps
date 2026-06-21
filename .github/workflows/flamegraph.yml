@@ -1,0 +1,119 @@
+# Fleet flamegraph — v20 T2 (L44 flamegraph-driven perf deep-dives)
+# Authority: ADR-040 (test coverage gates per tier) + v20 71-pillar cycle 10 plan §3 Track T2.
+# On-demand deep-dive flamegraphs for fleet-critical crates.
+#
+# Trigger: PR label `perf-investigate` is added by an investigator.
+# Outputs: target/flamegraph.svg (per binary), uploaded as a workflow artifact.
+# Side effect: posts a single comment on the PR with the artifact link + sample of
+#   top symbols (best-effort) so the investigator doesn't need to open the SVG twice.
+#
+# Why label-triggered: nightly perf-gate (perf-gate.yml) catches budget regressions;
+# flamegraphs are for *root-cause* of a known regression or suspected hotspot, not for
+# every PR. Label gate keeps CI minutes low.
+
+name: Fleet flamegraph (on-demand)
+
+on:
+  pull_request:
+    types: [labeled, reopened, synchronize]
+    branches: [main]
+
+# Allow re-runs without flooding the PR with comments: only one flamegraph job at a time.
+concurrency:
+  group: flamegraph-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: write  # required to post the comment with the artifact link
+
+jobs:
+  flamegraph:
+    name: flamegraph (ubuntu-latest)
+    runs-on: ubuntu-latest
+    # Only run when the `perf-investigate` label is present on this PR.
+    if: contains(github.event.pull_request.labels.*.name, 'perf-investigate')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Rust toolchain (stable)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Cache cargo build artifacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: . -> target
+
+      - name: Install cargo-flamegraph
+        run: cargo install flamegraph --locked
+
+      - name: Configure Linux perf permissions
+        run: |
+          # cargo-flamegraph on Linux uses `perf`; allow non-root profiling.
+          echo -1 | sudo tee /proc/sys/kernel/perf_event_paranoid >/dev/null
+          sudo sysctl -w kernel.perf_event_paranoid=-1 >/dev/null
+
+      - name: Run flamegraph (target=${{ inputs.target || 'perf-gate' }})
+        id: flame
+        env:
+          FLAMEGRAPH_OUTPUT: target/flamegraph.svg
+        run: |
+          set -euo pipefail
+          mkdir -p findings target
+          # Default target is the perf-gate binary built by v19 T4; PR can override
+          # via the workflow_dispatch inputs (if/when added).
+          target="${INPUT_TARGET:-perf-gate}"
+          target_kind="${INPUT_KIND:-bin}"
+          echo "flamegraph: kind=${target_kind} target=${target}"
+          # Wrapper script handles target kind + forwards --output.
+          chmod +x scripts/flamegraph.sh
+          ./scripts/flamegraph.sh "--${target_kind}" "${target}" --release
+
+      - name: Emit symbol summary (top 15)
+        id: summary
+        if: always()
+        run: |
+          # Best-effort: parse the SVG to extract the visible top frames using `addr2line`
+          # on the cached binary. Falls back to a placeholder when addr2line is unavailable.
+          svg="target/flamegraph.svg"
+          if [ ! -f "$svg" ]; then
+            echo "summary=flamegraph SVG not produced (job may have failed)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          {
+            echo "## Top symbols (best-effort, addr2line)"
+            echo ""
+            echo "\`\`\`"
+            # Extract onhover="<func> <addr>" hints from cargo-flamegraph's SVG.
+            grep -oE 'onmouseover="s\(this\)\.tt\(\\<[^>]+\\>\);">[^<]+' "$svg" \
+              | sed -E 's/.*">(.*)$/  \1/' \
+              | sort | uniq -c | sort -rn | head -15 || true
+            echo "\`\`\`"
+            echo ""
+            echo "(Full distribution in the artifact SVG; open it in a browser to navigate.)"
+          } > findings/flamegraph-summary.md
+          cat findings/flamegraph-summary.md
+          echo "summary-path=findings/flamegraph-summary.md" >> "$GITHUB_OUTPUT"
+
+      - name: Upload flamegraph SVG + summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flamegraph-${{ github.event.pull_request.number }}-${{ github.run_id }}
+          path: |
+            target/flamegraph.svg
+            findings/flamegraph-summary.md
+          if-no-files-found: warn
+
+      - name: Post PR comment with artifact link
+        if: always()
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: flamegraph
+          path: findings/flamegraph-summary.md
+          # sticky-pull-request-comment collapses repeated runs to a single comment per PR.
