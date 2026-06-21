@@ -1,8 +1,8 @@
 # Cargo configuration for v16 L22 (nextest + sccache adoption).
 #
 # This config is consumed by cargo when building/testing. It wires in:
-# - sccache for compilation caching (CI and local)
-# - thin LTO defaults
+# - sccache for compilation caching (CI and local) — opt-in via env var
+# - thin LTO defaults with embed-bitcode=yes (required by rustc 1.85+)
 # - target dir shared across the workspace for cache efficiency
 #
 # To use sccache locally, install it first: `cargo install sccache --locked`
@@ -12,9 +12,12 @@
 # use the shared target dir; speeds up CI by reusing artifacts across jobs
 target-dir = "target"
 
-# enable shared sccache compilation cache
-[build.rustc]
-# env RUSTC_WRAPPER=sccache is the primary mechanism
+# sccache: enable via env var, not via this config.
+# Cargo's [build.rustc] is a STRING (the RUSTC_WRAPPER), not a table — the
+# previous `[build.rustc]` table syntax (added in v16 L22) was a parse error
+# that broke every `cargo` invocation in the monorepo. To use sccache:
+#   cargo install sccache --locked
+#   export RUSTC_WRAPPER=sccache
 # (env var is preserved across workspaces)
 
 [target.x86_64-unknown-linux-gnu]
@@ -23,6 +26,10 @@ rustflags = [
   "-C", "link-arg=-fuse-ld=lld",
   "-C", "codegen-units=256",
   "-C", "lto=thin",
+  # rustc 1.85+ requires embed-bitcode=yes whenever LTO is enabled; without
+  # this, every build fails with `options -C embed-bitcode=no and -C lto are
+  # incompatible`.
+  "-C", "embed-bitcode=yes",
 ]
 
 [target.aarch64-unknown-linux-gnu]
@@ -31,6 +38,7 @@ rustflags = [
   "-C", "link-arg=-fuse-ld=lld",
   "-C", "codegen-units=256",
   "-C", "lto=thin",
+  "-C", "embed-bitcode=yes",
 ]
 
 [target.x86_64-apple-darwin]
@@ -38,6 +46,7 @@ linker = "clang"
 rustflags = [
   "-C", "codegen-units=256",
   "-C", "lto=thin",
+  "-C", "embed-bitcode=yes",
 ]
 
 [target.aarch64-apple-darwin]
@@ -45,6 +54,7 @@ linker = "clang"
 rustflags = [
   "-C", "codegen-units=256",
   "-C", "lto=thin",
+  "-C", "embed-bitcode=yes",
 ]
 
 # Cargo aliases for nextest (L22) — run with `cargo nextest run`
