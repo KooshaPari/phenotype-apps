@@ -12,13 +12,27 @@ env:
 
 jobs:
   test:
-    name: test (stable)
+    name: test (stable, nextest + sccache ≥80% per v16 T5 L22)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - run: cargo test --all-features
-      - run: cargo test --no-default-features
+      - name: Install nextest (v16 T5 L22)
+        run: cargo install cargo-nextest --locked
+      - name: sccache cache (v16 T5 L22)
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ubuntu-cargo-nextest-${{ hashFiles('**/Cargo.lock') }}
+          cache-on-failure: true
+      - name: Run nextest (--all-features)
+        run: cargo nextest run --profile ci --all-features
+      - name: Run nextest (--no-default-features)
+        run: cargo nextest run --profile ci --no-default-features
+      - name: Verify sccache hit-rate ≥80%
+        run: |
+          sccache --show-stats | tee /tmp/sccache.txt
+          HIT_RATE=$(grep -oP 'Cache hit rate: \K[0-9.]+' /tmp/sccache.txt || echo "0")
+          [ "${HIT_RATE%.*}" -ge 80 ] || exit 1
 
   audit:
     name: audit (rustsec)
