@@ -1,0 +1,1424 @@
+# Forge Sessions — Handwritten Prompts (Manual Resumption List)
+
+**Generated:** 2026-06-21
+**Source:** 800 most recent of 2,348 conversations (2026-05-14 to 2026-06-14)
+**Detection method:** Extracted actual first user messages from `forge conversation dump`, scored on real user-typing markers:
+- **Real typos:** eveiw, msot, likeyl, promtps, syntehsis, swher, havve, coutnless, reusme, researhc, incomplet, decouplig, refacs, layre, poolyrepo, na dsome, caht, iirc, libification, beleive, findign, etc.
+- **Lowercase first letter** (not code/paths)
+- **Casual contractions** (im, dont, cant, wont)
+- **Short prompts without terminal punctuation**
+
+**Excluded:** Current self-referential conversation (the task that spawned this work).
+
+---
+
+## Summary
+
+| Metric | Count |
+|--------|-------|
+| **Total raw matches in 800 most recent** | 130 |
+| **Unique handwritten prompts (deduped)** | 87 |
+| **After excluding current self-reference** | 87 |
+| **Score range** | 4–22 (higher = more confident) |
+
+---
+
+## Manual Resumption List — All Unique Handwritten Prompts
+
+These are the conversations where **you typed informally with typos, lowercase starts, and casual phrasing** — your authentic handwritten inputs. Resume any with the exact command:
+
+```bash
+# 1. [22pts] ❯ remember tooling modernization, e.g. make to just\task or other, hexagonal poolyrepo refacs and ot
+forge --conversation-id 076a308d-380a-4761-a3c1-1fc66400beda
+
+# 2. [18pts] vsv /   ❯ disk is full because of countless /     worktrees left unfinished or /     unpushed \merged in r
+forge --conversation-id 68eee8f5-db46-4584-acae-93599c4b0ffc
+
+# 3. [18pts] ❯  docs/worklogs/README.md read& follow + resume, move docs there properly audit deeper  add even mo
+forge --conversation-id 4989d9d7-066a-489f-acf4-e4c6a5f3847b
+
+# 4. [18pts] ❯ disk is full because of countless /     worktrees left unfinished or /     unpushed \merged in repos/.
+forge --conversation-id caf7e000-ec01-49f8-a308-5f7f5e45e7b5
+
+# 5. [15pts] state of omniroute fork (basic fixes to api etc), and omniroute rust rewtite, multiple involved forg
+forge --conversation-id cba68ce9-8d5a-4b01-93a7-fd143d5480e1
+
+# 6. [13pts] more: https://forgecode.dev/docs/zsh-support │ / └────────────────────────────────────────────────────
+forge --conversation-id f13ec618-4148-445e-8cca-fc14fdeb3a05
+
+# 7. [11pts] reusme
+forge --conversation-id dda5ec14-cdec-4051-bdcb-c1fe8e514c5b
+
+# 8. [10pts] need a strong multi-agent-multi-project DAG file in repos, I assume this will lead to sqlite but don
+forge --conversation-id bd9f49f9-b635-44da-968b-9f5b11dcca1a
+
+# 9. [9pts] omniroute had an update and all my config data etc is lost. you have fixed this before I beleive by 
+forge --conversation-id 801c1250-c9db-4da0-adfb-484d4917f941
+
+# 10. [7pts] echo hi and exit
+forge --conversation-id 19e469e6-f436-4617-824d-bcd8f9192531
+
+# 11. [7pts] first research + plan
+forge --conversation-id 677cea5c-df38-403c-be5e-55a8c1a5775e
+
+# 12. [7pts] echo test
+forge --conversation-id 41c4424e-89a5-4369-8d19-a740f230fecf
+
+# 13. [7pts] echo hello and exit immediately
+forge --conversation-id b352d0bd-e00d-4307-a26f-6f987ae3298a
+
+# 14. [7pts] proceed
+forge --conversation-id 33268773-49e3-4a07-acb3-a9c954584ace
+
+# 15. [7pts] resume
+forge --conversation-id c134f76f-efa0-412f-b6c7-b14301196254
+
+# 16. [7pts] work on civis bakcned\sim itemsa nd help progress heavily
+forge --conversation-id fe66ab8e-3415-4ef0-9094-8a4da77308da
+
+# 17. [7pts] consolidate\cherrypick\rebase\replay and begin PRing all Agileplus branches to main, resolving code 
+forge --conversation-id 6f702a2f-b4bf-4184-aa30-4ee557eb12bb
+
+# 18. [7pts] eval forgecode repo, how does compaction work at current
+forge --conversation-id 54978fc0-3e5e-4d35-8563-8f5a0fb46d75
+
+# 19. [7pts] resum einferecne stack work plz
+forge --conversation-id b13806dd-04c5-4514-879f-932de8ee1d3f
+
+# 20. [7pts] what is 2+2
+forge --conversation-id e2993308-0bfe-4fea-abe5-ea1ae0b44316
+
+# 21. [7pts] splice downloads are all failing in the APp, can you check logs and figure out why
+forge --conversation-id d5c9cb09-599e-470c-a9fb-0498205fac92
+
+# 22. [7pts] please fix this real quick
+forge --conversation-id f191f8b5-d973-4d4a-835d-1d58c703c728
+
+# 23. [7pts] consolidate\cherrypick\rebase\replay and begin PRing all Agileplus branches to main, resolving code 
+forge --conversation-id 3b77c074-3e02-4b79-99fc-9b3dcb12eae7
+
+# 24. [7pts] echo forge_test_alive
+forge --conversation-id 99d9e245-2b6c-48fb-9c0d-24b0839eb36e
+
+# 25. [7pts] echo forge_alive_$(date +%s)
+forge --conversation-id 741445b2-a441-4423-9e27-cb6c927cfffd
+
+# 26. [7pts] read local forgecode conversatons to surmise where you crashed when working on emlosviz to then resu
+forge --conversation-id 5952e716-7995-4bf8-9ad5-6db35853028c
+
+# 27. [7pts] review claude code session jsonls, they complain about tool access, omniroute logs need to be viewed
+forge --conversation-id 205a6ce3-ee89-4807-be68-c758578f5560
+
+# 28. [7pts] echo forge_alive
+forge --conversation-id f62af510-aee6-4c36-8160-d7544ba105ac
+
+# 29. [7pts] bring up eye tracker and bring functional, currently eye track via webcam is bad, python must be swa
+forge --conversation-id 878f33bd-f8ec-4738-95e2-58df5d2a24cc
+
+# 30. [7pts] i want to use vix agent with my claude code config defiend in ~/.claude (the omniroute)
+forge --conversation-id c6f56d46-2375-4ece-9a96-440855f6815a
+
+# 31. [7pts] please configure claurst based on claude (their ~/.cl.... files)
+forge --conversation-id 1986d8fb-32e5-4086-9e35-72b58382a498
+
+# 32. [6pts] need you batch a set of calls for codex feature enable, the cmd doesnt support batched args like i h
+forge --conversation-id 2e0cc4a6-7db2-4170-b078-db088b4f3a31
+
+# 33. [6pts] call agents to review in bg and finish the merge. codex 5.3 codex spark low exec agents, call them i
+forge --conversation-id e433e268-d54b-42c9-827e-21253bdfd862
+
+# 34. [6pts] work on next if done -skill-20260325           [v2.2.0/MiniMax-M2.7-highspeed/17516043] / ::: ❯ find b
+forge --conversation-id ef2c5ccd-0d44-44f5-820e-fa5a9b13efd1
+
+# 35. [6pts] https://github.com/diegosouzapw/OmniRoute/issues/3932#issuecomment-4756295505 respond to diego's com
+forge --conversation-id 002f8d4e-128e-4e0a-a60c-b856438eb3cc
+
+# 36. [6pts] t-disable, fix oxlint flags / 31c17d8d58 fix: React 19 compatibility + fumadocs updates for docs app / b
+forge --conversation-id 37cb6774-8f91-4e7c-a2d5-6b8c9e3f1a7d
+
+# 37. [6pts] staff     96 Apr 27 18:37 agent-wave-docs / drwxr-xr-x@  63 kooshapari  staff   2016 Apr  2 15:03 agen
+forge --conversation-id 00e35eec-322b-42c4-a566-e4e5e18d4fd0
+
+# 38. [6pts] plz investigate following omnirotue issues and scrape logs asneedeed esponse (HTTP 200) — /      check
+forge --conversation-id aabf5492-17fc-49d7-99da-3165bb946a53
+
+# 39. [6pts] orge-dev /  _____ / |  ___|__  _ __ __ _  ___ / | |_ @[/] _ \| '__/ _` |/ _ \ / |  _| (_) | | | (_| |  __/ / |
+forge --conversation-id f625defe-492c-431a-a907-cbaa232752c2
+
+# 40. [6pts] current state?
+forge --conversation-id 50362f2f-bde1-4c84-a8d2-4a52caa28a49
+
+# 41. [6pts] at some point i asked an agent to create an ascii startup animation for a helios project, i think it
+forge --conversation-id 7b2d87fa-c0aa-4bcc-9434-7065f9aac077
+
+# 42. [6pts] $loop resume all forge sessions here and in ../cursor-reset-(whatever the rest of theis foldername i
+forge --conversation-id 9dd23c72-eec1-4a81-a1a2-2ceb5ab06c3f
+
+# 43. [6pts] contentscript.js:14083 MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 c
+forge --conversation-id e3c2ec82-d355-405f-a662-0fe36e2f1b73
+
+# 44. [6pts] https://github.com/KooshaPari/pheno-worklog-schema and similar pheno- or phenotype- style repos need
+forge --conversation-id 0d3e2362-d5fd-4bfd-a039-9fca96604949
+
+# 45. [6pts] ❯ use subagents, 1 per worktree, deploy 20. /   ❯ teammates preferred perhasp?  /  / ❯ .claude has a swath
+forge --conversation-id 84228eb8-eae0-41cf-95db-f320a7968c59
+
+# 46. [6pts] help finish whatever parts of civis' non sim(antoher agent assigned) you can do thats incomplete and
+forge --conversation-id 62e9b171-eeb4-4354-b729-1166b5963c03
+
+# 47. [6pts] s/thegent/apps/byteport/backend/api/.gomodcache/golang.org/x/text@v0.17.0/internal/language/compose.
+forge --conversation-id 855daaf5-2537-419a-aced-dcc58e699d55
+
+# 48. [6pts] quick tests, by reading the code and readmes (isolated e.g. if missing readme able to also) evaluate
+forge --conversation-id 88a7bbd6-5f9f-4c70-9ecb-d38e9c71a59a
+
+# 49. [6pts] ey, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(
+forge --conversation-id 7f7cf43e-adf1-470b-b506-a45b09c2da86
+
+# 50. [6pts] phenoEvaluation Private archive / Phenotype evaluation framework / deprecated /  Python MIT License Update
+forge --conversation-id e26bc50c-8ab3-442e-b6f7-1fbb7b2a3a87
+
+# 51. [6pts] forge / Last login: Sat Apr  4 23:18:52 on ttys029 / [WARN] - (starship::utils): Executing command '/usr
+forge --conversation-id 3e540cbe-a371-454c-a9f5-dc0a4a8def18
+
+# 52. [6pts] f move to correct space if done and you are sure ntohing useful both lcoal and rmeote (cehck stashes
+forge --conversation-id ca67d732-0fb2-4052-ab93-9ca5e6200b7b
+
+# 53. [6pts] what python can and hsould -> Typescript 7 \ Rust latest; Go Latest; Zig latest; mojo latest; C# lat
+forge --conversation-id 42cdd7ce-bddf-4ee5-b7ad-94138d6f2faf
+
+# 54. [6pts] phenotype-rust-metrics Public archive / Phenotype metrics library following hexagonal architecture / Upd
+forge --conversation-id 6da1079c-c923-4890-becf-d91b5038c2a0
+
+# 55. [6pts] syn v2.0.117 /     Checking signal-hook-registry v1.4.8 /     Checking parking_lot v0.12.5 / The code is c
+forge --conversation-id 54c76547-2f7d-4270-ba39-1d5de4287c96
+
+# 56. [6pts] dLast login: Sun Apr  5 00:21:48 on ttys002 / ^R / forge / [WARN] - (starship::utils): Executing command '
+forge --conversation-id 43051163-5aab-4c01-9341-3ae8c470d0bd
+
+# 57. [6pts] create mode 100644 rustfmt.toml /  delete mode 160000 template-commons / The merge was successful. Let m
+forge --conversation-id 17ab973d-8106-4551-a0d8-72ae7eecd01c
+
+# 58. [6pts] |             ------ borrow later stored here / 102 |             let entry = self /     |              
+forge --conversation-id 45fc0c71-2a48-4a52-8dc5-dec538294e35
+
+# 59. [6pts] ❯  continue to next / FORGE repos main / ❯ plan decomposition or move of phenosdk codes too toerher exis
+forge --conversation-id efd5d493-99dd-4ee1-902c-6847d98c0718
+
+# 60. [6pts] plan decomposition or move of phenosdk codes too toerher exisitng or new repos FORGE repos main this
+forge --conversation-id 66bdb3fb-4a08-49ff-bb10-36efc001269f
+
+# 61. [6pts] orge / Last login: Sat Apr  4 20:43:44 on ttys004 / forge / [WARN] - (starship::utils): Executing command 
+forge --conversation-id 9b334daa-1b18-40fe-b25c-e276e345bf19
+
+# 62. [6pts] 2. phenotype-project-registry (550 lines) - /    Has project discovery and metadata, but /    missing: /  
+forge --conversation-id 417f3231-94f1-441a-9a82-29061dbec6fd
+
+# 63. [6pts] chore-governance-baseline-clean / chore-runtime-local-deploy / chore-runtime-local-deploy-clean / dashboar
+forge --conversation-id ac7840af-4c76-4128-8262-4d97fe175c42
+
+# 64. [6pts] 5u%                                                                            ~/C/P/repos   main
+forge --conversation-id d47bce9d-fe9b-4aed-b96b-67793790ad96
+
+# 65. [6pts] 'vitest'; / import { tracesTo } from '@phenotype/tstreqt/vitest'; /  / test('feature', tracesTo('FR-AGILE-
+forge --conversation-id 63b85f61-494c-40a7-a3ce-e85ad60f6572
+
+# 66. [6pts] :null,'description':'A lightweight atomic lock.','source':'registry+https://github.com/rust-lang/cra
+forge --conversation-id 28a171ae-3185-4f1d-854a-4a06b2372999
+
+# 67. [6pts] work to absorb wholy into playcua (kmobile, kdesktopvirt, similar repos e.g. eidolon, otehrs) you w
+forge --conversation-id c2aa1dbd-934d-4a94-9566-2418365daaf9
+
+# 68. [6pts] pari@gmail.com /     ▀▀▀▀▀▀▀▀      ~/CodeProjects/Phenotype/repos /    ▄▀▀    ▀▀▄ /   ▄▀▀      ▀▀▄ /  / Eligib
+forge --conversation-id 0ff3f3be-7ea2-4a19-85ff-272d5691626f
+
+# 69. [6pts] covery_2026-06 │       │                      │                    │ / │ -06/)                        
+forge --conversation-id f1abf6c4-b166-4c53-a53c-eb9d5e846eb0
+
+# 70. [6pts] resume session: ration.rs / Clean — only the new test file is unstaged. Now amend the WIP commit with 
+forge --conversation-id 82dc0ce9-4a43-4ffe-9792-a6ed574c5716
+
+# 71. [6pts] ps://github.com/rust-lang/crates.io-index','req':'^1.0.0','kind':null,'rename':'core','optional':tru
+forge --conversation-id 900e74f1-52bb-4889-8fcc-73dc24038c98
+
+# 72. [6pts] manifest_path':'/Users/kooshapari/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thread_local-
+forge --conversation-id 6896bc99-a819-4e2b-980b-2a9ae1a5b97b
+
+# 73. [6pts] its with missing trait definitions / 2. Migrate phenotype-cache-adapter to use phenotype-port-traits / 3
+forge --conversation-id bae12920-c733-494c-849e-aa44de915122
+
+# 74. [6pts] sec.scan.github@gmail.com / Fri, Jun 5, 5:27 AM (8 days ago) / to me /  /  / Hey, / I'm Robin — a Security Engin
+forge --conversation-id e45cc6c8-817e-49d8-b4c6-819b51c0a175
+
+# 75. [6pts] theme 'One Dark' not found, tried path '/Applications/Ghostty.app/Contents/Resources/ghostty/themes/
+forge --conversation-id c853f721-06d8-4b13-8cc6-745587fb0877
+
+# 76. [6pts] we just crashed, there are many many many chats I launched in forgecode. it only shows 100\100 in th
+forge --conversation-id 34192003-e1b0-4abf-b45f-613a10f6a415
+
+# 77. [6pts] https://github.com/KooshaPari/Sidekick seems to have overlap with other repos I own, eval against bo
+forge --conversation-id 197c0754-4803-4cb3-82cc-54dd022006ec
+
+# 78. [5pts] many docs are msising proper journeys keyframes\recordings like that /   which we made for hwledger. a
+forge --conversation-id 075b50c5-07df-45a0-80eb-811589e4c132
+
+# 79. [5pts] the .claude here, ins ome projs, and in ~ are broken, e.g. it seems tob e what id expect as a diff a
+forge --conversation-id 3fe4f24a-1aee-458b-b4d7-3d87ce621dc6
+
+# 80. [5pts] as you can see i wasnt ble to get the auto gen of the two items, i manually found machid, where is a
+forge --conversation-id 6dd02751-a242-48b7-ab48-0ef9726df39b
+
+# 81. [5pts] L6 side-DAG filler — SOTA sweep on libification substrate crates. The 3 new crates at /Users/kooshap
+forge --conversation-id b05b876c-61b3-4787-86b2-73c5927cd29e
+
+# 82. [5pts] CI and github Ops seems like it needs deep polish and handling, for one htere are many repos that ar
+forge --conversation-id 5a813c60-087e-4692-b2fb-fbb0dfcacfea
+
+# 83. [5pts] haiku agents /   ⎿  Please run /login · API Error: 401 {'type':'error','error':{'type':'authentication
+forge --conversation-id 030fd0b5-4d35-427d-9b9e-2c4724fb5b43
+
+# 84. [4pts] Analyze phenotype- repositories at /Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-: 1) C
+forge --conversation-id f6f27f8e-8646-4667-93ac-7b91c1eeb267
+
+# 85. [4pts] Audit cross-repository patterns across heliosApp, heliosCLI, portage, phenoSDK, thegent: 1) Identify
+forge --conversation-id 36374c9b-a3e6-44d5-a338-bf04325db97b
+
+# 86. [4pts] Create libification roadmap with dependencies and priority: rank extraction opportunities by: 1) Reu
+forge --conversation-id 71cdfc92-26c3-4671-8a3f-2c2497780901
+
+# 87. [4pts] Audit phenoSDK current state at /Users/kooshapari/CodeProjects/Phenotype/repos/phenoSDK: 1) Count al
+forge --conversation-id 26036055-2e47-44c6-988e-80ace5820833
+
+```
+
+---
+
+## Full Content of Each Prompt
+
+### 1. `076a308d-380a-4761-a3c1-1fc66400beda` (score=22, typos=4, typo_list=['layre', 'poolyrepo', 'decouplig', 'refacs'], lower_start=True)
+**Updated:** 12days 3h 51m ago
+**Title:** Multi-Repo Audit And SOTA Roadmap
+
+```
+❯ remember tooling modernization, e.g. make to just\task or other, hexagonal poolyrepo refacs and other items e.g. wrap over hand roll, extensible designs, composio like decouplig by layre. cheap llm mcp as aproject needs to be merged\cosnumed into another proejct. same goes for toehr iems. and dotn forget to deal with existing, wtrees, satqashs, prs etc to unfiy current stqate into one main you can eval and get next steps DAG more robustly\clearly from ins uch a way that everyone can work unfiormly\clearly agaisnt SSOT and traceable state. stabilize + finish smallest\easiest -> optimise to fu
+```
+
+### 2. `68eee8f5-db46-4584-acae-93599c4b0ffc` (score=18, typos=3, typo_list=['coutnless', 'adn ', 'havve'], lower_start=True)
+**Updated:** 12days 3h 49m ago
+**Title:** Repository Hygiene Audit With Deep Research
+
+```
+vsv
+  ❯ disk is full because of countless
+    worktrees left unfinished or
+    unpushed \merged in repos/.claude
+    work on them in order we also havve coutnless worktrees, in Codeprojects, buried inv arious places, perhaps movement to and organization under the .claude/worktrees is better, THEN move to work on them, im pasting this to amny agents to so pick at random
+t oa void collision, lastly use subagetns haeavily for reseear ch adn planniing
+```
+
+### 3. `4989d9d7-066a-489f-acf4-e4c6a5f3847b` (score=18, typos=3, typo_list=['libification', 'consoldiation', 'inital'], lower_start=True)
+**Updated:** 6days 10h 35m ago
+**Title:** untitled
+
+```
+❯  docs/worklogs/README.md read& follow + resume, move docs there properly audit deeper  add even more research as of 2026 always inital root prompt that generated that readme (i toss and turn int he following prompt bc it was sent to various agents, appended a new task each time). use subagents liberally identify duplication among an d inside indiv projects\cross project. opportunity for libification \ pattern generation \ productization \ consoldiation \ general (LOC-- Quality>=Same) use web search to identify repos or packages that can be forked\used\wrapped et cetera as well to help in thi
+```
+
+### 4. `caf7e000-ec01-49f8-a308-5f7f5e45e7b5` (score=18, typos=3, typo_list=['coutnless', 'adn ', 'havve'], lower_start=True)
+**Updated:** 6days 1h 18m ago
+**Title:** Multi-Repo Audit And Dag Planning
+
+```
+❯ disk is full because of countless
+    worktrees left unfinished or
+    unpushed \merged in repos/.claude
+    work on them in order we also havve coutnless worktrees, in Codeprojects, buried inv arious places, perhaps movement to and organization under the .claude/worktrees is better, THEN move to work on them, im pasting this to amny agents to so pick at random
+t oa void collision, lastly use subagetns haeavily for reseear ch adn planniing
+```
+
+### 5. `cba68ce9-8d5a-4b01-93a7-fd143d5480e1` (score=15, typos=2, typo_list=['adn ', 'reusme'], lower_start=True)
+**Updated:** 1month 20days 7h 17m 24s ago
+**Title:** untitled
+
+```
+state of omniroute fork (basic fixes to api etc), and omniroute rust rewtite, multiple involved forge code sesions to scrape, eval adn reusme
+```
+
+### 6. `f13ec618-4148-445e-8cca-fc14fdeb3a05` (score=13, typos=2, typo_list=['adn ', 'reusme'], lower_start=True)
+**Updated:** 1month 19days 19h 24s ago
+**Title:** Omniroute Projects State Investigation
+
+```
+more: https://forgecode.dev/docs/zsh-support │
+└──────────────────────────────────────────────────────┘
+● [07:08:36] Initialize cba68ce9-8d5a-4b01-93a7-fd143d5480e1
+ repos  chore/pin-github-actions-shas
+󰄾 :output-compact
+● [07:08:42] ERROR: Unknown command ':output-compact'. Run ':help' to list available commands.
+ repos  chore/pin-github-actions-shas
+󰄾 state of omniroute fork (basic fixes to api etc), and omniroute rust rewtite, multiple involved forge code sesions to scrape, eval adn reusme
+⠹ Processing 00s · Ctrl+C to interrupt
+The user is asking about the state of several projects:
+1. 
+```
+
+### 7. `dda5ec14-cdec-4051-bdcb-c1fe8e514c5b` (score=11, typos=1, typo_list=['reusme'], lower_start=True)
+**Updated:** 16m ago
+**Title:** Engineering Governance And Architecture Refactor
+
+```
+reusme
+```
+
+### 8. `bd9f49f9-b635-44da-968b-9f5b11dcca1a` (score=10, typos=1, typo_list=['na dsome'], lower_start=True)
+**Updated:** 12days 3h 46m ago
+**Title:** Multi-Agent DAG Orchestration with Deduplication and Distrib...
+
+```
+need a strong multi-agent-multi-project DAG file in repos, I assume this will lead to sqlite but dont be locked to it otherwise. Agents will need concurrency blocking na dsome form of fuzz duplication or other similarity detections given 2 agents may create idneticAl task items that are semantically written differently. repo ownership claiming and hte same for branchs, wtrees and collection of all local projects (factoring mangled git or no git)with their branches\wtrees and the same for remote so agents can receive the same work on my org projects or other prompt (here is that prompt at the v
+```
+
+### 9. `801c1250-c9db-4da0-adfb-484d4917f941` (score=9, typos=1, typo_list=['beleive'], lower_start=True)
+**Updated:** 23days 22h 21m ago
+**Title:** Repository Audit
+
+```
+omniroute had an update and all my config data etc is lost. you have fixed this before I beleive by findign a db backup or similar, this is NOT in a codebase but somehwere in ~ or another user\system fodler.
+```
+
+### 10. `19e469e6-f436-4617-824d-bcd8f9192531` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 11h 12m ago
+**Title:** [empty]
+
+```
+echo hi and exit
+```
+
+### 11. `677cea5c-df38-403c-be5e-55a8c1a5775e` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 12days 23h 19m ago
+**Title:** Terminate Session Command
+
+```
+first research + plan
+```
+
+### 12. `41c4424e-89a5-4369-8d19-a740f230fecf` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 12days 6h 5m ago
+**Title:** untitled
+
+```
+echo test
+```
+
+### 13. `b352d0bd-e00d-4307-a26f-6f987ae3298a` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 12days 6h ago
+**Title:** Codebase Hygiene Audit Request
+
+```
+echo hello and exit immediately
+```
+
+### 14. `33268773-49e3-4a07-acb3-a9c954584ace` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1day 1h 34m ago
+**Title:** Continue Task Execution
+
+```
+proceed
+```
+
+### 15. `c134f76f-efa0-412f-b6c7-b14301196254` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1day 23h 26m ago
+**Title:** Resume Builder And Formatter
+
+```
+resume
+```
+
+### 16. `fe66ab8e-3415-4ef0-9094-8a4da77308da` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1day 23h 43m ago
+**Title:** Consolidate Branches and Resolve Bot Reviews
+
+```
+work on civis bakcned\sim itemsa nd help progress heavily
+```
+
+### 17. `6f702a2f-b4bf-4184-aa30-4ee557eb12bb` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1day 23h 43m ago
+**Title:** [empty]
+
+```
+consolidate\cherrypick\rebase\replay and begin PRing all Agileplus branches to main, resolving code review cmts genrated
+ by bots, tehn emrging (civis tracera NOT agileplus)
+```
+
+### 18. `54978fc0-3e5e-4d35-8563-8f5a0fb46d75` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 14days 22h 7m 24s ago
+**Title:** Thegent Presplit Scope Status
+
+```
+eval forgecode repo, how does compaction work at current
+```
+
+### 19. `b13806dd-04c5-4514-879f-932de8ee1d3f` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 19days 20h 15m 24s ago
+**Title:** Inference Stack fe56c174 Status
+
+```
+resum einferecne stack work plz
+```
+
+### 20. `e2993308-0bfe-4fea-abe5-ea1ae0b44316` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 20days 17h 44m 24s ago
+**Title:** untitled
+
+```
+what is 2+2
+```
+
+### 21. `d5c9cb09-599e-470c-a9fb-0498205fac92` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 20h 58m 24s ago
+**Title:** Forge-Dev Binary Not Rebuilding After Overflow Fix
+
+```
+splice downloads are all failing in the APp, can you check logs and figure out why
+```
+
+### 22. `f191f8b5-d973-4d4a-835d-1d58c703c728` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 26days 14h 56m 24s ago
+**Title:** Could you provide more details about what needs fixing? For ...
+
+```
+please fix this real quick
+```
+
+### 23. `3b77c074-3e02-4b79-99fc-9b3dcb12eae7` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 20h 35m ago
+**Title:** Agileplus Branches Consolidated Into Main
+
+```
+consolidate\cherrypick\rebase\replay and begin PRing all Agileplus branches to main, resolving code review cmts genrated by bots, tehn emrging
+```
+
+### 24. `99d9e245-2b6c-48fb-9c0d-24b0839eb36e` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 22h 16m ago
+**Title:** Phenotype Router Core Design
+
+```
+echo forge_test_alive
+```
+
+### 25. `741445b2-a441-4423-9e27-cb6c927cfffd` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 22h 6m ago
+**Title:** Drop Windows CI Matrix Per ADR-023
+
+```
+echo forge_alive_$(date +%s)
+```
+
+### 26. `5952e716-7995-4bf8-9ad5-6db35853028c` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 23days 21h 53m ago
+**Title:** I don't have the ability to access local files on your syste...
+
+```
+read local forgecode conversatons to surmise where you crashed when working on emlosviz to then resume va subagents
+```
+
+### 27. `205a6ce3-ee89-4807-be68-c758578f5560` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 26days 2h 19m ago
+**Title:** I can’t directly access your repos from here, but I can help...
+
+```
+review claude code session jsonls, they complain about tool access, omniroute logs need to be viewed for root cause analysis
+```
+
+### 28. `f62af510-aee6-4c36-8160-d7544ba105ac` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 5days 3h 29m ago
+**Title:** Fix Zsh Bomb In Procs And Fx
+
+```
+echo forge_alive
+```
+
+### 29. `878f33bd-f8ec-4738-95e2-58df5d2a24cc` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** 7m ago
+**Title:** Predictive DRY Architecture Governance Update
+
+```
+bring up eye tracker and bring functional, currently eye track via webcam is bad, python must be swapped in full to go\rust\zig\mojo\C++
+```
+
+### 30. `c6f56d46-2375-4ece-9a96-440855f6815a` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** ```json
+**Title:** 
+
+```
+i want to use vix agent with my claude code config defiend in ~/.claude (the omniroute)
+```
+
+### 31. `1986d8fb-32e5-4086-9e35-72b58382a498` (score=7, typos=0, typo_list=[], lower_start=True)
+**Updated:** ```json
+**Title:** 
+
+```
+please configure claurst based on claude (their ~/.cl.... files)
+```
+
+### 32. `2e0cc4a6-7db2-4170-b078-db088b4f3a31` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 12days 1h 30m ago
+**Title:** Got it — since `codex features enable` doesn’t take multiple...
+
+```
+need you batch a set of calls for codex feature enable, the cmd doesnt support batched args like i have, will need codex enable [1x feature]  codex features enable apps_mcp_path_override chronicle auth_elicitation enable_mcp_apps external_migration mentions_v2 multi_agent_v2 network_proxy remote_compaction_v2 remote_plugin responses_websocket_response_processed tool_search_always_defer_mcp_tools code_mode_only default_mode_request_user_input and then for disables: er development  true
+apps                                    stable             true
+artifact                                under 
+```
+
+### 33. `e433e268-d54b-42c9-827e-21253bdfd862` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 12m ago
+**Title:** Multi Agent Dag Repo Orchestration
+
+```
+call agents to review in bg and finish the merge. codex 5.3 codex spark low exec agents, call them in a async way so you can check back later and they can work full turn to finish those items. otherwise: move to create new dag, 100 tasks, not allowed to shrink task size to fit such a QTY. Parallelism (Tree width) max 10 or whatever your fixed limit on spawning subagents is, if unlim no more than 20. if at a certain step you cannot fill your 20 you must find other tasks in repo or in kooshapari acct\local to fill with equally sized tasks, and\or mindful sub\side DAGs that complement to fill the
+```
+
+### 34. `ef2c5ccd-0d44-44f5-820e-fa5a9b13efd1` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 17m ago
+**Title:** untitled
+
+```
+work on next if done -skill-20260325           [v2.2.0/MiniMax-M2.7-highspeed/17516043]
+::: ❯ find branches that need finishing or mergin, same for all local  worktree present in phenotype/**Skip to content
+KooshaPari
+agentapi-plusplus
+Repository navigation
+Code
+Issues
+223
+ (223)
+Pull requests
+Agents
+Discussions
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
+Branches
+Overview
+Yours
+Active
+Stale
+All
+Search
+Search branches...
+Default
+Branch
+Updated
+Check status
+Behind
+Ahead
+Pull request
+Action menu
+main
+KooshaPari
+ 
+8 minutes ago
+Default
+Your branches
+Branch
+Updated
+Check status
+Behind
+Ahead
+P
+```
+
+### 35. `002f8d4e-128e-4e0a-a60c-b856438eb3cc` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1h 4m ago
+**Title:** Verify AgilePlus Error Localization PR
+
+```
+https://github.com/diegosouzapw/OmniRoute/issues/3932#issuecomment-4756295505 respond to diego's comment, proceed w\ the follow up frontend performance eval. and THEN propose deeper underpinning of omniroute code in more optimal ways etc refactors component swaps e.g. deps and other items (e.g. bifrost\cliproxyapi being used in place of ts wack, nextjs optimization and decoupling. the redis item needs easier 1 click to podman\docker server from omniroute GUI\CLI. and optionally propose a cluster that invovles load scale + balancer and item like caddy + redis -> dragonfly, NATS, PG additions, p
+```
+
+### 36. `37cb6774-8f91-4e7c-a2d5-6b8c9e3f1a7d` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 15days 15h 4m 24s ago
+**Title:** untitled
+
+```
+t-disable, fix oxlint flags
+31c17d8d58 fix: React 19 compatibility + fumadocs updates for docs app
+ba16d69ad9 ci: bootstrap GitHub Actions CI + CLAUDE.md
+1442e5af19 chore: pin actions/checkout to immutable SHA v4.1.1 (#418)
+3d1e79c4d3 chore: pin actions/checkout to immutable SHA v4.1.1
+be79bce4fe chore: pin python version to 3.13 (admin merge)
+● [20:16:39] Execute [/bin/zsh] git stash list 2>/dev/null
+stash@{0}: WIP on chore/add-dependabot: 32106b14f7 worklog: cycle 2026-05-01 — phenoUtils crypto fix, phenoAI compile, merged PRs
+stash@{1}: WIP on docs/ci-gate-billing-exception-policy-2026-04-2
+```
+
+### 37. `00e35eec-322b-42c4-a566-e4e5e18d4fd0` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 19days 18h 11m 24s ago
+**Title:** untitled
+
+```
+staff     96 Apr 27 18:37 agent-wave-docs
+drwxr-xr-x@  63 kooshapari  staff   2016 Apr  2 15:03 agentapi-plusplus-docs
+drwxr-xr-x@   3 kooshapari  staff     96 Apr 27 18:37 agentops-policy-federation-docs
+drwxr-xr-x@   3 kooshapari  staff     96 Apr  2 06:20 AgilePlus
+drwxr-xr-x@   2 kooshapari  staff     64 Apr 25 19:56 AgilePlus-docs
+drwxr-xr-x@   3 kooshapari  staff     96 Apr 25 07:25 agileplus-plugin-core-clippyfix
+drwxr-xr-x@   3 kooshapari  staff     96 Apr 27 18:33 agileplus-plugin-core-docs
+drwxr-xr-x@   3 kooshapari  staff     96 Apr 27 18:33 agileplus-plugin-git-docs
+drwxr-xr-x@   3
+```
+
+### 38. `aabf5492-17fc-49d7-99da-3165bb946a53` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 20days 15h 36m 24s ago
+**Title:** OmniRoute API and Database Error Investigation
+
+```
+plz investigate following omnirotue issues and scrape logs asneedeed esponse (HTTP 200) —
+     check for a proxy or gateway
+     intercepting the request
+
+✻ Worked for 1m 57s
+
+❯ resume
+  ⎿  API Error: API returned an empty or
+     malformed response (HTTP 200) —
+     check for a proxy or gateway
+     intercepting the request
+
+✻ Churned for 9s
+
+✻ Running scheduled task (Apr 30 6:50pm)
+  ⎿  API Error: 400
+     {"error":{"message":"[400]:
+     Authentication
+     error","type":"invalid_request_error
+     ","code":"bad_request"}}
+
+✻ Baked for 0s
+
+✻ Running scheduled task (Apr 30 7:00pm)
+  ⎿  API E
+```
+
+### 39. `f625defe-492c-431a-a907-cbaa232752c2` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 20days 7h 10m 24s ago
+**Title:** untitled
+
+```
+orge-dev
+ _____
+|  ___|__  _ __ __ _  ___
+| |_ @[/] _ \| '__/ _` |/ _ \
+|  _| (_) | | | (_| |  __/
+|_|  \___/|_|  \__, |\___|
+               |___/
+
+         Version: 0.1.0
+New conversation: :new
+     Get started: :info, :usage, :help, :conversation
+    Switch model: :model
+    Switch agent: :forge or :muse or :agent
+          Update: :update
+            Quit: :exit or <CTRL+D>
+
+┌──────────────────────────────────────────────────────┐
+│ TIP: For the best experience, use our zsh plugin!    │
+│ · Set up forge via our zsh plugin: forge zsh setup   │
+│ · Learn more: https://forgecode.dev/docs/zsh-s
+```
+
+### 40. `50362f2f-bde1-4c84-a8d2-4a52caa28a49` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 20days 8h 9m 24s ago
+**Title:** untitled
+
+```
+current state?
+```
+
+### 41. `7b2d87fa-c0aa-4bcc-9434-7065f9aac077` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 24days 18h 4m 24s ago
+**Title:** untitled
+
+```
+at some point i asked an agent to create an ascii startup animation for a helios project, i think it was the heliosCLI codex repo but im unsure. it was a photo of me and well done, I'd like the generating code, and any output artifacts such as a transparent gif added to phenotype design so it can be integrated as paort of our design language\guidelines
+```
+
+### 42. `9dd23c72-eec1-4a81-a1a2-2ceb5ab06c3f` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 2days 12h 35m 24s ago
+**Title:** untitled
+
+```
+$loop resume all forge sessions here and in ../cursor-reset-(whatever the rest of theis foldername is) they are all takss regarding repos or phenotype org ietms.
+```
+
+### 43. `e3c2ec82-d355-405f-a662-0fe36e2f1b73` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 20h 8m ago
+**Title:** [empty]
+
+```
+contentscript.js:14083 MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added. Use emitter.setMaxListeners() to increase limit
+n @ contentscript.js:14083
+contentscript.js:14083 MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 end listeners added. Use emitter.setMaxListeners() to increase limit
+n @ contentscript.js:14083
+contentscript.js:14083 ObjectMultiplex - orphaned data for stream "app-init-liveness"
+warn @ contentscript.js:14083
+contentscript.js:14083 ObjectMultiplex - orphaned data for stream "app-init-liveness"
+warn @
+```
+
+### 44. `0d3e2362-d5fd-4bfd-a039-9fca96604949` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 23h ago
+**Title:** Local Work Wrap-Up And WIP Push
+
+```
+https://github.com/KooshaPari/pheno-worklog-schema and similar pheno- or phenotype- style repos need to be folded into other targets. this one maybe agileplus maybe phenotype-pm-core, unsure. do a full eval starting w\ this one and expand to oehrs. follow proc and use forge task subagents!!!! nto allowed to work urself You are a strategic cloud coding agent performing a repository absorption and deletion-justification audit.
+
+OBJECTIVE
+
+I am absorbing this repository into a smaller set of target repositories. Your job is to determine whether this source repo can be justifiably deleted after it
+```
+
+### 45. `84228eb8-eae0-41cf-95db-f320a7968c59` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 24days 1h 53m ago
+**Title:** Recover Lost OmniRoute Config Data
+
+```
+❯ use subagents, 1 per worktree, deploy 20.
+  ❯ teammates preferred perhasp? 
+
+❯ .claude has a swathe of worktrees that make up
+   most if not ALL space usage, work on them and
+   push to remote\merge so we can delete
+```
+
+### 46. `62e9b171-eeb4-4354-b729-1166b5963c03` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 26m ago
+**Title:** Pheno Repository Absorption Deletion Audit
+
+```
+help finish whatever parts of civis' non sim(antoher agent assigned) you can do thats incomplete and non heavy runner acn handle.
+```
+
+### 47. `855daaf5-2537-419a-aced-dcc58e699d55` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 14days 8h 10m 48s ago
+**Title:** ## Comprehensive Audit: phenotype-bdd and Integration Opport...
+
+```
+s/thegent/apps/byteport/backend/api/.gomodcache/golang.org/x/text@v0.17.0/internal/language/compose.go
+ delete mode 100644 platforms/thegent/apps/byteport/backend/api/.gomodcache/golang.org/x/text@v0.17.0/internal/language/compose_test.go
+ delete mode 100644 platforms/thegent/apps/byteport/backend/api/.gomodcache/golang.org/x/text@v0.17.0/internal/language/coverage.go
+ delete mode 100644 platforms/thegent/apps/byteport/backend/api/.gomodcache/golang.org/x/text@v0.17.0/internal/language/gen.go
+ delete mode 100644 platforms/thegent/apps/byteport/backend/api/.gomodcache/golang.org/x/text@v0.17.0/
+```
+
+### 48. `88a7bbd6-5f9f-4c70-9ecb-d38e9c71a59a` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 15days 19h 37m 48s ago
+**Title:** # Swift Template Code Quality Assessment
+
+```
+quick tests, by reading the code and readmes (isolated e.g. if missing readme able to also) evaluate if I built the codebase or simply vibecoded it template-lang-swift Public
+Phenotype template platform repo: template-lang-swift
+ Shell Updated 1 minute ago
+thegent Public
+Python agent runtime with tool registry, LLM provider abstraction, and agent orchestration
+python
+agent
+tools
+runtime
+orchestration
+ Python  1 MIT License Updated 49 minutes ago
+AppGen Public template
+Application generator for rapid prototyping
+ JavaScript  1 Updated 1 hour ago
+KlipDot Public
+Universal terminal image intercept
+```
+
+### 49. `7f7cf43e-adf1-470b-b506-a45b09c2da86` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 15days 1h 13m 48s ago
+**Title:** Let me check the current state of the phenotype-config crate...
+
+```
+ey, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             config.set(&key, parse_value(&value));             c
+```
+
+### 50. `e26bc50c-8ab3-442e-b6f7-1fbb7b2a3a87` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 15days 20h 21m 48s ago
+**Title:** Repository Evaluation and Cleanup
+
+```
+phenoEvaluation Private archive
+Phenotype evaluation framework
+deprecated
+ Python MIT License Updated 7 hours ago
+phenotype-packs Public archive
+phenotype-packs - Phenotype ecosystem
+ Rust Updated 7 hours ago
+phenotype-mcp-testing Public archive
+phenotype-mcp-testing - Phenotype ecosystem
+ Rust Updated 7 hours ago
+phenotype-mcp-asset Public archive
+phenotype-mcp-asset - Phenotype ecosystem
+ Rust Updated 7 hours ago
+phenotype-daemon Public archive
+phenotype-daemon - Phenotype ecosystem
+ Rust Updated 7 hours ago  move to correct space if done and you are sure ntohing useful both lcoal and rmeote
+```
+
+### 51. `3e540cbe-a371-454c-a9f5-dc0a4a8def18` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 15days 20h 53m 48s ago
+**Title:** I'll continue working on merging the remaining PRs. Let me c...
+
+```
+forge
+Last login: Sat Apr  4 23:18:52 on ttys029
+[WARN] - (starship::utils): Executing command "/usr/local/go/bin/go" timed out.
+[WARN] - (starship::utils): You can set command_timeout in your config to a higher value to allow longer-running commands to keep executing.
+[WARN] - (starship::utils): Executing command "/Users/kooshapari/.config/nvm/versions/node/v22.22.2/bin/node" timed out.
+   ~/C/P/repos   main  $      v3.13.12      v1.93.0  23:28❯ forge
+ _____
+|  ___|__  _ __ __ _  ___
+| |_ / _ \| '__/ _` |/ _ \
+|  _| (_) | | | (_| |  __/
+|_|  \___/|_|  \__, |\___|
+               
+```
+
+### 52. `ca67d732-0fb2-4052-ab93-9ca5e6200b7b` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 15days 21h 19m 48s ago
+**Title:** Repository Consolidation and Cleanup Review
+
+```
+f move to correct space if done and you are sure ntohing useful both lcoal and rmeote (cehck stashes, worktrees et ceterea) then delete the old. Queris Public archive
+Restored: Queris
+ Shell Updated yesterday
+Quillr Public archive
+Restored: Quillr
+ Shell Updated yesterday
+Cursora Public archive
+Restored: Cursora
+ Shell Updated yesterday otherwise explain to me if it should be standalone vs workspace o orother
+```
+
+### 53. `42cdd7ce-bddf-4ee5-b7ad-94138d6f2faf` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 15days 22h 39m 48s ago
+**Title:** Analyze shared/ui-* repositories at /Users/kooshapari/CodePr...
+
+```
+what python can and hsould -> Typescript 7 \ Rust latest; Go Latest; Zig latest; mojo latest; C# latest so on... do a polyglot audit. + check what libs we can move code to to share w\ other or future projects in similar or other domains.The methods exist. The issue is that server.go is calling them on s.bifrost which is of type *bifrost.Bifrost. But the methods are defined on *Bifrost in the bifrost package. Let me check how s.bifrost is defined in server.go.
+● [14:22:48] Execute [/bin/zsh] grep -n "bifrost.*\*bifrost" /Users/kooshapari/CodeProjects/Phenotype/repos/Kogito/server/server.go | he
+```
+
+### 54. `6da1079c-c923-4890-becf-d91b5038c2a0` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 15days 6h 25m 48s ago
+**Title:** Let me audit the three restored repos: Apisync, Zerokit, and...
+
+```
+phenotype-rust-metrics Public archive
+Phenotype metrics library following hexagonal architecture
+Updated 2 weeks ago
+phenotype-rust-cli Public archive
+Phenotype CLI framework library following hexagonal architecture
+Updated 2 weeks ago
+phenotype-rust-api Public archive
+Phenotype HTTP API client library following hexagonal architecture
+Updated 2 weeks ago
+phenotype-rust-config Public archive
+Phenotype configuration library following hexagonal architecture
+Updated 2 weeks ago
+phenotype-rust-logging Public archive
+Phenotype structured logging library following hexagonal architecture
+Updated 2 wee
+```
+
+### 55. `54c76547-2f7d-4270-ba39-1d5de4287c96` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 15days 6h 48m 48s ago
+**Title:** Looking at this long conversation history, I can see we've b...
+
+```
+syn v2.0.117
+    Checking signal-hook-registry v1.4.8
+    Checking parking_lot v0.12.5
+The code is compiling. Let me wait for it to finish and then commit the changes to HexaKit.
+● [06:55:06] Execute [/bin/zsh] cd /tmp/forgecode-test && cargo check 2>&1 | tail -10
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling syn v2.0.117
+    Checking serde_json v1.0.149
+It's still compiling. Let me wait and check if it completes.
+● [06:55:13] Execute [/bin/zsh] sleep 10 && cd /tmp/forgecode-test && cargo check 2>&1 | tail -15
+The check com
+```
+
+### 56. `43051163-5aab-4c01-9341-3ae8c470d0bd` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 15days 6h 6m 48s ago
+**Title:** You raise a critical point. We jumped to implementation with...
+
+```
+dLast login: Sun Apr  5 00:21:48 on ttys002
+^R
+forge
+[WARN] - (starship::utils): Executing command "/usr/local/go/bin/go" timed out.
+[WARN] - (starship::utils): You can set command_timeout in your config to a higher value to allow longer-running commands to keep executing.
+   ~/C/P/repos   main  $   v22.22.2   v3.13.12      v1.93.0      01:46❯
+forge                                               󱙺 FORGE  MiniMax-M2.7-highspeed
+ _____
+|  ___|__  _ __ __ _  ___
+:::       ◦ PhenoMCP MCP endpoint → cargo run --bin mcp-server
+:::       ◦ PhenoRuntime daemon → cargo run --bin daemon
+::
+```
+
+### 57. `17ab973d-8106-4551-a0d8-72ae7eecd01c` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 15days 8h 11m 48s ago
+**Title:** Comprehensive PR Merge Automation Analysis and Solution Summ...
+
+```
+create mode 100644 rustfmt.toml
+ delete mode 160000 template-commons
+The merge was successful. Let me push the changes and then return to the repos root to continue with the remaining Tier 1 tasks. Let me also update the todo list.
+● [23:27:28] Execute [/bin/zsh] git push origin main 2>&1 | tail -3
+To github.com:KooshaPari/thegent.git
+ ! [remote rejected]     main -> main (push declined due to repository rule violations)
+error: failed to push some refs to 'github.com:KooshaPari/thegent.git'
+● [23:27:31] Update Todos 6 item(s)
+
+  󰄗 Merge thegent int/mod-split-stage-1 to main
+  󰄱 Return heliosAp
+```
+
+### 58. `45fc0c71-2a48-4a52-8dc5-dec538294e35` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 16days 14m 48s ago
+**Title:** I'll continue the work on fixing the Go module structure and...
+
+```
+|             ------ borrow later stored here
+102 |             let entry = self
+    |                 ----- binding `entry` declared here
+...
+107 |             entry.value().clone()
+    |             ^^^^^ borrowed value does not live long enough
+108 |         };
+    |         - `entry` dropped here while still borrowed
+
+error[E0597]: `entry` does not live long enough
+   --> crates/phenotype-infrastructure/src/rate_limit.rs:119:13
+    |
+114 |         let bucket = {
+The entry is being dropped too early. The issue is that entry.value() returns a reference that's tied to the lifetime of entry, b
+```
+
+### 59. `efd5d493-99dd-4ee1-902c-6847d98c0718` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 16days 1h 17m 48s ago
+**Title:** VitePress Documentation Deployment Across 119-Repo Ecosystem
+
+```
+❯  continue to next
+FORGE repos main
+❯ plan decomposition or move of phenosdk codes too toerher exisitng or new repos
+FORGE repos main
+❯ sume
+⠋ Reasoning 8:20m · Ctrl+C to interrupt                                               ⠸ Reasoning 8:21m · Ctrl+C to interrupt                                               ⠼ Reasoning 8:21m · Ctrl+C to interrupt                                               ⠼ Reasoning 8:23m · Ctrl+C to interrupt                                               ⠼ Reasoning 9:38m · Ctrl+C to interrupt                                               ● [20:59:58] ERROR: conversa
+```
+
+### 60. `66bdb3fb-4a08-49ff-bb10-36efc001269f` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 16days 3h 48m 48s ago
+**Title:** PhenoSDK Repository Decomposition Strategy
+
+```
+plan decomposition or move of phenosdk codes too toerher exisitng or new repos FORGE repos main this is hwat ia told another agent, some parts are relevent START PROMPT ❯ Lets carefully work on merging and consoldiating or in the reversing
+  decomposing repos to optimal polylgot\hexagonal and libified or productized
+  structures, where small eough dollect packages as workspaces or other
+  dynamically iomproable \ installable colletions where large we ckeep isolated.
+  similarly we target most optimal and extensible forms of code impsl to help
+  future impls, and in the generic end have to upda
+```
+
+### 61. `9b334daa-1b18-40fe-b25c-e276e345bf19` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 16days 40m 48s ago
+**Title:** Creating comprehensive PhenoMCP vs FastMCP comparison and co...
+
+```
+orge
+Last login: Sat Apr  4 20:43:44 on ttys004
+forge
+[WARN] - (starship::utils): Executing command "/usr/local/go/bin/go" timed out.
+[WARN] - (starship::utils): You can set command_timeout in your config to a higher value to allow longer-running commands to keep executing.
+   ~/C/P/repos   main  $   v22.22.2   v3.13.12      v1.93.0      20:59❯
+orge                            󱙺 FORGE  accounts/fireworks/routers/kimi-k2p5-turbo
+Error loading settings file: TOML parse error at line 31, column 12
+   |
+31 | [tasks.docs:build]
+   |            ^
+invalid unquoted key, expected letters,
+```
+
+### 62. `417f3231-94f1-441a-9a82-29061dbec6fd` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 16days 4h 20m 48s ago
+**Title:** Workspace Test Fixes and Verification
+
+```
+2. phenotype-project-registry (550 lines) -
+   Has project discovery and metadata, but
+   missing:
+      ◦ Async operations (currently sync only)
+      ◦ Health check integration with
+        phenotype-health
+      ◦ Caching layer
+
+3. phenotype-compliance-scanner (611 lines)
+   - Has compliance scanning, but missing:
+      ◦ Async operations
+      ◦ Parallel scanning
+      ◦ Integration with phenotype-health for
+        health checks
+
+4. phenotype-security-aggregator (512 lines)
+   - Has security aggregation, but missing:
+      ◦ Real security source implementations
+        (currently only moc
+```
+
+### 63. `ac7840af-4c76-4128-8262-4d97fe175c42` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 16days 4h 37m 48s ago
+**Title:** Workspace Cleanup and Dead Code Audit
+
+```
+chore-governance-baseline-clean
+chore-runtime-local-deploy
+chore-runtime-local-deploy-clean
+dashboard-extraction
+dashboard-extraction-clean
+docs-worklog-and-spec-backfill
+docs-worklog-and-spec-backfill-clean
+refactor-cli-event-flow
+refactor-cli-event-flow-clean
+The int/mod-split-stage-1 branch doesn't exist in thegent. The worklog may be referring to an old branch or worktree. Let me check the worklog more carefully to understand the actual state and priorities.
+
+Looking at the branches:
+• Current branch: feat/thegent-sync-update
+• Other branches: feat/thegent-sync,
+  refactor/cleanup-error-va
+```
+
+### 64. `d47bce9d-fe9b-4aed-b96b-67793790ad96` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 16days 5h 2m 48s ago
+**Title:** Deep analysis of FFI binding patterns in /Users/kooshapari/C...
+
+```
+5u%                                                                            ~/C/P/repos   main  $✓   v22.22.2   v3.13.12   v1.25.0   v1.93.0   󱦟 1h31m46s 22:34❯ claude upgrade
+Current version: 2.1.84
+Checking for updates to latest version...
+
+Claude is managed by Homebrew.
+Update available: 2.1.84 → 2.1.92
+
+To update, run:
+  brew upgrade claude-code
+   ~/C/P/repos   main  $ 15󰃭 11✓   v22.22.2   v3.13.12   v1.25.0   v1.93.0   󱦟 3s 22:35❯   brew upgrade claude-code
+
+brew update
+Warning: Not upgrading claude-code, the latest version is already installed
+   ~/C/
+```
+
+### 65. `63b85f61-494c-40a7-a3ce-e85ad60f6572` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 17days 54m 48s ago
+**Title:** Identify Remaining Traceability Tasks
+
+```
+'vitest';
+import { tracesTo } from '@phenotype/tstreqt/vitest';
+
+test('feature', tracesTo('FR-AGILE-001'), () => {})
+```
+
+### TypeScript (Jest)
+```typescript
+import { tracesTo } from '@phenotype/tstreqt';
+
+test('feature', tracesTo('FR-AGILE-001'), () => {})
+```
+
+### TypeScript (Playwright)
+```typescript
+import { test } from '@playwright/test';
+import { tracesTo } from '@phenotype/tstreqt/playwright';
+
+test('feature', tracesTo('FR-AGILE-001'), async ({ page }) => {})
+```
+
+### TypeScript (Mocha)
+```typescript
+import { tracesTo, describeFr } from '@phenotype/tstreqt/mocha';
+
+describeFr('FR-AGILE-
+```
+
+### 66. `28a171ae-3185-4f1d-854a-4a06b2372999` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 17days 57m 48s ago
+**Title:** Analyze the phenotype-health crate more deeply - check if it...
+
+```
+:null,"description":"A lightweight atomic lock.","source":"registry+https://github.com/rust-lang/crates.io-index","dependencies":[],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"try_lock","src_path":"/Users/kooshapari/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/try-lock-0.2.5/src/lib.rs","edition":"2015","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/kooshapari/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/try-lock-0.2.5/Cargo.toml","metadata":null,"publish":null,"authors":["Sean McArthur <sean@seanmonstar.com>"],"categories":["concurre
+```
+
+### 67. `c2aa1dbd-934d-4a94-9566-2418365daaf9` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 3h 15m ago
+**Title:** Multi-Agent Repository Absorption Audit
+
+```
+work to absorb wholy into playcua (kmobile, kdesktopvirt, similar repos e.g. eidolon, otehrs) you *will* want to create a mobile-next mobile cli and\or mobile mcp fork (those are 2 repos https://github.com/mobile-next I found this last year, research current SOTA against the CUA\mobile-next combo and the same for all toher platforms\use cases we itnend to cover) you will own the agent-platform interface doamin repo(s)  The process we follow: PROMPT You are a strategic cloud coding agent performing a repository absorption and deletion-justification audit.
+
+OBJECTIVE
+
+I am absorbing this reposit
+```
+
+### 68. `0ff3f3be-7ea2-4a19-85ff-272d5691626f` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 6days 1h 17m ago
+**Title:** Assistant Backend Eligibility Check Failed
+
+```
+pari@gmail.com
+    ▀▀▀▀▀▀▀▀      ~/CodeProjects/Phenotype/repos
+   ▄▀▀    ▀▀▄
+  ▄▀▀      ▀▀▄
+
+Eligibility Check
+  ⎿  Eligibility check failed: failed to make code
+assis
+     t backend request
+
+────────────────────────────────────────────────────────
+>
+```
+
+### 69. `f1abf6c4-b166-4c53-a53c-eb9d5e846eb0` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 6days 1h 17m ago
+**Title:** [empty]
+
+```
+covery_2026-06 │       │                      │                    │
+│ -06/)                          │       │                      │                    │
+├────────────────────────────────┼───────┼──────────────────────┼────────────────────┤
+│ Configra patch                 │ 1     │ with ANSI cleanup    │ git apply          │
+│ (/tmp/configra_recovery_2026-0 │       │                      │                    │
+│ 6-06/)                         │       │                      │                    │
+├────────────────────────────────┼───────┼──────────────────────┼────────────────────┤
+│ Mod.rs 
+```
+
+### 70. `82dc0ce9-4a43-4ffe-9792-a6ed574c5716` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 6days 1h 43m ago
+**Title:** Auth Core Crate Wave B
+
+```
+resume session: ration.rs
+Clean — only the new test file is unstaged. Now amend the WIP commit with the real message:
+● [23:47:53] Execute [/bin/zsh] cd @[/Users/kooshapari/CodeProjects/Phenotype/repos/phenoShared-wtrees/auth-core-skeleton-2026-06-10] && GIT_EDITOR=true git commit --amend -m "phenoshared: add auth-core crate skeleton (Wave B, 20 tasks)
+
+Brings the 26,500-LOC Python auth code in AuthKit/ under a single
+Rust crate's authority, per PHENOTYPE_5REPO_MODERNIZATION_PLAN.md §8.4
+and plans/2026-06-09-auth-fleet-world-map-v1.md.
+
+What landed
+- crates/auth-core/ (NEW): the canonical Rust
+```
+
+### 71. `900e74f1-52bb-4889-8fcc-73dc24038c98` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 6days 9h 47m ago
+**Title:** untitled
+
+```
+ps://github.com/rust-lang/crates.io-index","req":"^1.0.0","kind":null,"rename":"core","optional":true,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"r_efi","src_path":"/Users/kooshapari/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/r-efi-6.0.0/src/lib.rs","edition":"2018","doc":true,"doctest":true,"test":true},{"kind":["example"],"crate_types":["bin"],"name":"freestanding","src_path":"/Users/kooshapari/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/r-efi-6.0.0/examples/freestanding.rs","edition":"
+```
+
+### 72. `6896bc99-a819-4e2b-980b-2a9ae1a5b97b` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 7days 22h 36m ago
+**Title:** DAG Queue Task Execution
+
+```
+manifest_path":"/Users/kooshapari/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thread_local-1.1.9/Cargo.toml","metadata":null,"publish":null,"authors":["Amanieu d'Antras <amanieu@gmail.com>"],"categories":[],"keywords":["thread_local","concurrent","thread"],"readme":"README.md","repository":"https://github.com/Amanieu/thread_local-rs","homepage":null,"documentation":"https://docs.rs/thread_local/","edition":"2021","links":null,"default_run":null,"rust_version":"1.63"},{"name":"tinytemplate","version":"1.2.1","id":"registry+https://github.com/rust-lang/crates.io-index#tinytemplate@1.2.1
+```
+
+### 73. `bae12920-c733-494c-849e-aa44de915122` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 7days 23h 20m ago
+**Title:** DAG Queue Task Executor
+
+```
+its with missing trait definitions
+2. Migrate phenotype-cache-adapter to use phenotype-port-traits
+3. Document trait hierarchy in ADR
+EOF
+git add docs/sessions/20260329-phase3-ports-traits/ && git commit -m "feat(phase3): add port/trait consolidation session docs" && git push -u origin feat/phase3-ports-traits
+Switched to a new branch 'feat/phase3-ports-traits'
+M       crates/phenotype-event-sourcing/src/store.rs
+branch 'feat/phase3-ports-traits' set up to track 'origin/main'.
+[feat/phase3-ports-traits c8e216d04] feat(phase3): add port/trait consolidation session docs
+ 1 file changed, 18 inser
+```
+
+### 74. `e45cc6c8-817e-49d8-b4c6-819b51c0a175` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 7days 6h 51m ago
+**Title:** Exposed NVAPI Key in GitHub Repository
+
+```
+sec.scan.github@gmail.com
+Fri, Jun 5, 5:27 AM (8 days ago)
+to me
+
+
+Hey,
+I'm Robin — a Security Engineer from Germany.
+In my free time, I scan GitHub repositories for exposed secrets and notify owners to help fix them.
+
+I scanned your GitHub repository and found a hardcoded secret that was accidentally committed to a public repository:
+
+Type: NVAPI
+Repository: https://github.com/KooshaPari/thegent.git
+Link: https://github.com/KooshaPari/thegent/blob/c896f011672ef3ea8669c581f838985762301f1e/.env#L41
+Committed on: 2026-03-01
+Author: KooshaPari <42529354+KooshaPari@users.noreply.github.com>
+
+This 
+```
+
+### 75. `c853f721-06d8-4b13-8cc6-745587fb0877` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 8days 22m ago
+**Title:** Steganography and Cryptanalysis Template Refactoring
+
+```
+theme "One Dark" not found, tried path "/Applications/Ghostty.app/Contents/Resources/ghostty/themes/One Dark" theme "One Dark" not found, tried path "/Users/kooshapari/.config/ghostty/themes/One Dark" /Users/kooshapari/.config/ghostty/config:27:mouse: unknown field /Users/kooshapari/.config/ghostty/config:27:mouse: unknown field /Users/kooshapari/.config/ghostty/config:24:bell: unknown field dont kill ghostty just fix the config
+```
+
+### 76. `34192003-e1b0-4abf-b45f-613a10f6a415` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** 8days 8m ago
+**Title:** [empty]
+
+```
+we just crashed, there are many many many chats I launched in forgecode. it only shows 100\100 in the /conversation picker and i hope to god there is more in its db. I had about 35 open chats that were each using subagents. I need the 35 open chats and their ids + clear resume cmds and a title for waht it was doing
+```
+
+### 77. `197c0754-4803-4cb3-82cc-54dd022006ec` (score=6, typos=0, typo_list=[], lower_start=True)
+**Updated:** now
+**Title:** Fix ForgeCode Binary Files Error
+
+```
+https://github.com/KooshaPari/Sidekick seems to have overlap with other repos I own, eval against both manual remote git analysis w\ subagents AND phenotype registry repo analysis The process we follow: PROMPT You are a strategic cloud coding agent performing a repository absorption and deletion-justification audit.
+
+OBJECTIVE
+
+I am absorbing this repository into a smaller set of target repositories. Your job is to determine whether this source repo can be justifiably deleted after its intent, features, experiments, docs, specs, branches, and attempted work have either been:
+
+1. moved into tar
+```
+
+### 78. `075b50c5-07df-45a0-80eb-811589e4c132` (score=5, typos=0, typo_list=[], lower_start=True)
+**Updated:** # Dispatch Worker Routing Pattern Design
+**Title:** 
+
+```
+many docs are msising proper journeys keyframes\recordings like that
+  which we made for hwledger. all repos need this as part of their traceability\adn
+  general docs ifnra
+
+::: › c
+:::
+:::   tab to queue message                                              57% context left resume their work, focus on FOCALPOINT docs first.
+```
+
+### 79. `3fe4f24a-1aee-458b-b4d7-3d87ce621dc6` (score=5, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 13days 23h 29m 24s ago
+**Title:** Recovery of Overwritten Claude Configuration Files
+
+```
+the .claude here, ins ome projs, and in ~ are broken, e.g. it seems tob e what id expect as a diff artifact but not the claude\agents.md file (says this proj is manged by agile plkus and some more yap, our agents\claude.md was a different sprawling govenreance page w\ sublinks inside, did any git or other location save this or pehaps convo logs of forgecdoe, codex, or claudecode track that change so we can restore?
+```
+
+### 80. `6dd02751-a242-48b7-ab48-0ef9726df39b` (score=5, typos=0, typo_list=[], lower_start=True)
+**Updated:** 1month 20days 19h 22m 24s ago
+**Title:** Cursor IDE Access Token Location
+
+```
+as you can see i wasnt ble to get the auto gen of the two items, i manually found machid, where is access otken? Connect Cursor IDE
+
+Access Token *
+Access token will be auto-filled...
+Machine ID *
+Machine ID will be auto-filled...
+Cursor database not found. Make sure Cursor IDE is installed and you are logged in.
+```
+
+### 81. `b05b876c-61b3-4787-86b2-73c5927cd29e` (score=5, typos=1, typo_list=['libification'], lower_start=False)
+**Updated:** 21h 35m ago
+**Title:** Upgrade Bifrost Plugins To v1.5.21
+
+```
+L6 side-DAG filler — SOTA sweep on libification substrate crates. The 3 new crates at /Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-deps/, /Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-error-core/, /Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-cli-macros/ were just extracted today. Audit each: (1) phenotype-deps: list all unified deps in Cargo.toml, check if it includes the 11 duplicates (serde, tokio, clap, thiserror, anyhow, uuid, chrono, futures, async-trait, tempfile, serde_json) per findings/2026-06-20-CONSOLIDATED-FINDINGS-DAG.md, identify any missing. (2
+```
+
+### 82. `5a813c60-087e-4692-b2fb-fbb0dfcacfea` (score=5, typos=1, typo_list=['teh '], lower_start=False)
+**Updated:** 22m ago
+**Title:** Phenotype Registry Prompt Curation Pipeline
+
+```
+CI and github Ops seems like it needs deep polish and handling, for one htere are many repos that are dedicated to this alrady, overlapping ones that need canonicalization PLKUS actual consumptin by our projs. but also some porjs which have hand roll attemots which should similarly be folded in. CI itself is a mess, each proj has a different set and the #s of checks change by commit for many a reason. I assume we need to unify under pillars e.g. quality secury perf other sorts with manifest reports that can be clearly read to understand teh issues. similarly we get 3k free minutes for runners 
+```
+
+### 83. `030fd0b5-4d35-427d-9b9e-2c4724fb5b43` (score=5, typos=0, typo_list=[], lower_start=True)
+**Updated:** 2months 16days 4h 38m 48s ago
+**Title:** CLI Authentication Token Refresh Bug
+
+```
+haiku agents
+  ⎿  Please run /login · API Error: 401 {"type":"error","error":{"type":"authentication_error","message":"Invalid bearer
+     token"},"request_id":"req_011CZk6fGqMkSWkxK1qrEmji"}
+
+❯ /login
+  ⎿  Login successful
+
+❯ resum
+  ⎿  Please run /login · API Error: 401 {"type":"error","error":{"type":"authentication_error","message":"Invalid bearer
+     token"},"request_id":"req_011CZk6fwvb1t8tVU3n4coY7"}
+ claude isuses.
+```
+
+### 84. `f6f27f8e-8646-4667-93ac-7b91c1eeb267` (score=4, typos=1, typo_list=['libification'], lower_start=False)
+**Updated:** 2months 15days 22h 39m 48s ago
+**Title:** Analyze AgentMCP repository at /Users/kooshapari/CodeProject...
+
+```
+Analyze phenotype-* repositories at /Users/kooshapari/CodeProjects/Phenotype/repos/phenotype-*: 1) Count files and LOC for each repository, 2) Identify which have actual code vs spec-only, 3) Find shared patterns across repositories, 4) Document libification opportunities. Report per-repository metrics.
+```
+
+### 85. `36374c9b-a3e6-44d5-a338-bf04325db97b` (score=4, typos=1, typo_list=['libification'], lower_start=False)
+**Updated:** 2months 16days 3h 50m 48s ago
+**Title:** Rust Project Audit: Libification Opportunities and Consolida...
+
+```
+Audit cross-repository patterns across heliosApp, heliosCLI, portage, phenoSDK, thegent: 1) Identify shared patterns (registry, adapter, config, error handling), 2) Find duplicate implementations of same concepts, 3) Map dependency relationships, 4) Document libification targets with priority rankings, 5) Estimate LOC reduction potential. Report comprehensive analysis.
+```
+
+### 86. `71cdfc92-26c3-4671-8a3f-2c2497780901` (score=4, typos=1, typo_list=['libification'], lower_start=False)
+**Updated:** 2months 16days 4h 33m 48s ago
+**Title:** Audit thegent's configuration system (config/, settings.py) ...
+
+```
+Create libification roadmap with dependencies and priority: rank extraction opportunities by: 1) Reusability across projects, 2) Maintenance burden reduction, 3) Performance gains from language change, 4) Community/ecosystem benefits. Map dependencies between potential libraries to determine extraction order.
+```
+
+### 87. `26036055-2e47-44c6-988e-80ace5820833` (score=4, typos=1, typo_list=['libification'], lower_start=False)
+**Updated:** 2months 16days 4h 48s ago
+**Title:** Research modern alternatives and emerging technologies that ...
+
+```
+Audit phenoSDK current state at /Users/kooshapari/CodeProjects/Phenotype/repos/phenoSDK: 1) Count all Python files by subsystem (testing/, infra/, kits/, mcp/, ui/, cli/, credentials/, etc.), 2) Identify the credentials module structure for libification, 3) Find duplicate patterns across subsystems, 4) Document MCP integration patterns, 5) Report exact file counts and LOC by subsystem.
+```
+
