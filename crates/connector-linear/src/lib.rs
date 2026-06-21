@@ -1,3 +1,4 @@
+#![allow(unexpected_cfgs)]
 //! Linear connector — OAuth2/PAT auth, GraphQL API client, event mapping, `Connector` impl.
 //! Emits: `linear:issue_created`, `linear:issue_closed`.
 

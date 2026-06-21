@@ -1,3 +1,4 @@
+#![allow(unexpected_cfgs)]
 #![allow(unused_imports)]
 //! GitHub contributions connector — PAT auth, REST client, event mapping.
 //!

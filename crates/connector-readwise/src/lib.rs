@@ -1,3 +1,4 @@
+#![allow(unexpected_cfgs)]
 //! Readwise Reader connector — token-based auth, REST API client, event mapping, `Connector` impl.
 //! Emits: `readwise:highlight_created`, `readwise:article_read`.
 

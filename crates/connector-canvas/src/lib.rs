@@ -1,3 +1,4 @@
+#![allow(unexpected_cfgs)]
 //! Canvas LMS connector — OAuth2 auth, REST client, event mapping, `Connector` impl.
 
 pub mod api;

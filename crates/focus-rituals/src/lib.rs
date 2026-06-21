@@ -1,3 +1,4 @@
+#![allow(unexpected_cfgs)]
 //! focus-rituals — Coachy's Planning Coach personality.
 //!
 //! Traces to: FR-RITUAL-001 (Morning Brief), FR-RITUAL-002 (Evening Shutdown),

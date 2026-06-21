@@ -1,3 +1,4 @@
+#![allow(unexpected_cfgs)]
 //! Notion connector — integration token auth, REST API client, event mapping, `Connector` impl.
 //! Emits: `notion:page_updated`, `notion:task_completed`.
 
