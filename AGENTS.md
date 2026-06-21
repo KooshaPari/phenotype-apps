@@ -198,7 +198,7 @@ When an app-level repo needs a reusable underlying capability, that capability i
 | :------------------------- | :----------------------------------------------------------------------------------------------------------- | :--------------------------------------------- |
 | **`pheno-*-lib` / `pheno-*-core`** | Pure reusable library; language-specific; single concern, single crate.                                     | `pheno-config`, `pheno-context`, `pheno-port-adapter` |
 | **`phenotype-*-sdk`**        | Cross-language SDK; stable public API; polyglot facade.                                                      | `phenotype-go-sdk`, `phenotype-python-sdk`     |
-| **`phenotype-*-framework`**  | Inversion-of-control framework; opinionated lifecycle, ports, adapters, conventions.                        | `phenotype-hub`, `phenotype-bus`               |
+| **`phenotype-*-framework`**  | Inversion-of-control framework; opinionated lifecycle, ports, adapters, conventions.                        | `phenotype-hub`               |
 | **Federated service**        | Stateful, long-running, independently scalable.                                                              | `phenoMCP`, `phenoObservability`, `phenoEvents` |
 
 The "random `phenoShared`" pattern (and `crates/`, `libs/`, per-app `lib/`) is **forbidden** for new shared code. Existing "random `phenoShared`" placements are migrated per-capability; tracked in the L6 health-audit delta.

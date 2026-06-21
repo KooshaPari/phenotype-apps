@@ -1,3 +1,4 @@
+#![allow(unexpected_cfgs)]
 //! Event → Rule → Action evaluation pipeline.
 //!
 //! [`RuleEvaluationPipeline::tick`] pulls new events from an [`EventStore`]

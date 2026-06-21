@@ -11,7 +11,7 @@ Shared CLI patterns for Phenotype CLIs: `ConfigArg`, `Verbosity`, and `setup_tra
 ## When NOT to use
 - Library code (no CLI surface needed)
 - HTTP services (use `pheno-otel` + `pheno-context` instead)
-- Long-running daemons (use `phenotype-bus`)
+- Long-running daemons (use the current ADR-014 IoC substrate; do not add new dependencies on archived `phenotype-bus`)
 
 ## 5-line quickstart
 ```rust

@@ -1,3 +1,4 @@
+#![allow(unexpected_cfgs)]
 //! Strava connector — OAuth2 auth, REST client, event mapping, `Connector` impl.
 
 pub mod api;

@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="nav-home-icon" viewBox="0 0 24 24"><title>nav-home</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="nav-focus-icon" viewBox="0 0 24 24"><title>nav-focus</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="nav-rules-icon" viewBox="0 0 24 24"><title>nav-rules</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="nav-insights-icon" viewBox="0 0 24 24"><title>nav-insights</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="nav-connectors-icon" viewBox="0 0 24 24"><title>nav-connectors</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="nav-settings-icon" viewBox="0 0 24 24"><title>nav-settings</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="focus-strict-icon" viewBox="0 0 24 24"><title>focus-strict</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="focus-moderate-icon" viewBox="0 0 24 24"><title>focus-moderate</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="focus-light-icon" viewBox="0 0 24 24"><title>focus-light</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="focus-break-icon" viewBox="0 0 24 24"><title>focus-break</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="focus-sleep-icon" viewBox="0 0 24 24"><title>focus-sleep</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="rule-app-icon" viewBox="0 0 24 24"><title>rule-app</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="rule-time-icon" viewBox="0 0 24 24"><title>rule-time</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="rule-penalty-icon" viewBox="0 0 24 24"><title>rule-penalty</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="rule-reward-icon" viewBox="0 0 24 24"><title>rule-reward</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="rule-allowlist-icon" viewBox="0 0 24 24"><title>rule-allowlist</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="connector-canvas-icon" viewBox="0 0 24 24"><title>connector-canvas</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="connector-slack-icon" viewBox="0 0 24 24"><title>connector-slack</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="connector-gmail-icon" viewBox="0 0 24 24"><title>connector-gmail</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="status-active-icon" viewBox="0 0 24 24"><title>status-active</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="status-blocked-icon" viewBox="0 0 24 24"><title>status-blocked</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="status-warning-icon" viewBox="0 0 24 24"><title>status-warning</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="achievement-streak-icon" viewBox="0 0 24 24"><title>achievement-streak</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="achievement-milestone-icon" viewBox="0 0 24 24"><title>achievement-milestone</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="action-add-icon" viewBox="0 0 24 24"><title>action-add</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="action-delete-icon" viewBox="0 0 24 24"><title>action-delete</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="action-edit-icon" viewBox="0 0 24 24"><title>action-edit</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="mascot-happy-icon" viewBox="0 0 24 24"><title>mascot-happy</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="mascot-thinking-icon" viewBox="0 0 24 24"><title>mascot-thinking</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="mascot-celebrating-icon" viewBox="0 0 24 24"><title>mascot-celebrating</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-01-icon" viewBox="0 0 24 24"><title>system-icon-01</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-02-icon" viewBox="0 0 24 24"><title>system-icon-02</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-03-icon" viewBox="0 0 24 24"><title>system-icon-03</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-04-icon" viewBox="0 0 24 24"><title>system-icon-04</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-05-icon" viewBox="0 0 24 24"><title>system-icon-05</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-06-icon" viewBox="0 0 24 24"><title>system-icon-06</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-07-icon" viewBox="0 0 24 24"><title>system-icon-07</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-08-icon" viewBox="0 0 24 24"><title>system-icon-08</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-09-icon" viewBox="0 0 24 24"><title>system-icon-09</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-10-icon" viewBox="0 0 24 24"><title>system-icon-10</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-11-icon" viewBox="0 0 24 24"><title>system-icon-11</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-12-icon" viewBox="0 0 24 24"><title>system-icon-12</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-13-icon" viewBox="0 0 24 24"><title>system-icon-13</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-14-icon" viewBox="0 0 24 24"><title>system-icon-14</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-15-icon" viewBox="0 0 24 24"><title>system-icon-15</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-16-icon" viewBox="0 0 24 24"><title>system-icon-16</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-17-icon" viewBox="0 0 24 24"><title>system-icon-17</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-18-icon" viewBox="0 0 24 24"><title>system-icon-18</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-19-icon" viewBox="0 0 24 24"><title>system-icon-19</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-20-icon" viewBox="0 0 24 24"><title>system-icon-20</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-21-icon" viewBox="0 0 24 24"><title>system-icon-21</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-22-icon" viewBox="0 0 24 24"><title>system-icon-22</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-23-icon" viewBox="0 0 24 24"><title>system-icon-23</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-24-icon" viewBox="0 0 24 24"><title>system-icon-24</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-25-icon" viewBox="0 0 24 24"><title>system-icon-25</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-26-icon" viewBox="0 0 24 24"><title>system-icon-26</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-27-icon" viewBox="0 0 24 24"><title>system-icon-27</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-28-icon" viewBox="0 0 24 24"><title>system-icon-28</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-29-icon" viewBox="0 0 24 24"><title>system-icon-29</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-30-icon" viewBox="0 0 24 24"><title>system-icon-30</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-31-icon" viewBox="0 0 24 24"><title>system-icon-31</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-32-icon" viewBox="0 0 24 24"><title>system-icon-32</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="system-icon-33-icon" viewBox="0 0 24 24"><title>system-icon-33</title><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+<!-- generated focus-ui icon sprite fixture padding: canonical snapshot asset for CI integrity checks. -->
+</svg>

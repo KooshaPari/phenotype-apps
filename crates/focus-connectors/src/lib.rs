@@ -1,3 +1,4 @@
+#![allow(unexpected_cfgs)]
 //! Connector trait, manifest, auth, sync contracts.
 
 pub mod derived;

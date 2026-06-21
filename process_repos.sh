@@ -6,7 +6,6 @@ REPOS=(
   "pheno-scaffold-kit"
   "phenoAI"
   "PhenoDevOps"
-  "PhenoContracts"
   "PhenoCompose-wt-CC3-005-2026-06-11"
   "PhenoCompose"
 )
