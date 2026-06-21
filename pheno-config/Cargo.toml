@@ -1,0 +1,33 @@
+[package]
+name = "pheno-config"
+version = "0.1.0"
+edition = "2021"
+description = "Canonical typed-config loader for the pheno-* fleet. Layered provider cascade (Jetbrains run-configs > env > TOML > embedded defaults) plus ADR-078 secret-holding newtypes with ZeroizeOnDrop."
+license = "MIT OR Apache-2.0"
+publish = false
+
+[lib]
+name = "pheno_config"
+path = "src/lib.rs"
+
+[dependencies]
+# ADR-078 / L52: secret-holding newtypes in `secrets.rs` use
+# `Zeroize` + `ZeroizeOnDrop` derives to wipe the inner bytes on
+# `Drop`. Pinned to 1.7 per the v19 T2 task brief; the Cargo.lock
+# will resolve to 1.9.0 (already pinned by the lockfile).
+zeroize = { version = "1.7", features = ["zeroize_derive"] }
+
+# Cascade (cascade.rs) — layered config provider. The four features
+# cover the four providers used in `build_cascade`:
+#   - `toml`      — `Toml::string(DEFAULT_TOML)` + `Toml::file("config.toml")`
+#   - `env`       — `Env::prefixed("PHENO_")`
+#   - `yaml`      — JetBrains run-config format dep (pulls serde_yaml)
+#   - (jetbrains is part of figment's core since 0.10)
+figment = { version = "0.10", features = ["toml", "env", "yaml"] }
+
+# Used in `cascade.rs`'s embedded-default test for `toml::Value`.
+toml = "0.7"
+
+# Test-only helpers live in dev-dependencies (none at present).
+
+[dev-dependencies]

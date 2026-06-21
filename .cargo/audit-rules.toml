@@ -1,0 +1,76 @@
+# cargo-deny configuration for the Phenotype monorepo.
+#
+# Managed by ADR-078 (Encryption-at-Rest Mandate, L52, v19 T2). Edit
+# together — any change here MUST be cross-referenced with the ADR
+# section that motivates it. See:
+#
+#   docs/adr/2026-06-21/ADR-078-encryption-at-rest-mandate.md
+#
+# Run locally with:
+#   cargo deny --manifest-path .cargo/audit-rules.toml check
+#
+# Note: cargo-deny does not natively lint `#![forbid(unsafe_code)]`.
+# `unsafe_code` enforcement is enforced at the crate level (see
+# `pheno-config/src/lib.rs` and `pheno-port-adapter/src/lib.rs`).
+# This file complements that with dependency-level bans + advisories +
+# license checks for the secret-handling module surface.
+#
+# This file does NOT need to pass `cargo deny check` in v19 T2 — the
+# rule author + verifier run is scheduled for v20.
+
+[graph]
+# Include feature-flagged deps in the graph so bans + advisories catch
+# code paths that opt into `tracing`, `unstable`, etc.
+all-features = true
+
+[advisories]
+# Local clone of the RustSec advisory DB. Falls back to the network
+# source below on a fresh checkout.
+db-path = "~/.cargo/advisory-db"
+db-urls = ["https://github.com/rustsec/advisory-db"]
+# Yanked crates are allowed with a warning — we do not block PRs on a
+# crate being yanked mid-cycle, but a CI annotation is produced.
+yanked = "warn"
+
+[bans]
+# Multiple-version warnings surface accidental dep version skew (the
+# common `serde 1.x` vs `serde 2.x` footgun).
+multiple-versions = "warn"
+# Wildcard dep specs are denied — every dep must pin a version range
+# so `cargo update -p <crate>` is auditable.
+wildcards = "deny"
+highlight = "all"
+# Crates that are explicitly disallowed. The format is a list of
+# `{ name = "..." }` tables. Empty for now; populated as fleet
+# substrate quality bar (ADR-042B) rolls out.
+deny = []
+skip = []
+skip-tree = []
+
+# Per the task brief (v19 T2 §T2.2): the `[bans]` section flags the
+# two substrate crates that hold secret material. cargo-deny cannot
+# lint `#![forbid(unsafe_code)]` directly, so the deny rule below is
+# a tripwire: if `pheno-config` or `pheno-port-adapter` ever pulls in
+# a known-unsafe-code-heavy crate (e.g. `unsafe-libyaml`, `r2d2` with
+# the `postgres` feature), cargo-deny will surface it for review.
+[[bans.deny]]
+name = "unsafe-libyaml"
+reason = "Pulls in hand-written FFI; banned in secret-handling modules (ADR-078 §2.1)."
+
+[licenses]
+# Allow-list is intentionally tight. Any new license MUST be reviewed
+# against the fleet license posture before being added.
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "BSD-3-Clause",
+    "ISC",
+    "Unicode-DFS-2016",
+    "Unicode-3.0",
+    "CC0-1.0",
+    "Zlib",
+    "0BSD",
+]
+# Confidence threshold — below this, cargo-deny flags a license as
+# "unknown" and requires manual review.
+confidence-threshold = 0.8
