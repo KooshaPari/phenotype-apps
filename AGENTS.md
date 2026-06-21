@@ -197,8 +197,15 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 
 ### v17 Wave D (closure)
 - **cycle 7 probe:** `findings/2026-06-21-v17-cycle-7-probe.md`
-- **v18 plan:** `plans/2026-06-21-v18-71-pillar-cycle-8-p0.md` (3 remaining P0 pillars + cycle 8 P1)
-- **cycle 8 probe:** `findings/2026-06-21-v18-cycle-8-probe.md`
+- **v18 plan:** `plans/2026-06-21-v18-71-pillar-cycle-8-p0.md` (3 remaining P0 pillars + cycle 8 P1) — **CLOSED 2026-06-21**: 47/47 P0 pillars = 100% (L17, L50, L51 + cycle 8 P1 reduction)
+- **cycle 8 probe:** `findings/2026-06-21-v18-cycle-8-probe.md` (Status: Terminal — v18 closed)
+- **v18 T3 (L51 SOC2 evidence automation):** `findings/2026-06-21-v18-T3-L51-soc2-evidence-automation.md` — DONE
+- **v18 T4 (L46-L55 security P1 deepening):** `findings/2026-06-21-v18-T4-L46-L55-security-p1-deepening.md` — DONE
+
+### v18 Wave E (closure → v19 launch)
+- **v19 plan:** `plans/2026-06-21-v19-71-pillar-cycle-9-p0.md` (5 tracks: L31/L57/L65/L67 cycle-9 P0 reduction + 2 net-new federation/interop tracks; 5-week critical path)
+- **v19 orchestrator worklog:** `worklogs/2026-06-21-v19-cycle-9-71-pillar-p0-orchestrator.json` (macbook-safe governance slice, 0 cargo, ~1h)
+- **Wave Plan section**: **v19 — current**, supersedes v17 (v18 was a 47→100% closure wave with no new tracks, v19 carries the next P0 reduction round + 2 net-new)
 
 ### v12 closure — router spike details (T24, 2026-06-21)
 
