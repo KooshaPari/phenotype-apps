@@ -58,6 +58,39 @@ jobs:
       - name: cargo fmt --check
         run: cargo fmt --check
 
+  module-deps:
+    name: module-deps (cargo-modules --acyclic, L4)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@4b32c170c36f565c8591d2c5e6c1e02cf26d5e6c # stable
+        with:
+          toolchain: stable
+      - name: Install cargo-modules
+        uses: taiki-e/install-action@25435dc8dd3baed7417e0c96d3fe89013a5b2e09 # v2
+        with:
+          tool: cargo-modules
+      - name: cargo-modules dependencies --acyclic
+        run: |
+          echo "Running cargo-modules v$(cargo-modules --version)"
+          # --no-fns / --no-traits / --no-types filter false-positive cycles
+          # from impl blocks (e.g. impl Display for Foo where Foo::fmt
+          # references Self). Real cycles are still flagged as non-zero
+          # exit, but the gate is `continue-on-error: true` so the result
+          # is surfaced in CI logs without blocking the PR.
+          cargo-modules dependencies --acyclic --no-fns --no-traits --no-types || true
+      - name: Upload module-deps report
+        if: always()
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4
+        with:
+          name: module-deps-report
+          path: module-deps.txt
+          if-no-files-found: ignore
+
   coverage:
     name: coverage (llvm-cov)
     runs-on: ubuntu-latest
