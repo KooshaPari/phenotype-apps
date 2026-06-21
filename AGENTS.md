@@ -1,7 +1,7 @@
 # AGENTS.md — Phenotype monorepo
 
-**Date:** 2026-06-17 12:00 PDT
-**Status:** ACTIVE (this file supersedes the prior FocalPoint template that lived here 2026-06-12 → 2026-06-15, and the 2026-06-15 18:42 PDT version that lived here 2026-06-15 → 2026-06-17)
+**Date:** 2026-06-21 02:55 PDT (v15 closed 2026-06-21 02:14 PDT — 9 of 9 tracks shipped, 5.9-pillar mean 2.53→2.71, 8 cycle-1 P0 pillars closed (L6/L15/L21/L33/L37/L48/L49/L60); v14 closed 2026-06-21 — 5 cycle-4 tracks shipped, fleet cumulative mean ~1.60; v13 closed 2026-06-20 — 9 cycle-2 P0 pillars closed, 6-pillar mean 2.6 (+0.9); v12 closed 2026-06-20 19:30 PDT — 4 P0 pillars (L31/L57/L65/L67) shipped, 6-pillar mean 2.13→2.66; v11 closed 2026-06-20 18:45 PDT — §8 router-architecture ACCEPTED 2026-06-20 (Option B per ADR-050 + ADR-051); v10 closed 2026-06-19 22:30 PDT — T30 was CANCELLED, T28 DONE; Decision C closed)
+**Status:** ACTIVE (this file supersedes the prior FocalPoint template that lived here 2026-06-12 → 2026-06-15, the 2026-06-15 18:42 PDT version that lived here 2026-06-15 → 2026-06-17, the 2026-06-17 12:00 PDT version that lived here 2026-06-17 → 2026-06-19, the 2026-06-20 18:45 PDT version that lived here 2026-06-20 18:45 → 2026-06-20 19:30 PDT, and the 2026-06-20 19:30 PDT version that lived here 2026-06-20 19:30 → 2026-06-21 02:55 PDT)
 
 ---
 
@@ -75,16 +75,7 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 
 ---
 
-## Active ADRs (35 total, +ADR-032, +ADR-033, +ADR-034, +ADR-035 this turn)
-
-**2026-06-18 wave (4 ADRs at `docs/adr/2026-06-18/`):**
-
-| ADR | Subject | Notes |
-|---|---|---|
-| ADR-032 | settle-adapter deprecation | Conft reorg — 4 settly-* repos archived |
-| ADR-033 | Phenotype-fleet monorepo-state split | 1 of 2 maintained monorepos |
-| ADR-034 | Phenotype-monorepo-state deletion | 2026-07-17 scheduled deletion |
-| **ADR-035** | **HwLedger reclassification (L5-105)** | KEEP as federated service + extract `pheno-capacity` math lib; bucket change `PAUSED -> CONDITIONAL` |
+## Active ADRs (54 total, +ADR-050 through +ADR-054 this turn [v9 T0.5])
 
 **2026-06-14 wave (6 ADRs at `docs/adr/2026-06-14/`):**
 
@@ -133,25 +124,117 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 | **ADR-028** | **Monorepo architecture eval: hybrid-with-staging-repo** | **L5-106, 2026-06-17** — closes L25; staging repo `phenotype-org-audits` |
 | **ADR-029** | **Dmouse92 → KooshaPari migration — absorb all DM92 work to substrate, archive emptied repos** | **L5-108, 2026-06-17** — see `findings/2026-06-17-L5-104-dmouse92-to-kooshapari.md`; 6 PRs opened, 18 Dmouse92 repos archived |
 | **ADR-030** | **pheno-worklog-schema v2.1 — add 11th `device:` column (macbook / heavy-runner / subagent / ci)** | **L5-104.5, 2026-06-17** — see `pheno-worklog-schema/SPEC-v2.1.md`; PR `KooshaPari/pheno-worklog-schema#1` open; 30/30 tests; 4 fleet WORKLOG.md migrated; v2.0 deprecation **2026-06-22** |
-| **ADR-031** | **Configra absorb — `phenotype-config` folds into `Configra` as canonical name; ADR-022 split (Rust core / TS edge) preserved** | **L5-104.7, 2026-06-17** — see `docs/adr/2026-06-17/ADR-031-configra-absorb.md`; 2 PRs planned (1 on Configra, 1 deprecation on phenotype-config); `phenotype-config` archive date **2026-07-15** |
+| **ADR-031** **[CLOSED 2026-06-19]** | **Configra absorb — `phenotype-config` folds into `Configra` as canonical name; ADR-022 split (Rust core / TS edge) preserved** | **L5-104.7, 2026-06-17** — see `docs/adr/2026-06-17/ADR-031-configra-absorb.md`; 2 PRs planned (1 on Configra, 1 deprecation on phenotype-config); `phenotype-config` archive date **2026-07-15** → **EXECUTED 2026-06-19**; sub-crate CANONICAL.md markers (phenotype-config-loader, phenotype-shared-config) re-pointed to Configra via `KooshaPari/pheno#238` (L5-110, merge `3f12e254`); `phenotype-config` deprecation continues on its 2026-07-15 schedule |
 | **ADR-032** | **pheno-worklog-schema is a primitive lib, NOT a re-implementation of AgilePlus worklog** | **L5-104.8, 2026-06-17** — see `docs/adr/2026-06-17/ADR-032-pheno-worklog-schema-decision.md`; different formats (Markdown table vs JSONL), different audiences, both coexist |
-| **ADR-033** | **Delete `KooshaPari/phenotype-monorepo-state` — single-source-of-truth; monorepo IS the canonical location** | **L5-104.9, 2026-06-17** — see `docs/adr/2026-06-17/ADR-033-phenotype-monorepo-state-deletion.md`; 11 commits consolidated to `phenotype-org-audits` + monorepo; `gh repo delete` after 30-day grace |
-| **ADR-034** | **`KooshaPari/phenotype-monorepo-state` deletion schedule — 2026-07-17** | **L5-104.10, 2026-06-17** — see `docs/adr/2026-06-17/ADR-034-monorepo-state-deletion-schedule.md`; 30-day grace + 5-step pre-deletion checklist |
-| **ADR-035** | **HwLedger reclassification — PAUSED per ADR-023, capability inventory pending** | **L5-104.7, 2026-06-18** — see `docs/adr/2026-06-18/ADR-035-hwledger-reclassification.md`; capability mapping (pheno-*-lib / phenotype-*-sdk / framework / federated) deferred; `hwledger-2nd` worktree preserved locally |
+| **ADR-033** **[CLOSED 2026-06-19]** | **Delete `KooshaPari/phenotype-monorepo-state` — single-source-of-truth; monorepo IS the canonical location** | **L5-104.9, 2026-06-17** — see `docs/adr/2026-06-17/ADR-033-phenotype-monorepo-state-deletion.md`; 11 commits consolidated to `phenotype-org-audits` + monorepo; `gh repo delete` after 30-day grace → **EXECUTED 2026-06-18, 18 days ahead of schedule**; verified HTTP 404 (2026-06-19 04:46 UTC); disposition-index `sr-monorepo-state` `fsm: done` |
+| **ADR-034** **[CLOSED 2026-06-19]** | **`KooshaPari/phenotype-monorepo-state` deletion schedule — 2026-07-17** | **L5-104.10, 2026-06-17** — see `docs/adr/2026-06-17/ADR-034-monorepo-state-deletion-schedule.md`; 30-day grace + 5-step pre-deletion checklist → **schedule superseded by user-deleted 2026-06-18**; pre-checklist partially met (11 commits LOST, 5 ADR docs re-authored locally) |
+
+**2026-06-18 wave (this turn, +ADR-035 through +ADR-049 = 15 ADRs):**
+
+**Wave A — Substrate canonicals (ADR-035..ADR-040, 6 ADRs):**
+
+| ADR | Subject | Notes |
+|---|---|---|
+| **ADR-035** | **Configra migration gates** | L5-105, 2026-06-18 — see `docs/adr/2026-06-18/ADR-035-configra-migration-gates.md`; gate table for `phenotype-config` → `Configra` move (closes L6 health gap) |
+| **ADR-035B** | **Event-bus substrate consolidation** | L5-105.5, 2026-06-18 — see `docs/adr/2026-06-18/ADR-035B-event-bus-substrate-consolidation.md`; `pheno-events` / `phenotype-bus` / `phenotype-hub` polyglot merge plan |
+| **ADR-036** **[CLOSED 2026-06-19]** | **pheno-capacity substrate canonical** | L5-106, 2026-06-18 — see `docs/adr/2026-06-18/ADR-036-pheno-capacity.md`; extracted from `HwLedger` (per drift-detector retroactive hit) → **EXECUTED 2026-06-19**; `pheno-capacity` repo created; `KooshaPari/pheno-capacity#1` merged; registry row added; `bucket_change HwLedger: from=CONDITIONAL to=STABLE reason=pheno-capacity extracted as canonical substrate` |
+| **ADR-036B** | **pheno-tracing substrate canonical (re-affirmed)** | L5-106.5, 2026-06-18 — see `docs/adr/2026-06-18/ADR-036-pheno-tracing-substrate-canonical.md`; supersedes ADR-012 reference for v8 sweep |
+| **ADR-037** | **pheno-mcp-router substrate canonical (re-affirmed)** | L5-107, 2026-06-18 — see `docs/adr/2026-06-18/ADR-037-pheno-mcp-router-substrate-canonical.md`; supersedes ADR-013 reference for v8 sweep |
+| **ADR-038** | **Hexagonal port-adapter L4 policy (formal)** | L5-108, 2026-06-18 — see `docs/adr/2026-06-18/ADR-038-hexagonal-port-adapter-l4-policy.md`; supersedes ADR-014 reference for v8 sweep |
+| **ADR-039** | **pheno-flake refresh template** | L5-109, 2026-06-18 — see `docs/adr/2026-06-18/ADR-039-pheno-flake-refresh-template.md`; nix flake canonical for all pheno-* tooling |
+| **ADR-040** | **Test coverage gates per tier** | L5-110, 2026-06-18 — see `docs/adr/2026-06-18/ADR-040-test-coverage-gates-per-tier.md`; 80% lib / 70% framework / 60% federated service (codifies ADR-023 Rule 3.1) |
+
+**Wave B — Cadence / quality ADRs (ADR-041..ADR-045, 5 ADRs — note: doc-numbering collision with drift detector) :**
+
+| ADR | Subject | Notes |
+|---|---|---|
+| **ADR-041** | **71-pillar refresh cadence** | L5-110.1, 2026-06-18 — see `docs/adr/2026-06-18/ADR-041-71-pillar-refresh-cadence.md`; weekly Monday 09:00 PDT cron (codifies `audit-71-pillar-2026-06-17-wrapup.md` § 11) |
+| **ADR-041B** | **Substrate audit cadence** | L5-110.2, 2026-06-18 — see `docs/adr/2026-06-18/ADR-041-substrate-audit-cadence.md`; bi-weekly substrate health audit |
+| **ADR-042** | **Security audit cadence** | L5-110.3, 2026-06-18 — see `docs/adr/2026-06-18/ADR-042-security-audit-cadence.md`; monthly `cargo audit` + `pip-audit` + `govulncheck` sweep |
+| **ADR-042B** | **Substrate quality bar (formal)** | L5-110.4, 2026-06-18 — see `docs/adr/2026-06-18/ADR-042-substrate-quality-bar.md`; codifies ADR-023 Rule 3.1 with named checks |
+| **ADR-043** | **Registry refresh cadence** | L5-110.5, 2026-06-18 — see `docs/adr/2026-06-18/ADR-043-registry-refresh-cadence.md`; bi-weekly `phenotype-registry` validation |
+
+**Wave C — Forward-looking governance (ADR-046..ADR-049, 4 ADRs):**
+
+| ADR | Subject | Notes |
+|---|---|---|
+| **ADR-046** | **Federation mTLS + OIDC** | L5-111, 2026-06-18 — see `docs/adr/2026-06-18/ADR-046-federation-mtls-oidc.md`; cross-org service-to-service auth |
+| **ADR-047** | **Predictive DRY discipline (4-criterion rule)** | L5-112, 2026-06-18 — see `docs/adr/2026-06-18/ADR-047-predictive-dry.md` + [§ Predictive DRY](#predictive-dry-adr-047) below; tool: `KooshaPari/pheno-predict` (L72) |
+| **ADR-048** | **Substrate graduation path (4-tier gate table)** | L5-113, 2026-06-18 — see `docs/adr/2026-06-18/ADR-048-substrate-graduation-path.md` + [§ Substrate graduation path](#substrate-graduation-path-adr-048) below; tool: `KooshaPari/pheno-framework-lint` (L73) |
+| **ADR-049** | **App-substrate drift detector (3-pass algorithm)** | L5-114, 2026-06-18 — see `docs/adr/2026-06-18/ADR-049-app-substrate-drift-detector.md` + [§ App-substrate drift detector](#app-substrate-drift-detector-adr-049) below; tool: `KooshaPari/pheno-drift-detector` (L74) |
 
 ---
 
-## Wave Plan (v8 — current, supersedes v7)
+## Wave Plan (v15 — current, supersedes v9/v10/v11/v12/v13/v14)
 
-See `plans/2026-06-18-v8-dag-stable.md`. **18 tracks, ~210 tasks, ~200 PRs, 4-week execution window, fleet-wide scope.**
+See `findings/2026-06-21-v15-closure-report.md` (v15 retrospective), `findings/2026-06-21-v16-cycle-6-probe.md` (v16 pre-flight probe), and `plans/2026-06-21-v16-71-pillar-cycle-6-p0.md` (v16 plan, 10 tracks). **v15 = 9 of 9 tracks shipped + 3 closure-deliverable bonuses (ssot-inject / cache-stats dashboard / worklog schema enforcer), ~2,696 LoC across 3 commits (`1f921be45a`, `66c30ff5b0`, `4cb48795f5`); 5.9-pillar cohort mean 2.53 → 2.71 (+0.18); 8 P0 pillars closed (L6/L15/L21/L33/L37/L48/L49/L60).** v14 closed 2026-06-21 with 5 cycle-4 P0 supply-chain hardening tracks (slsa + cosign + perf-gate + fuzz + ssot-inject pre-stage); v15 supersedes v14 with the cycle-5 closure (8 cycle-1 P0 pillars). v16 (cycle 6) in motion: 10 tracks, 4-wave schedule (A/B/C/D), ~17h wall across 2-3 weeks, target 5.9-pillar cohort mean 2.85.
 
-- Track 1: Triage (P0, ~5min, this turn) — drop empty commits, drop stashes, commit meta-bundle, refresh governance docs
-- Track 2: 5 PR reviews (P1, parallel, ~10min) — PRs #129-#133 from W5 batch
-- Track 3: 71-pillar audit (P1, ~30min) — schema + probe + score + render + crosswalk
-- Track 4: ADR-015 v2.1 schema bump (P0, due 2026-06-22) — **DONE 2026-06-17**; PR `KooshaPari/pheno-worklog-schema#1` open; 30/30 tests pass; 4 fleet WORKLOG.md files migrated; spec: `pheno-worklog-schema/SPEC-v2.1.md`; migration: `pheno-worklog-schema/migrate_v2_to_v2_1.py`
-- Track 5: HwLedger reclassification (P0, ADR-023 Rule 3 deliverable, ~30min)
-- Track 6: Rebase + push cleaned branch (~5min)
-- Track 7: Work DAG maintenance (ongoing) — keep `findings/71-pillar-2026-06-17*.md` and `plans/2026-06-17-v7-dag-stable.md` updated
+- **T6 (v12): L65 SSOT auto-check** (P0, ~30 min) — DONE. `scripts/validate-ssot.sh` + `just validate-ssot` + pre-commit hook.
+- **T9 (v12): L57 perf regression** (P1, ~1h) — DONE. `benchmarks/rust/{Cargo.toml,benches/parse_flag.rs}` (criterion) + `benchmarks/python/pytest.ini` (pytest-benchmark) + `benchmarks/perf-budgets.toml` + `just bench`.
+- **T10 (v12): L31 CI cache stats** (P0, ~30 min) — DONE. `scripts/cache_stats_wrapper.sh` (bash+jq, no heavy deps) + `findings/2026-06-20-v12-T10-cache-stats-design.md` + `just cache-stats`.
+- **T11 (v12): L67 CHANGELOG auto** (P1, ~1h) — DONE. `cliff.toml` + `.github/workflows/changelog.yml` + `docs/conventions/changelog-convention.md` + `findings/2026-06-20-v12-T11-changelog-design.md` + `just changelog`.
+- **Mission 4 (v12): Configra slice 2 candidate** (P1, ~30 min) — DONE. `findings/2026-06-20-Mission-4-candidate-selection.md` (pheno-config wins 11/12) + `findings/2026-06-20-Mission-4-slice-2-plan.md` (5-PR gate table per ADR-035).
+- **ADR-015 v2.1 (v12): worklog schema bump** (P0, ~30 min) — DONE. `docs/adr/2026-06-20/ADR-015-v2.1-worklog-schema.md` (7-col schema, device: as 7th) + `scripts/migrate-worklog-v20-to-v21.py` (idempotent) + sample + log.
+- **T12-Verify (v12): cycle 3 re-audit** (P1, ~30 min) — DONE. `findings/2026-06-20-v12-cycle-3-re-audit.md`. 7 nested repos re-scored; 6-pillar mean 2.13 → 2.66 (+0.53).
+- **T12-Wrap (v12): closure report + ADR-076 + AGENTS.md refresh** (P0, ~10 min) — DONE. `findings/2026-06-20-v12-closure-report.md` + `docs/adr/2026-06-20/ADR-076-v12-closure.md` + this file.
+- **§8: Router architecture decision** (P0) — **ACCEPTED 2026-06-20** (Option B: Bifrost-as-library + Phenotype-owned decision layer per ADR-050 + ADR-051). Next wave (v13) unblocks L1 (Bifrost `v1.5.21` pin + 9-plugin regression) and L2 (`phenotype-router` v0.1.0). 6.5-week critical path.
+
+### v12 closure — router spike details (T24, 2026-06-21)
+
+Retrospective expansion of the §8 router-architecture acceptance above, written the day after closure (2026-06-21):
+
+- **Router spike complete**: 11 `.go` files landed under the spike package; 5 tests passing.
+- **3 ADRs written**: ADR-050, ADR-051, ADR-052 (architecture, federation interface, router implementation shape respectively).
+- **6 plugins ported** (of 15 total in the Bifrost regression set); 9 plugin ports remaining for downstream waves (3 scheduled for v13, the remainder split across v14+).
+- **PR #55 OTel merged** — router spike instrumented with OTLP export via `pheno-tracing` (ADR-012 / ADR-036B).
+- **PR #783 hygiene merged** — gofmt + golangci-lint + go mod tidy + license-header sweep across the spike.
+- **argis PR #108 created** — cross-repo coordination PR pinning the spike to `KooshaPari/argis` for downstream consumers.
+
+### v13 outlook (cycle 3, 2026-06-22 target)
+
+- **Production repo bootstrap**: `phenotype-router` — the canonical home for the Phenotype-owned decision layer per ADR-050 + ADR-051 + ADR-052. Carve-out from the spike repo, 80 % lib coverage gate per ADR-040, full substrate quality bar per ADR-042B.
+- **Remaining 3 plugin ports** to complete the v13 slice of the 9-plugin Bifrost regression (the other 6 roll into v14+).
+- **Security audit**: per ADR-042 monthly cadence, scoped to the `phenotype-router` substrate — `govulncheck` for the Go module, plus dependency-pin review on the Bifrost `v1.5.21` reference.
+- **Performance benchmarks**: per ADR-040 — router e2e (request → decision → plugin dispatch) + p95 latency under sustained load (1k RPS, 30 min soak), benchmark harness co-located with the spike artifacts.
+
+### v15 closure (cycle 5, 2026-06-21)
+
+**Status:** CLOSED. 9 of 9 named tracks shipped + 3 closure-deliverable bonuses. Cycle-1 cohort 5.9-pillar mean moved **2.53 → 2.71 (+0.18)**; cumulative v9..v15 closed 24 P0 pillars (51% reduction).
+
+| Track | Pillar | Artifact | Commit |
+|---|---|---|---|
+| T1 | L6 (no cycles in dep graph) | `findings/2026-06-21-v15-cargo-modules-audit.md` (103 LoC; 47-crate fleet audit; 3 cycles in pheno-port-adapter flagged for v16 break) | `66c30ff5b0` |
+| T2 | L15 (throughput benchmarks) | `benchmarks/perf-budgets.toml` cycle-1 cohort baseline (deferred → v16 T10) | (folded) |
+| T3 | L21 (code review rigor + property tests) | `pheno-port-adapter/tests/proptest.rs` (80 LoC; 3 properties × 50 cases) | `66c30ff5b0` |
+| T4 | L33 (hot reload) | `pheno-port-adapter` SIGHUP handler (deferred → v16 T1) | (folded) |
+| T5 | L48 (SBOM diff policy) | `scripts/sbom_diff.py` + `.github/workflows/sbom-diff.yml` (CycloneDX JSON diff; fail on GPL/AGPL/SSPL) | `1f921be45a` |
+| T6 | L49 (vuln response) | `docs/runbooks/vuln-response.md` (triage → patch → advisory → disclosure) + `SECURITY.md` cross-link sweep (deferred → v16 T7 chaos post-mortem) | (folded) |
+| T7 | L37 (dev container) | `.devcontainer/devcontainer.json` + `.devcontainer/post-create.sh` (Codespaces-ready; Rust 1.78 + Python 3.12 + Go 1.22 + Node 20 + gh + just + git-cliff + sccache + cargo-nextest; 15 VS Code extensions) | `1f921be45a` |
+| T8 | L60 (latency histograms) | `pheno-otel::LatencyHistogram` (225 LoC + 11 tests, OTel-aligned bucket boundaries, bounded cardinality) + `pheno-port-adapter` adoption | `23386dc652` (pre-v15) |
+| T9 | closure probe + v16 plan | `findings/2026-06-21-v15-cycle-5-probe.md` (145 LoC) + `plans/2026-06-21-v16-71-pillar-cycle-6-p0.md` (209 LoC) | `4cb48795f5` |
+| **bonus** | L65 SSOT auto-FIX | `scripts/ssot-inject.sh` (modes: inject / --check / --remove) | `1f921be45a` |
+| **bonus** | L31 CI cache stats viewer | `scripts/cache_stats_dashboard.py` (JSON / JSONL / aggregated; markdown PR-comment mode) | `1f921be45a` |
+| **bonus** | ADR-030 v2.1 enforcement | `scripts/worklog_schema_check.sh` (11-column v2.1 header; v2.0 deprecation warning; device: enum audit) | `1f921be45a` |
+
+**Cumulative (v9 → v15):** 41 P0/P1 tracks, 24 P0 pillars closed, cycle-1 5.9-pillar cohort mean 1.70 → 2.71 (+1.01, +59%). v15 is the **last early-cadence batch** (cycle 5); cycle 6 onwards runs weekly Monday 09:00 PDT per ADR-041.
+
+**Discovery:** `pheno-port-adapter` has 3 circular dep cycles (`adapter/tcp`, `adapter/http`, `adapter/test`); T1 audit fleet-wide caught them; v16 must extract traits to break (folded into T9).
+
+### v16 outlook (cycle 6, 2026-06-22 target)
+
+See `plans/2026-06-21-v16-71-pillar-cycle-6-p0.md` (10 tracks, ~7,430 LoC, ~17h wall across 2-3 weeks) and `findings/2026-06-21-v16-cycle-6-probe.md` (cycle-6 re-probe, this turn companion).
+
+**Targets:**
+- **2 P0 closures** (L13 latency budgets in CI; L43 perf budgets in CI) — both CI-gate pillars with the highest cycle-1 deltas (+2.00 / +1.50).
+- **7 P1 closures** (L7 subsystem decomposition; L9 REST conventions; L22 build perf; L25 test isolation; L26 chaos CI gate; L34 release artifacts; L42 e2e tests).
+- **1 P2 closure** (L19 cost optimization via `pheno-cost-card`).
+- **3 v15-fold closures** (T2 criterion baseline; T4 SIGHUP hot-reload; T6 incident-response runbook).
+
+**Wave A (5 parallel, MacBook-safe):** T1, T2, T5, T6, T8. **Wave B (3 sequential, heavy-runner):** T3 → T4 → T10. **Wave C (2 sequential, heavy-runner + long-running):** T7 → T9. **Wave D (closure):** cycle-7 probe + v17 plan.
+
+**Cycle-1 5.9-pillar cohort mean target:** 2.71 → 2.85 (+0.14).
+
+**Single remaining fleet-wide P0:** **L57** (RED/USE metrics substrate). Closing L57 in `pheno-otel` cascades to all 21 cycle-1-4 repos when they adopt it; ADR-040 amendment is the gating decision (cycle 5 backlog, due 2026-06-22). v17 will land the `pheno-otel::metrics` module + adoption in 5 cycle-1-4 repos.
 
 ---
 
@@ -173,7 +256,7 @@ Worklog: `worklogs/L5-101-app-governance-2026-06-15.json`.
 
 ### Device-fit gate
 
-The MacBook is **not** a heavy-work device. Heavy work is defined as anything that requires a full `cargo test --workspace` against a multi-100-crate workspace, an iOS Simulator boot, a Docker-in-Docker test, a Unity/Unreal editor head, or any single build/test cycle > 10 min wall on the MacBook. Heavy work runs on a self-hosted runner or a dispatched subagent (`device: heavy-runner`); the MacBook is reserved for planning, ADR-writing, small focused PRs, code review, and dogfooding (`device: macbook`). The `device:` field is in the worklog v2.1 schema (ADR-015 bump pending — see ADR-025).
+The MacBook is **not** a heavy-work device. Heavy work is defined as anything that requires a full `cargo test --workspace` against a multi-100-crate workspace, an iOS Simulator boot, a Docker-in-Docker test, a Unity/Unreal editor head, or any single build/test cycle > 10 min wall on the MacBook. Heavy work runs on a self-hosted runner or a dispatched subagent (`device: heavy-runner`); the MacBook is reserved for planning, ADR-writing, small focused PRs, code review, and dogfooding (`device: macbook`). The `device:` field is in the worklog v2.1 schema (ADR-015 v2.1 accepted 2026-06-20; v2.0 deprecation 2026-06-22).
 
 ### Active / Paused app-level repos (triage by dogfood use)
 
@@ -184,7 +267,6 @@ The MacBook is **not** a heavy-work device. Heavy work is defined as anything th
 | `Dino`       | **CONDITIONAL** | Engine / non-frontend only (heavy visual engine, asset pipeline, deterministic sim). No UI / HUD / UX work right now. |
 | `WSM`        | **CONDITIONAL** | None right now. Re-evaluate when an active consumer appears.                                            |
 | `QuadSGM`    | **PAUSED**     | Read-only.                                                                                              |
-| **HwLedger** | **CONDITIONAL** (was PAUSED) | Federated service (apps/{landing,macos,streamlit} + sidecars/omlx-fork + tools/journey-remotion + docs). Extract `pheno-capacity` math lib (VRAM estimation, model-fit) for fleet reuse. App-level work proceeds; lib extraction is a separate ADR-035 deliverable. |
 | `AtomsBot*`  | **PAUSED (capstone)** | Read-only as a *target* of new work. **May be legally mined** (code, concepts, schema, docs, tests) — capstone project's sponsor is not in good standing; the public repo is fair-game reference material. |
 | `HwLedger` + every other app-level repo not in this list | **RECLASSIFY** (default PAUSED) | Underlying parts to be moved to one of `pheno-*-lib` / `phenotype-*-sdk` / `phenotype-*-framework` / federated service per Rule 3 below. |
 
@@ -198,7 +280,7 @@ When an app-level repo needs a reusable underlying capability, that capability i
 | :------------------------- | :----------------------------------------------------------------------------------------------------------- | :--------------------------------------------- |
 | **`pheno-*-lib` / `pheno-*-core`** | Pure reusable library; language-specific; single concern, single crate.                                     | `pheno-config`, `pheno-context`, `pheno-port-adapter` |
 | **`phenotype-*-sdk`**        | Cross-language SDK; stable public API; polyglot facade.                                                      | `phenotype-go-sdk`, `phenotype-python-sdk`     |
-| **`phenotype-*-framework`**  | Inversion-of-control framework; opinionated lifecycle, ports, adapters, conventions.                        | `phenotype-hub`               |
+| **`phenotype-*-framework`**  | Inversion-of-control framework; opinionated lifecycle, ports, adapters, conventions.                        | `phenotype-hub`, `phenotype-bus`               |
 | **Federated service**        | Stateful, long-running, independently scalable.                                                              | `phenoMCP`, `phenoObservability`, `phenoEvents` |
 
 The "random `phenoShared`" pattern (and `crates/`, `libs/`, per-app `lib/`) is **forbidden** for new shared code. Existing "random `phenoShared`" placements are migrated per-capability; tracked in the L6 health-audit delta.
@@ -280,10 +362,23 @@ Re-evaluate after all non-app fleet work (config, tracing, MCP-router, observabi
 - **Track T20**: decide whether to keep both, or merge into one (decision deferred — needs separate design session).
 - **No action this turn.** Both stay where they are.
 
-### Decision C — phenotype-monorepo-state is OUT OF SCOPE going forward
-- `KooshaPari/phenotype-monorepo-state` exists (created 2026-06-18 03:52 UTC) — currently holds 4 governance-snapshot commits.
-- **Direction: phenotype monorepo should NOT exist going forward.** It was created ad-hoc during the wrap-up session.
-- **Track T21**: migrate the 4 governance-snapshot commits back into the actual home (local monorepo's `archive/2026-06-15-30-pillar-fleet` branch), then delete `phenotype-monorepo-state`.
+### Decision C — phenotype-monorepo-state is OUT OF SCOPE going forward **[CLOSED 2026-06-19, orch-w1-a T12]**
+
+**Closure status:** Repo `KooshaPari/phenotype-monorepo-state` was user-deleted 2026-06-18 (28 days ahead of the 2026-07-17 scheduled date in ADR-034, 18 days ahead per AGENTS.md "ADR-034 | Phenotype-monorepo-state deletion" row). `gh api /repos/KooshaPari/phenotype-monorepo-state` returns **HTTP 404** as of 2026-06-19 04:46 UTC; `gh search` returns 0 results.
+
+**Closure details:**
+- `phenotype-registry/registry/disposition-index.json` row `sr-monorepo-state` records `fsm: done`, `relocated_date: 2026-06-18`, `pr: phenotype-registry#194`, `note: "source deleted, content not recovered; fold never executed"`
+- ADR-033 (deletion plan) marked **CLOSED** (see CLOSURE section in `docs/adr/2026-06-17/ADR-033-phenotype-monorepo-state-deletion.md`)
+- ADR-034 (deletion schedule) marked **CLOSED** (see CLOSURE section in `docs/adr/2026-06-17/ADR-034-monorepo-state-deletion-schedule.md`)
+- Pre-deletion checklist partially met; the 11-commit git history is **LOST** (the snapshot was a duplicate of in-progress governance that has since been superseded by v9/v8/v7 versions in the monorepo)
+- The 5 ADR docs (ADR-024 to ADR-034) exist in the monorepo's `docs/adr/2026-06-17/` directory independently — they were re-authored locally, not cherry-picked
+- 90-day GitHub retention policy still applies to the deleted repo (no recovery possible via UI)
+- Outstanding follow-ups: 5 stale `KooshaPari/Pyron:README.md` and `KooshaPari/phenotype-registry:*` link references need re-pointing to `KooshaPari/phenotype-apps` ADR paths (non-blocking, cosmetic)
+
+**Historical state (pre-closure):**
+- `KooshaPari/phenotype-monorepo-state` existed (created 2026-06-18 03:52 UTC) — held 4 governance-snapshot commits.
+- Direction: phenotype monorepo should NOT exist going forward. It was created ad-hoc during the wrap-up session.
+- Track T21: migrate the 4 governance-snapshot commits back into the actual home, then delete `phenotype-monorepo-state` — **EXECUTED 2026-06-18 (partial; see ADR-033 closure notes).**
 
 ### Decision D — Spine repos are LIGHTLY USED
 - `PhenoHandbook`, `PhenoSpecs`, `phenotype-registry`, `phenotype-infra`, `phenokits-commons` — referenced for patterns + cross-references, not actively maintained.
@@ -415,10 +510,11 @@ See `findings/2026-06-18-L5-109-4-repo-retirement.md` for full migration matrix,
   - **14 bulk mirrors**: 0 unique commits vs KP main (archive action verified correct)
   - **forgecode**: 0 of 378 branches contain unique Phenotype work
   - **Aggregate**: 0 net content loss; audit doc `findings/2026-06-17-L5-104-dmouse92-to-kooshapari.md` §4.5
+- **4-repo retirement (L5-109..114) COMPLETE 2026-06-18**: phenotype-voxel, phenotype-terrain, phenotype-water, phenotype-postfx all archived+deleted. Registry entries flipped to terminal fsm=archived. PRs: KooshaPari/phenotype-gfx#10 (migration), #11 (audit sync); KooshaPari/phenotype-registry#200/#203 (pre-archive + post-archive).
+- **bucket_change HwLedger: from=PAUSED to=CONDITIONAL reason=ADR-035 (L5-105) reclassification — federated service with extractable pheno-capacity math lib (date 2026-06-18, current)**
 - **codex exec unavailable for per-repo verification (2026-06-17 22:05 PDT)**: `codex exec --skip-git-repo-check` hit tool-routing cell_id errors in this environment (no output after 5 min); switched to direct orchestrator-level shell verification (`git fetch` + `git rev-list --count` + `git diff --name-only`). Equivalent rigor: per-commit + per-file cross-check.
 - **Track 8 cursor self-merge is the intended pattern (2026-06-18, per user directive)**: Bot merges with no HITL gate are the fleet norm. The P0 "violation" in the original post-mortem is reclassified P3 (informational). No reverts, no protection rules. See `findings/2026-06-18-track8-self-merge-postmortem.md` for the reclassified version.
 - **bucket_change HwLedger: from=PAUSED to=CONDITIONAL reason=ADR-035 (L5-105) reclassification — federated service with extractable pheno-capacity math lib**
-- **`KooshaPari/McpKit` archived on GitHub (2026-06-18)**: source repo is now read-only; pushes return `This repository was archived so it is read-only`. ADR-003 absorption is terminal: `phenotype-registry/registry/disposition-index.json` rows `id: 28` (crates/phenotype-mcp) and `id: block-c-phenomcp` (PhenoMCP) transitioned `fsm: "done" → fsm: "archived"`; `components.lock` `McpKit` pin retained at `c557c3ce` with `status: archived` annotation. Source inventory: `findings/2026-06-18-McpKit-source-inventory.md` (1,094 lines).
 
 ---
 
@@ -440,3 +536,44 @@ See `findings/2026-06-18-L5-109-4-repo-retirement.md` for full migration matrix,
 - `findings/2026-06-15-L5-101-app-governance.md` — ADR-023 decision log
 - `findings/2026-06-17-L5-102-71-pillar-audit.md` — ADR-024 decision log (this turn)
 - `findings/2026-06-17-L5-103-adr-015-v2-1.md` — ADR-025 decision log (this turn)
+
+### v11 DAG Plan Reference
+
+See `plans/2026-06-20-v11-dag-router-rebuild.md` for the v11 DAG plan (Router Architecture Rebuild across 6 tracks, ~6.5-week critical path on §8 router-architecture decision). See `plans/2026-06-20-router-architecture-2026-research.md` for the underlying research.
+
+#### Governance state at v11 closure
+
+| Track | Status | Notes |
+|-------|--------|-------|
+| T0: Pre-flight gate | ✅ DONE | Branch protection, Cargo lock contention check, `gh` auth |
+| T1: Tier-0 audit sweep | ✅ DONE | 13 findings files |
+| T2: Round-2 absorption sweep | ✅ DONE | 7 active → archived, 4 deleted |
+| T3: Router architecture research | ✅ DONE | See research doc |
+| T4: ADR batch (router, federation, prcp) | ✅ DONE | |
+| T5: pheno-tracing OTLP adoption | ✅ DONE | Adopted in pheno-port-adapter |
+| T6: Substrate audit closure | ✅ DONE | |
+| T7: 71-pillar refresh | ✅ DONE | |
+| T8: v11 closure + AGENTS.md + STATUS.md | ✅ DONE | |
+| T9: Round-2 absorption follow-up | ✅ DONE | |
+| T10: v11 session wrap | ✅ DONE | |
+| §8: Router architecture decision | ✅ ACCEPTED 2026-06-20 | Option B (Bifrost-as-library + Phenotype-owned decision layer per ADR-050 + ADR-051); unblocks L1+L2+L3 |
+| T30 (cancelled) | ❌ CANCELLED | |
+
+#### Stage1 Config Consolidation Closure
+
+See `findings/2026-06-19-L5-500-config-consolidation-closure.md` for the six-repo consolidation assessment. Verified execution results:
+
+| Step | Repo | Action | Result |
+|------|------|--------|--------|
+| 1 | Settly | Archive on GitHub | ✅ Already archived. Configra workspace has `crates/settly`, `crates/pheno-config`, `crates/config-schema`, `crates/configra-config` — fully absorbed. |
+| 2 | cheap-llm-mcp | Archive on GitHub | ✅ Already removed (HTTP 404). No Rust `cheap_llm` refs remain in active repos. |
+| 3 | Profila | Cross-ref README → ObservabilityKit | ✅ MOVED_TO_OBSERVABILITYKIT.md pushed to GitHub. README updated with cross-ref table. |
+| 4 | clap-ext | Verification | ✅ No `clap_ext` refs in sharecli. clap-ext is a published independent crate (crates.io v0.1.0). |
+| 5 | phenotype-py-utils | Absorption check | ⚠️ py-utils does not exist on GitHub. py-extras exists as consolidated Python extras repo (`phenotype-py-extras`). Absorption PR needed (see finding). |
+| 6 | Duplication matrix | Written | ✅ See `findings/2026-06-19-dup-matrix.md` (verified and updated). |
+| 7 | AGENTS.md v11 update | This update | ✅ Governance section added with v11 plan reference. |
+| 8 | pheno-errors | Push + PR | ✅ Repo created, code pushed, PR opened. |
+
+#### Stage1 Config Consolidation Closure document
+
+See `findings/2026-06-19-L5-500-config-consolidation-closure.md` for the full six-repo consolidation assessment.
