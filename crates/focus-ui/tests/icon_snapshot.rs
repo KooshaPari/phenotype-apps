@@ -91,12 +91,18 @@ fn test_icon_types_generation() {
         "Types must export IconProps interface"
     );
 
-    // Count type union members (should match icon count)
-    let union_count = types_content.matches(" | \"").count();
+    // Count const-array members; IconName is derived from iconNames so this is the SSOT.
     assert!(
-        union_count >= 60,
-        "IconName union should have 60+ members, got {}",
-        union_count
+        types_content.contains("export const iconNames")
+            && types_content.contains("as const")
+            && types_content.contains("export type IconName = typeof iconNames[number]"),
+        "IconName should be derived from the iconNames const array"
+    );
+    let icon_name_count = types_content.matches("  \"").count();
+    assert!(
+        icon_name_count >= 60,
+        "iconNames should have 60+ members, got {}",
+        icon_name_count
     );
 }
 
