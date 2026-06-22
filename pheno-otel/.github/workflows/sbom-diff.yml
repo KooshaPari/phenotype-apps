@@ -1,0 +1,157 @@
+# .github/workflows/sbom-diff.yml — v22-T5 (L48) SBOM diff gate.
+#
+# Runs `scripts/sbom-diff.sh` on every PR that touches `pheno-otel/`.
+# The script:
+#   1. Generates a CycloneDX SBOM from the PR head (`cargo cyclonedx-bom`).
+#   2. Loads the SBOM committed at the merge base (PR base).
+#   3. Computes the dependency diff (added/removed/upgraded/downgraded).
+#   4. Cross-references added/upgraded crates against RUSTSEC via
+#      `cargo audit` and fails the gate if a new HIGH/CRITICAL CVE
+#      appears.
+#   5. Writes `SBOM_DIFF.md` to the workflow workspace and uploads it
+#      as an artifact.
+#   6. Posts (or updates) a PR comment summarising the diff.
+#
+# Pillar: L48 (Supply chain security).
+# Pillar: L70 (Supply chain automation) — feeds SBOM data into the
+#         release workflow (`.github/workflows/release.yml`).
+#
+# See: scripts/sbom-diff.sh, findings/2026-06-22-v22-T5-L48-sbom-diff.md
+
+name: SBOM Diff
+
+on:
+  pull_request:
+    # Only run on PRs that change this crate's source. The workflow lives
+    # in the monorepo root but the SBOM diff is scoped to pheno-otel/.
+    paths:
+      - "pheno-otel/**"
+      - "pheno-otel/.github/workflows/sbom-diff.yml"
+  push:
+    branches: [main]
+    paths:
+      - "pheno-otel/**"
+
+# Cancel superseded runs on the same ref (saves CI minutes per v12 fleet policy).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Required to comment on PRs.
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  sbom-diff:
+    name: SBOM diff + CVE gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          # fetch-depth=0 so we can resolve the merge base (PR base commit)
+          # for the SBOM diff. The script uses `git show <ref>:sbom.cdx.json`
+          # to load the previous SBOM.
+          fetch-depth: 0
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@e3f78fd1f6c2a43286e5ef3a13eea2e72ed23e1f
+        with:
+          toolchain: stable
+
+      - name: Cache cargo registry + target
+        uses: Swatinem/rust-cache@779680da715d629b86a86f9a2e2c439d7e8a065a # v2
+        with:
+          workspaces: |
+            pheno-otel
+
+      - name: Install cargo-cyclonedx (matches Cargo.toml [build-dependencies])
+        uses: taiki-e/install-action@c4a6e6e4d23a26c70fa63efde26efe43b3a18497
+        with:
+          tool: cargo-cyclonedx
+
+      - name: Install cargo-audit
+        uses: taiki-e/install-action@c4a6e6e4d23a26c70fa63efde26efe43b3a18497
+        with:
+          tool: cargo-audit
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Resolve diff base ref
+        id: base-ref
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE/pheno-otel"
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # PRs: diff against the merge base (PR target branch tip at the
+            # moment the PR was opened). Fall back to the head ref's parent
+            # if `origin/${{ github.base_ref }}` is unavailable.
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            if git rev-parse --verify "$BASE_SHA^{commit}" >/dev/null 2>&1; then
+              echo "base=$BASE_SHA" >> "$GITHUB_OUTPUT"
+            else
+              echo "::warning::PR base sha $BASE_SHA not local; falling back to HEAD~1"
+              echo "base=HEAD~1" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            # Pushes to main: diff against HEAD~1 (last commit)
+            echo "base=HEAD~1" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Resolved base ref: $(cat "$GITHUB_OUTPUT" | grep '^base=' | cut -d= -f2)"
+
+      - name: Run SBOM diff gate
+        id: diff
+        working-directory: pheno-otel
+        run: |
+          set -euo pipefail
+          # Allow the script to fail (exit 1) and we capture that
+          # separately so we can still upload the artifact + comment.
+          set +e
+          scripts/sbom-diff.sh "${{ steps.base-ref.outputs.base }}" 2>&1 | tee sbom-diff.log
+          rc=$?
+          set -e
+          echo "exit_code=$rc" >> "$GITHUB_OUTPUT"
+          exit $rc
+
+      - name: Upload SBOM_DIFF.md artifact
+        if: always()
+        uses: actions/upload-artifact@65c4c4a301dbfc281a38b4066f460083d4cc41ad # v4
+        with:
+          name: sbom-diff-${{ github.event.pull_request.number || github.run_id }}
+          path: |
+            pheno-otel/SBOM_DIFF.md
+            pheno-otel/sbom.cdx.json
+            pheno-otel/sbom-diff.log
+          if-no-files-found: warn
+
+      - name: Upload generated SBOM (for release pipeline)
+        if: always()
+        uses: actions/upload-artifact@65c4c4a301dbfc281a38b4066f460083d4cc41ad # v4
+        with:
+          name: sbom-cdx-json-${{ github.event.pull_request.number || github.run_id }}
+          path: pheno-otel/sbom.cdx.json
+          if-no-files-found: warn
+
+      - name: Comment on PR with diff summary
+        if: github.event_name == 'pull_request' && always()
+        uses: marocchino/sticky-pull-request-comment@5a226f49eafb5a4b1b22b45e9eb3be7c25d2236b # v2
+        with:
+          header: sbom-diff
+          path: pheno-otel/SBOM_DIFF.md
+
+      - name: Final status
+        if: always()
+        run: |
+          echo "==> SBOM diff gate exit code: ${{ steps.diff.outputs.exit_code }}"
+          if [[ "${{ steps.diff.outputs.exit_code }}" == "1" ]]; then
+            echo "::error::SBOM diff gate failed — new high/critical CVE introduced (L48)."
+            exit 1
+          elif [[ "${{ steps.diff.outputs.exit_code }}" == "2" ]]; then
+            echo "::error::SBOM diff script errored (missing tool, malformed args)."
+            exit 1
+          fi

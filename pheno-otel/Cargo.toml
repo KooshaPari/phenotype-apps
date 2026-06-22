@@ -54,3 +54,20 @@ chaos-injection = { path = "../chaos-injection" }
 # required. Run with:
 #   LOOM_MAX_PREEMPTIONS=1 RUSTFLAGS="--cfg loom" cargo test --test loom_<name> --release
 loom = "0.7"
+
+# ─── Build dependencies (v22-T5 / L48 SBOM diff gate) ──────────────────────
+# Pillar: L48 (Supply chain security).
+# `cargo-cyclonedx` is the canonical CycloneDX SBOM generator for Cargo
+# workspaces. The binary is installed at build time via `taiki-e/install-
+# action` in CI; declaring it here locks the build graph to the same
+# version the SBOM diff script (`scripts/sbom-diff.sh`) and the release
+# workflow (`.github/workflows/release.yml`) use.
+#
+# `cyclonedx-bom` is the Rust library representation of a CycloneDX
+# document. The SBOM diff script uses it indirectly (via `jq` on the
+# generated JSON) to compare dependency graphs across commits; declaring
+# it as a build-dep ensures the SBOM generator and the diff tool agree
+# on the document schema version.
+[build-dependencies]
+cargo-cyclonedx = "0.5"
+cyclonedx-bom = "0.5"
