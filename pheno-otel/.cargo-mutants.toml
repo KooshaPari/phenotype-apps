@@ -1,0 +1,7 @@
+[run]
+workspace = true
+timeout = 120
+shuffle = true
+
+[mutants]
+additional_cargo_args = ["--locked"]
