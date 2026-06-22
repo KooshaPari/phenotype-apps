@@ -391,3 +391,9 @@ mod tests {
             .unwrap();
     }
 }
+
+/// Human-readable `Display` impls for `AppError`.
+pub mod display;
+
+/// `Diagnostic` impls (miette-based) for `AppError`. Per v23-T4 (L41).
+pub mod diagnostic;
