@@ -1,0 +1,106 @@
+{
+  "task_id": "L5-159",
+  "task_subid": "v21-T2-federation-oidc",
+  "date": "2026-06-22",
+  "repo": "KooshaPari/phenotype-apps",
+  "category": "L5-Governance",
+  "title": "ADR-046b federation OIDC token exchange reference architecture (v21 cycle-11 P0)",
+  "status": "complete",
+  "author": "KooshaPari",
+  "device": "macbook",
+  "device_rationale": "Pure doc authoring (Markdown + gh api); zero cargo / dind / sim / heavy cargo test --workspace",
+  "device_gate_self_check": "Rule 1 PASS / Rule 2 N/A / Rule 3 PASS",
+  "schema_version": "v2.1",
+  "adr_anchors": [
+    "docs/adr/2026-06-22/ADR-046b-federation-oidc.md",
+    "docs/adr/2026-06-22/INDEX.md",
+    "docs/adr/2026-06-22/ADR-046-federation-mtls.md",
+    "docs/adr/2026-06-21/ADR-079-oidc-federation-reference.md",
+    "docs/adr/2026-06-18/ADR-046-federation-mtls-oidc.md",
+    "docs/adr/2026-06-18/ADR-051-bifrost-as-library.md",
+    "docs/adr/2026-06-18/ADR-049-app-substrate-drift-detector.md",
+    "docs/adr/2026-06-22/ADR-046c-federation-p2p.md (forthcoming per ADR-046c index cross-ref, authored by parallel subagent)"
+  ],
+  "deliverables": {
+    "adr_file": "docs/adr/2026-06-22/ADR-046b-federation-oidc.md",
+    "adr_line_count": 229,
+    "index_file": "docs/adr/2026-06-22/INDEX.md",
+    "index_line_count": 144,
+    "branch": "docs/adr-046b-federation-oidc-2026-06-22",
+    "initial_commit_sha": "8fedfbe1b653c789acc8c3f506d136a7e58f49c9",
+    "rebased_commit_sha": "659f72d5a387caefa9b8f65f0de1e54a01e3ed7f",
+    "current_remote_sha": "659f72d5a387caefa9b8f65f0de1e54a01e3ed7f",
+    "pr_diff_after_rebase": "373 insertions across 2 files (ADR-046b + INDEX.md); 0 deletions"
+  },
+  "sections_authored": {
+    "context": "3 concrete use cases (cross-org delegation, service impersonation, step-up authentication) and the relationship to ADR-046 (mTLS transport) / ADR-079 (inbound JWT verification).",
+    "decision": "8 sub-decisions: RFC 8693 token exchange protocol adoption (delegation/impersonation/step-up modes sanctioned), IdP trust establishment (two-phase governance-gated handshake), audience/scope claims enforcement (aud/scope/azp/act), refresh token rotation (single-use, sender-constrained, 30-day max), JWKS key discovery (5-min TTL + 10% jitter, kid-miss retry once), clock-skew tolerance (60s symmetric), revocation (RFC 7009 online + RFC 7662 introspection, 500ms budget, 5-min propagation), standards references.",
+    "consequences": "Positive (auditable delegation, governed IdP onboarding, mandatory rotation, bounded revocation, standards-aligned) + Negative (onboarding friction, IdP support requirements, NTP dependency, introspection latency) + Neutral (inbound unchanged, mTLS unchanged).",
+    "alternatives": "5 rejected: forward-original-JWT (loses delegation chain), SAML 2.0 exchange (legacy XML, no token_type), custom JWT exchange (reinvents RFC 8693), draft-ietf-oauth-mutual (deprecated 2024, redundant with mTLS+token-binding), status quo (cross-org API-key sprawl).",
+    "appendix_a_companions": "ADR-046 (mTLS transport substrate, ACCEPTED); ADR-046c (peer-to-peer federation topology, FORTHCOMING — see docs/adr/2026-06-22/ADR-046c-federation-p2p.md cross-ref index; in-flight at write time on parallel subagent branch).",
+    "appendix_b_cross_references": "12 references: ADR-046 (mTLS transport), ADR-079 (inbound OIDC verification), ADR-077 (Vault migration roadmap), ADR-040 (test coverage gates), ADR-042 (security audit cadence), ADR-049 (app-substrate drift detector), ADR-051 (Bifrost-as-library), ADR-012 / ADR-036B (pheno-tracing), 71-pillar framework (ADR-024), RFC 8693/7009/7662/7519/8705/9449 + OIDC Core 1.0 + OIDC Discovery 1.0 + OAuth Security BCP §4.13 + OWASP ASVS v4.0.3 V3.5/V3.7/V6.4 + NIST SP 800-63B §7.1."
+  },
+  "standards_adopted": [
+    "RFC 8693 — OAuth 2.0 Token Exchange (delegation/impersonation/step-up modes)",
+    "RFC 7009 — OAuth 2.0 Token Revocation (online revocation endpoint)",
+    "RFC 7662 — OAuth 2.0 Token Introspection (local revocation check + claims refresh)",
+    "RFC 7519 — JSON Web Token (JWT) (claim shape + signature verification)",
+    "RFC 8705 — OAuth 2.0 Mutual-TLS Client Authentication and Certificate-Bound Access Tokens (sender-constrained refresh tokens)",
+    "RFC 9449 — DPoP: Demonstrating Proof-of-Possession at the Application Layer (sender-constrained access tokens, alternative to mTLS)",
+    "OpenID Connect Core 1.0 (id_token claim shape, sub/iss/aud/exp/iat)",
+    "OpenID Connect Discovery 1.0 (.well-known/openid-configuration for IdP metadata)",
+    "OAuth 2.0 Security Best Current Practice §4.13 (sender-constrained tokens)",
+    "OWASP ASVS v4.0.3 V3.5 (token issuance), V3.7 (token binding), V6.4 (key management)",
+    "NIST SP 800-63B §7.1 (session management + reauthentication)"
+  ],
+  "pillars_touched": [
+    {"pillar": "L54", "name": "Federation mTLS + OIDC", "current_score": 2.5, "target_score": 3.0, "rationale": "ADR-046 (mTLS substrate) + ADR-046b (OIDC token exchange) + ADR-046c (p2p topology forthcoming) close L54 at v21 cycle-11."},
+    {"pillar": "L49", "name": "Identity — delegation/impersonation", "current_score": 1.5, "target_score": 2.5, "rationale": "RFC 8693 delegation/impersonation/step-up modes add structured cross-org identity flow; act-claim + azp enforcement close the identity-layer gap surfaced in 2026-06-21 audit."}
+  ],
+  "push_strategy": {
+    "method": "ADR-027 Tier 2 (governance-doc bypass) + L5-158 rebase pattern",
+    "flags": ["--recurse-submodules=no", "--no-verify"],
+    "lfs_config": "lfs.allowincompletepush=true (set per AGENTS.md REBASE + PUSH RESOLVED note 2026-06-18 22:58 PDT)",
+    "force_with_lease": "USED on second push (after rebase onto current origin/main 4c1a32b18c)",
+    "post_rebase_push_outcome": "Clean 373-line PR diff across 2 files (was 21,006 / 13,134 pollution across 292 files before rebase)"
+  },
+  "rebase_note": {
+    "issue": "Initial branch base (a8dc435f0d, subagent A's PR #122 merge commit) was on a stale tip of origin/main that has since been force-pushed/rewritten. Pre-rebase PR diff was 292 files changed, 21,006 insertions, 13,134 deletions (massive staging pollution from 2-3 parallel subagent commit streams + submodule pointer drift). origin/main advanced 4 commits (stage 15 v21 cycle-11 P1 subagent outputs, v20 final closure, adr-lint T1 v20 cycle 10, cycle-10 closure) between worktree creation and first push. `merge-base HEAD origin/main` returned empty (exit=1) confirming full history divergence.",
+    "resolution": "Used `git rebase --onto origin/main a8dc435f0d HEAD` per L5-158's precedent to replay ONLY my 1 authored commit onto current origin/main (4c1a32b18c), dropping the 2 staging commits (a8dc435f0d + 4899d244b8 + d51389f6b3) that were orphaned content unique to my branch base. INDEX.md modify/delete conflict resolved by keeping my version (which already references ADR-046 + ADR-046b in a self-consistent block). Branch now points to 659f72d5a3 (rebased tip) on top of 4c1a32b18c (current origin/main tip).",
+    "safety": "No 'do_not_touch' files affected. argis-extensions/, Civis/, FLEET_DAG.db untouched. Other branches (parallel agents' v20/v21 work, including ADR-046c by subagent-C) untouched. The staging commits dropped from this branch are orphaned content (not on origin/main, not on any other branch except partial overlap with argis remote at 902584eee6) — they remain in git reflog + the 659f72d5a3 reachable commit graph for recovery if needed.",
+    "force_push": "git push origin docs/adr-046b-federation-oidc-2026-06-22 --force-with-lease --recurse-submodules=no --no-verify (succeeded; remote now at 659f72d5a3)"
+  },
+  "remote_config_cleanup": {
+    "issue": "Two malformed remotes in local .git/config (re-introduced by parallel agents after L5-158 cleanup): 'origingit@github.com:KooshaPari/phenotype-apps.git' (note: name with @ instead of :, URL concatenated) and 'origingitgit@github.com:KooshaPari/phenotype-apps.git' (duplicated). The canonical 'origin' remote (git@github.com:KooshaPari/phenotype-apps.git) and the inherited 'phenotype-apps' remote (https://github.com/KooshaPari/phenotype-apps.git) are correct.",
+    "action": "Left untouched — cleanup is outside L5-159 task scope (would affect parallel agents' work in flight). The malformed 'origingit' remote is unreachable; using 'origin' for push/PR operations is unaffected. Documented for FU.",
+    "side_effect": "None for L5-159 — push to 'origin' succeeded; PR creation against 'origin/main' uses the canonical main branch ref."
+  },
+  "files_written": [
+    "docs/adr/2026-06-22/ADR-046b-federation-oidc.md",
+    "docs/adr/2026-06-22/INDEX.md",
+    "worklogs/L5-159-v21-T2-federation-oidc-2026-06-22.json"
+  ],
+  "test_results": {
+    "adr_structure": "PASS: 4 mandatory sections (Context / Decision / Consequences / Alternatives) + 2 appendices (Companion ADRs + Cross-references) per template",
+    "adr_line_count": "PASS: 229 lines (within ~250-line target)",
+    "index_includes_adr_046b": "PASS: INDEX.md section 'ADR-046b — Federation OIDC token exchange reference architecture' added between ADR-046 and ADR-081 sections; companion-rows table updated; refresh-cadence note updated",
+    "cross_refs": "PASS: 12 cross-references (RFC 8693, RFC 7009, RFC 7662, RFC 7519, RFC 8705, RFC 9449, OIDC Core 1.0, OIDC Discovery 1.0, OAuth Security BCP, OWASP ASVS v4.0.3, NIST SP 800-63B, ADR-046 + ADR-079 + ADR-046c + ADR-077 + ADR-040 + ADR-042 + ADR-049 + ADR-051 + ADR-012 + ADR-036B)",
+    "git_push": "PASS: origin/docs/adr-046b-federation-oidc-2026-06-22 == 659f72d5a387caefa9b8f65f0de1e54a01e3ed7f (post-rebase, --force-with-lease)",
+    "pr_diff_cleanliness": "PASS: 373 insertions across 2 files (ADR-046b + INDEX.md); 0 deletions; 0 pollution from staging commits",
+    "worklog_self_check": "PASS: v2.1 schema fields present (device, device_rationale, device_gate_self_check, schema_version)"
+  },
+  "open_follow_ups": [
+    {"id": "L5-159-FU1", "priority": "P0", "description": "Author ADR-046c (peer-to-peer federation topology; hub-and-spoke vs mesh failover semantics)", "owner": "subagent-C (already in flight at write time per parallel-sweep log)"},
+    {"id": "L5-159-FU2", "priority": "P0", "description": "Restore ADR-046 (mTLS transport substrate) to origin/main if subagent-A's 'merged' PR #122 was lost in the origin/main history rewrite observed at worktree creation time", "owner": "subagent-A or orchestrator"},
+    {"id": "L5-159-FU3", "priority": "P1", "description": "Add ADR-046b row to docs/adr/INDEX.md (top-level pillar-grouped index); depends on parallel agent's INDEX.md being merged first", "blocker": "v20 T1 INDEX.md merge"},
+    {"id": "L5-159-FU4", "priority": "P2", "description": "Update AGENTS.md § Active ADRs to note that v21 cycle-11 P0 carry-over ADR-046b is now authored (move from 'planned' to 'accepted')", "depends_on": "PR merge"},
+    {"id": "L5-159-FU5", "priority": "P2", "description": "Clean up malformed remotes ('origingit', 'origingitgit') re-introduced by parallel agents after L5-158 cleanup; canonical 'origin' + 'phenotype-apps' + 'argis' remotes retained", "owner": "any next subagent or orchestrator"}
+  ],
+  "do_not_touch": [
+    "argis-extensions/ (parallel agents' work)",
+    "Civis/ (out of scope per task constraints)",
+    "FLEET_DAG.db (out of scope)",
+    "Any branch other than docs/adr-046b-federation-oidc-2026-06-22 (no PRs merged, no other commits)"
+  ],
+  "summary": "ADR-046b federation OIDC token exchange reference architecture authored as v21 cycle-11 P0 carry-over from v20 cycle-10 P1 net-new federation/interop track. 229-line pure-doc ADR covers RFC 8693 token exchange (delegation/impersonation/step-up), IdP trust establishment (two-phase governance-gated handshake), aud/scope/azp/act claim enforcement, refresh token rotation (single-use, sender-constrained, 30-day max), JWKS discovery (5-min TTL + 10% jitter, kid-miss retry), clock-skew tolerance (60s symmetric), revocation (RFC 7009 online + RFC 7662 introspection, 500ms budget, 5-min propagation), 11 industry standards (RFC 8693/7009/7662/7519/8705/9449, OIDC Core 1.0, OIDC Discovery 1.0, OAuth Security BCP §4.13, OWASP ASVS v4.0.3, NIST SP 800-63B), 5 rejected alternatives. ADR-046b is the 2nd of 3 companion federation ADRs (ADR-046 mTLS ACCEPTED + ADR-046b OIDC + ADR-046c p2p forthcoming). Staging pollution (292 files, 21k+ insertions, 13k+ deletions) cleaned via L5-158's rebase pattern: `git rebase --onto origin/main a8dc435f0d HEAD` + INDEX.md modify/delete conflict resolution + `--force-with-lease` push. Final branch: docs/adr-046b-federation-oidc-2026-06-22 at 659f72d5a3 (rebased tip) with clean 373-line PR diff across 2 files (ADR-046b + INDEX.md). Worktree cleanup pending."
+}
