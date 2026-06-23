@@ -41,6 +41,16 @@ licenses:
 # Clean build artifacts
 clean:
     cargo clean
+
+# forge lock-cascade guard (issue #146, ADR-094)
+# Exits 0=SAFE (parallel ok), 2=WARN (sequential, sleep 10), 3=BLOCK (do not dispatch)
+forge-lock-guard:
+    @./scripts/forge_lock_guard.sh
+
+# CI-friendly: assert guard returns 0 (no contention detected)
+forge-lock-guard-ci:
+    @./scripts/forge_lock_guard.sh
+
 # Grade targets (strictest checks — no caching)
 grade:
     @echo "=== Running full grade ==="
