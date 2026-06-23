@@ -120,7 +120,8 @@ parking_lot = "0.12"
 rayon = "1.10"
 
 # CLI
-clap = { version = "4.5", features = ["derive", "env"] }
+clap = { version = "4", features = ["derive", "env"] }
+clap-ext = "0.1"
 
 # GraphQL (for graphql-gateway service)
 async-graphql = { version = ">=0.13", features = ["chrono", "uuid"] }
