@@ -1,5 +1,6 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
+use clap_ext::prelude::*;
 use std::path::PathBuf;
 use tracing::info;
 
@@ -9,11 +10,15 @@ use agent_orchestrator::{disk_check, OrchestrationConfig, TrackerState};
 #[command(name = "agent-orchestrator")]
 #[command(about = "Lane-based agent dispatch orchestration", long_about = None)]
 struct Cli {
+    /// Shared `--config/-c` flag (clap-ext `ConfigArg`)
+    #[command(flatten)]
+    config: ConfigArg,
+    /// Shared `-v/-q` verbosity flags (clap-ext `Verbosity`)
+    #[command(flatten)]
+    verbosity: Verbosity,
+
     #[command(subcommand)]
     command: Commands,
-
-    #[arg(long, default_value = "orchestration.toml")]
-    config: PathBuf,
 
     #[arg(long, default_value = ".orchestration-state.json")]
     state_file: PathBuf,
@@ -44,17 +49,23 @@ enum LanesCommand {
 }
 
 fn main() -> Result<()> {
-    tracing_subscriber::fmt::init();
-
     let cli = Cli::parse();
 
-    if !cli.config.exists() {
-        eprintln!("Error: orchestration.toml not found at {:?}", cli.config);
+    setup_tracing(cli.verbosity.to_filter());
+
+    let config_path = cli
+        .config
+        .config
+        .clone()
+        .unwrap_or_else(|| PathBuf::from("orchestration.toml"));
+
+    if !config_path.exists() {
+        eprintln!("Error: orchestration.toml not found at {:?}", config_path);
         eprintln!("Create one by copying orchestration.toml.example and editing it.");
         std::process::exit(1);
     }
 
-    let config = OrchestrationConfig::from_file(&cli.config)?;
+    let config = OrchestrationConfig::from_file(&config_path)?;
     config.validate_non_overlapping()?;
 
     match &cli.command {

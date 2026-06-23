@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
 use clap::Parser;
+use clap_ext::prelude::*;
 use focus_asset_fetcher::{
     download_asset, parse_sound_sources, FetcherConfig,
 };
@@ -10,6 +11,10 @@ use std::path::PathBuf;
 #[command(name = "focalpoint-fetch-assets")]
 #[command(about = "Download and post-process FocalPoint audio assets from SOUND_SOURCES.md", long_about = None)]
 struct Args {
+    /// Shared `-v/-q` verbosity flags (clap-ext `Verbosity`)
+    #[command(flatten)]
+    verbosity: Verbosity,
+
     /// Path to SOUND_SOURCES.md (default: apps/ios/FocalPoint/Resources/Audio/SOUND_SOURCES.md)
     #[arg(long, value_name = "FILE")]
     sources_file: Option<PathBuf>,
@@ -44,9 +49,8 @@ struct Args {
 }
 
 fn main() -> Result<()> {
-    tracing_subscriber::fmt::init();
-
     let args = Args::parse();
+    setup_tracing(args.verbosity.to_filter());
 
     // Resolve paths
     let sources_file = args

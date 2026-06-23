@@ -18,7 +18,8 @@ thiserror.workspace = true
 anyhow.workspace = true
 chrono.workspace = true
 uuid = { workspace = true, features = ["v4"] }
-clap = { version = "4.5", features = ["derive"] }
+clap = { workspace = true }
+clap-ext = { workspace = true }
 regex = "1.11"
 walkdir = "2.4"
 sha2 = "0.10"
