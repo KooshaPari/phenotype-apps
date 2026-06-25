@@ -1,0 +1,22 @@
+{
+  "id": "L5-202",
+  "title": "v28 T1: Alertmanager latency channel (pillar L14 Cycle 18)",
+  "date": "2026-06-25",
+  "device": "macbook",
+  "category": "infra",
+  "status": "done",
+  "author": "forge",
+  "notes": "Closes 71-pillar L14 Cycle 18. Implements Alertmanager receiver + route for latency-p99 SLO alerts. PagerDuty routing key defaults to khPants/core, overridable via ARGOCD_APP env. Dashboard annotation fires from ALERTS{alertname=~\".*latency.*p99.*$\"}.",
+  "tasks": [
+    {"id": "T1.0", "title": "Create alerts/alertmanager.yaml with PagerDuty receiver + latency-p99 route", "status": "done"},
+    {"id": "T1.1", "title": "Create dashboards/latency-p99.json with alert annotation overlay", "status": "done"},
+    {"id": "T1.2", "title": "Push branch feat/v28-T1-alert-channel-2026-06-25 and open PR", "status": "done"},
+    {"id": "T1.3", "title": "Write worklog to worklogs/ in v2.1 schema", "status": "done"}
+  ],
+  "refs": {
+    "PLAN": "plans/2026-06-25-v28-71-pillar-cycle-18-p0.md",
+    "71-pillar-L14": "alertmanager latency channel",
+    "ARGOCD_APP": "PagerDuty routing key env var (default: khPants/core)",
+    "PR": "https://github.com/KooshaPari/phenotype-apps/pull/149"
+  }
+}
