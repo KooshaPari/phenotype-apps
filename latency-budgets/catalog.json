@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "schema": "latency-budget-catalog-v1",
+  "description": "Per-crate and fleet latency budgets for pheno-* crates. Phase 1: structural compliance only. Actual enforcement begins in Phase 2 (v28+).",
+  "created": "2026-06-25",
+  "updated": "2026-06-25",
+  "fleet": {
+    "p50_ms": 5,
+    "p90_ms": 20,
+    "p99_ms": 100
+  },
+  "crates": [
+    {
+      "crate": "pheno-errors",
+      "description": "Error type definitions, construction, and formatting",
+      "p50_ms": 5,
+      "p90_ms": 20,
+      "p99_ms": 100,
+      "enabled": true
+    },
+    {
+      "crate": "pheno-otel",
+      "description": "OpenTelemetry tracing, metrics, and logging integration",
+      "p50_ms": 5,
+      "p90_ms": 20,
+      "p99_ms": 100,
+      "enabled": true
+    },
+    {
+      "crate": "pheno-port-adapter",
+      "description": "Hexagonal port-adapter dispatch and lifecycle",
+      "p50_ms": 5,
+      "p90_ms": 20,
+      "p99_ms": 100,
+      "enabled": true
+    },
+    {
+      "crate": "pheno-flags",
+      "description": "Feature flag evaluation and caching",
+      "p50_ms": 5,
+      "p90_ms": 20,
+      "p99_ms": 100,
+      "enabled": true
+    }
+  ]
+}
