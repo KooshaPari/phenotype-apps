@@ -30,6 +30,11 @@ redis = { version = "0.27", default-features = false, features = ["tokio-comp", 
 pheno-otel = { path = "../pheno-otel" }
 
 [dev-dependencies]
+# v25-T7 (L42) per-crate proptest CI matrix (cycle-15). Tests in
+# tests/proptest_smoke.rs (NEW) and tests/proptest_arbitrary.rs (existing
+# L23 work) use `proptest::prelude::*`. Pinned to 1.x to match the rest of
+# the fleet; `PROPTEST_CASES=256` is set by the CI workflow.
+proptest = "1"
 loom = "0.7"
 serde_json = "1"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }

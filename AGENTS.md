@@ -165,9 +165,27 @@ See `L6_PHENO_REPOS_HEALTH_2026_06_14.md` for full health inventory (136 tests p
 
 ---
 
-## Wave Plan (v14 — current, supersedes v9/v10/v11/v12)
+## Wave Plan (v25 — current, supersedes v14..v24)
 
-See `plans/2026-06-20-v12-71-pillar-p0-remediation.md` (the working plan) and `plans/2026-06-20-v13-71-pillar-cycle-2-p0.md` (the next wave). **v12 = 4 P0 closure tracks + Mission 4 + ADR-015 v2.1, ~890 LoC, 1,767 LoC shipped in 1 commit (`2db7e9f5eb`).** v11 closed 2026-06-20 18:45 PDT with §8 ACCEPTED (Option B per ADR-050/ADR-051); v12 closed 2026-06-20 19:30 PDT with 4 of 4 P0 tracks shipped + 6-pillar mean 2.13 → 2.66 (+0.53). v14 (cycle 4) in motion: 5 tracks, 1 Wave A, ~5h wall, target 6-pillar mean 2.75. Next wave after v14 is v15 (cycle 2 P0: cliff.toml vendoring to 5 fleet repos + devcontainer adoption + ssot-inject + cache-stats dashboard).
+See `plans/2026-06-21-v16-71-pillar-cycle-6-p0.md` (cycle 6), `plans/2026-06-22-v22-71-pillar-cycle-12-p1.md` (cycle 12), `plans/2026-06-22-v23-71-pillar-cycle-13-p1.md` (cycle 13), `plans/2026-06-22-v24-71-pillar-cycle-14-p1.md` (cycle 14). **v20 cycle 10 P1 reduction 5/5 tracks shipped (L23/L27/L36/L38/L44); v19 cycle 9 P0 deepening (L31/L57/L65/L67) + ADR-077-080 security quartet; v18 cycle 8 P0 final closure 47/47 pillars at 3.0; v17 cycle 7 P0 44/47; v16 cycle 6 P0 34/47; v15 cycle 5 P0 24/47; v14 cycle 4 P0 20/47; v13 cycle 3 P0 15/47; v12 cycle 2 P0 4/47 — 6-pillar mean 2.13→2.66 (+0.53).** v11 closed 2026-06-20 18:45 PDT with §8 ACCEPTED (Option B per ADR-050/ADR-051). Next wave after v25 is v26 (cycle 15) targeting 71-pillar L29 (SBOM diff), L39 (CLI flag discipline), L45 (perf regression alert).
+
+### Cycle Progression Summary (v12→v25)
+
+| Cycle | Wave | Pillar Closure | Commit Count | Outcome |
+|-------|------|----------------|--------------|---------|
+| **v12 cycle 2** | 4 P0 + Mission 4 + ADR-015 v2.1 | L31/L57/L65/L67 (4/47) | 1,767 LoC in `2db7e9f5eb` | 6-pillar mean 2.13→2.66 |
+| **v13 cycle 3** | 8 tracks (L21/L33/L48/L49/L37/L50/L11.1/L29.1) | 11/47 (15%) | ~890 LoC | nextest + SBOM + SLSA + devcontainer |
+| **v14 cycle 4** | 5 tracks (T1-T5) | 15/47 (32%) | 21 PRs (20 merged, 1 closed) | L4 cargo-modules + L22 mutants + L25 loom + L62 OTel |
+| **v15 cycle 5** | 9 tracks (L6/L15/L21/L33/L37/L48/L49/L60) | 17/47 (36%) | ~890 LoC | devcontainer + perf baseline + SIGHUP hot-reload |
+| **v16 cycle 6** | 10 tracks (L7/L9/L13/L19/L22/L25/L26/L34/L42/L43) | 24/47 (51%) | 1,991 LoC in `4bba938854` | subsystem decomp + REST/OpenAPI + latency budgets |
+| **v17 cycle 7** | 12 tracks (L1/L2/L3/L4/L8/L10/L11/L12/L40/L41) | 33/47 (70%) | ~1,200 LoC | arch overview + module boundaries + L4 hexagonal ports |
+| **v18 cycle 8** | 47→100% P0 closure | 47/47 (100%) | ADR-077-080 + L17/L18/L51 | full 71-pillar coverage at 3.0 |
+| **v19 cycle 9** | L31/L57/L65/L67 deepening | 47/47 (100%) | ADR-081-086 | cache stats + perf alert + SSOT lint + CHANGELOG auto |
+| **v20 cycle 10** | 5 tracks (L23/L27/L36/L38/L44) | 47/47 (100%) | closure report | i18n + a11y + SaaS + DDoS + chaos |
+| **v22 cycle 12** | 5 P1 tracks (L36/L37/L40/L41/L42) | 47/47 (100%) | 11 SIDE findings | devcontainer + llms.txt + i18n + a11y + e2e tests |
+| **v23 cycle 13** | 6 P1 tracks (L43/L46-L55 deepening) | 47/47 (100%) | perf CI + SBOM | perf gate + SBOM + CSRF + HSTS + CSP |
+| **v24 cycle 14** | 9 P1 tracks (L5/L17/L18/L50/L63 + 15 repos meta-bundle + dependabot + v14 PR review + chaos game-day) | 47/47 (100%) | 9 commits, ~5,200 LoC | 15 repos at 12/12 meta-bundle compliance; 0 critical gitleaks; 9 of 10 dependabot alerts fixable |
+| **v25 (current)** | cycle 15 prep — L29/L39/L45 | n/a | pending | next wave |
 
 - **T6 (v12): L65 SSOT auto-check** (P0, ~30 min) — DONE. `scripts/validate-ssot.sh` + `just validate-ssot` + pre-commit hook.
 - **T9 (v12): L57 perf regression** (P1, ~1h) — DONE. `benchmarks/rust/{Cargo.toml,benches/parse_flag.rs}` (criterion) + `benchmarks/python/pytest.ini` (pytest-benchmark) + `benchmarks/perf-budgets.toml` + `just bench`.
@@ -476,6 +494,14 @@ See `findings/2026-06-18-L5-109-4-repo-retirement.md` for full migration matrix,
 - **codex exec unavailable for per-repo verification (2026-06-17 22:05 PDT)**: `codex exec --skip-git-repo-check` hit tool-routing cell_id errors in this environment (no output after 5 min); switched to direct orchestrator-level shell verification (`git fetch` + `git rev-list --count` + `git diff --name-only`). Equivalent rigor: per-commit + per-file cross-check.
 - **Track 8 cursor self-merge is the intended pattern (2026-06-18, per user directive)**: Bot merges with no HITL gate are the fleet norm. The P0 "violation" in the original post-mortem is reclassified P3 (informational). No reverts, no protection rules. See `findings/2026-06-18-track8-self-merge-postmortem.md` for the reclassified version.
 - **bucket_change HwLedger: from=PAUSED to=CONDITIONAL reason=ADR-035 (L5-105) reclassification — federated service with extractable pheno-capacity math lib**
+- **PROCESS-KILL GOVERNANCE (recorded 2026-06-22 per user directive)**:
+  - **NEVER kill any process without verifying identity first**. Allowed to terminate: `agent`, `cursor-agent`. Forbidden to terminate: `codex`, `claude`, `forge`, `ghostty` (agent CLIs + terminal emulator).
+  - For Node.js processes specifically: always inspect the command/pid first (e.g. `ps -p <pid> -o args=`) before issuing any `kill`/`kill -9`. Default to `kill -15` then escalate to `kill -9` only if the process has ignored SIGTERM for ≥30s.
+  - Subagents via `task` tool: if the tool reports "locked" / "DB locked" / "transient error", **do not kill the orchestrator, the host shell, or any agent CLI**. Debug path:
+    1. Open a `gh issue` against the affected upstream repo documenting the lock + a minimal repro
+    2. Fix the underlying source of the lock (e.g. stale `.git/worktrees/<name>/index.lock`, worktree on a deleted branch, `pnpm`/`node` zombies inside the user's toolchain) in non-source code (scripts, CI config, devcontainer, worktree management)
+    3. For 3rd-party (non-owned) repos, the same rule applies: never kill `codex`/`claude`/`forge`/`ghostty`; instead create a `gh issue` upstream and patch the local workaround in `scripts/` or worktree plumbing.
+  - Applies to ALL non-owned repos (anything outside `KooshaPari/*`). Do not extend `kill` semantics to fix tool-availability issues — the tool stack is sacred and recovers from lock conditions on its own.
 
 ---
 

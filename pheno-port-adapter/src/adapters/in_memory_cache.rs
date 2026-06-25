@@ -36,6 +36,39 @@ struct Entry {
 }
 
 /// Process-local in-memory cache adapter for [`HexCachePort`].
+///
+/// Stores entries in a `tokio::sync::Mutex<HashMap<String, Entry>>` and
+/// checks expiration lazily on `get` (a `Duration::ZERO` TTL disables
+/// expiration). This is the default adapter used by tests and single-node
+/// binaries; production deployments that need cross-process caching use
+/// [`crate::adapters::redis_cache::RedisAdapter`] instead.
+///
+/// # Examples
+///
+/// Round-trip a value through the cache using a single-shot tokio
+/// runtime. `Duration::ZERO` disables expiration; a non-zero TTL stores
+/// the entry with lazy eviction on the next `get` past the deadline.
+///
+/// ```
+/// use pheno_port_adapter::adapters::InMemoryCache;
+/// use pheno_port_adapter::ports::HexCachePort;
+/// use std::time::Duration;
+///
+/// tokio::runtime::Runtime::new().unwrap().block_on(async {
+///     let cache = InMemoryCache::new();
+///     cache
+///         .put("greeting", b"hello".to_vec(), Duration::from_secs(60))
+///         .await
+///         .unwrap();
+///
+///     let got = cache.get("greeting").await.unwrap();
+///     assert_eq!(got.as_deref(), Some(&b"hello"[..]));
+///
+///     // `invalidate` is idempotent: a missing key returns `Ok(())`.
+///     cache.invalidate("greeting").await.unwrap();
+///     assert!(cache.get("greeting").await.unwrap().is_none());
+/// });
+/// ```
 #[derive(Debug, Default, Clone)]
 pub struct InMemoryCache {
     inner: Arc<Mutex<HashMap<String, Entry>>>,
