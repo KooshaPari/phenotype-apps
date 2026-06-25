@@ -1,0 +1,174 @@
+name: latency-budget
+
+on:
+  pull_request:
+    paths:
+      - latency-budgets/catalog.json
+      - .github/workflows/latency-budget.yml
+  push:
+    branches: [main]
+    paths:
+      - latency-budgets/catalog.json
+      - .github/workflows/latency-budget.yml
+
+jobs:
+  validate-catalog:
+    name: Validate budget catalog structure
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.1.1
+
+      - name: Validate catalog.json is parseable
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          CATALOG="latency-budgets/catalog.json"
+
+          if [[ ! -f "$CATALOG" ]]; then
+            echo "::error::Missing $CATALOG — latency budget catalog not found"
+            exit 1
+          fi
+
+          # Verify JSON is well-formed and extract key fields
+          if ! jq empty "$CATALOG" 2>/dev/null; then
+            echo "::error::$CATALOG is not valid JSON"
+            exit 1
+          fi
+
+          echo "✅ catalog.json is parseable"
+
+      - name: Validate schema fields
+        shell: bash
+        run: |
+          set -euo pipefail
+          CATALOG="latency-budgets/catalog.json"
+
+          # Check version
+          VERSION=$(jq -r '.version // empty' "$CATALOG")
+          if [[ -z "$VERSION" ]]; then
+            echo "::error::Missing required field: version"
+            exit 1
+          fi
+          echo "  version: $VERSION"
+
+          # Check schema
+          SCHEMA=$(jq -r '.schema // empty' "$CATALOG")
+          if [[ -z "$SCHEMA" ]]; then
+            echo "::error::Missing required field: schema"
+            exit 1
+          fi
+          echo "  schema: $SCHEMA"
+
+          # Check created / updated
+          for field in created updated; do
+            VAL=$(jq -r --arg f "$field" '.[$f] // empty' "$CATALOG")
+            if [[ -z "$VAL" ]]; then
+              echo "::error::Missing required field: $field"
+              exit 1
+            fi
+            echo "  $field: $VAL"
+          done
+
+          # Check fleet section
+          for p in p50_ms p90_ms p99_ms; do
+            VAL=$(jq -r --arg p "$p" '.fleet[$p] // empty' "$CATALOG")
+            if [[ -z "$VAL" ]]; then
+              echo "::error::Missing required fleet field: $p"
+              exit 1
+            fi
+            if ! [[ "$VAL" =~ ^[0-9]+$ ]]; then
+              echo "::error::fleet.$p must be a positive integer, got: $VAL"
+              exit 1
+            fi
+            echo "  fleet.$p: $VAL ms"
+          done
+
+          echo ""
+          echo "✅ fleet budget valid"
+
+      - name: Validate crate entries
+        shell: bash
+        run: |
+          set -euo pipefail
+          CATALOG="latency-budgets/catalog.json"
+
+          CRATE_COUNT=$(jq '.crates | length' "$CATALOG")
+          if [[ "$CRATE_COUNT" -eq 0 ]]; then
+            echo "::error::crates array is empty — at least one crate entry required"
+            exit 1
+          fi
+          echo "  crate entries: $CRATE_COUNT"
+
+          ERRORS=0
+          for i in $(seq 0 $((CRATE_COUNT - 1))); do
+            NAME=$(jq -r --argjson i "$i" '.crates[$i].crate // empty' "$CATALOG")
+            P50=$(jq -r --argjson i "$i" '.crates[$i].p50_ms // empty' "$CATALOG")
+            P90=$(jq -r --argjson i "$i" '.crates[$i].p90_ms // empty' "$CATALOG")
+            P99=$(jq -r --argjson i "$i" '.crates[$i].p99_ms // empty' "$CATALOG")
+            ENABLED=$(jq -r --argjson i "$i" '.crates[$i].enabled // empty' "$CATALOG")
+
+            if [[ -z "$NAME" ]]; then
+              echo "::error::crates[$i] missing required field: crate"
+              ERRORS=$((ERRORS + 1))
+              continue
+            fi
+
+            for field_expr in "p50_ms $P50" "p90_ms $P90" "p99_ms $P99"; do
+              read -r field val <<< "$field_expr"
+              if [[ -z "$val" ]]; then
+                echo "::error::$NAME missing required field: $field"
+                ERRORS=$((ERRORS + 1))
+              elif ! [[ "$val" =~ ^[0-9]+$ ]]; then
+                echo "::error::$NAME.$field must be a positive integer, got: $val"
+                ERRORS=$((ERRORS + 1))
+              fi
+            done
+
+            if [[ "$ENABLED" != "true" && "$ENABLED" != "false" ]]; then
+              echo "::error::$NAME.enabled must be boolean (true/false), got: $ENABLED"
+              ERRORS=$((ERRORS + 1))
+            fi
+
+            # Cross-check against fleet budget (p50_ms <= fleet p50_ms, etc.)
+            FLEET_P50=$(jq -r '.fleet.p50_ms' "$CATALOG")
+            FLEET_P90=$(jq -r '.fleet.p90_ms' "$CATALOG")
+            FLEET_P99=$(jq -r '.fleet.p99_ms' "$CATALOG")
+
+            if [[ "$ENABLED" == "true" ]]; then
+              if [[ -n "$P50" && "$P50" -gt "$FLEET_P50" ]]; then
+                echo "::warning::$NAME.p50_ms ($P50) exceeds fleet p50_ms ($FLEET_P50) — fleet budget is the max of crate budgets"
+              fi
+              if [[ -n "$P90" && "$P90" -gt "$FLEET_P90" ]]; then
+                echo "::warning::$NAME.p90_ms ($P90) exceeds fleet p90_ms ($FLEET_P90) — fleet budget is the max of crate budgets"
+              fi
+              if [[ -n "$P99" && "$P99" -gt "$FLEET_P99" ]]; then
+                echo "::warning::$NAME.p99_ms ($P99) exceeds fleet p99_ms ($FLEET_P99) — fleet budget is the max of crate budgets"
+              fi
+            fi
+
+            echo "  ✔ $NAME: p50=$P50 ms, p90=$P90 ms, p99=$P99 ms, enabled=$ENABLED"
+          done
+
+          if [[ "$ERRORS" -gt 0 ]]; then
+            echo "::error::$ERRORS crate(s) have validation errors"
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ All crate entries valid"
+
+      - name: Summary
+        run: |
+          echo "## Latency Budget Validation" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Check | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| JSON parseable | ✅ |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Fleet budget | ✅ |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Crate entries | ✅ |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Phase 1 structural validation only. Actual measurement enforcement begins in Phase 2 (v28+)." >> "$GITHUB_STEP_SUMMARY"
