@@ -23,6 +23,23 @@ jobs:
         run: bash tools/pillar-fleet/drift.sh
       - name: Scorecard
         run: bash tools/pillar-fleet/scorecard.sh
+      - name: SBOM diff
+        if: github.event_name == 'schedule'
+        run: |
+          python3 tools/sbom-cyclonedx-fleet/generate.py \
+            --repo-root . \
+            --output-dir dist/sbom || echo "sbom-gen: non-fatal"
+          python3 tools/sbom-diff/sbom_diff.py \
+            --base dist/sbom/baseline.json \
+            --target dist/sbom/current.json || echo "sbom-diff: changes detected (non-fatal)"
+      - name: Perf regression alert
+        if: github.event_name == 'schedule'
+        run: |
+          python3 tools/perf-regression-alert/alert.py \
+            --baseline .perf/baselines/main.json \
+            --current .perf/current/main.json \
+            --threshold 0.05 \
+            --output .perf/alerts.json || echo "perf-alert: non-fatal"
 
   cliff-sync:
     runs-on: ubuntu-latest

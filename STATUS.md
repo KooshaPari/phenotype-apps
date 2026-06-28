@@ -1,4 +1,4 @@
-# STATUS.md — Phenotype monorepo
+# STATUS.md — Phenotype monorepo (@ 2026-06-28 19:22 UTC)
 
 **Date:** 2026-06-27 (v44 closure, 71-pillar sustainment; resolves issues #160 forge DB lock and #161 CI billing block)
 **Branch in use:** `main` @ `0deb636ce` (HEAD `docs(v44): cycle-33 hardening closure + cycle-33 probe + v45 standby plan`)

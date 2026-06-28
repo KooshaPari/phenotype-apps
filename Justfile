@@ -129,6 +129,38 @@ bench:
         (cd benchmarks/python && python -m pytest --benchmark-only 2>&1 || echo "python bench skipped (no tests yet)")
     fi
 
+# SBOM generation + diff (L29) — generates CycloneDX SBOM and diffs against baseline
+sbom output_dir="dist/sbom":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ -f tools/sbom-cyclonedx-fleet/generate.py ]; then
+        python3 tools/sbom-cyclonedx-fleet/generate.py \
+            --repo-root . \
+            --output-dir {{output_dir}}
+    else
+        echo "tools/sbom-cyclonedx-fleet/generate.py missing"
+        exit 1
+    fi
+    if [ -f tools/sbom-diff/sbom_diff.py ] && [ -f {{output_dir}}/baseline.json ]; then
+        python3 tools/sbom-diff/sbom_diff.py \
+            --base {{output_dir}}/baseline.json \
+            --target {{output_dir}}/current.json || echo "WARNING: sbom diff found changes"
+    fi
+
+# Perf regression alert (L45) — runs alert.py against latest benchmarks
+perf-alert threshold="0.05":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ -f tools/perf-regression-alert/alert.py ] && [ -f .perf/baselines/main.json ] && [ -f .perf/current/main.json ]; then
+        python3 tools/perf-regression-alert/alert.py \
+            --baseline .perf/baselines/main.json \
+            --current .perf/current/main.json \
+            --threshold {{threshold}} \
+            --output .perf/alerts.json
+    else
+        echo "perf-alert: missing baseline/current data — run 'just bench' first"
+    fi
+
 # CI cache stats (L31) — runs the wrapper on the last CI run log
 cache-stats log_path="/tmp/ci-last.log":
     #!/usr/bin/env bash
