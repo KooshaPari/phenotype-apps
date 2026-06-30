@@ -1,5 +1,10 @@
 pr_details.jsonl
 
+# Generated binaries / build outputs that must not be committed
+dagctl
+dagctl.go
+**/coverage-final.json
+
 # Rust build artifacts
 /target
 

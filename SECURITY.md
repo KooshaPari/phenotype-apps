@@ -22,3 +22,9 @@ Rust projects in this org enforce a zero-advisory floor via `cargo-deny.yml` wor
 ## CodeQL
 
 Static analysis runs Tuesday weekly via `codeql-rust.yml` workflow.
+
+## Threat Model
+
+A STRIDE-based threat model covering assets, trust boundaries, cryptographic risk areas,
+tenancy assumptions, and open security gaps is maintained at
+[`docs/security/threat-model.md`](docs/security/threat-model.md).
