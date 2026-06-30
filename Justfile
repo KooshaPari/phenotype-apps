@@ -10,6 +10,35 @@ _default:
 ci: fmt-check lint test build
     @echo "✓ CI checks pass"
 
+# One-command root verify: fmt + clippy + tests + deny + journey-manifest gate.
+# Exposed in CLAUDE.md and CI. Fails fast on first error.
+# Usage: just verify
+verify: fmt-check lint test deny docs-check
+    @echo "✓ verify: all gates passed"
+
+# cargo-deny: advisories + licenses + bans
+deny:
+    cargo deny check advisories
+    cargo deny check licenses
+    cargo deny check bans
+
+# Docs integrity: check that threat-model and journey docs exist and are non-empty
+docs-check:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    required=(
+        "docs/security/threat-model.md"
+        "docs/operations/journey-traceability.md"
+        "SECURITY.md"
+    )
+    for f in "${required[@]}"; do
+        if [[ ! -s "$f" ]]; then
+            echo "docs-check FAIL: $f is missing or empty" >&2
+            exit 1
+        fi
+    done
+    echo "docs-check: OK"
+
 # Format code
 fmt:
     cargo fmt --all

@@ -10,6 +10,7 @@ serde.workspace = true
 thiserror.workspace = true
 anyhow.workspace = true
 ring.workspace = true
+hex.workspace = true
 secrecy.workspace = true
 uuid.workspace = true
 chrono.workspace = true
