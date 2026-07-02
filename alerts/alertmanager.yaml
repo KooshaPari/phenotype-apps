@@ -1,0 +1,25 @@
+# v28 T1 (L14 pillar, Cycle 18) — Alertmanager receiver + route for latency-p99 SLO alerts
+# Source-of-truth: worklogs/L5-202-v28-T1-alert-channel-2026-06-25.json
+#
+# ARGOCD_APP env controls PagerDuty routing key.
+#   Default: khPants/core
+#   Override: export ARGOCD_APP=<your-pd-routing-key>
+# Route block matches alertname regex .*latency.*p99.*$
+
+route:
+  group_by: [alertname, severity]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: 'latency-p99-pagerduty'
+  routes:
+    - match:
+        alertname: '.*latency.*p99.*$'
+      receiver: 'latency-p99-pagerduty'
+
+receivers:
+  - name: 'latency-p99-pagerduty'
+    pagerduty_configs:
+      - routing_key: 'khPants/core'
+        severity: 'critical'
+        description: 'L14 p99 latency SLO alert triggered'
