@@ -1,6 +1,6 @@
 module kwality
 
-go 1.24.0
+go 1.25.0
 
 require (
 	github.com/gin-contrib/cors v1.6.0
@@ -14,7 +14,7 @@ require (
 	github.com/prometheus/client_golang v1.17.0
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.8.4
-	golang.org/x/crypto v0.45.0
+	golang.org/x/crypto v0.51.0
 	golang.org/x/time v0.3.0
 )
 
@@ -52,9 +52,9 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	golang.org/x/arch v0.7.0 // indirect
-	golang.org/x/net v0.47.0 // indirect
-	golang.org/x/sys v0.38.0 // indirect
-	golang.org/x/text v0.31.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
+	golang.org/x/text v0.37.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
