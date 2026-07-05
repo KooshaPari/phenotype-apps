@@ -19,6 +19,14 @@
 > human operator. Bug reports and contributions are still welcome, but please
 > expect AI-generated code, comments, and documentation throughout.
 <!-- AI-DD-META:END -->
+<!-- SPINE-MISSION:START -->
+> **Spine mission:** `phenotype-apps` is the **apps catalog spine** for the
+> Phenotype polyrepo. It indexes every app sub-project and routes work to the
+> canonical repos. See `docs/SPINE-INDEX.md` for the master index and
+> `docs/ARCHIVE.md` for the list of archived sub-projects. Spine role locked
+> 2026-07-05 in the polyrepo portfolio strategy session.
+<!-- SPINE-MISSION:END -->
+
 ## Work State
 
 | Field | Value |
