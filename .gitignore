@@ -20,3 +20,4 @@ apps/ios/**/.build/
 # Local worktree directory
 FocalPoint-wtrees/
 .build
+.claude/worktrees/

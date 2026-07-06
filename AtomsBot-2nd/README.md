@@ -1,3 +1,36 @@
+# ARCHIVED -- STRICT PAUSE
+
+**Status:** STRICT PAUSE. No new commits, no new PRs, no agent work, no re-open.
+**Effective:** 2026-07-05
+**Decision:** Polyrepo portfolio strategy session. This subproject (Discord<->GitHub
+issue bridge) is being archived. See
+`docs/sessions/2026-07-05-polyrepo-portfolio-strategy/06-archive/`
+for the canonical rationale.
+
+## Strict pause rules
+
+- This subproject MUST NOT receive new feature work or new PRs.
+- Any open PR (currently 1) may be merged only if it is a security fix; otherwise
+  close as `not planned`.
+- No agent should pick this subproject up from a phenodag queue entry, a stale
+  worktree, or a re-activation trigger. If dispatched here, refuse and report
+  back to the root manager.
+- No dependabot, kwatch, or auto-resume system may bring this subproject back.
+  If such a system is doing so, that system is misconfigured and should be
+  patched at the source.
+
+## What to do instead
+
+- If you are an agent: report the dispatch back to root with the polyrepo
+  portfolio session reference.
+- If you are a human: do not open a new PR. Open a discussion in the polyrepo
+  strategy session, not a code change. Revivals must be approved by the
+  portfolio owner with a written rationale in the session docs.
+
+---
+
+# Original README (preserved for reference)
+
 ## Work State
 
 | Field | Value |
