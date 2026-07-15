@@ -1,0 +1,88 @@
+---
+// HeroScene — Three.js background canvas
+// Renders an idle wireframe keyboard placeholder. When /keyboard.glb is added to /public,
+// swap the placeholder geometry for: scene.add(await loadGLTF('/keyboard.glb')).
+// Until then, this placeholder geometry gives the hero a 3D depth cue without blocking layout.
+---
+
+<canvas
+  id="hero-3d"
+  class="absolute inset-0 w-full h-full"
+  aria-hidden="true"
+></canvas>
+
+<script>
+  import * as THREE from 'three';
+
+  // TODO: load /keyboard.glb once added to public/.
+  // wraps: three.js 0.171 (latest stable line)
+  const canvas = document.getElementById('hero-3d') as HTMLCanvasElement | null;
+  if (canvas) {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+    camera.position.set(0, 0, 8);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+
+    // Placeholder keyboard geometry: a thin slab with raised keys
+    // Will be replaced by GLTFLoader('/keyboard.glb') once the asset ships.
+    const group = new THREE.Group();
+    const base = new THREE.Mesh(
+      new THREE.BoxGeometry(5, 0.18, 1.6),
+      new THREE.MeshStandardMaterial({ color: 0x1f2937, metalness: 0.3, roughness: 0.7 })
+    );
+    group.add(base);
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 14; col++) {
+        const key = new THREE.Mesh(
+          new THREE.BoxGeometry(0.28, 0.08, 0.28),
+          new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.5, roughness: 0.4 })
+        );
+        key.position.set(-2.6 + col * 0.4, 0.13, -0.6 + row * 0.4);
+        group.add(key);
+      }
+    }
+    group.rotation.x = -0.3;
+    scene.add(group);
+
+    const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+    scene.add(ambient);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    keyLight.position.set(3, 5, 4);
+    scene.add(keyLight);
+    const rim = new THREE.DirectionalLight(0x60a5fa, 0.5);
+    rim.position.set(-3, 2, -3);
+    scene.add(rim);
+
+    function onResize() {
+      if (!canvas) return;
+      camera.aspect = canvas.clientWidth / canvas.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+    }
+    window.addEventListener('resize', onResize);
+
+    let frameId = 0;
+    function tick() {
+      group.rotation.y += 0.003;
+      renderer.render(scene, camera);
+      frameId = requestAnimationFrame(tick);
+    }
+    tick();
+
+    // Pause when offscreen to save battery
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          if (!frameId) tick();
+        } else {
+          cancelAnimationFrame(frameId);
+          frameId = 0;
+        }
+      }
+    });
+    io.observe(canvas);
+  }
+</script>

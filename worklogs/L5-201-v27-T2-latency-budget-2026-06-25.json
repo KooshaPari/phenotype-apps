@@ -1,0 +1,22 @@
+{
+  "id": "L5-201",
+  "title": "v27 T2: Author ADR-103 latency-budget-to-CI",
+  "date": "2026-06-25",
+  "device": "macbook",
+  "category": "infra",
+  "status": "wip",
+  "author": "claude opus 4.7",
+  "notes": "Closes 71-pillar L19 (latency budget). Phase 1: ADR + catalog + CI structural gate. Phase 2/3 deferred to v28/v29.",
+  "tasks": [
+    {"id": "T2.0", "title": "Author ADR-103 (latency budget CI)", "status": "done"},
+    {"id": "T2.1", "title": "Create latency-budgets/catalog.json with 4 core crates", "status": "done"},
+    {"id": "T2.2", "title": "Create .github/workflows/latency-budget.yml (structural validation)", "status": "done"},
+    {"id": "T2.3", "title": "Push branch and open PR", "status": "done"},
+    {"id": "T2.4", "title": "Copy worklog to main worklogs", "status": "done"}
+  ],
+  "refs": {
+    "ADR-103": "docs/adr/2026-06-25/ADR-103-latency-budget-ci.md",
+    "PLAN": "plans/2026-06-24-v27-71-pillar-cycle-17-p0.md",
+    "71-pillar-L19": "latency budget requirement"
+  }
+}

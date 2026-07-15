@@ -1,0 +1,25 @@
+{
+  "name": "Planify",
+  "slug": "planify",
+  "domain": "planify.space",
+  "description": "Phenotype PM web frontend — consolidated Plane.so fork for project management, sprints, docs, and triage.",
+  "tier": "T1",
+  "repo": "KooshaPari/Planify",
+  "language": "TypeScript",
+  "license": "AGPL-3.0",
+  "status": "active",
+  "features": [
+    "Issues, cycles, modules, sprints",
+    "Workspace + admin UI",
+    "Real-time collaboration (live)",
+    "Triage + view filters",
+    "Self-hostable (Postgres + Dragonfly)",
+    "Embeds in AgilePlus dashboard"
+  ],
+  "links": {
+    "github": "https://github.com/KooshaPari/Planify",
+    "docs": "https://github.com/KooshaPari/Planify/blob/main/README.md",
+    "releases": "https://github.com/KooshaPari/Planify/releases",
+    "upstream": "https://github.com/makeplane/plane"
+  }
+}

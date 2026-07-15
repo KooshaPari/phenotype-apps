@@ -1,0 +1,110 @@
+# justfile for planify-wt
+#
+# Canonical task runner for the Plane.so fork landing site.
+# Bun for the Astro site, Vercel for deploy, Caddy for the prod Tailscale
+# reverse proxy. site/ is the only directory we actively modify — upstream/
+# is read-only and managed via UPSTREAM.md.
+#
+# Usage:
+#   just            # list recipes
+#   just dev        # bun dev server (port 4321)
+#   just build      # production bundle to site/dist/
+#   just preview    # serve dist/ locally
+#   just test       # playwright tests
+#   just deploy     # vercel --prod
+#
+# https://github.com/casey/just
+
+set shell := ["bash", "-uc"]
+set dotenv-load := true
+set positional-arguments := true
+
+# ---------- meta ----------
+
+default:
+    @just --list --unsorted
+
+env:
+    @echo "bun:     $(bun --version 2>&1 || echo 'not installed')"
+    @echo "node:    $(node --version 2>&1 || echo 'not installed')"
+    @echo "vercel:  $(vercel --version 2>&1 || echo 'not installed')"
+    @echo ""
+    @echo "=== Repo role ==="
+    @echo "  Public landing site for planify.space (Plane fork landing only)"
+    @echo "  PM runtime lives in AgilePlus/crates/agileplus-plane"
+
+# ---------- install / build ----------
+
+# Install deps via bun
+install:
+    cd site && bun install --frozen-lockfile 2>/dev/null || bun install
+
+# Add a dependency
+add pkg:
+    cd site && bun add {{pkg}}
+
+# Add a dev dependency
+add-dev pkg:
+    cd site && bun add -d {{pkg}}
+
+# ---------- development ----------
+
+# Bun dev server (Astro on :4321)
+dev:
+    cd site && bun run dev
+
+# Bun build (production bundle to site/dist/)
+build:
+    cd site && bun run build
+
+# Preview production bundle locally
+preview:
+    cd site && bun run preview
+
+# ---------- test / lint / format ----------
+
+# Run Playwright + Vitest tests
+test:
+    cd site && bun run test
+
+# Lint with eslint (site-level)
+lint:
+    cd site && bun run lint
+
+# Format with prettier
+format:
+    cd site && bun run format
+
+# Type-check (Astro generates tsconfig)
+typecheck:
+    cd site && bun run astro check
+
+# ---------- deployment ----------
+
+# Deploy to Vercel (planify.space)
+deploy:
+    cd site && vercel --prod
+
+# Pull upstream plane changes (see UPSTREAM.md for full procedure)
+pull-upstream:
+    @echo "1. cd upstream && git fetch && git pull origin preview"
+    @echo "2. cd .. && git diff upstream/ docs/MERGES.md > /tmp/merge.diff"
+    @echo "3. Review /tmp/merge.diff for our patches in upstream/"
+    @echo "4. Apply changes to docs/CHANGELOG.md under [Unreleased]"
+    @echo "5. Commit docs/CHANGELOG.md and upstream/ status separately"
+
+# ---------- cleanup ----------
+
+# Remove site/node_modules + build artifacts
+clean:
+    rm -rf site/node_modules site/.astro site/dist
+
+# ---------- utility aliases ----------
+
+alias i := install
+alias b := build
+alias p := preview
+alias t := test
+alias l := lint
+alias f := format
+alias d := dev

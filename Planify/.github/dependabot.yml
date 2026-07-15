@@ -1,0 +1,31 @@
+# Dependabot configuration for Planify
+#
+# Two npm ecosystems:
+#   site/     — Astro landing page (Bun-managed, but npm ecosystem for dep tracking)
+#   upstream/ — Plane.so fork monorepo (pnpm-managed)
+#
+# Weekly cadence balances freshness against noise.
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/site"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "KooshaPari"
+
+  - package-ecosystem: "npm"
+    directory: "/upstream"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "KooshaPari"

@@ -1,0 +1,43 @@
+# Plane / Planify upstream build artifacts
+upstream/node_modules/
+upstream/apps/*/node_modules/
+upstream/packages/*/node_modules/
+upstream/.turbo/
+upstream/.next/
+upstream/dist/
+upstream/.pnpm-store/
+
+# Landing site
+site/node_modules/
+site/dist/
+site/.astro/
+
+# OS / editor
+.DS_Store
+*.swp
+.vscode/
+.idea/
+
+# Secrets / local config
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Framework / platform
+.astro/
+.vercel
+
+# Logs
+*.log
+
+# OS / editor (extended)
+.DS_Store
+*.swp
+.vscode/
+.idea/

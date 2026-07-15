@@ -1,0 +1,77 @@
+# Taskfile for planify-wt
+#
+# Polyglot-compatible task runner. Mirrors justfile for systems
+# without `just` installed. See https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    desc: List all available tasks
+    cmds:
+      - task --list
+
+  env:
+    desc: Print environment
+    cmds:
+      - cmd: bun --version 2>&1 || echo 'not installed'
+      - cmd: node --version 2>&1 || echo 'not installed'
+      - cmd: vercel --version 2>&1 || echo 'not installed'
+
+  install:
+    desc: Install deps via bun
+    cmds:
+      - cd site && bun install --frozen-lockfile
+      - cd site && bun install
+
+  dev:
+    desc: Bun dev server (Astro on :4321)
+    cmds:
+      - cd site && bun run dev
+
+  build:
+    desc: Bun build (production bundle to site/dist/)
+    cmds:
+      - cd site && bun run build
+
+  preview:
+    desc: Preview production bundle locally
+    cmds:
+      - cd site && bun run preview
+
+  test:
+    desc: Run Playwright + Vitest tests
+    cmds:
+      - cd site && bun run test
+
+  lint:
+    desc: Lint with eslint
+    cmds:
+      - cd site && bun run lint
+
+  format:
+    desc: Format with prettier
+    cmds:
+      - cd site && bun run format
+
+  typecheck:
+    desc: Type-check via astro check
+    cmds:
+      - cd site && bun run astro check
+
+  deploy:
+    desc: Deploy to Vercel (planify.space)
+    cmds:
+      - cd site && vercel --prod
+
+  pull-upstream:
+    desc: Print upstream pull instructions (see UPSTREAM.md)
+    cmds:
+      - cmd: echo '1. cd upstream && git fetch && git pull origin preview'
+      - cmd: echo '2. cd .. && git diff upstream/ docs/MERGES.md > /tmp/merge.diff'
+      - cmd: echo '3. Apply docs/CHANGELOG.md changes under [Unreleased]'
+
+  clean:
+    desc: Remove site/node_modules + build artifacts
+    cmds:
+      - rm -rf site/node_modules site/.astro site/dist
