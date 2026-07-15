@@ -1,0 +1,114 @@
+name: release
+
+# Tier-0 hygiene: tag-driven release pipeline. Cross-compiles the Go
+# daemon for the major OS/arch targets, attaches a SHA256SUMS file, and
+# publishes a GitHub Release with auto-generated release notes. The
+# draft changelog is produced by `release-drafter.yml`; this workflow
+# attaches the artefacts to the release that release-drafter already
+# created.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+# Tier-0 hygiene: least-privilege default. The release job escalates to
+# `contents: write` and `id-token: write` (only for the optional signing
+# step, currently off).
+permissions:
+  contents: read
+
+# Tier-0 hygiene: serialize releases per tag so a re-run of a tag does
+# not race the in-flight release for the same ref. We deliberately do
+# NOT cancel in progress for tag builds — a cancelled release is worse
+# than a slightly slower one.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: Build & publish release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          # Tag builds need the full history for `git describe` to work.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Go
+        uses: actions/setup-go@4a2405e6aebff6aabd8e43618539aa35cf90ac92
+        with:
+          go-version: "1.21"
+          cache: true
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            version="${GITHUB_REF#refs/tags/}"
+          else
+            version="dev-$(date -u +%Y%m%d%H%M%S)-${GITHUB_SHA::7}"
+          fi
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+          echo "Resolved version: ${version}"
+
+      - name: Build matrix
+        # Cross-compile targets match `make build-all` in the Makefile.
+        # We keep the matrix in lockstep with the Makefile to avoid
+        # drift between local and CI builds.
+        id: matrix
+        run: |
+          cat >> "${GITHUB_OUTPUT}" <<EOF
+          targets=linux/amd64,linux/arm64,darwin/amd64,darwin/arm64,windows/amd64
+          EOF
+
+      - name: Cross-compile
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          IFS=',' read -ra PAIRS <<< "${{ steps.matrix.outputs.targets }}"
+          for pair in "${PAIRS[@]}"; do
+            goos="${pair%/*}"
+            goarch="${pair#*/}"
+            ext=""
+            if [[ "${goos}" == "windows" ]]; then
+              ext=".exe"
+            fi
+            archive="kwatch-${VERSION}-${goos}-${goarch}${ext}"
+            echo "Building ${archive}"
+            GOOS="${goos}" GOARCH="${goarch}" CGO_ENABLED=0 \
+              go build -trimpath \
+                -ldflags "-s -w -X main.version=${VERSION} -X main.commit=${GITHUB_SHA::7}" \
+                -o "dist/${archive}" \
+                ./main.go
+          done
+          ls -la dist/
+
+      - name: Generate SHA256SUMS
+        working-directory: dist
+        run: |
+          # Plain SHA-256 line per file, two spaces, then filename —
+          # the format `sha256sum -c` consumes and the format GitHub
+          # Releases UI renders as a clickable table.
+          sha256sum * > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@9ed3cf9a6863b31f005d951c8d19de20628cf4eb
+        with:
+          # If a draft already exists (release-drafter.yml made it),
+          # attach our artefacts to it; otherwise create a fresh
+          # release off the pushed tag.
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            dist/*
+          fail_on_unmatched_files: true

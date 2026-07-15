@@ -1,0 +1,125 @@
+name: audit
+
+# Tier-0 hygiene: security audit on every push/PR to main, on a weekly
+# cron (catches newly disclosed CVEs against already-pinned dep SHAs),
+# and on manual dispatch.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Mondays 06:00 UTC. Staggered from scorecard (Wed) and governance (Mon 06:17)
+    # to avoid stacking jobs.
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+# Tier-0 hygiene: least-privilege. `security-events: write` is scoped
+# to the job that uploads SARIF.
+permissions:
+  contents: read
+
+# Tier-0 hygiene: cancel superseded runs per ref to save CI minutes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  govulncheck:
+    name: govulncheck (Go vuln DB)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+
+      - name: Setup Go
+        uses: actions/setup-go@4a2405e6aebff6aabd8e43618539aa35cf90ac92
+        with:
+          go-version: "1.25"
+          cache: true
+
+      - name: Install govulncheck
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+
+      - name: Run govulncheck
+        # Source-mode scan: traces call graph from package entry points.
+        # Fails the job on any known vulnerability at any severity.
+        run: govulncheck ./...
+
+  staticcheck:
+    name: staticcheck (Go static analysis)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+
+      - name: Setup Go
+        uses: actions/setup-go@4a2405e6aebff6aabd8e43618539aa35cf90ac92
+        with:
+          go-version: "1.25"
+          cache: true
+
+      - name: Install staticcheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
+      - name: Run staticcheck
+        run: staticcheck ./...
+
+  sca:
+    name: Trivy filesystem scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+
+      - name: Run Trivy filesystem scan (SARIF)
+        # `severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL` keeps the gate
+        # strict; CRITICAL is the absolute floor for a tier-0 hygiene
+        # batch and we do not want to silently ignore anything.
+        uses: aquasecurity/trivy-action@476e4fdcdc675b65ce75e8c3440b48d7a494f0e5
+        with:
+          scan-type: fs
+          ignore-unfixed: true
+          severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+          format: sarif
+          output: trivy-fs.sarif
+
+      - name: Upload Trivy SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@2f9d3689d64dcc268b40b43b00ed0691ddb96c5f
+        with:
+          sarif_file: trivy-fs.sarif
+
+  gitleaks:
+    name: gitleaks (secret scanning)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          config-path: .gitleaks.toml
+
+      - name: Run gitleaks (local fallback)
+        if: failure()
+        run: |
+          docker pull ghcr.io/gitleaks/gitleaks:latest 2>/dev/null || true
+          gitleaks detect --no-banner --redact --source . || echo "gitleaks check completed (findings above)"

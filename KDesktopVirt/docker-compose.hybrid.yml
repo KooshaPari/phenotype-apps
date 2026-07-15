@@ -1,0 +1,199 @@
+# KVirtualStage Hybrid Container/VM Orchestration
+# Production-ready configuration for enterprise deployment
+version: '3.8'
+
+services:
+  # Core KVirtualStage API and coordination service
+  kvirtualstage-core:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: ghcr.io/kvirtualstage/core:latest
+    container_name: kvs-core
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  # Web UI
+      - "3001:3001"  # API Server
+      - "3002:3002"  # MCP Server
+    volumes:
+      - kvs-data:/data
+      - kvs-config:/etc/kvirtualstage
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/libvirt:/var/run/libvirt
+    environment:
+      - KVS_MODE=hybrid
+      - KVS_ENABLE_PODMAN=true
+      - KVS_ENABLE_VMS=true
+      - KVS_LOG_LEVEL=info
+      - KVS_RESOURCE_MONITORING=true
+      - KVS_AUTO_SCALING=true
+    networks:
+      - kvs-network
+    depends_on:
+      - redis
+      - prometheus
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kvs-core.rule=Host(`kvs.local`)"
+      - "traefik.http.services.kvs-core.loadbalancer.server.port=3000"
+
+  # Redis for session storage and caching
+  redis:
+    image: redis:7-alpine
+    container_name: kvs-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - kvs-redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    networks:
+      - kvs-network
+
+  # Prometheus for metrics collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: kvs-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+      - kvs-prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=24h'
+      - '--web.enable-lifecycle'
+    networks:
+      - kvs-network
+
+  # Grafana for monitoring dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: kvs-grafana
+    restart: unless-stopped
+    ports:
+      - "3003:3000"
+    volumes:
+      - kvs-grafana-data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning
+      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=kvs-admin
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/kvs-overview.json
+    networks:
+      - kvs-network
+    depends_on:
+      - prometheus
+
+  # Example Kubuntu desktop container
+  kubuntu-template:
+    build:
+      context: .
+      dockerfile: examples/kubuntu_desktop.dockerfile
+    image: ghcr.io/kvirtualstage/kubuntu-plasma6:latest
+    container_name: kvs-kubuntu-template
+    restart: "no"  # Template container, not run by default
+    ports:
+      - "5900:5900"
+      - "6080:6080"
+    volumes:
+      - kvs-home-template:/home/kvs
+    environment:
+      - VNC_PASSWORD=kvs-demo
+      - RESOLUTION=1920x1080
+      - DESKTOP_SESSION=plasma
+    networks:
+      - kvs-network
+    profiles:
+      - template
+
+  # Load balancer and reverse proxy
+  traefik:
+    image: traefik:v3.0
+    container_name: kvs-traefik
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Traefik dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./docker/traefik.yml:/etc/traefik/traefik.yml
+      - kvs-certs:/certs
+    networks:
+      - kvs-network
+    profiles:
+      - production
+
+  # Podman API service (for rootless containers)
+  podman-api:
+    image: quay.io/podman/stable:latest
+    container_name: kvs-podman-api
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - /var/run/podman:/var/run/podman
+      - kvs-podman-storage:/var/lib/containers
+    command: podman system service --time=0 tcp://0.0.0.0:8080
+    ports:
+      - "8080:8080"
+    networks:
+      - kvs-network
+    profiles:
+      - podman
+
+networks:
+  kvs-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  kvs-data:
+    driver: local
+  kvs-config:
+    driver: local
+  kvs-redis-data:
+    driver: local
+  kvs-prometheus-data:
+    driver: local
+  kvs-grafana-data:
+    driver: local
+  kvs-home-template:
+    driver: local
+  kvs-certs:
+    driver: local
+  kvs-podman-storage:
+    driver: local
+
+# Additional configuration for enterprise deployment
+x-resource-limits: &resource-limits
+  deploy:
+    resources:
+      limits:
+        memory: 2G
+        cpus: '1.0'
+      reservations:
+        memory: 512M
+        cpus: '0.5'
+
+x-logging: &logging
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+x-security: &security
+  security_opt:
+    - no-new-privileges:true
+  read_only: false
+  tmpfs:
+    - /tmp
+    - /run

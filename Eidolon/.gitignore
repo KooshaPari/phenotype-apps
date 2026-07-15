@@ -1,0 +1,31 @@
+/target
+**/*.rs.bk
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+target/
+
+# ===== Standard auto-generated hygiene ignores (do not edit manually) =====
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+node_modules/
+dist/
+build/
+coverage/
+.pytest_cache/
+__pycache__/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+# ===== End standard hygiene ignores =====
+
+# eidolon-desktop build artifacts
+crates/.eidolon-desktop

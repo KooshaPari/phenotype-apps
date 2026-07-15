@@ -1,0 +1,7 @@
+[profile.ci]
+# Retry flaky tests up to 2 times
+retry = 2
+# Allow slow tests up to 120 seconds
+slow-timeout = "120s"
+# Show failure output immediately
+failure-output = "immediate"

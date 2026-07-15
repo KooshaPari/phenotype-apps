@@ -1,0 +1,464 @@
+{
+  "validation_scenarios": {
+    "calculator_operations": {
+      "name": "Calculator Mathematical Operations",
+      "description": "Validate calculator usage with visible user intent",
+      "app": "calculator",
+      "visual_intent_features": [
+        "slow_cursor_movement",
+        "hover_before_click", 
+        "sequential_button_presses",
+        "result_verification"
+      ],
+      "steps": [
+        {
+          "type": "launch_app",
+          "app": "calculator",
+          "intent": "User wants to perform mathematical calculations"
+        },
+        {
+          "type": "wait_for_window",
+          "title": "Calculator",
+          "timeout": 10,
+          "intent": "Waiting for calculator interface to load"
+        },
+        {
+          "type": "visual_intent_click",
+          "target": "7",
+          "intent": "User selects number 7 for calculation",
+          "hover_duration": 1.0
+        },
+        {
+          "type": "visual_intent_click", 
+          "target": "+",
+          "intent": "User chooses addition operation",
+          "hover_duration": 0.8
+        },
+        {
+          "type": "visual_intent_click",
+          "target": "3", 
+          "intent": "User selects number 3 to add",
+          "hover_duration": 1.0
+        },
+        {
+          "type": "visual_intent_click",
+          "target": "=",
+          "intent": "User executes calculation to see result",
+          "hover_duration": 1.2
+        },
+        {
+          "type": "screenshot",
+          "name": "calculator_simple_result",
+          "intent": "Capture calculation result for validation"
+        },
+        {
+          "type": "complex_calculation",
+          "expression": "15 * 8 - 3",
+          "intent": "User performs more complex mathematical operation"
+        }
+      ],
+      "validation_criteria": [
+        "Application launches successfully",
+        "All button clicks register correctly", 
+        "Mathematical operations produce correct results",
+        "User intent is clearly visible throughout interaction"
+      ]
+    },
+    
+    "text_editor_document": {
+      "name": "Text Editor Document Creation",
+      "description": "Validate text editing with natural typing patterns",
+      "app": "text_editor",
+      "visual_intent_features": [
+        "character_by_character_typing",
+        "natural_typing_speed",
+        "realistic_mistakes_and_corrections",
+        "menu_navigation"
+      ],
+      "steps": [
+        {
+          "type": "launch_app",
+          "app": "text_editor",
+          "intent": "User wants to create a document"
+        },
+        {
+          "type": "wait_for_window",
+          "title": "Text Editor",
+          "timeout": 10,
+          "intent": "Waiting for text editor to be ready"
+        },
+        {
+          "type": "natural_type_text",
+          "text": "DESKTOP INTERACTION VALIDATION REPORT\\n\\n",
+          "intent": "User types document header",
+          "typing_speed": 0.12,
+          "allow_mistakes": true
+        },
+        {
+          "type": "natural_type_text", 
+          "text": "This document demonstrates comprehensive desktop application interaction validation with visible user intent.\\n\\n",
+          "intent": "User provides document description",
+          "typing_speed": 0.15
+        },
+        {
+          "type": "natural_type_text",
+          "text": "Key Features Validated:\\n• Calculator mathematical operations\\n• Text editor document creation\\n• File manager navigation\\n• Browser web interaction\\n• Login authentication scenarios\\n\\n",
+          "intent": "User lists validation features",
+          "typing_speed": 0.14
+        },
+        {
+          "type": "menu_navigation",
+          "menu_path": ["Edit", "Select All"],
+          "intent": "User navigates to select all text"
+        },
+        {
+          "type": "key_combination",
+          "keys": ["ctrl", "s"],
+          "intent": "User saves the document"
+        },
+        {
+          "type": "handle_save_dialog",
+          "filename": "validation_report.txt",
+          "intent": "User provides filename for saved document"
+        }
+      ],
+      "validation_criteria": [
+        "Text types naturally with realistic timing",
+        "Menu navigation works correctly",
+        "Save functionality operates properly",
+        "User intent is visible throughout typing process"
+      ]
+    },
+    
+    "file_manager_navigation": {
+      "name": "File Manager Operations",
+      "description": "Validate file navigation and operations",
+      "app": "file_manager",
+      "visual_intent_features": [
+        "folder_navigation",
+        "context_menu_interaction",
+        "file_creation",
+        "deliberate_cursor_movement"
+      ],
+      "steps": [
+        {
+          "type": "launch_app",
+          "app": "file_manager",
+          "intent": "User wants to manage files and folders"
+        },
+        {
+          "type": "wait_for_window",
+          "title": "File Manager",
+          "timeout": 10,
+          "intent": "Waiting for file manager interface"
+        },
+        {
+          "type": "navigate_to_folder",
+          "path": "/tmp",
+          "intent": "User navigates to temporary directory"
+        },
+        {
+          "type": "right_click_context",
+          "target": "empty_space",
+          "intent": "User accesses context menu for file operations"
+        },
+        {
+          "type": "context_menu_select",
+          "option": "Create Folder",
+          "intent": "User selects option to create new folder"
+        },
+        {
+          "type": "natural_type_text",
+          "text": "desktop_validation_test",
+          "intent": "User names the new folder"
+        },
+        {
+          "type": "key_press",
+          "key": "Return",
+          "intent": "User confirms folder creation"
+        },
+        {
+          "type": "double_click_folder",
+          "folder": "desktop_validation_test", 
+          "intent": "User opens the newly created folder"
+        },
+        {
+          "type": "create_test_file",
+          "filename": "validation_test.txt",
+          "content": "This file was created during desktop validation testing.",
+          "intent": "User creates test file to verify file operations"
+        }
+      ],
+      "validation_criteria": [
+        "Folder navigation works correctly",
+        "Context menus appear and function properly",
+        "File creation operations succeed",
+        "User intent is clear during file management tasks"
+      ]
+    },
+    
+    "browser_web_interaction": {
+      "name": "Browser Web Navigation and Forms",
+      "description": "Validate web navigation and form interaction",
+      "app": "browser",
+      "visual_intent_features": [
+        "url_navigation",
+        "form_field_interaction",
+        "dropdown_selection",
+        "checkbox_handling"
+      ],
+      "steps": [
+        {
+          "type": "launch_app",
+          "app": "browser",
+          "intent": "User wants to browse the web and interact with forms"
+        },
+        {
+          "type": "wait_for_window",
+          "title": "Firefox",
+          "timeout": 15,
+          "intent": "Waiting for browser to fully load"
+        },
+        {
+          "type": "navigate_to_url",
+          "url": "https://httpbin.org/forms/post",
+          "intent": "User navigates to form testing page"
+        },
+        {
+          "type": "wait_for_page_load",
+          "timeout": 10,
+          "intent": "Waiting for web page to load completely"
+        },
+        {
+          "type": "fill_form_field",
+          "field": "custname",
+          "value": "John Doe",
+          "intent": "User enters customer name in form"
+        },
+        {
+          "type": "fill_form_field",
+          "field": "custtel", 
+          "value": "555-0123",
+          "intent": "User enters phone number"
+        },
+        {
+          "type": "fill_form_field",
+          "field": "custemail",
+          "value": "john.doe@example.com",
+          "intent": "User enters email address"
+        },
+        {
+          "type": "select_dropdown",
+          "field": "size",
+          "value": "medium",
+          "intent": "User selects size option from dropdown"
+        },
+        {
+          "type": "check_checkbox",
+          "field": "delivery",
+          "intent": "User enables delivery option"
+        },
+        {
+          "type": "fill_textarea",
+          "field": "comments",
+          "value": "This is a test form submission during desktop validation testing. All fields are being filled with realistic user behavior patterns.",
+          "intent": "User adds detailed comments to form"
+        },
+        {
+          "type": "visual_intent_click",
+          "target": "submit",
+          "intent": "User submits the completed form"
+        }
+      ],
+      "validation_criteria": [
+        "URL navigation functions correctly",
+        "Form fields accept input properly",
+        "Dropdown selections work",
+        "Checkbox interactions function",
+        "Form submission completes successfully"
+      ]
+    },
+    
+    "login_authentication": {
+      "name": "Login Authentication Flow",
+      "description": "Validate login form interaction and authentication",
+      "app": "browser",
+      "visual_intent_features": [
+        "credential_entry",
+        "authentication_dialog_handling",
+        "secure_input_demonstration",
+        "login_flow_completion"
+      ],
+      "steps": [
+        {
+          "type": "navigate_to_url",
+          "url": "https://httpbin.org/basic-auth/testuser/testpass",
+          "intent": "User navigates to authentication-required page"
+        },
+        {
+          "type": "handle_auth_dialog",
+          "username": "testuser",
+          "password": "testpass",
+          "intent": "User enters credentials for authentication"
+        },
+        {
+          "type": "wait_for_auth_result",
+          "timeout": 5,
+          "intent": "Waiting for authentication to complete"
+        },
+        {
+          "type": "screenshot",
+          "name": "authentication_success",
+          "intent": "Capture successful authentication result"
+        }
+      ],
+      "validation_criteria": [
+        "Authentication dialog appears",
+        "Credentials are entered correctly",
+        "Authentication succeeds",
+        "User intent is clear during login process"
+      ]
+    },
+    
+    "comprehensive_workflow": {
+      "name": "Complete Desktop Interaction Workflow",
+      "description": "End-to-end validation of all desktop interaction capabilities",
+      "apps": ["calculator", "text_editor", "file_manager", "browser"],
+      "visual_intent_features": [
+        "multi_application_workflow",
+        "context_switching",
+        "cross_application_data_flow",
+        "comprehensive_intent_demonstration"
+      ],
+      "steps": [
+        {
+          "type": "start_recording",
+          "recording_name": "comprehensive_workflow",
+          "intent": "Begin recording complete validation workflow"
+        },
+        {
+          "type": "execute_scenario",
+          "scenario": "calculator_operations",
+          "intent": "Validate calculator functionality"
+        },
+        {
+          "type": "execute_scenario", 
+          "scenario": "text_editor_document",
+          "intent": "Validate text editing capabilities"
+        },
+        {
+          "type": "execute_scenario",
+          "scenario": "file_manager_navigation",
+          "intent": "Validate file management operations"
+        },
+        {
+          "type": "execute_scenario",
+          "scenario": "browser_web_interaction", 
+          "intent": "Validate web browser interactions"
+        },
+        {
+          "type": "execute_scenario",
+          "scenario": "login_authentication",
+          "intent": "Validate authentication scenarios"
+        },
+        {
+          "type": "stop_recording",
+          "intent": "Complete recording of validation workflow"
+        },
+        {
+          "type": "generate_report",
+          "intent": "Create comprehensive validation report"
+        }
+      ],
+      "validation_criteria": [
+        "All individual scenarios pass validation",
+        "Application switching works smoothly",
+        "User intent is maintained throughout workflow",
+        "Complete workflow recording is generated",
+        "Comprehensive report is produced"
+      ]
+    }
+  },
+  
+  "visual_intent_configuration": {
+    "cursor_movement": {
+      "speed": 0.02,
+      "smoothness": "high",
+      "trajectory": "natural",
+      "hover_duration": 1.0
+    },
+    "typing_behavior": {
+      "character_delay": 0.15,
+      "variance": 0.04,
+      "mistake_probability": 0.03,
+      "correction_delay": 0.5,
+      "burst_typing": true
+    },
+    "interaction_patterns": {
+      "hover_before_click": true,
+      "menu_exploration": true,
+      "form_field_tabbing": true,
+      "context_menu_navigation": true
+    },
+    "recording_settings": {
+      "quality": "high",
+      "framerate": 30,
+      "format": "mp4",
+      "include_audio": false
+    }
+  },
+  
+  "validation_applications": {
+    "calculator": {
+      "executable": "galculator",
+      "window_title": "Calculator",
+      "launch_delay": 3.0,
+      "interactions": ["number_input", "operations", "calculation"],
+      "validation_elements": ["buttons", "display", "operations"]
+    },
+    "text_editor": {
+      "executable": "mousepad",
+      "window_title": "Text Editor", 
+      "launch_delay": 3.0,
+      "interactions": ["text_input", "formatting", "save"],
+      "validation_elements": ["text_area", "menus", "dialogs"]
+    },
+    "file_manager": {
+      "executable": "thunar",
+      "window_title": "File Manager",
+      "launch_delay": 3.0,
+      "interactions": ["navigation", "file_operations", "context_menu"],
+      "validation_elements": ["folders", "files", "context_menus"]
+    },
+    "browser": {
+      "executable": "firefox",
+      "window_title": "Firefox",
+      "launch_delay": 8.0,
+      "interactions": ["url_input", "navigation", "form_filling"],
+      "validation_elements": ["address_bar", "forms", "buttons", "links"]
+    }
+  },
+  
+  "validation_criteria": {
+    "visual_intent_requirements": [
+      "Cursor movement is slow and deliberate",
+      "Hover states are clearly visible before clicks",
+      "Typing occurs character by character with realistic timing",
+      "Menu navigation shows exploration behavior",
+      "Form filling demonstrates realistic user patterns"
+    ],
+    "functional_requirements": [
+      "All applications launch successfully",
+      "User interface elements respond correctly",
+      "Forms submit with proper validation",
+      "File operations complete successfully",
+      "Authentication flows work properly"
+    ],
+    "documentation_requirements": [
+      "Screenshots capture key interaction points",
+      "Video recordings show complete workflows",
+      "Validation reports include success metrics",
+      "Error cases are properly documented"
+    ]
+  }
+}

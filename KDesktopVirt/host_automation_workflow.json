@@ -1,0 +1,307 @@
+{
+  "name": "KVirtualStage Host-Controlled Smooth Automation",
+  "description": "Demonstrates proper KVirtualStage architecture with host-side automation controlling container",
+  "version": "1.0",
+  "metadata": {
+    "created": "2025-07-11",
+    "platform": "Virtual Desktop via KVirtualStage",
+    "target_container": "kvirtual-test",
+    "display": ":1",
+    "vnc_port": 5901,
+    "architecture": "host_controlled"
+  },
+  "session_config": {
+    "target_type": "existing_container",
+    "container_name": "kvirtual-test",
+    "display": ":1",
+    "resolution": "1920x1080",
+    "vnc_connection": "localhost:5901"
+  },
+  "cursor_settings": {
+    "movement_algorithm": "smooth_interpolation",
+    "steps": 50,
+    "easing": "cubic_bezier",
+    "natural_curves": true,
+    "realistic_timing": true
+  },
+  "recording_settings": {
+    "enable": true,
+    "output": "/tmp/kvirtualstage_host_automation.mp4",
+    "format": "mp4",
+    "resolution": "1920x1080",
+    "framerate": 30,
+    "duration": 60,
+    "quality": "high"
+  },
+  "workflow": [
+    {
+      "step": 1,
+      "name": "Initialize Session Connection",
+      "action": "connect_to_container",
+      "target": "kvirtual-test",
+      "display": ":1",
+      "verify_connection": true
+    },
+    {
+      "step": 2,
+      "name": "Start Recording",
+      "action": "start_recording",
+      "output": "/tmp/kvirtualstage_host_automation.mp4"
+    },
+    {
+      "step": 3,
+      "name": "Clear Desktop",
+      "action": "key_combination",
+      "keys": ["ctrl", "alt", "d"],
+      "description": "Clear desktop to clean state"
+    },
+    {
+      "step": 4,
+      "name": "Demo 1 - Smooth Cursor to Center",
+      "action": "smooth_cursor_move",
+      "from": {"x": 100, "y": 100},
+      "to": {"x": 960, "y": 540},
+      "duration": 1500,
+      "algorithm": "cubic_bezier",
+      "description": "Demonstrate ultra-smooth cursor movement to screen center"
+    },
+    {
+      "step": 5,
+      "name": "User Intent Fix 1 - Calculator Launch",
+      "description": "Demonstrate Enter key fix for app launching",
+      "actions": [
+        {
+          "action": "smooth_cursor_move",
+          "from": {"x": 960, "y": 540},
+          "to": {"x": 100, "y": 50},
+          "duration": 1200,
+          "description": "Move to launcher area"
+        },
+        {
+          "action": "key_combination",
+          "keys": ["alt", "F2"],
+          "description": "Open application launcher"
+        },
+        {
+          "action": "wait", "duration": 800
+        },
+        {
+          "action": "key_combination",
+          "keys": ["ctrl", "a"]
+        },
+        {
+          "action": "key_press",
+          "key": "Delete"
+        },
+        {
+          "action": "wait", "duration": 300
+        },
+        {
+          "action": "type_text",
+          "text": "galculator",
+          "typing_speed": "human_realistic"
+        },
+        {
+          "action": "wait", "duration": 500
+        },
+        {
+          "action": "key_press",
+          "key": "Return",
+          "description": "CRITICAL FIX: Press Enter to launch (no search bar stuck text)"
+        },
+        {
+          "action": "wait", "duration": 3000}
+      ]
+    },
+    {
+      "step": 6,
+      "name": "Smooth Movement to Calculator",
+      "action": "find_window_and_move",
+      "window_name": "galculator",
+      "movement_duration": 1500,
+      "activate_window": true,
+      "description": "Find calculator window and move smoothly to it"
+    },
+    {
+      "step": 7,
+      "name": "Calculator Interaction with Smooth Cursor",
+      "actions": [
+        {
+          "action": "take_screenshot",
+          "output": "/tmp/calculator_opened.png"
+        },
+        {
+          "action": "smooth_click_calculation",
+          "calculation": "123+456",
+          "button_size": {"width": 40, "height": 35},
+          "move_duration": 300,
+          "description": "Perform calculation with visible cursor movements"
+        },
+        {
+          "action": "wait", "duration": 2000
+        },
+        {
+          "action": "take_screenshot",
+          "output": "/tmp/calculation_result.png"
+        }
+      ]
+    },
+    {
+      "step": 8,
+      "name": "User Intent Fix 2 - Text Editor Launch",
+      "actions": [
+        {
+          "action": "smooth_cursor_move",
+          "from": "current_position",
+          "to": {"x": 100, "y": 50},
+          "duration": 1200,
+          "description": "Move back to launcher"
+        },
+        {
+          "action": "key_combination",
+          "keys": ["alt", "F2"]
+        },
+        {
+          "action": "wait", "duration": 800
+        },
+        {
+          "action": "key_combination",
+          "keys": ["ctrl", "a"]
+        },
+        {
+          "action": "key_press",
+          "key": "Delete"
+        },
+        {
+          "action": "wait", "duration": 300
+        },
+        {
+          "action": "type_text",
+          "text": "mousepad",
+          "typing_speed": "human_realistic"
+        },
+        {
+          "action": "wait", "duration": 500
+        },
+        {
+          "action": "key_press",
+          "key": "Return",
+          "description": "CRITICAL FIX: Press Enter to launch text editor"
+        },
+        {
+          "action": "wait", "duration": 3000}
+      ]
+    },
+    {
+      "step": 9,
+      "name": "Smooth Movement to Text Editor",
+      "action": "find_window_and_move",
+      "window_name": "mousepad",
+      "movement_duration": 1500,
+      "activate_window": true
+    },
+    {
+      "step": 10,
+      "name": "Create Documentation",
+      "actions": [
+        {
+          "action": "take_screenshot",
+          "output": "/tmp/text_editor_opened.png"
+        },
+        {
+          "action": "type_text",
+          "text": "✅ KVIRTUALSTAGE HOST AUTOMATION SUCCESS!\n\nAutomation Architecture:\n- Host-side KVirtualStage CLI\n- Container target: kvirtual-test\n- VNC connection: localhost:5901\n\nUser Intent Fixes Validated:\n✓ Enter key pressed after app names\n✓ No search bar stuck text\n✓ Apps launch properly\n✓ 50-step smooth cursor interpolation\n✓ Natural movement algorithms\n✓ Full 1920x1080 recording\n\nThis demonstrates the proper KVirtualStage architecture:\nHost controls → Container executes → Host records",
+          "typing_speed": "realistic"
+        },
+        {
+          "action": "wait", "duration": 2000
+        },
+        {
+          "action": "take_screenshot",
+          "output": "/tmp/documentation_complete.png"
+        }
+      ]
+    },
+    {
+      "step": 11,
+      "name": "Comprehensive Cursor Movement Showcase",
+      "description": "Demonstrate smooth movement across full screen",
+      "actions": [
+        {
+          "action": "smooth_cursor_move",
+          "from": "current_position",
+          "to": {"x": 50, "y": 50},
+          "duration": 1500,
+          "description": "Top-left corner"
+        },
+        {
+          "action": "smooth_cursor_move",
+          "from": {"x": 50, "y": 50},
+          "to": {"x": 1870, "y": 50},
+          "duration": 2000,
+          "description": "Top-right corner"
+        },
+        {
+          "action": "smooth_cursor_move",
+          "from": {"x": 1870, "y": 50},
+          "to": {"x": 1870, "y": 1030},
+          "duration": 2000,
+          "description": "Bottom-right corner"
+        },
+        {
+          "action": "smooth_cursor_move",
+          "from": {"x": 1870, "y": 1030},
+          "to": {"x": 50, "y": 1030},
+          "duration": 2000,
+          "description": "Bottom-left corner"
+        },
+        {
+          "action": "smooth_cursor_move",
+          "from": {"x": 50, "y": 1030},
+          "to": {"x": 960, "y": 540},
+          "duration": 1500,
+          "description": "Back to center"
+        },
+        {
+          "action": "circular_cursor_pattern",
+          "center": {"x": 960, "y": 540},
+          "radius": 200,
+          "duration": 3000,
+          "revolutions": 2,
+          "description": "Circular pattern demonstration"
+        }
+      ]
+    },
+    {
+      "step": 12,
+      "name": "Final Documentation",
+      "action": "take_screenshot",
+      "output": "/tmp/host_automation_complete.png",
+      "description": "Final state showing successful host-controlled automation"
+    },
+    {
+      "step": 13,
+      "name": "Stop Recording",
+      "action": "stop_recording",
+      "description": "Complete recording from host"
+    }
+  ],
+  "validation": {
+    "key_fixes_demonstrated": [
+      "Enter key pressed after typing app names",
+      "No search bar stuck text issues",
+      "Apps launch properly instead of staying in launcher",
+      "Smooth 50-step cursor interpolation",
+      "Natural movement algorithms with easing",
+      "Full 1920x1080 screen coverage",
+      "Host-side automation controlling container"
+    ],
+    "architecture_proof": [
+      "KVirtualStage CLI runs on host",
+      "Automation targets container via VNC/display",
+      "Recording captured from host side",
+      "Smooth cursor algorithms implemented in KVirtualStage",
+      "JSON workflow executed by host KVirtualStage"
+    ]
+  }
+}

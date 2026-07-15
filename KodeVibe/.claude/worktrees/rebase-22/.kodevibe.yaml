@@ -1,0 +1,175 @@
+# vibes:
+#   security:
+#     enabled: true
+#     level: strict
+#   code:
+#     enabled: true
+#     level: moderate
+#     settings:
+#       max_function_length: 50
+#       max_nesting_depth: 4
+#   performance:
+#     enabled: true
+#     level: moderate
+#     settings:
+#       max_bundle_size: 2MB
+#   file:
+#     enabled: true
+#     level: strict
+#   git:
+#     enabled: true
+#     level: moderate
+#     settings:
+#       min_commit_message_length: 10
+#   dependency:
+#     enabled: true
+#     level: moderate
+#     settings:
+#       check_vulnerabilities: true
+#   documentation:
+#     enabled: false
+#     level: moderate
+#
+# project:
+#   type: auto-detect
+#   language: auto-detect
+#   framework: ""
+#
+# exclude:
+#   files:
+#     - "node_modules/**/*"
+#     - ".git/**/*"
+#     - "coverage/**/*"
+#     - "*.min.js"
+#     - "vendor/**/*"
+#     - "build/**/*"
+#     - "dist/**/*"
+#   patterns:
+#     - "test-*"
+#     - "*.test.*"
+#     - "*.spec.*"
+#
+# custom_rules: []
+#
+# integrations:
+#   slack:
+#     enabled: false
+#   github:
+#     enabled: false
+#     create_issues: false
+#   jira:
+#     enabled: false
+#
+# advanced:
+#   entropy_analysis: true
+#   entropy_threshold: 4.5
+#   cache_enabled: true
+#   max_concurrency: 10
+#   timeout: 5m0s
+#
+# ci_cd:
+#   quality_gates:
+#     min_code_coverage: 0
+#     max_security_issues: 0
+#
+# reporting:
+#   generate_reports: true
+#   report_format: text
+#   report_path: ./kodevibe-reports
+#
+# Full schema: docs/kodevibe-config-schema.md
+
+vibes:
+  security:
+    enabled: true
+    level: strict
+
+  code:
+    enabled: true
+    level: moderate
+    max_function_length: 50
+    max_nesting_depth: 4
+
+  performance:
+    enabled: true
+    level: moderate
+    max_bundle_size: "2MB"
+
+  file:
+    enabled: true
+    level: strict
+
+  git:
+    enabled: true
+    min_commit_message_length: 10
+
+  dependency:
+    enabled: true
+    check_vulnerabilities: true
+
+  documentation:
+    enabled: false
+
+project:
+  type: web
+  language: javascript
+  framework: react
+
+exclude:
+  files:
+    - "node_modules/**/*"
+    - ".git/**/*"
+    - "coverage/**/*"
+    - "*.min.js"
+    - "*.min.css"
+
+  patterns:
+    - "test-*"
+    - "*.test.*"
+    - "*.spec.*"
+
+custom_rules:
+  - name: "no-console-log"
+    pattern: "console\\.log\\("
+    message: "Remove console.log statements before committing"
+    severity: warning
+
+  - name: "todo-comments"
+    pattern: "(?i)\\b(todo|fixme|hack|xxx)\\b"
+    message: "TODO comments should be tracked in issues"
+    severity: info
+
+integrations:
+  slack:
+    enabled: false
+    webhook_url: "${SLACK_WEBHOOK}"
+
+  github:
+    enabled: true
+    create_issues: false
+
+  jira:
+    enabled: false
+    project_key: "DEV"
+
+advanced:
+  entropy_analysis: true
+  entropy_threshold: 4.5
+  cache_enabled: true
+  max_concurrency: 10
+  timeout: 5m0s
+
+ci_cd:
+  quality_gates:
+    min_code_coverage: 0
+    max_security_issues: 0
+    max_performance_issues: 0
+
+reporting:
+  generate_reports: true
+  report_format: text
+  report_path: ./kodevibe-reports
+  logging:
+    enabled: true
+    level: info
+    format: json

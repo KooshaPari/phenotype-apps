@@ -1,0 +1,70 @@
+version: 2
+
+project_name: kodevibe
+
+builds:
+  - id: kodevibe
+    main: ./engine/cmd/cli
+    binary: kodevibe
+    mod_timestamp: '{{ .CommitTimestamp }}'
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.Version={{.Version}} -X main.Commit={{.Commit}} -X main.Date={{.CommitDate}}
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+
+  - id: kodevibe-server
+    main: ./engine/cmd/server
+    binary: kodevibe-server
+    mod_timestamp: '{{ .CommitTimestamp }}'
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.Version={{.Version}} -X main.Commit={{.Commit}} -X main.Date={{.CommitDate}}
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+
+archives:
+  - format: tar.gz
+    name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+    files:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+    format_overrides:
+      - goos: windows
+        format: zip
+
+checksum:
+  name_template: '{{ .ProjectName }}_{{ .Version }}_checksums.txt'
+  algorithm: sha256
+
+snapshot:
+  name_template: '{{ .Version }}-dev+{{ .ShortCommit }}'
+
+release:
+  github:
+    owner: KooshaPari
+    repo: KodeVibe
+  prerelease: auto
+  mode: replace
+  name_template: 'KodeVibe v{{ .Version }}'
+
+changelog:
+  use: github-native
+  abbrev: -1

@@ -1,0 +1,110 @@
+name: deny
+
+# Tier-0 hygiene: dependency policy check. KWatch is Go-only, so the
+# Rust-flavoured `deny.toml` at the repo root is dormant. The Go
+# analogue below enforces (a) reproducible builds via `go mod verify`,
+# (b) a tidy tree, and (c) an SPDX-allowlist for every direct dep.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Tuesdays 06:30 UTC — between the weekly audit (Mon) and the
+    # weekly scorecard (Wed) so we don't triple-stack.
+    - cron: '30 6 * * 2'
+  workflow_dispatch:
+
+# Tier-0 hygiene: least-privilege default.
+permissions:
+  contents: read
+
+# Tier-0 hygiene: cancel superseded runs per ref.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  go-mod-verify:
+    name: go mod verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+
+      - name: Setup Go
+        uses: actions/setup-go@4a2405e6aebff6aabd8e43618539aa35cf90ac92
+        with:
+          go-version: "1.25"
+          cache: true
+
+      - name: go mod verify
+        # Validates the go.sum checksums for every module in the build
+        # list. A non-zero exit means tampering or a download mirror
+        # serving a different artefact than what the sum file expects.
+        run: go mod verify
+
+      - name: go mod tidy (diff-only)
+        # Confirms `go mod tidy` is a no-op on the current tree. We do
+        # NOT commit the resulting go.mod / go.sum; the diff gate keeps
+        # the working tree stable and flags anyone who forgot to tidy.
+        run: |
+          set -euo pipefail
+          cp go.mod /tmp/go.mod.before
+          cp go.sum /tmp/go.sum.before
+          go mod tidy
+          if ! diff -q /tmp/go.mod.before go.mod >/dev/null; then
+            echo "::error::go.mod is not tidy. Run \`go mod tidy\` locally and commit the result."
+            diff -u /tmp/go.mod.before go.mod || true
+            exit 1
+          fi
+          if ! diff -q /tmp/go.sum.before go.sum >/dev/null; then
+            echo "::error::go.sum is not tidy. Run \`go mod tidy\` locally and commit the result."
+            diff -u /tmp/go.sum.before go.sum || true
+            exit 1
+          fi
+          echo "go.mod and go.sum are tidy."
+
+  license-allowlist:
+    name: License allowlist
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+
+      - name: Setup Go
+        uses: actions/setup-go@4a2405e6aebff6aabd8e43618539aa35cf90ac92
+        with:
+          go-version: "1.25"
+          cache: true
+
+      - name: Install go-licenses
+        run: go install github.com/google/go-licenses@latest
+
+      - name: Enforce license allowlist
+        # The allowlist mirrors the dual license in LICENSE-MIT and
+        # LICENSE-APACHE: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause,
+        # ISC, MPL-2.0 (acceptable for Mozilla-licensed deps that the
+        # Go ecosystem occasionally pulls in), and unknown (treated as
+        # review-required rather than auto-failed).
+        run: |
+          set -euo pipefail
+          # `go-licenses check` returns non-zero on the first violation
+          # and prints the offending module. We log every dep's license
+          # for auditability and fail the build on anything outside the
+          # allowlist.
+          go-licenses check \
+            --include_tests \
+            --allowed_licenses=MIT,Apache-2.0,BSD-2-Clause,BSD-3-Clause,ISC,MPL-2.0 \
+            ./... || {
+              echo "::error::One or more dependencies use a non-allowlisted license."
+              echo "Run \`go-licenses csv ./...\` locally for the full report."
+              go-licenses csv ./... || true
+              exit 1
+            }

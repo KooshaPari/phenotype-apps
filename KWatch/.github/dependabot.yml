@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+  # Note: the `npm` ecosystem is intentionally NOT enabled. KWatch's `.gitignore`
+  # excludes lockfiles (`*.lock`) and the repository does not commit a
+  # `package-lock.json`, so dependabot for npm would have nothing to diff against
+  # and would never open PRs. Re-enable here once a `package-lock.json` is
+  # committed and `.gitignore` is updated to allow it.

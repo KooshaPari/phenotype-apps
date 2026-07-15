@@ -1,0 +1,1448 @@
+{
+  "meta": {
+    "project": "KWatch",
+    "language": "Go 1.25",
+    "framework": "Go toolchain (cobra, bubbletea, lipgloss, fsnotify)",
+    "audit_date": "2026-07-09",
+    "total_pillars": 148,
+    "scoring": {
+      "satisfied": "Fully implemented and meets standard",
+      "partial": "Partially implemented or has known issues",
+      "missing": "Not implemented or absent",
+      "na": "Not applicable to this project"
+    },
+    "overall": {
+      "score_pct": 71,
+      "grade": "B-",
+      "satisfied": 91,
+      "partial": 18,
+      "missing": 34,
+      "na": 5,
+      "assessment": "Strong CI/CD foundation and documentation are the project's main strengths. Primary gaps are in observability (no structured logging), security scanning breadth (gosec, CodeQL), developer experience tooling (golangci-lint, devcontainer), and release hardening (SBOM, SLSA, binary signing). Several interface/type mismatches between server and runner packages need attention."
+    }
+  },
+  "domains": [
+    {
+      "id": 1,
+      "name": "Code Quality & Style",
+      "description": "Go formatting, linting, static analysis, and code conventions",
+      "pillars": [
+        {
+          "id": "CQ-01",
+          "name": "gofmt compliance",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "CI enforces gofmt -l check on every push/PR. Fails on non-conformant files.",
+          "remediation": null
+        },
+        {
+          "id": "CQ-02",
+          "name": "go vet pass",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "go vet ./... runs in CI as part of the ci.yml workflow. No known vet warnings.",
+          "remediation": null
+        },
+        {
+          "id": "CQ-03",
+          "name": "staticcheck integration",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "staticcheck runs in audit.yml with honnef.co/go/tools/cmd/staticcheck@latest.",
+          "remediation": null
+        },
+        {
+          "id": "CQ-04",
+          "name": "golangci-lint configuration",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No .golangci.yml or .golangci.yaml in repo. golangci-lint is the de facto Go meta-linter and should replace/adjoin the ad-hoc staticcheck step.",
+          "remediation": "Add .golangci.yml with enabled linters: errcheck, gosimple, ineffassign, unused, staticcheck, gosec, revive, exportloopref. Integrate into CI and Makefile."
+        },
+        {
+          "id": "CQ-05",
+          "name": "compiler warnings (zero tolerance)",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Go 1.25 enforces zero warnings on build. No known compiler warnings.",
+          "remediation": null
+        },
+        {
+          "id": "CQ-06",
+          "name": "receiver naming consistency",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Codebase uses consistent single-letter or short receivers (r *Runner, s *Server, h *ResultHistory).",
+          "remediation": null
+        },
+        {
+          "id": "CQ-07",
+          "name": "import ordering (stdlib / external / internal)",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "Most files follow Go convention (stdlib, then external, then internal) but no tool enforces it. goimports not in CI.",
+          "remediation": "Add goimports -local kwatch check to CI or enable in golangci-lint."
+        },
+        {
+          "id": "CQ-08",
+          "name": "package documentation comments",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": "Some packages have doc comments (runner, server) but others like cmd, tui, security lack package-level doc.",
+          "remediation": "Add package-level doc comments to cmd/, tui/, security/, config/, mcp/ packages."
+        },
+        {
+          "id": "CQ-09",
+          "name": "exported symbol documentation",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "Many exported types and functions have comments (NewRunner, New, StartWithContext) but some are missing (e.g., FormatCompactStatus, getCommandType).",
+          "remediation": "Audit all exported symbols with golint or revive and add missing doc comments."
+        },
+        {
+          "id": "CQ-10",
+          "name": "cyclomatic complexity management",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No complexity gate in CI or local tooling. Some functions (e.g., cmd_test.go at 1306 lines) are excessively large.",
+          "remediation": "Add gocyclo or revive cyclomatic check to golangci-lint, target max 15. Refactor large test file."
+        },
+        {
+          "id": "CQ-11",
+          "name": "function length discipline",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": "Most functions are reasonably sized but server.setupRoutes() and cmd.run.go's Execute() are overly long. cmd/cmd_test.go is 1306 lines.",
+          "remediation": "Split setupRoutes into route registration + middleware assembly. Break up cmd_test.go into focused test files."
+        },
+        {
+          "id": "CQ-12",
+          "name": "error string conventions",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Error strings follow Go convention (lowercase, no trailing punctuation) in most places.",
+          "remediation": null
+        },
+        {
+          "id": "CQ-13",
+          "name": "nil slice handling",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Codebase correctly uses var declarations and make() for slices. No nil-append patterns found.",
+          "remediation": null
+        },
+        {
+          "id": "CQ-14",
+          "name": "commented-out code removal",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "Some commented-out code blocks exist in cmd/ and runner/. Not excessive but should be cleaned.",
+          "remediation": "Remove dead commented-out code. Use git history for reference."
+        },
+        {
+          "id": "CQ-15",
+          "name": "consistent constructor pattern",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "New* constructors consistently return pointers and take config structs. E.g., NewRunner(), New(), NewParser().",
+          "remediation": null
+        },
+        {
+          "id": "CQ-16",
+          "name": "enum/const naming conventions",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "CommandType constants use PascalCase with clear suffixes (TypescriptCheck, LintCheck, TestRunner).",
+          "remediation": null
+        },
+        {
+          "id": "CQ-17",
+          "name": "var vs := consistency",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Codebase appropriately uses both var and := declarations in Go-idiomatic fashion.",
+          "remediation": null
+        },
+        {
+          "id": "CQ-18",
+          "name": "context usage correctness",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "Runner correctly passes context.Context for command timeouts. But server/types.go Runner interface uses context.Context as interface{} in signature \u2014 type mismatch with actual runner.Runner.",
+          "remediation": "Fix server/types.go Runner interface to use context.Context instead of interface{}, and align return types with runner.Runner."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Testing & Reliability",
+      "description": "Test coverage, types, tooling, and quality practices",
+      "pillars": [
+        {
+          "id": "TR-01",
+          "name": "go test pass rate",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "CI runs go test ./... on every push/PR. All tests passing.",
+          "remediation": null
+        },
+        {
+          "id": "TR-02",
+          "name": "table-driven tests",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "Some test files use table-driven patterns (config_test.go, runner_test.go). Others use sequential test functions without subtables.",
+          "remediation": "Convert sequential tests in security/ and tui/ to table-driven style where appropriate."
+        },
+        {
+          "id": "TR-03",
+          "name": "test coverage CI gate",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": "Makefile has test-coverage target (go test -cover) but coverage is not gated in CI. No coverage threshold or reporting.",
+          "remediation": "Add go test -coverprofile=coverage.out to CI, enforce minimum 60% coverage gate per package. Add Codecov or coveralls integration."
+        },
+        {
+          "id": "TR-04",
+          "name": "fuzz testing",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No Go fuzz targets (*_test.go with Fuzz* functions) exist. No fuzz testing in CI.",
+          "remediation": "Add fuzz targets for parser functions (ParseTestOutput, ParseLintOutput) and config parsing. Add CI fuzz step with -fuzztime=30s."
+        },
+        {
+          "id": "TR-05",
+          "name": "benchmark testing",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No benchmark functions (Benchmark*) exist in the codebase. No benchstat or bench CI.",
+          "remediation": "Add benchmarks for hot paths: command execution, output parsing, compact status formatting. Add bench CI comparison."
+        },
+        {
+          "id": "TR-06",
+          "name": "race detector in CI",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": "Makefile has dev build with -race flag. CI does not run go test -race. Potential races undetected in automated testing.",
+          "remediation": "Add go test -race ./... to CI pipeline as a dedicated step."
+        },
+        {
+          "id": "TR-07",
+          "name": "integration tests",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "watch_loop_integration_test.go exists (494 lines) but tests are tightly coupled to file system. No hermetic integration test pattern.",
+          "remediation": "Refactor integration tests to use temp directories and controlled file events. Add integration test CI job."
+        },
+        {
+          "id": "TR-08",
+          "name": "hermetic test data",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": "Test output parsing tests use inline strings. Watch integration test depends on real filesystem. No testdata/ directory.",
+          "remediation": "Create testdata/ directory with fixture files. Use testutil package for temp directory helpers."
+        },
+        {
+          "id": "TR-09",
+          "name": "test helper utilities",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No shared test helpers or testutil package. Test setup code is duplicated across test files.",
+          "remediation": "Create internal/testutil package with helpers, temp dir creation, mock runners, and common assertions."
+        },
+        {
+          "id": "TR-10",
+          "name": "mock/stub usage",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No mock implementations for testing. The Runner interface in server/types.go has no mock. Tests use real command execution.",
+          "remediation": "Create mock implementations of Runner interface. Use them in server and tui tests to avoid real command dependency."
+        },
+        {
+          "id": "TR-11",
+          "name": "parallel test execution",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No t.Parallel() calls in any test file. Tests run sequentially.",
+          "remediation": "Add t.Parallel() to independent test functions. Ensure test isolation before enabling."
+        },
+        {
+          "id": "TR-12",
+          "name": "test cleanup with t.Cleanup",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No use of t.Cleanup() for resource cleanup. Manual cleanup is used but inconsistent.",
+          "remediation": "Replace manual deferred cleanup with t.Cleanup() in tests that create temp resources."
+        },
+        {
+          "id": "TR-13",
+          "name": "subtests naming",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "Some test files use named subtests, others use flat function names without t.Run.",
+          "remediation": "Adopt consistent subtest naming: all test functions should use t.Run with descriptive names."
+        },
+        {
+          "id": "TR-14",
+          "name": "test error messages",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "Many tests use t.Errorf/t.Fatalf with descriptive messages. Some use generic messages lacking expected/actual values.",
+          "remediation": "Add structured test assertions with want/got format. Consider testify/require for richer assertions."
+        },
+        {
+          "id": "TR-15",
+          "name": "test file organization",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": "cmd/cmd_test.go is 1306 lines \u2014 too large for a single file. Should be split by command.",
+          "remediation": "Split cmd_test.go into focused per-command test files."
+        },
+        {
+          "id": "TR-16",
+          "name": "coverage reporting",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No coverage HTML output, no Codecov/Coveralls, no coverage badge in README.",
+          "remediation": "Add go test -coverprofile=coverage.out && go tool cover -html=coverage.out to Makefile. Integrate Codecov."
+        },
+        {
+          "id": "TR-17",
+          "name": "golden file tests",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No golden file (*.golden) pattern used. Compact status format and output parsing are tested inline.",
+          "remediation": "Use go-cmp and golden files for testing complex output formatting. Particularly useful for FormatCompactStatus."
+        },
+        {
+          "id": "TR-18",
+          "name": "interface compliance tests",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": "server.Runner interface expects different signatures than runner.Runner provides. No compile-time interface satisfaction checks.",
+          "remediation": "Add var _ server.Runner = (*runner.Runner)(nil) in test or server package. Fix interface signature mismatch."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Dependency Management",
+      "description": "Go module hygiene, dependency auditing, and supply chain security",
+      "pillars": [
+        {
+          "id": "DM-01",
+          "name": "go.sum integrity",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "go.sum exists and is checked into VCS. Provides checksum verification for all direct and transitive deps.",
+          "remediation": null
+        },
+        {
+          "id": "DM-02",
+          "name": "go mod tidy run",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "go mod tidy runs periodically (Makefile deps target). Module is clean.",
+          "remediation": null
+        },
+        {
+          "id": "DM-03",
+          "name": "go mod verify",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "deny.yml workflow runs go mod verify to check module integrity against go.sum.",
+          "remediation": null
+        },
+        {
+          "id": "DM-04",
+          "name": "dependency pinning (SHA pinning)",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "All direct deps are pinned to specific versions (v1.3.10, v1.1.0, v1.10.1, etc.). No floating tags.",
+          "remediation": null
+        },
+        {
+          "id": "DM-05",
+          "name": "license allowlist",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "deny.yml runs go-licenses check with allowlist: MIT, Apache-2.0, BSD-2/3, ISC, MPL-2.0. Non-compliant deps fail CI.",
+          "remediation": null
+        },
+        {
+          "id": "DM-06",
+          "name": "Dependabot configuration",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "dependabot.yml exists with weekly cadence for Go module updates.",
+          "remediation": null
+        },
+        {
+          "id": "DM-07",
+          "name": "automated vulnerability scanning",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "govulncheck runs in CI on push/PR + weekly cron. Scans Go vulnerability database at source level.",
+          "remediation": null
+        },
+        {
+          "id": "DM-08",
+          "name": "dependency freshness tracking",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "Dependabot handles updates but no tool provides freshness dashboard. Some indirect deps are outdated.",
+          "remediation": "Consider running go-mod-upgrade periodically or using renovate for more granular dep control."
+        },
+        {
+          "id": "DM-09",
+          "name": "transitive dependency minimization",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "12 indirect deps is reasonable for a TUI tool. No unnecessary transitive deps detected.",
+          "remediation": "Periodically audit with go mod why and go mod graph to detect bloat."
+        },
+        {
+          "id": "DM-10",
+          "name": "vendor directory management",
+          "status": "na",
+          "score": null,
+          "rationale": "No vendor/ directory. go.sum-based verification is sufficient for this project size.",
+          "remediation": null
+        },
+        {
+          "id": "DM-11",
+          "name": "replace directive justification",
+          "status": "na",
+          "score": null,
+          "rationale": "No replace directives in go.mod. Not needed for current dependency set.",
+          "remediation": null
+        },
+        {
+          "id": "DM-12",
+          "name": "indirect dependency documentation",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "go.mod clearly separates direct and indirect deps with // indirect comments. Standard Go tooling format.",
+          "remediation": null
+        },
+        {
+          "id": "DM-13",
+          "name": "Go toolchain version policy",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "go.mod specifies go 1.25.0. CI uses matching 1.25 setup step in ci.yml and audit.yml.",
+          "remediation": null
+        },
+        {
+          "id": "DM-14",
+          "name": "deny.toml relevance",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "deny.toml at root is a dormant Rust cargo-deny config, not applicable to Go project. Creates confusion.",
+          "remediation": "Remove deny.toml (Rust config in Go project). It has no effect and misleads contributors."
+        },
+        {
+          "id": "DM-15",
+          "name": "private module configuration",
+          "status": "na",
+          "score": null,
+          "rationale": "No private module dependencies. GOPROXY/GONOSUMCHECK config not needed.",
+          "remediation": null
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Security",
+      "description": "SAST, DAST, secret scanning, supply chain security, and secure coding practices",
+      "pillars": [
+        {
+          "id": "SC-01",
+          "name": "govulncheck integration",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Runs in audit.yml on push/PR + weekly cron. Source-mode scan traces call graph. Fails on any known vulnerability.",
+          "remediation": null
+        },
+        {
+          "id": "SC-02",
+          "name": "gosec static analysis",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No gosec scan in CI or local tooling. gosec is the standard Go security linter.",
+          "remediation": "Add gosec to audit.yml. Or enable its rules via golangci-lint which has a gosec linter wrapper."
+        },
+        {
+          "id": "SC-03",
+          "name": "CodeQL analysis",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No CodeQL workflow. Standard GitHub security analysis for Go projects is absent.",
+          "remediation": "Add github/codeql-action with go queries to audit.yml or a new codeql.yml. Schedule weekly."
+        },
+        {
+          "id": "SC-04",
+          "name": "gitleaks secret scanning",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "gitleaks runs in audit.yml with fetch-depth:0 for full git history scan. SARIF upload available.",
+          "remediation": null
+        },
+        {
+          "id": "SC-05",
+          "name": "Trivy filesystem scan",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Trivy runs in audit.yml on every push/PR + weekly. Scan type: fs. SARIF upload with security-events:write.",
+          "remediation": null
+        },
+        {
+          "id": "SC-06",
+          "name": ".gitleaks.toml existence",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": ".gitleaks.toml exists at root with custom allowlist rules. Referenced by gitleaks-action config-path.",
+          "remediation": null
+        },
+        {
+          "id": "SC-07",
+          "name": "SLSA provenance",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No SLSA-generator workflow. Release artifacts are not signed or attested.",
+          "remediation": "Add SLSA-generator step to release.yml. Generate non-forgeable provenance attestation for release artifacts."
+        },
+        {
+          "id": "SC-08",
+          "name": "SBOM generation",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No SPDX or CycloneDX SBOM generated during build or release.",
+          "remediation": "Add CycloneDX SBOM generation to release.yml (using cyclonedx-gomod or syft). Attach to GitHub Release."
+        },
+        {
+          "id": "SC-09",
+          "name": "built-in secret scanner (Go code)",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "security/ package has 20+ regex patterns for secret detection. Provides /security/scan, /security/findings APIs.",
+          "remediation": null
+        },
+        {
+          "id": "SC-10",
+          "name": "security API endpoints",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Security endpoints: /security/scan, /security/findings, /security/resolve/:id, /security/ignore/:id.",
+          "remediation": null
+        },
+        {
+          "id": "SC-11",
+          "name": "input validation (type-safe)",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Go strong typing provides compile-time input validation. Command arguments and config are parsed with validation.",
+          "remediation": null
+        },
+        {
+          "id": "SC-12",
+          "name": "command injection prevention",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Uses exec.CommandContext with separate command/args arrays (not shell strings). No shell injection vector.",
+          "remediation": null
+        },
+        {
+          "id": "SC-13",
+          "name": "path traversal prevention",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "WorkingDir is constrained to configured directories. No user-supplied path traversal in file operations.",
+          "remediation": null
+        },
+        {
+          "id": "SC-14",
+          "name": "authentication for server endpoints",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "authMiddleware supports AuthToken configuration. Production server constructors enforce auth.",
+          "remediation": null
+        },
+        {
+          "id": "SC-15",
+          "name": "CORS configuration",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "CORS middleware with configurable AllowedOrigins. '*' allowed in dev, restricted in production.",
+          "remediation": null
+        },
+        {
+          "id": "SC-16",
+          "name": "dependency scanning coverage",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Trivy fs scan covers Go module vulnerabilities in audit.yml. govulncheck covers Go vuln DB.",
+          "remediation": null
+        },
+        {
+          "id": "SC-17",
+          "name": "SAST coverage in CI",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "staticcheck provides Go-specific SAST. Missing gosec and CodeQL for broader analysis.",
+          "remediation": "Add gosec via golangci-lint. Add CodeQL Go queries workflow."
+        },
+        {
+          "id": "SC-18",
+          "name": "secret scanning in git history",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "gitleaks runs with fetch-depth: 0 for full history scan in audit.yml.",
+          "remediation": null
+        },
+        {
+          "id": "SC-19",
+          "name": "HTTP security headers",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "fastResponseMiddleware sets security headers (X-Content-Type-Options, X-Frame-Options, etc.).",
+          "remediation": null
+        },
+        {
+          "id": "SC-20",
+          "name": "binary signing (cosign/GPG)",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "Release artifacts are unsigned. No GPG/cosign signing of binaries or checksums.",
+          "remediation": "Add cosign signing of release artifacts and SHA256SUMS file. Publish public key in repo."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Observability",
+      "description": "Structured logging, metrics, tracing, and operational visibility",
+      "pillars": [
+        {
+          "id": "OB-01",
+          "name": "structured logging (slog)",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "Entire codebase uses fmt.Printf and log.Printf. No structured logging (slog, logrus, zap). JSON-level output, key-value pairs, and log levels absent.",
+          "remediation": "Migrate from log.Printf to slog (Go 1.21+ standard library). Add JSON handler option for production. Add request-scoped logging with context."
+        },
+        {
+          "id": "OB-02",
+          "name": "log levels (debug/info/warn/error)",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No log level infrastructure. All logging is unconditional log.Printf. Debug logging not available.",
+          "remediation": "Add slog with LevelVar for runtime-configurable log level. Wire to CLI --verbose flag."
+        },
+        {
+          "id": "OB-03",
+          "name": "request-scoped logging",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "logMiddleware logs requests but without structured fields or request IDs.",
+          "remediation": "Add request ID middleware. Use slog with request_id, method, path, duration fields."
+        },
+        {
+          "id": "OB-04",
+          "name": "panic recovery middleware",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No panic recovery in HTTP middleware. A handler panic would crash the server.",
+          "remediation": "Add recovery middleware (outermost) that catches panics, logs stack trace, returns 500."
+        },
+        {
+          "id": "OB-05",
+          "name": "metrics endpoints",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "/metrics endpoint provides request count, error count, average response time, memory/CPU/goroutines.",
+          "remediation": null
+        },
+        {
+          "id": "OB-06",
+          "name": "health check endpoints",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "/health endpoint with system info (uptime, Go version, directory). /quick for ultra-fast health check.",
+          "remediation": null
+        },
+        {
+          "id": "OB-07",
+          "name": "slow request detection",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No slow request logging or threshold-based alerting.",
+          "remediation": "Add middleware that logs warnings for requests exceeding configurable threshold (e.g., >1s)."
+        },
+        {
+          "id": "OB-08",
+          "name": "error rate monitoring",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": "ServerMetrics.ErrorCount exists but is not exposed via endpoint or logging threshold.",
+          "remediation": "Surface error_count in /health response. Add warning log when error rate exceeds threshold."
+        },
+        {
+          "id": "OB-09",
+          "name": "pprof endpoints",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No pprof endpoints for deep profiling. CPU/memory metrics are basic sampled values.",
+          "remediation": "Add net/http/pprof handlers behind a --pprof flag for on-demand profiling."
+        },
+        {
+          "id": "OB-10",
+          "name": "structured error types",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No custom error types with error wrapping. Errors are returned as plain strings or fmt.Errorf. No sentinel errors.",
+          "remediation": "Define sentinel errors and custom error types with wrapping (%w). Add errors.Is/errors.As support."
+        },
+        {
+          "id": "OB-11",
+          "name": "audit logging",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No audit trail of admin actions or API requests with authentication context.",
+          "remediation": "Add structured audit log for authenticated API requests. Log to file with rotation."
+        },
+        {
+          "id": "OB-12",
+          "name": "request/response logging middleware",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "logMiddleware logs method, path, status code, duration. Good basic request observability.",
+          "remediation": null
+        },
+        {
+          "id": "OB-13",
+          "name": "latency tracking (percentiles)",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": "Metrics track average response time. No percentile breakdown (p50/p90/p99) or latency histogram.",
+          "remediation": "Add latency histogram tracking to metrics. Expose p50/p90/p99 via /metrics endpoint."
+        },
+        {
+          "id": "OB-14",
+          "name": "structured error responses",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "ErrorResponse type with error, timestamp, code fields. Consistent JSON error format in API.",
+          "remediation": null
+        },
+        {
+          "id": "OB-15",
+          "name": "environment-aware logging",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No environment-specific log configuration. Dev vs prod logging is identical (log.Printf).",
+          "remediation": "Add --log-format flag (text/json) and --log-level flag. Default to text in dev, JSON in production."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Release & CI/CD",
+      "description": "Release pipeline, artifact management, CI hygiene, and distribution",
+      "pillars": [
+        {
+          "id": "RC-01",
+          "name": "tag-driven releases",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "release.yml triggers on v* tag push. Cross-compiles and publishes GitHub Release.",
+          "remediation": null
+        },
+        {
+          "id": "RC-02",
+          "name": "CI pipeline (build + test)",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "ci.yml runs gofmt, go build, go test, go vet on every push/PR to main + feature branches.",
+          "remediation": null
+        },
+        {
+          "id": "RC-03",
+          "name": "audit pipeline",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "audit.yml runs govulncheck, staticcheck, Trivy, gitleaks on push/PR to main + weekly cron.",
+          "remediation": null
+        },
+        {
+          "id": "RC-04",
+          "name": "release-drafter",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "release-drafter.yml auto-generates release notes on push to main. Draft release created before tag build.",
+          "remediation": null
+        },
+        {
+          "id": "RC-05",
+          "name": "goreleaser automation",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "Release is hand-rolled (cross-compile loop + softprops/action-gh-release). No goreleaser for standardized Go releases.",
+          "remediation": "Migrate to goreleaser for standardized Go cross-compilation, artifact naming, Homebrew formula generation, and Docker image publishing."
+        },
+        {
+          "id": "RC-06",
+          "name": "binary signing",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No GPG or cosign signing of release binaries or checksum files.",
+          "remediation": "Add cosign keyless signing to release.yml. Sign SHA256SUMS and attach signature."
+        },
+        {
+          "id": "RC-07",
+          "name": "SHA256SUMS generation",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "release.yml generates SHA256SUMS for all release artifacts with sha256sum utility.",
+          "remediation": null
+        },
+        {
+          "id": "RC-08",
+          "name": "cross-compilation",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Release cross-compiles for 5 targets: linux/amd64, linux/arm64, darwin/amd64, darwin/arm64, windows/amd64.",
+          "remediation": null
+        },
+        {
+          "id": "RC-09",
+          "name": "semantic versioning",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Tag-driven v* convention. Version extracted from git tag for ldflags injection.",
+          "remediation": null
+        },
+        {
+          "id": "RC-10",
+          "name": "changelog generation",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "CHANGELOG.md auto-generated by git-cliff with cliff.toml config. 49 lines, well-structured.",
+          "remediation": null
+        },
+        {
+          "id": "RC-11",
+          "name": "Docker image publishing",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Dockerfile exists at root with multi-stage build. Containerized deployment supported.",
+          "remediation": null
+        },
+        {
+          "id": "RC-12",
+          "name": "Homebrew formula",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No Homebrew tap or formula for macOS distribution.",
+          "remediation": "Add Homebrew formula to release pipeline (goreleaser can auto-generate this)."
+        },
+        {
+          "id": "RC-13",
+          "name": "CI concurrency & cancellation",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "ci.yml and audit.yml use concurrency groups with cancel-in-progress: true. Release serializes per-tag without cancellation.",
+          "remediation": null
+        },
+        {
+          "id": "RC-14",
+          "name": "CI timeout bounds",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "All workflows have explicit timeout-minutes (ci: 10, audit: 10, release: 20). Prevents runaway jobs.",
+          "remediation": null
+        },
+        {
+          "id": "RC-15",
+          "name": "CI least-privilege permissions",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "All workflows use top-level permissions: contents: read. Release escalates to contents: write only in release job.",
+          "remediation": null
+        },
+        {
+          "id": "RC-16",
+          "name": "release version correctness",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "release.yml uses go-version: \"1.21\" but go.mod requires 1.25. Release builds with wrong Go version breaking compilation.",
+          "remediation": "Fix release.yml to use go-version: \"1.25\" matching go.mod. This is a critical bug \u2014 release binary build will fail."
+        },
+        {
+          "id": "RC-17",
+          "name": "staggered cron schedules",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Audit (Mon 06:00), scorecard (Wed), governance (Mon 06:17) \u2014 staggered to avoid CI stacking.",
+          "remediation": null
+        },
+        {
+          "id": "RC-18",
+          "name": "persist-credentials: false",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "All checkout steps use persist-credentials: false. Token hygiene prevents credential leakage.",
+          "remediation": null
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Documentation & Governance",
+      "description": "Project docs, ADRs, SSOT, community standards, and governance",
+      "pillars": [
+        {
+          "id": "DG-01",
+          "name": "README completeness",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "1087-line README with badges, feature overview, installation guide, usage, configuration, API docs, MCP integration, troubleshooting.",
+          "remediation": null
+        },
+        {
+          "id": "DG-02",
+          "name": "ARCHITECTURE.md",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "docs/ARCHITECTURE.md exists with package overview, data flow, and component diagram.",
+          "remediation": null
+        },
+        {
+          "id": "DG-03",
+          "name": "CONTRIBUTING.md",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "92-line CONTRIBUTING.md with setup, testing, PR guidelines, and code review process.",
+          "remediation": null
+        },
+        {
+          "id": "DG-04",
+          "name": "CODE_OF_CONDUCT.md",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Standard Contributor Covenant with reporting email.",
+          "remediation": null
+        },
+        {
+          "id": "DG-05",
+          "name": "SECURITY.md",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "1306-line SECURITY.md with vulnerability reporting, hardening measures, and security architecture.",
+          "remediation": null
+        },
+        {
+          "id": "DG-06",
+          "name": "SUPPORT.md",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "SUPPORT.md with issue tracker, discussion, security contacts.",
+          "remediation": null
+        },
+        {
+          "id": "DG-07",
+          "name": "CHANGELOG.md",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "git-cliff generated changelog with conventional commit parsing. 49 lines, well structured.",
+          "remediation": null
+        },
+        {
+          "id": "DG-08",
+          "name": "ADRs (Architecture Decision Records)",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No docs/adr/ directory. No ADRs documenting architectural decisions.",
+          "remediation": "Create docs/adr/ directory. Document key decisions: TUI framework choice (bubbletea), cobra CLI, HTTP server design, security architecture."
+        },
+        {
+          "id": "DG-09",
+          "name": "SSOT.md accuracy",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "SSOT.md at root states 'Built with Cargo' and refers to 'Primary Rust crate'. This is a Go project.",
+          "remediation": "Rewrite SSOT.md: change 'Built with: Cargo' to 'Built with: Go', fix code/config patterns, remove Rust references."
+        },
+        {
+          "id": "DG-10",
+          "name": "CLAUDE.md / AGENTS.md",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Both files exist and provide comprehensive agent guidance.",
+          "remediation": null
+        },
+        {
+          "id": "DG-11",
+          "name": "API documentation",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "README documents all HTTP endpoints with examples. Docs/FAQ.md and docs/OPERATIONS.md provide additional reference.",
+          "remediation": null
+        },
+        {
+          "id": "DG-12",
+          "name": "MCP documentation",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "README has extensive MCP integration section with tool reference, config examples, and AI agent patterns.",
+          "remediation": null
+        },
+        {
+          "id": "DG-13",
+          "name": "configuration documentation",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "README documents all config options with table, YAML examples, and environment-specific configs.",
+          "remediation": null
+        },
+        {
+          "id": "DG-14",
+          "name": "example files",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "examples/ directory with kwatch.yaml, development.yaml, production.yaml config examples.",
+          "remediation": null
+        },
+        {
+          "id": "DG-15",
+          "name": "LICENSE file",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "LICENSE-MIT and LICENSE-APACHE exist but no root LICENSE file. Without root LICENSE, default copyright law applies.",
+          "remediation": "Create root LICENSE file with MIT text. Reference both LICENSE-MIT and LICENSE-APACHE if dual-licensed."
+        },
+        {
+          "id": "DG-16",
+          "name": "CITATION.cff",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "CITATION.cff exists with repository metadata for academic citation.",
+          "remediation": null
+        },
+        {
+          "id": "DG-17",
+          "name": "intent/boundary documentation",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "docs/intent/KWatch.md and docs/boundary/KWatch.md exist per Phenotype registry standard.",
+          "remediation": null
+        },
+        {
+          "id": "DG-18",
+          "name": "OPERATIONS.md",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "docs/OPERATIONS.md with deployment, configuration, and operational guidance.",
+          "remediation": null
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Developer Experience (DX)",
+      "description": "Local development tooling, onboarding, and productivity tooling",
+      "pillars": [
+        {
+          "id": "DX-01",
+          "name": "devcontainer configuration",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No .devcontainer/devcontainer.json for containerized development environment.",
+          "remediation": "Add devcontainer with Go 1.25, golangci-lint, gopls, and recommended VS Code extensions."
+        },
+        {
+          "id": "DX-02",
+          "name": "pre-commit hooks",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": ".pre-commit-config.yaml exists but pre-commit hooks are not installed by default. No lefthook.yml or husky equivalent.",
+          "remediation": "Activate pre-commit hooks in CONTRIBUTING.md setup instructions. Verify pre-commit CI integration."
+        },
+        {
+          "id": "DX-03",
+          "name": "golangci-lint local config",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No .golangci.yml. Developers must know which linters to run manually.",
+          "remediation": "Create .golangci.yml with recommended Go linters. Add to Makefile as `make lint` target."
+        },
+        {
+          "id": "DX-04",
+          "name": "Makefile targets",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Makefile with build, install, test, dev, build-all, clean, test-coverage, package, run targets.",
+          "remediation": null
+        },
+        {
+          "id": "DX-05",
+          "name": "Justfile targets",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Justfile provides alternative task runner with overlapping/expanded targets.",
+          "remediation": null
+        },
+        {
+          "id": "DX-06",
+          "name": ".editorconfig",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": ".editorconfig with gofmt-compatible settings (indent_style=tab, indent_size=4, charset=utf-8).",
+          "remediation": null
+        },
+        {
+          "id": "DX-07",
+          "name": ".gitattributes",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": ".gitattributes with Go-specific patterns, line ending normalization, and linguist overrides.",
+          "remediation": null
+        },
+        {
+          "id": "DX-08",
+          "name": ".gitignore quality",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "149-line .gitignore with comprehensive Go, OS, editor, and tooling patterns.",
+          "remediation": null
+        },
+        {
+          "id": "DX-09",
+          "name": "initial project onboarding",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "README has Quick Install, From Source, and Basic Commands sections. Low barrier to first build.",
+          "remediation": null
+        },
+        {
+          "id": "DX-10",
+          "name": "hot reload development",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No air, realize, or nodemon-like hot reload for development. Changes require manual rebuild.",
+          "remediation": "Add air (cosmtrek/air) config for live-reload development. Add `make dev-watch` target."
+        },
+        {
+          "id": "DX-11",
+          "name": "debugger support (Delve)",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No dlv (Delve) configuration, no VS Code launch.json, no Makefile debug target.",
+          "remediation": "Add `make debug` target using dlv. Add VS Code launch.json configuration for debugging."
+        },
+        {
+          "id": "DX-12",
+          "name": "environment variable management",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": "No .env.example or .env file. Some configuration is env-var based but undocumented.",
+          "remediation": "Create .env.example with all configurable environment variables and their defaults."
+        },
+        {
+          "id": "DX-13",
+          "name": "Go workspace support",
+          "status": "na",
+          "score": null,
+          "rationale": "Single module project. go.work not needed.",
+          "remediation": null
+        },
+        {
+          "id": "DX-14",
+          "name": "go generate directives",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No go:generate directives. No code generation for boilerplate or mocks.",
+          "remediation": "Add go:generate for mock generation (counterfeiter or mockgen), stringer for enums."
+        },
+        {
+          "id": "DX-15",
+          "name": "VS Code integration",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No .vscode/ directory with settings.json, launch.json, extensions.json, or tasks.json.",
+          "remediation": "Add .vscode/ with recommended extensions, Go build task, debug configuration, and workspace settings."
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Architecture & Design",
+      "description": "Package organization, error handling, interface design, concurrency, and patterns",
+      "pillars": [
+        {
+          "id": "AD-01",
+          "name": "error wrapping (fmt.Errorf %w)",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No use of fmt.Errorf with %w for error wrapping. Errors returned as string values without context preservation or unwrapping.",
+          "remediation": "Adopt error wrapping: use fmt.Errorf(\"context: %w\", err) for all error returns. Enable errcheck in golangci-lint."
+        },
+        {
+          "id": "AD-02",
+          "name": "sentinel errors",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No defined sentinel errors (var ErrNotFound = errors.New(\"...\")). Callers cannot use errors.Is for error matching.",
+          "remediation": "Define sentinel errors in each package: ErrInvalidConfig, ErrCommandTimeout, ErrServerClosed, etc."
+        },
+        {
+          "id": "AD-03",
+          "name": "custom error types with fields",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No custom error types implementing error interface. No typed errors for different failure modes.",
+          "remediation": "Create custom error types (ConfigError, CommandError, ServerError) with additional context fields. errors.As support."
+        },
+        {
+          "id": "AD-04",
+          "name": "interface segregation",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": "server.Runner interface expects RunAll(ctx interface{}) returning map[string]CommandResult while runner.Runner has incompatible signature. Interface misalignment.",
+          "remediation": "Fix server.Runner interface to match runner.Runner signatures: use context.Context, align return types."
+        },
+        {
+          "id": "AD-05",
+          "name": "package organization",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Clear package layout: cmd/ (CLI), config/, runner/, server/, tui/, security/, mcp/. Each has single responsibility.",
+          "remediation": null
+        },
+        {
+          "id": "AD-06",
+          "name": "separation of concerns",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Clean separation: CLI (cmd/) orchestrates, runner/ executes, tui/ displays, server/ serves HTTP. Domain boundaries are clear.",
+          "remediation": null
+        },
+        {
+          "id": "AD-07",
+          "name": "context propagation",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "Runner properly accepts context.Context with timeouts. But server.Runner interface uses interface{} \u2014 breaks context propagation.",
+          "remediation": "Fix server.Runner interface to accept context.Context. Ensure TUI and server pass context with cancellation."
+        },
+        {
+          "id": "AD-08",
+          "name": "graceful shutdown",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Server.StartWithContext handles context cancellation with 5s graceful shutdown. Clean teardown of HTTP listener.",
+          "remediation": null
+        },
+        {
+          "id": "AD-09",
+          "name": "dependency injection",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "Server accepts Runner via constructor injection (New(config, runner)). Good. But Runner creates config internally rather than receiving via DI.",
+          "remediation": "Make Runner accept dependencies via constructor consistently. Consider using options pattern for optional configuration."
+        },
+        {
+          "id": "AD-10",
+          "name": "configuration management pattern",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Config structs with DefaultConfig() functions. Consistent pattern across packages (server.Config, runner.RunnerConfig, config.Config).",
+          "remediation": null
+        },
+        {
+          "id": "AD-11",
+          "name": "command pattern (cobra)",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Cobra-based command structure with run, status, daemon, config, history, mcp, security subcommands.",
+          "remediation": null
+        },
+        {
+          "id": "AD-12",
+          "name": "TUI/CLI separation",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "TUI (tui/ package) is cleanly separated from CLI (cmd/). Server mode provides HTTP API as alternative to TUI.",
+          "remediation": null
+        },
+        {
+          "id": "AD-13",
+          "name": "concurrency safety",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "sync.RWMutex in ResultHistory, sync.WaitGroup in RunAll, mutex for concurrent map writes. No obvious race conditions.",
+          "remediation": null
+        },
+        {
+          "id": "AD-14",
+          "name": "data race detection",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": "Race detector not in CI pipeline. Makefile dev target uses -race but running race-detected tests is a manual step.",
+          "remediation": "Add `go test -race ./...` to CI pipeline. Ensure no data races in concurrent test scenarios."
+        },
+        {
+          "id": "AD-15",
+          "name": "testability of design",
+          "status": "partial",
+          "score": 0.3,
+          "rationale": "server.Runner interface makes server testable in theory, but interface mismatch prevents actual mocking. Runner is concrete hard to mock.",
+          "remediation": "Fix Runner interface. Add mock implementations. Use interfaces for file system operations to enable hermetic tests."
+        },
+        {
+          "id": "AD-16",
+          "name": "server factory functions",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Multiple server constructors for different environments: QuickServer, SecureServer, DevServer, ProductionServer.",
+          "remediation": null
+        },
+        {
+          "id": "AD-17",
+          "name": "code comments quality",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Code is generally well-commented with function doc strings explaining purpose, parameters, and behavior.",
+          "remediation": null
+        },
+        {
+          "id": "AD-18",
+          "name": "mutex discipline",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "ResultHistory correctly uses RLock/RUnlock for reads and Lock/Unlock for writes. Consistent locking pattern.",
+          "remediation": null
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Infrastructure & Operations",
+      "description": "Deployment, containerization, monitoring, and operational readiness",
+      "pillars": [
+        {
+          "id": "IO-01",
+          "name": "Docker support",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Dockerfile exists with multi-stage build pattern. Containerized deployment is supported and documented.",
+          "remediation": null
+        },
+        {
+          "id": "IO-02",
+          "name": "Dockerfile quality (multi-stage)",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Multi-stage Dockerfile with build stage and minimal runtime stage. Reduces final image size.",
+          "remediation": null
+        },
+        {
+          "id": "IO-03",
+          "name": "Docker Compose support",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No docker-compose.yml for orchestrated deployment with dependencies.",
+          "remediation": "Add docker-compose.yml with kwatch service, volume mounts for config, and health check configuration."
+        },
+        {
+          "id": "IO-04",
+          "name": "container health checks",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "Dockerfile lacks HEALTHCHECK instruction. Container orchestrator cannot monitor liveness.",
+          "remediation": "Add HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost:3737/health || exit 1 to Dockerfile."
+        },
+        {
+          "id": "IO-05",
+          "name": "container resource limits",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No resource limit guidance or Docker Compose resource reservations documented.",
+          "remediation": "Document recommended resource limits (CPU/memory) in OPERATIONS.md. Add to docker-compose.yml."
+        },
+        {
+          "id": "IO-06",
+          "name": "configuration via environment",
+          "status": "partial",
+          "score": 0.5,
+          "rationale": "Some configuration is env-based (port, host, auth token). Not all config options are env-configurable.",
+          "remediation": "Add environment variable overrides for all config fields. Precedence: CLI flags > env vars > config file > defaults."
+        },
+        {
+          "id": "IO-07",
+          "name": "TLS/HTTPS support",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No TLS configuration. Server runs HTTP only. No support for HTTPS or Let's Encrypt.",
+          "remediation": "Add TLS support with --cert-file and --key-file flags. Document reverse proxy setup for production TLS."
+        },
+        {
+          "id": "IO-08",
+          "name": "systemd service file",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No kwatch.service file for systemd-managed daemon deployment.",
+          "remediation": "Create kwatch.service with Type=simple, restart=always, standard systemd hardening options."
+        },
+        {
+          "id": "IO-09",
+          "name": "log rotation configuration",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "No logrotate config or log file management. Daemon logs to stderr/stdout only.",
+          "remediation": "Add logrotate configuration for daemon log files. Document log management in OPERATIONS.md."
+        },
+        {
+          "id": "IO-10",
+          "name": "Prometheus metrics format",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "/metrics endpoint is custom JSON, not Prometheus-format. Cannot be scraped by standard Prometheus.",
+          "remediation": "Add Prometheus /metrics endpoint with Go runtime metrics (process, goroutine, GC stats) or expose via expvar."
+        },
+        {
+          "id": "IO-11",
+          "name": "readiness probe vs liveness probe",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "/health serves both liveness and readiness. Kubernetes needs separate /ready for traffic routing.",
+          "remediation": "Add /ready endpoint that checks runner readiness, watcher status. Document Kubernetes deployment probes."
+        },
+        {
+          "id": "IO-12",
+          "name": "port configurability",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Port is configurable via CLI flag (--port), function parameter, and Config struct. Default 3737.",
+          "remediation": null
+        },
+        {
+          "id": "IO-13",
+          "name": "data persistence (history)",
+          "status": "missing",
+          "score": 0.0,
+          "rationale": "Command history is in-memory only. No persistence across restarts. History lost on process exit.",
+          "remediation": "Add optional SQLite persistence for command history using modernc.org/sqlite. Add --persist flag."
+        },
+        {
+          "id": "IO-14",
+          "name": "version information",
+          "status": "satisfied",
+          "score": 1.0,
+          "rationale": "Version injected via ldflags (-X main.version, main.commit, main.buildTime). ServerInfo in API response includes version.",
+          "remediation": null
+        }
+      ]
+    }
+  ]
+}

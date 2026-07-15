@@ -1,0 +1,24 @@
+# Auto-detect text files; normalize line endings to LF on commit
+* text=auto eol=lf
+
+# Shell scripts must keep LF
+*.sh   text eol=lf
+
+# Batch/cmd scripts keep CRLF
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+# Documentation never gets CRLF
+*.md   text eol=lf
+*.mdx  text eol=lf
+
+# Generated files we don't want diff churn on
+screenshots/** binary
+*.gif binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.mp4 binary
+*.mov binary

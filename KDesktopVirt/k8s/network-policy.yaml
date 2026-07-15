@@ -1,0 +1,189 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kvirtualstage-app-policy
+  namespace: kvirtualstage
+  labels:
+    app: kvirtualstage
+    component: network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: kvirtualstage
+      component: application
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    - podSelector:
+        matchLabels:
+          app: kvirtualstage
+    ports:
+    - protocol: TCP
+      port: 8080
+    - protocol: TCP
+      port: 9090
+  egress:
+  # Allow Redis access
+  - to:
+    - podSelector:
+        matchLabels:
+          app: kvirtualstage-redis
+    ports:
+    - protocol: TCP
+      port: 6379
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # Allow HTTPS for external APIs
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443
+  # Allow Docker daemon access
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 2376
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kvirtualstage-redis-policy
+  namespace: kvirtualstage
+  labels:
+    app: kvirtualstage-redis
+    component: network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: kvirtualstage-redis
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow access from kvirtualstage app pods
+  - from:
+    - podSelector:
+        matchLabels:
+          app: kvirtualstage
+          component: application
+    ports:
+    - protocol: TCP
+      port: 6379
+  # Allow access from monitoring
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9121  # Redis exporter
+  # Allow inter-redis communication for clustering
+  - from:
+    - podSelector:
+        matchLabels:
+          app: kvirtualstage-redis
+    ports:
+    - protocol: TCP
+      port: 6379
+    - protocol: TCP
+      port: 16379  # Redis cluster bus
+  egress:
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # Allow inter-redis communication
+  - to:
+    - podSelector:
+        matchLabels:
+          app: kvirtualstage-redis
+    ports:
+    - protocol: TCP
+      port: 6379
+    - protocol: TCP
+      port: 16379
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kvirtualstage-deny-all
+  namespace: kvirtualstage
+  labels:
+    app: kvirtualstage
+    component: default-deny
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  # This policy denies all traffic by default
+  # Specific policies above will allow required traffic
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: kvirtualstage-l7-policy
+  namespace: kvirtualstage
+spec:
+  endpointSelector:
+    matchLabels:
+      app: kvirtualstage
+      component: application
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: ingress-nginx
+  - toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+      rules:
+        http:
+        - method: "GET"
+          path: "/health"
+        - method: "GET"
+          path: "/ready"
+        - method: "GET"
+          path: "/startup"
+        - method: "GET"
+          path: "/metrics"
+        - method: "POST"
+          path: "/api/.*"
+        - method: "GET"
+          path: "/api/.*"
+        - method: "PUT"
+          path: "/api/.*"
+        - method: "DELETE"
+          path: "/api/.*"
+        - method: "OPTIONS"
+          path: "/.*"
+  egress:
+  - toEndpoints:
+    - matchLabels:
+        app: kvirtualstage-redis
+    toPorts:
+    - ports:
+      - port: "6379"
+        protocol: TCP
+  - toFQDNs:
+    - matchName: "kubernetes.default.svc.cluster.local"
+  - toServices:
+    - k8sService:
+        serviceName: kube-dns
+        namespace: kube-system

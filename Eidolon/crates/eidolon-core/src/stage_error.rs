@@ -1,0 +1,145 @@
+//! `StageError` — typed error enum for `VirtualStage` operations.
+//!
+//! The default `VirtualStage` methods return `Result<T, PhenoError>` (the
+//! alias re-exported from [`phenotype_errors`]). The `try_*` sibling
+//! methods on the same traits return `StageResult<T> = Result<T,
+//! StageError>`, where [`StageError`] is a stage-specific variant that
+//! names *which* surface the failure came from (viewport query, capture,
+//! input dispatch, exec, etc.).
+//!
+//! The per-method `try_*` defaults map the underlying [`PhenoError`]
+//! into the appropriate [`StageError`] variant — `try_get_viewport`
+//! produces `StageError::Viewport`, `try_exec` produces
+//! `StageError::Exec`, etc. — so a caller can match on the failure mode
+//! without re-parsing an opaque `Display` string.
+//!
+//! A blanket [`From<PhenoError>`] impl collapses any [`PhenoError`]
+//! into [`StageError::Other`] for callers that just want a uniform
+//! conversion without method-level specificity.
+
+use crate::error::PhenoError;
+use std::fmt;
+
+/// Failure variants for `VirtualStage` / `MobileStage` / `SandboxStage`
+/// operations.
+///
+/// Each variant corresponds to one or more trait methods:
+/// - [`StageError::Viewport`] — `get_viewport`
+/// - [`StageError::Capture`] — `screenshot`
+/// - [`StageError::Input`] — `pointer`, `text`, `tap`, `swipe`,
+///   `input_text`
+/// - [`StageError::Record`] — `record_event`
+/// - [`StageError::Metadata`] — `get_metadata`
+/// - [`StageError::Lifecycle`] — `start`, `stop`
+/// - [`StageError::Exec`] — `exec`
+/// - [`StageError::Resource`] — `resource_usage`
+/// - [`StageError::Other`] — catch-all (used by the blanket
+///   `From<PhenoError>` impl and by callers that prefer a uniform
+///   mapping).
+#[derive(Debug)]
+pub enum StageError {
+    /// `get_viewport` failed.
+    Viewport(String),
+    /// `screenshot` failed.
+    Capture(String),
+    /// A pointer / text / tap / swipe / `input_text` call failed.
+    Input(String),
+    /// `record_event` failed.
+    Record(String),
+    /// `get_metadata` failed.
+    Metadata(String),
+    /// `start` / `stop` failed.
+    Lifecycle(String),
+    /// `exec` failed.
+    Exec(String),
+    /// `resource_usage` failed.
+    Resource(String),
+    /// Catch-all for any unclassified `PhenoError` mapping.
+    Other(String),
+}
+
+impl StageError {
+    /// Short, lowercase label for the variant — used by [`Display`].
+    fn label(&self) -> &'static str {
+        match self {
+            Self::Viewport(_) => "viewport",
+            Self::Capture(_) => "capture",
+            Self::Input(_) => "input",
+            Self::Record(_) => "record",
+            Self::Metadata(_) => "metadata",
+            Self::Lifecycle(_) => "lifecycle",
+            Self::Exec(_) => "exec",
+            Self::Resource(_) => "resource",
+            Self::Other(_) => "other",
+        }
+    }
+
+    /// Borrow the inner message string.
+    pub fn message(&self) -> &str {
+        match self {
+            Self::Viewport(s)
+            | Self::Capture(s)
+            | Self::Input(s)
+            | Self::Record(s)
+            | Self::Metadata(s)
+            | Self::Lifecycle(s)
+            | Self::Exec(s)
+            | Self::Resource(s)
+            | Self::Other(s) => s,
+        }
+    }
+}
+
+impl fmt::Display for StageError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "stage {} error: {}", self.label(), self.message())
+    }
+}
+
+impl std::error::Error for StageError {}
+
+/// Convenience result alias for stage operations that surface a
+/// [`StageError`].
+pub type StageResult<T> = std::result::Result<T, StageError>;
+
+/// Blanket mapping from any [`PhenoError`] into [`StageError::Other`].
+///
+/// The per-method `try_*` defaults do *not* use this impl — they map
+/// into the method-specific variant via a closure (e.g.
+/// `try_get_viewport` produces `StageError::Viewport`). This impl is
+/// here for callers (and tests) that want a uniform, no-method-context
+/// conversion path.
+impl From<PhenoError> for StageError {
+    fn from(err: PhenoError) -> Self {
+        Self::Other(err.to_string())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn display_includes_variant_and_message() {
+        let err = StageError::Viewport("no display".into());
+        let rendered = err.to_string();
+        assert!(rendered.contains("viewport"), "rendered = {rendered}");
+        assert!(rendered.contains("no display"), "rendered = {rendered}");
+    }
+
+    #[test]
+    fn from_pheno_error_goes_to_other_variant() {
+        // `PhenoError` is an alias for `ApiError`; use the cheapest
+        // variant (`Timeout`) since the From impl only reads
+        // `Display`.
+        let pheno: PhenoError = PhenoError::Timeout;
+        let stage: StageError = pheno.into();
+        assert!(matches!(stage, StageError::Other(_)));
+    }
+
+    #[test]
+    fn stage_result_alias_is_consistent() {
+        let err: StageResult<u32> = Err(StageError::Other("x".into()));
+        assert!(err.is_err());
+    }
+}

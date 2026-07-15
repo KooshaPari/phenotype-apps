@@ -1,0 +1,41 @@
+{{- if .Values.kvirtualstage.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "kvirtualstage.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kvirtualstage.labels" . | nindent 4 }}
+    app.kubernetes.io/component: autoscaler
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "kvirtualstage.fullname" . }}
+  minReplicas: {{ .Values.kvirtualstage.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.kvirtualstage.autoscaling.maxReplicas }}
+  metrics:
+  {{- if .Values.kvirtualstage.autoscaling.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.kvirtualstage.autoscaling.targetCPUUtilizationPercentage }}
+  {{- end }}
+  {{- if .Values.kvirtualstage.autoscaling.targetMemoryUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.kvirtualstage.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- end }}
+  {{- with .Values.kvirtualstage.autoscaling.customMetrics }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+  {{- if .Values.kvirtualstage.autoscaling.behavior }}
+  behavior:
+    {{- toYaml .Values.kvirtualstage.autoscaling.behavior | nindent 4 }}
+  {{- end }}
+{{- end }}

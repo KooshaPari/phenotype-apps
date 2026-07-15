@@ -1,0 +1,87 @@
+{
+  "name": "KDE Calculator Demo",
+  "description": "Open KCalc (KDE Calculator) and perform calculations",
+  "version": "1.0",
+  "metadata": {
+    "platform": "linux",
+    "desktop": "kde",
+    "target_app": "kcalc"
+  },
+  "steps": [
+    {
+      "step": 1,
+      "action": "take_screenshot",
+      "output": "screenshots/01_initial_desktop.png",
+      "description": "Capture initial KDE desktop state"
+    },
+    {
+      "step": 2,
+      "action": "open_application",
+      "target": "kcalc",
+      "method": "krunner",
+      "wait": 2000,
+      "description": "Open KDE Calculator using KRunner"
+    },
+    {
+      "step": 3,
+      "action": "take_screenshot",
+      "output": "screenshots/02_calculator_opened.png",
+      "description": "Calculator opened and ready"
+    },
+    {
+      "step": 4,
+      "action": "click_coordinate",
+      "x": 150,
+      "y": 200,
+      "description": "Click number 7"
+    },
+    {
+      "step": 5,
+      "action": "click_coordinate", 
+      "x": 200,
+      "y": 160,
+      "description": "Click multiply button (×)"
+    },
+    {
+      "step": 6,
+      "action": "click_coordinate",
+      "x": 120,
+      "y": 200,
+      "description": "Click number 6"
+    },
+    {
+      "step": 7,
+      "action": "click_coordinate",
+      "x": 200,
+      "y": 240,
+      "description": "Click equals button (=)"
+    },
+    {
+      "step": 8,
+      "action": "take_screenshot",
+      "output": "screenshots/03_calculation_result.png",
+      "description": "Calculation result: 7 × 6 = 42"
+    },
+    {
+      "step": 9,
+      "action": "key_combination",
+      "keys": ["ctrl", "c"],
+      "description": "Copy result to clipboard"
+    },
+    {
+      "step": 10,
+      "action": "wait",
+      "duration": 1000
+    }
+  ],
+  "expected_outcome": {
+    "calculation_performed": true,
+    "result": "42",
+    "demonstrates": [
+      "KDE application automation",
+      "Mouse click automation",
+      "Screen capture integration",
+      "Keyboard shortcut automation"
+    ]
+  }
+}

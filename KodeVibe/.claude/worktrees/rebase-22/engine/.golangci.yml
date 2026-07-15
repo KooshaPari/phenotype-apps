@@ -1,0 +1,148 @@
+run:
+  timeout: 5m
+  issues-exit-code: 1
+  tests: true
+
+output:
+  formats:
+    - format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  
+  govet:
+    settings:
+      printf:
+        funcs:
+          - (github.com/sirupsen/logrus.Logger).Debugf
+          - (github.com/sirupsen/logrus.Logger).Infof
+          - (github.com/sirupsen/logrus.Logger).Warnf
+          - (github.com/sirupsen/logrus.Logger).Errorf
+          - (github.com/sirupsen/logrus.Logger).Fatalf
+  
+  gofmt:
+    simplify: true
+  
+  goimports:
+    local-prefixes: kodevibe
+  
+  gocyclo:
+    min-complexity: 15
+  
+  dupl:
+    threshold: 100
+  
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+  
+  misspell:
+    locale: US
+  
+  unused:
+    check-exported: false
+  
+  unparam:
+    check-exported: false
+  
+  nakedret:
+    max-func-lines: 30
+  
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: false
+  
+  gocritic:
+    enabled-tags:
+      - performance
+      - style
+      - experimental
+    disabled-checks:
+      - wrapperFunc
+      - dupImport
+      - ifElseChain
+      - octalLiteral
+
+linters:
+  enable:
+    - bodyclose
+    - dogsled
+    - gofmt
+    - goimports
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - nakedret
+    - staticcheck
+    - typecheck
+    - unconvert
+    - unused
+    - whitespace
+  
+  disable:
+    - lll  # Line length is handled by our custom rules
+    - funlen  # Function length is context-dependent
+    - dupl  # Code duplication acceptable in some contexts
+    - gochecknoinits  # Init functions are acceptable in main packages
+    - goconst  # String constants not always necessary
+    - gocyclo  # Complex functions acceptable in some contexts
+    - gosec  # Security warnings can be addressed later
+    - gocritic  # Code style suggestions can be addressed later
+    - revive  # Comment requirements can be addressed later
+    - errcheck  # Error checking can be addressed in separate pass
+    - stylecheck  # Style requirements can be addressed later
+    - unparam  # Unused parameters can be addressed later
+
+issues:
+  exclude-dirs:
+    - vendor
+    - testdata
+    - examples
+    - build
+  exclude-files:
+    - ".*\\.pb\\.go"
+  exclude-rules:
+    # Exclude some linters from running on tests files
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+        - goconst
+    
+    # Exclude linters for generated files
+    - path: \.pb\.go
+      linters:
+        - lll
+    
+    # Exclude specific gosec rules that are false positives
+    - linters:
+        - gosec
+      text: "G404:"  # Use of weak random generator
+    
+    # Ignore long lines in test files
+    - path: _test\.go
+      text: "line is \\d+ characters"
+  
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  new: false
+
+severity:
+  default-severity: error
+  case-sensitive: false
+  rules:
+    - linters:
+        - dupl
+      severity: info
+    - linters:
+        - gocritic
+      severity: warning

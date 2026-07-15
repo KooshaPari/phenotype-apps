@@ -1,0 +1,154 @@
+# Development KVirtualStage image with additional development tools
+# Includes Rust toolchain, debugging tools, and development environment
+
+FROM rust:1.76-slim
+
+# Install development dependencies
+RUN apt-get update && apt-get install -y \
+    # Build tools
+    pkg-config \
+    libssl-dev \
+    libsqlite3-dev \
+    build-essential \
+    cmake \
+    # System tools
+    ca-certificates \
+    curl \
+    wget \
+    git \
+    # Development tools
+    gdb \
+    valgrind \
+    strace \
+    ltrace \
+    # Editors
+    vim \
+    nano \
+    emacs-nox \
+    # Docker
+    docker.io \
+    # Audio/Video (for testing)
+    ffmpeg \
+    pulseaudio \
+    pipewire \
+    # UI tools (for testing)
+    xvfb \
+    xdotool \
+    x11-utils \
+    # Network tools
+    netcat-openbsd \
+    net-tools \
+    tcpdump \
+    wireshark-common \
+    # Benchmarking
+    hyperfine \
+    # Documentation
+    graphviz \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install additional Rust tools
+RUN cargo install \
+    cargo-watch \
+    cargo-edit \
+    cargo-audit \
+    cargo-outdated \
+    cargo-expand \
+    cargo-tree \
+    cargo-machete \
+    cargo-llvm-cov \
+    cargo-tarpaulin \
+    cargo-criterion \
+    cargo-flamegraph \
+    cargo-deny \
+    cargo-license \
+    bacon \
+    just
+
+# Install Rust components
+RUN rustup component add \
+    rustfmt \
+    clippy \
+    llvm-tools-preview \
+    rust-src \
+    rust-analyzer
+
+# Create development user
+RUN useradd -r -s /bin/bash -m -d /app -G docker kvirtualstage
+
+# Setup development environment
+WORKDIR /app
+
+# Copy source code (for development)
+COPY . .
+RUN chown -R kvirtualstage:kvirtualstage /app
+
+# Switch to development user
+USER kvirtualstage
+
+# Create development directories
+RUN mkdir -p \
+    .kvirtualstage \
+    sessions \
+    recordings \
+    screenshots \
+    vault \
+    target \
+    .cargo
+
+# Setup development configuration
+COPY docker/dev-config.toml .kvirtualstage/config.toml
+
+# Create useful aliases and shell configuration
+RUN echo 'alias ll="ls -la"' >> ~/.bashrc && \
+    echo 'alias la="ls -A"' >> ~/.bashrc && \
+    echo 'alias l="ls -CF"' >> ~/.bashrc && \
+    echo 'alias kvs="kvirtualstage"' >> ~/.bashrc && \
+    echo 'alias build="cargo build"' >> ~/.bashrc && \
+    echo 'alias test="cargo test"' >> ~/.bashrc && \
+    echo 'alias run="cargo run --"' >> ~/.bashrc && \
+    echo 'alias watch="cargo watch -x build"' >> ~/.bashrc && \
+    echo 'alias clippy="cargo clippy --all-features"' >> ~/.bashrc && \
+    echo 'alias fmt="cargo fmt"' >> ~/.bashrc && \
+    echo 'export RUST_LOG=debug' >> ~/.bashrc && \
+    echo 'export KVIRTUALSTAGE_DEV=1' >> ~/.bashrc
+
+# Setup git configuration for development
+RUN git config --global user.name "KVirtualStage Dev" && \
+    git config --global user.email "dev@kvirtualstage.dev" && \
+    git config --global init.defaultBranch main
+
+# Build in development mode with all features
+RUN cargo build --all-features
+
+# Create development scripts
+RUN mkdir -p bin && \
+    echo '#!/bin/bash' > bin/dev-server && \
+    echo 'cargo run -- start --ui --host 0.0.0.0 --port 3000' >> bin/dev-server && \
+    echo '#!/bin/bash' > bin/dev-mcp && \
+    echo 'cargo run -- mcp start --port 3001' >> bin/dev-mcp && \
+    echo '#!/bin/bash' > bin/dev-test && \
+    echo 'cargo test --all-features' >> bin/dev-test && \
+    echo '#!/bin/bash' > bin/dev-watch && \
+    echo 'cargo watch -x "run -- start --ui --host 0.0.0.0 --port 3000"' >> bin/dev-watch && \
+    chmod +x bin/*
+
+# Health check for development
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD cargo run -- status || exit 1
+
+# Expose development ports
+EXPOSE 3000 3001 8080 9090
+
+# Development environment variables
+ENV RUST_LOG=debug
+ENV KVIRTUALSTAGE_DEV=1
+ENV CARGO_TARGET_DIR=/app/target
+ENV PATH="/app/bin:$PATH"
+
+# Labels
+LABEL org.opencontainers.image.title="KVirtualStage Development" \
+      org.opencontainers.image.description="KVirtualStage development environment with Rust toolchain and debugging tools" \
+      org.opencontainers.image.vendor="KVirtualStage Team"
+
+# Default command for development
+CMD ["bash", "-c", "echo 'KVirtualStage Development Environment' && echo 'Available commands:' && echo '  dev-server  - Start development server' && echo '  dev-mcp     - Start MCP server' && echo '  dev-test    - Run tests' && echo '  dev-watch   - Watch and rebuild' && echo '' && bash"]

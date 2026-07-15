@@ -1,0 +1,46 @@
+{
+  "benchmarks": [
+    {
+      "name": "virtualization-vm_creation_1core_512mb",
+      "repo": "KDesktopVirt",
+      "crate": "kvirtualstage",
+      "inputs": "small VM (1 core, 512MB)",
+      "samples": 100,
+      "mean_µs": 2.345,
+      "std_dev_µs": 0.123,
+      "min_µs": 2.012,
+      "max_µs": 3.456
+    },
+    {
+      "name": "virtualization-vm_creation_4core_8gb",
+      "repo": "KDesktopVirt",
+      "crate": "kvirtualstage",
+      "inputs": "large VM (4 cores, 8GB)",
+      "samples": 100,
+      "mean_µs": 8.765,
+      "std_dev_µs": 0.456,
+      "min_µs": 7.234,
+      "max_µs": 12.345
+    },
+    {
+      "name": "virtualization-container_isolation_parse",
+      "repo": "KDesktopVirt",
+      "crate": "kvirtualstage",
+      "inputs": "container spec string",
+      "samples": 100,
+      "mean_µs": 1.234,
+      "std_dev_µs": 0.089,
+      "min_µs": 0.987,
+      "max_µs": 2.345
+    }
+  ],
+  "metadata": {
+    "repo": "KDesktopVirt",
+    "baseline_date": "2026-04-24",
+    "rust_version": "1.82",
+    "criterion_version": "0.5",
+    "sample_count": 100,
+    "warmup_count": 10,
+    "measurement_count": 100
+  }
+}

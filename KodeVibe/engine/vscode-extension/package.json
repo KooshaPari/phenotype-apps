@@ -1,0 +1,231 @@
+{
+  "name": "kodevibe",
+  "displayName": "KodeVibe - Code Quality Analysis",
+  "description": "Advanced code quality analysis with AI-powered insights and interactive reports",
+  "version": "1.0.0",
+  "publisher": "kooshapari",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Linters",
+    "Other",
+    "Testing"
+  ],
+  "keywords": [
+    "code quality",
+    "analysis",
+    "security",
+    "performance",
+    "linting",
+    "AI"
+  ],
+  "activationEvents": [
+    "onCommand:kodevibe.analyze",
+    "onCommand:kodevibe.analyzeFile",
+    "onCommand:kodevibe.showReport",
+    "onCommand:kodevibe.configure",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:python",
+    "onLanguage:go",
+    "onLanguage:java",
+    "onLanguage:rust"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "kodevibe.analyze",
+        "title": "🌊 Analyze Workspace",
+        "category": "KodeVibe"
+      },
+      {
+        "command": "kodevibe.analyzeFile",
+        "title": "🔍 Analyze Current File",
+        "category": "KodeVibe"
+      },
+      {
+        "command": "kodevibe.showReport",
+        "title": "📊 Show Analysis Report",
+        "category": "KodeVibe"
+      },
+      {
+        "command": "kodevibe.configure",
+        "title": "⚙️ Configure KodeVibe",
+        "category": "KodeVibe"
+      },
+      {
+        "command": "kodevibe.fixIssue",
+        "title": "🔧 Apply Suggested Fix",
+        "category": "KodeVibe"
+      },
+      {
+        "command": "kodevibe.enableRealtime",
+        "title": "⚡ Enable Real-time Analysis",
+        "category": "KodeVibe"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "kodevibe.analyze",
+          "when": "explorerResourceIsFolder",
+          "group": "kodevibe"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "kodevibe.analyzeFile",
+          "group": "kodevibe"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "kodevibe.analyze"
+        },
+        {
+          "command": "kodevibe.analyzeFile"
+        },
+        {
+          "command": "kodevibe.showReport"
+        },
+        {
+          "command": "kodevibe.configure"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "kodevibe",
+          "title": "KodeVibe",
+          "icon": "$(wave)"
+        }
+      ]
+    },
+    "views": {
+      "kodevibe": [
+        {
+          "id": "kodevibe-issues",
+          "name": "Issues",
+          "when": "kodevibe:hasIssues"
+        },
+        {
+          "id": "kodevibe-vibes",
+          "name": "Vibes",
+          "when": "kodevibe:hasAnalysis"
+        },
+        {
+          "id": "kodevibe-metrics",
+          "name": "Metrics",
+          "when": "kodevibe:hasAnalysis"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "KodeVibe",
+      "properties": {
+        "kodevibe.enableRealtime": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable real-time analysis as you type"
+        },
+        "kodevibe.vibes": {
+          "type": "array",
+          "default": ["security", "performance", "readability", "maintainability"],
+          "description": "Which vibes to run during analysis",
+          "items": {
+            "type": "string",
+            "enum": ["security", "performance", "readability", "maintainability", "testing", "documentation", "complexity"]
+          }
+        },
+        "kodevibe.severity": {
+          "type": "string",
+          "default": "medium",
+          "enum": ["low", "medium", "high"],
+          "description": "Minimum severity level to show"
+        },
+        "kodevibe.autoFix": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically apply fixes when possible"
+        },
+        "kodevibe.showInProblems": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show KodeVibe issues in the Problems panel"
+        },
+        "kodevibe.executablePath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to KodeVibe executable (leave empty to use bundled version)"
+        }
+      }
+    },
+    "problemMatchers": [
+      {
+        "name": "kodevibe",
+        "owner": "kodevibe",
+        "fileLocation": "absolute",
+        "pattern": {
+          "regexp": "^(.+):(\\d+):(\\d+):\\s+(error|warning|info):\\s+(.+)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    ],
+    "taskDefinitions": [
+      {
+        "type": "kodevibe",
+        "required": ["vibes"],
+        "properties": {
+          "vibes": {
+            "type": "array",
+            "description": "Vibes to run"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path to analyze"
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.60.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "eslint": "^8.20.0",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "ws": "^8.13.0"
+  },
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#667eea",
+    "theme": "dark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kooshapari/kodevibe-go"
+  },
+  "bugs": {
+    "url": "https://github.com/kooshapari/kodevibe-go/issues"
+  },
+  "homepage": "https://github.com/kooshapari/kodevibe-go#readme"
+}

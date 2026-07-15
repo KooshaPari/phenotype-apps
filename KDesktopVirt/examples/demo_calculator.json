@@ -1,0 +1,51 @@
+{
+  "name": "Calculator Demo",
+  "description": "Open Calculator app and perform basic calculations",
+  "version": "1.0",
+  "steps": [
+    {
+      "action": "open_application",
+      "target": "Calculator",
+      "method": "macos_open",
+      "wait": 2000
+    },
+    {
+      "action": "take_screenshot",
+      "output": "/tmp/calc_opened.png",
+      "description": "Calculator opened"
+    },
+    {
+      "action": "click_coordinate",
+      "x": 150,
+      "y": 200,
+      "description": "Click number 5"
+    },
+    {
+      "action": "click_coordinate", 
+      "x": 200,
+      "y": 180,
+      "description": "Click plus button"
+    },
+    {
+      "action": "click_coordinate",
+      "x": 100,
+      "y": 200,
+      "description": "Click number 3"
+    },
+    {
+      "action": "click_coordinate",
+      "x": 150,
+      "y": 250,
+      "description": "Click equals button"
+    },
+    {
+      "action": "take_screenshot",
+      "output": "/tmp/calc_result.png",
+      "description": "Calculation result: 5 + 3 = 8"
+    },
+    {
+      "action": "wait",
+      "duration": 1000
+    }
+  ]
+}

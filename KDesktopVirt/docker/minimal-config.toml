@@ -1,0 +1,22 @@
+container_runtime = "none"
+default_desktop = "none"
+
+[default_resources]
+memory_mb = 512
+cpu_cores = 1
+disk_gb = 5
+
+[recording_settings]
+default_format = "none"
+quality = "low"
+fps = 15
+
+[audio_settings]
+enable_tts = false
+tts_voice = "none"
+enable_recording = false
+
+[security_settings]
+enable_encryption = true
+credential_vault_path = "/app/vault"
+enable_mfa = false

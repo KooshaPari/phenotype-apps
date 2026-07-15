@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kvirtualstage
+  labels:
+    name: kvirtualstage
+    app.kubernetes.io/name: kvirtualstage
+    app.kubernetes.io/part-of: kvirtualstage-platform
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: kvirtualstage-quota
+  namespace: kvirtualstage
+spec:
+  hard:
+    requests.cpu: "50"
+    requests.memory: 100Gi
+    limits.cpu: "100"
+    limits.memory: 200Gi
+    persistentvolumeclaims: "10"
+    services: "20"
+    secrets: "30"
+    configmaps: "30"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: kvirtualstage-limits
+  namespace: kvirtualstage
+spec:
+  limits:
+  - default:
+      cpu: "2"
+      memory: "4Gi"
+    defaultRequest:
+      cpu: "500m"
+      memory: "1Gi"
+    type: Container
+  - default:
+      storage: "10Gi"
+    type: PersistentVolumeClaim

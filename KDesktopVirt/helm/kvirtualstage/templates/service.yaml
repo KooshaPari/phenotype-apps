@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kvirtualstage.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kvirtualstage.labels" . | nindent 4 }}
+  {{- with .Values.kvirtualstage.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.kvirtualstage.service.type }}
+  ports:
+  - port: {{ .Values.kvirtualstage.service.port }}
+    targetPort: {{ .Values.kvirtualstage.service.targetPort }}
+    protocol: TCP
+    name: http
+  - port: {{ .Values.kvirtualstage.service.metricsPort }}
+    targetPort: {{ .Values.config.metrics.port }}
+    protocol: TCP
+    name: metrics
+  selector:
+    {{- include "kvirtualstage.selectorLabels" . | nindent 4 }}
+  {{- if .Values.kvirtualstage.service.sessionAffinity }}
+  sessionAffinity: {{ .Values.kvirtualstage.service.sessionAffinity }}
+  {{- if .Values.kvirtualstage.service.sessionAffinityConfig }}
+  sessionAffinityConfig:
+    {{- toYaml .Values.kvirtualstage.service.sessionAffinityConfig | nindent 4 }}
+  {{- end }}
+  {{- end }}
+---
+{{- if .Values.kvirtualstage.loadBalancer.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kvirtualstage.fullname" . }}-loadbalancer
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kvirtualstage.labels" . | nindent 4 }}
+    app.kubernetes.io/component: loadbalancer
+  {{- with .Values.kvirtualstage.loadBalancer.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.kvirtualstage.loadBalancer.type }}
+  ports:
+  - port: {{ .Values.kvirtualstage.loadBalancer.port }}
+    targetPort: {{ .Values.kvirtualstage.service.targetPort }}
+    protocol: TCP
+    name: http
+  - port: {{ .Values.kvirtualstage.loadBalancer.httpsPort }}
+    targetPort: {{ .Values.kvirtualstage.service.targetPort }}
+    protocol: TCP
+    name: https
+  selector:
+    {{- include "kvirtualstage.selectorLabels" . | nindent 4 }}
+  {{- with .Values.kvirtualstage.loadBalancer.sourceRanges }}
+  loadBalancerSourceRanges:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kvirtualstage.fullname" . }}-headless
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kvirtualstage.labels" . | nindent 4 }}
+    app.kubernetes.io/component: headless-service
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - port: {{ .Values.kvirtualstage.service.targetPort }}
+    targetPort: {{ .Values.kvirtualstage.service.targetPort }}
+    protocol: TCP
+    name: http
+  - port: {{ .Values.config.metrics.port }}
+    targetPort: {{ .Values.config.metrics.port }}
+    protocol: TCP
+    name: metrics
+  selector:
+    {{- include "kvirtualstage.selectorLabels" . | nindent 4 }}

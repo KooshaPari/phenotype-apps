@@ -1,0 +1,109 @@
+vibes:
+    code:
+        enabled: true
+        level: moderate
+        settings:
+            max_function_length: 50
+            max_nesting_depth: 4
+    dependency:
+        enabled: true
+        level: moderate
+        settings:
+            check_vulnerabilities: true
+    documentation:
+        enabled: false
+        level: moderate
+    file:
+        enabled: true
+        level: strict
+    git:
+        enabled: true
+        level: moderate
+        settings:
+            min_commit_message_length: 10
+    performance:
+        enabled: true
+        level: moderate
+        settings:
+            max_bundle_size: 2MB
+    security:
+        enabled: true
+        level: strict
+project:
+    type: auto-detect
+    language: auto-detect
+    framework: ""
+exclude:
+    files:
+        - node_modules/**/*
+        - .git/**/*
+        - coverage/**/*
+        - '*.min.js'
+        - '*.min.css'
+        - vendor/**/*
+        - build/**/*
+        - dist/**/*
+    patterns:
+        - test-*
+        - '*.test.*'
+        - '*.spec.*'
+custom_rules: []
+integrations:
+    slack:
+        enabled: false
+        webhook_url: ""
+        channel: ""
+    github:
+        enabled: false
+        token: ""
+        owner: ""
+        repo: ""
+        create_issues: false
+    jira:
+        enabled: false
+        url: ""
+        username: ""
+        token: ""
+        project_key: ""
+    teams:
+        enabled: false
+        webhook_url: ""
+    webhook:
+        enabled: false
+        url: ""
+advanced:
+    entropy_analysis: true
+    entropy_threshold: 4.5
+    ai_detection: false
+    ai_provider: ""
+    ai_model: ""
+    external_scanners: []
+    performance_profiling: false
+    cache_enabled: true
+    cache_ttl: 1h0m0s
+    max_concurrency: 10
+    timeout: 5m0s
+    custom_analyzers: []
+languages: {}
+ci_cd:
+    github_actions:
+        enabled: false
+        fail_on: []
+    gitlab_ci:
+        enabled: false
+    jenkins:
+        enabled: false
+    quality_gates:
+        min_code_coverage: 0
+        max_complexity_score: 0
+        max_security_issues: 0
+        max_performance_issues: 0
+reporting:
+    generate_reports: true
+    report_format: text
+    report_path: ./kodevibe-reports
+    logging:
+        enabled: true
+        level: info
+        format: json
+        file: ""

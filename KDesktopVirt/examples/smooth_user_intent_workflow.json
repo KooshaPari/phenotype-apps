@@ -1,0 +1,467 @@
+{
+  "name": "Smooth User Intent Workflow Demo",
+  "description": "Comprehensive user intent automation with smooth cursor movement and realistic workflows",
+  "version": "1.0",
+  "metadata": {
+    "created": "2025-07-11",
+    "platform": "Virtual Desktop (XFCE)",
+    "kvirtualstage_version": "0.1.0",
+    "demo_type": "user_intent_validation",
+    "cursor_movement": "smooth_interpolated",
+    "resolution": "1920x1080"
+  },
+  "workflow": [
+    {
+      "step": 1,
+      "name": "Initial Desktop Setup",
+      "action": "take_screenshot",
+      "output": "/tmp/01_initial_desktop.png",
+      "description": "Capture initial clean desktop state"
+    },
+    {
+      "step": 2,
+      "name": "Smooth Cursor Movement to Center",
+      "action": "smooth_move_cursor",
+      "from": {"x": 100, "y": 100},
+      "to": {"x": 960, "y": 540},
+      "duration": 1500,
+      "interpolation": "bezier_curve",
+      "description": "Demonstrate smooth cursor movement to screen center"
+    },
+    {
+      "step": 3,
+      "name": "User Intent 1: Calculate Quarterly Budget",
+      "description": "Business workflow: Calculate 150 employees × $25 lunch + $1000 room rental",
+      "actions": [
+        {
+          "action": "smooth_move_cursor",
+          "from": {"x": 960, "y": 540},
+          "to": {"x": 100, "y": 50},
+          "duration": 1000,
+          "interpolation": "smooth_ease_in_out",
+          "description": "Move to launcher area"
+        },
+        {
+          "action": "key_combination",
+          "keys": ["alt", "F2"],
+          "description": "Open application launcher"
+        },
+        {
+          "action": "wait",
+          "duration": 800
+        },
+        {
+          "action": "key_combination",
+          "keys": ["ctrl", "a"],
+          "description": "Select all text in launcher"
+        },
+        {
+          "action": "key_press",
+          "key": "Delete",
+          "description": "Clear launcher text"
+        },
+        {
+          "action": "wait",
+          "duration": 300
+        },
+        {
+          "action": "type_text",
+          "text": "galculator",
+          "typing_speed": "human_realistic",
+          "description": "Type calculator application name"
+        },
+        {
+          "action": "wait",
+          "duration": 500
+        },
+        {
+          "action": "key_press",
+          "key": "Return",
+          "description": "CRITICAL FIX: Press Enter to launch app (no search bar stuck text)"
+        },
+        {
+          "action": "wait",
+          "duration": 2000,
+          "description": "Wait for calculator to fully load"
+        }
+      ]
+    },
+    {
+      "step": 4,
+      "name": "Smooth Movement to Calculator",
+      "action": "find_and_move_to_window",
+      "target": "galculator",
+      "movement_type": "smooth_curve",
+      "duration": 1200,
+      "description": "Locate calculator window and move cursor smoothly to it"
+    },
+    {
+      "step": 5,
+      "name": "Business Calculation with Smooth Cursor",
+      "description": "Perform budget calculation with visible cursor movements",
+      "actions": [
+        {
+          "action": "take_screenshot",
+          "output": "/tmp/02_calculator_opened.png",
+          "description": "Calculator successfully launched"
+        },
+        {
+          "action": "smooth_click_sequence",
+          "clicks": [
+            {"x": 50, "y": 80, "button": "1", "duration": 200},
+            {"x": 90, "y": 80, "button": "5", "duration": 200},
+            {"x": 130, "y": 80, "button": "0", "duration": 200},
+            {"x": 170, "y": 120, "button": "×", "duration": 300},
+            {"x": 90, "y": 120, "button": "2", "duration": 200},
+            {"x": 90, "y": 80, "button": "5", "duration": 200},
+            {"x": 170, "y": 160, "button": "+", "duration": 300},
+            {"x": 50, "y": 80, "button": "1", "duration": 200},
+            {"x": 130, "y": 80, "button": "0", "duration": 200},
+            {"x": 130, "y": 80, "button": "0", "duration": 200},
+            {"x": 130, "y": 80, "button": "0", "duration": 200},
+            {"x": 170, "y": 200, "button": "=", "duration": 500}
+          ],
+          "description": "Calculate: 150 × 25 + 1000 with smooth cursor movement between buttons"
+        },
+        {
+          "action": "wait",
+          "duration": 1500
+        },
+        {
+          "action": "take_screenshot",
+          "output": "/tmp/03_budget_calculated.png",
+          "description": "Budget calculation result: $4750"
+        }
+      ]
+    },
+    {
+      "step": 6,
+      "name": "User Intent 2: Document Meeting Results",
+      "description": "Create meeting documentation with calculated budget",
+      "actions": [
+        {
+          "action": "smooth_move_cursor",
+          "from": "current_position",
+          "to": {"x": 100, "y": 50},
+          "duration": 1000,
+          "interpolation": "smooth_ease_in_out",
+          "description": "Move back to launcher for text editor"
+        },
+        {
+          "action": "key_combination",
+          "keys": ["alt", "F2"],
+          "description": "Open launcher again"
+        },
+        {
+          "action": "wait",
+          "duration": 800
+        },
+        {
+          "action": "key_combination",
+          "keys": ["ctrl", "a"]
+        },
+        {
+          "action": "key_press",
+          "key": "Delete"
+        },
+        {
+          "action": "wait",
+          "duration": 300
+        },
+        {
+          "action": "type_text",
+          "text": "mousepad",
+          "typing_speed": "human_realistic",
+          "description": "Type text editor name"
+        },
+        {
+          "action": "wait",
+          "duration": 500
+        },
+        {
+          "action": "key_press",
+          "key": "Return",
+          "description": "CRITICAL FIX: Press Enter to launch text editor"
+        },
+        {
+          "action": "wait",
+          "duration": 2000
+        }
+      ]
+    },
+    {
+      "step": 7,
+      "name": "Smooth Movement to Text Editor",
+      "action": "find_and_move_to_window",
+      "target": "mousepad",
+      "movement_type": "smooth_curve",
+      "duration": 1200,
+      "description": "Move cursor smoothly to text editor window"
+    },
+    {
+      "step": 8,
+      "name": "Create Meeting Documentation",
+      "actions": [
+        {
+          "action": "take_screenshot",
+          "output": "/tmp/04_text_editor_opened.png",
+          "description": "Text editor successfully launched"
+        },
+        {
+          "action": "type_text",
+          "text": "QUARTERLY BUDGET MEETING\n\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text", 
+          "text": "Meeting Date: July 11, 2025\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text",
+          "text": "Attendees: Finance Team\n\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text",
+          "text": "BUDGET CALCULATION:\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text",
+          "text": "- Employee count: 150 people\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text",
+          "text": "- Lunch cost per person: $25\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text",
+          "text": "- Lunch subtotal: $3,750\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text",
+          "text": "- Room rental: $1,000\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text",
+          "text": "- TOTAL BUDGET: $4,750\n\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text",
+          "text": "✅ AUTOMATION SUCCESS:\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text",
+          "text": "- Calculator launched properly (Enter key fix)\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text",
+          "text": "- Text editor launched properly (Enter key fix)\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text",
+          "text": "- Smooth cursor movement demonstrated\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text",
+          "text": "- No search bar stuck text issues\n\n",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "type_text",
+          "text": "Status: APPROVED FOR IMPLEMENTATION",
+          "typing_speed": "realistic_human"
+        },
+        {
+          "action": "wait",
+          "duration": 1000
+        },
+        {
+          "action": "take_screenshot",
+          "output": "/tmp/05_documentation_complete.png",
+          "description": "Meeting documentation completed"
+        }
+      ]
+    },
+    {
+      "step": 9,
+      "name": "User Intent 3: File Organization",
+      "description": "Open file manager for project organization",
+      "actions": [
+        {
+          "action": "smooth_move_cursor",
+          "from": "current_position",
+          "to": {"x": 100, "y": 50},
+          "duration": 1000,
+          "description": "Move to launcher for file manager"
+        },
+        {
+          "action": "key_combination",
+          "keys": ["alt", "F2"]
+        },
+        {
+          "action": "wait",
+          "duration": 800
+        },
+        {
+          "action": "key_combination",
+          "keys": ["ctrl", "a"]
+        },
+        {
+          "action": "key_press",
+          "key": "Delete"
+        },
+        {
+          "action": "wait",
+          "duration": 300
+        },
+        {
+          "action": "type_text",
+          "text": "thunar",
+          "typing_speed": "human_realistic"
+        },
+        {
+          "action": "wait",
+          "duration": 500
+        },
+        {
+          "action": "key_press",
+          "key": "Return",
+          "description": "CRITICAL FIX: Press Enter to launch file manager"
+        },
+        {
+          "action": "wait",
+          "duration": 2000
+        }
+      ]
+    },
+    {
+      "step": 10,
+      "name": "Smooth Movement to File Manager",
+      "action": "find_and_move_to_window",
+      "target": "thunar",
+      "movement_type": "smooth_curve",
+      "duration": 1200,
+      "description": "Move cursor smoothly to file manager"
+    },
+    {
+      "step": 11,
+      "name": "Comprehensive Cursor Movement Showcase",
+      "description": "Demonstrate smooth cursor movement across full 1920x1080 screen",
+      "actions": [
+        {
+          "action": "take_screenshot",
+          "output": "/tmp/06_file_manager_opened.png",
+          "description": "File manager successfully launched"
+        },
+        {
+          "action": "smooth_move_cursor",
+          "from": "current_position",
+          "to": {"x": 50, "y": 50},
+          "duration": 1500,
+          "interpolation": "smooth_curve",
+          "description": "Top-left corner"
+        },
+        {
+          "action": "smooth_move_cursor",
+          "from": {"x": 50, "y": 50},
+          "to": {"x": 1870, "y": 50},
+          "duration": 2000,
+          "interpolation": "smooth_curve",
+          "description": "Top-right corner"
+        },
+        {
+          "action": "smooth_move_cursor",
+          "from": {"x": 1870, "y": 50},
+          "to": {"x": 1870, "y": 1030},
+          "duration": 2000,
+          "interpolation": "smooth_curve",
+          "description": "Bottom-right corner"
+        },
+        {
+          "action": "smooth_move_cursor",
+          "from": {"x": 1870, "y": 1030},
+          "to": {"x": 50, "y": 1030},
+          "duration": 2000,
+          "interpolation": "smooth_curve",
+          "description": "Bottom-left corner"
+        },
+        {
+          "action": "smooth_move_cursor",
+          "from": {"x": 50, "y": 1030},
+          "to": {"x": 960, "y": 540},
+          "duration": 1500,
+          "interpolation": "smooth_curve",
+          "description": "Back to center"
+        },
+        {
+          "action": "circular_cursor_pattern",
+          "center": {"x": 960, "y": 540},
+          "radius": 200,
+          "revolutions": 1.5,
+          "duration": 3000,
+          "description": "Smooth circular cursor movement pattern"
+        }
+      ]
+    },
+    {
+      "step": 12,
+      "name": "Final Documentation",
+      "action": "take_screenshot",
+      "output": "/tmp/07_workflow_complete.png",
+      "description": "All user intent workflows completed successfully"
+    }
+  ],
+  "recording_settings": {
+    "enable_recording": true,
+    "output_file": "/tmp/smooth_user_intent_workflow.mp4",
+    "resolution": "1920x1080",
+    "framerate": 30,
+    "format": "mp4",
+    "codec": "h264",
+    "quality": "high",
+    "duration_limit": 120
+  },
+  "cursor_settings": {
+    "movement_algorithm": "windmouse_enhanced",
+    "interpolation_steps": 50,
+    "smooth_acceleration": true,
+    "natural_curves": true,
+    "visible_trails": false,
+    "click_animations": true
+  },
+  "summary": {
+    "total_steps": 12,
+    "user_intents_demonstrated": [
+      "Quarterly budget calculation",
+      "Meeting documentation creation", 
+      "File organization workflow"
+    ],
+    "key_fixes_validated": [
+      "Enter key press after app names (no search bar stuck text)",
+      "Smooth cursor movement with 50-step interpolation",
+      "Natural timing and realistic workflows",
+      "Full 1920x1080 screen coverage",
+      "Multiple cursor movements per workflow"
+    ],
+    "automation_features": [
+      "Application launching via launcher",
+      "Smooth cursor movement algorithms",
+      "Realistic typing simulation",
+      "Business workflow automation",
+      "Multi-step calculations",
+      "Documentation creation",
+      "Full screen recording"
+    ]
+  }
+}

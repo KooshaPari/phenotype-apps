@@ -1,0 +1,63 @@
+# cargo-deny configuration (DORMANT — see AGENTS.md).
+#
+# KWatch is Go-only (see `AGENTS.md`); the Rust toolchain is not in
+# use and `cargo deny` is not run in CI. The dependency-policy check
+# for the Go daemon lives in `.github/workflows/deny.yml` (govulncheck
+# + go-licenses allowlist), and the `just deny` recipe in the
+# `Justfile` is the local equivalent.
+#
+# This file is kept in tree so that:
+#   1. A future PR that introduces a Rust component (e.g. a native
+#      helper) can flip on cargo-deny by `cargo install cargo-deny`
+#      and running `cargo deny check` against this config without
+#      bikeshedding the policy.
+#   2. The presence of `deny.toml` signals to readers and tooling
+#      (e.g. OpenSSF Scorecard's `Fuzzed` and `License` checks) that
+#      the project has a documented dependency policy, even though
+#      the policy is currently expressed in Go terms.
+#
+# If/when this becomes active, also wire a `cargo-deny` step into
+# `.github/workflows/deny.yml`.
+
+[graph]
+all-features = false
+
+[advisories]
+# Vulnerabilities affecting any version of a crate (no fix published
+# yet) still fail the build. False positives can be ignored inline with
+# `#[deny(bad_lint)]` style annotations on the crate root.
+unmaintained = "warn"
+yanked = "warn"
+notice = "warn"
+
+[licenses]
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "MPL-2.0",
+    "Zlib",
+    "Unicode-DFS-2016",
+    "Unicode-3.0",
+]
+confidence-threshold = 0.8
+
+[bans]
+# Disallow multiple versions of the same crate in the dep graph.
+multiple-versions = "warn"
+# Disallow wildcard dependencies (`*`) in Cargo.toml.
+wildcards = "deny"
+# Highlight very common crates that are known to have lightweight
+# alternatives; the `lightweight` lint is a soft warn.
+highlight = [
+    { name = "openssl", reason = "use rustls instead" },
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []

@@ -1,0 +1,187 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kvirtualstage.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kvirtualstage.labels" . | nindent 4 }}
+  {{- with .Values.kvirtualstage.podAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if not .Values.kvirtualstage.autoscaling.enabled }}
+  replicas: {{ .Values.kvirtualstage.replicaCount }}
+  {{- end }}
+  revisionHistoryLimit: {{ .Values.kvirtualstage.revisionHistoryLimit }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      {{- include "kvirtualstage.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.kvirtualstage.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "kvirtualstage.selectorLabels" . | nindent 8 }}
+        {{- with .Values.kvirtualstage.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.kvirtualstage.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "kvirtualstage.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.kvirtualstage.podSecurityContext | nindent 8 }}
+      initContainers:
+      {{- if .Values.redis.enabled }}
+      - name: redis-check
+        image: redis:7.2-alpine
+        command:
+        - sh
+        - -c
+        - |
+          until redis-cli -h {{ include "kvirtualstage.redis.fullname" . }} -p 6379 {{- if .Values.redis.auth.enabled }} -a $REDIS_PASSWORD{{- end }} ping; do
+            echo "Waiting for Redis to be ready..."
+            sleep 2
+          done
+          echo "Redis is ready!"
+        {{- if .Values.redis.auth.enabled }}
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "kvirtualstage.redis.secretName" . }}
+              key: {{ include "kvirtualstage.redis.secretPasswordKey" . }}
+        {{- end }}
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.kvirtualstage.securityContext | nindent 12 }}
+        image: "{{ .Values.kvirtualstage.image.registry }}/{{ .Values.kvirtualstage.image.repository }}:{{ .Values.kvirtualstage.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.kvirtualstage.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.config.server.port }}
+          protocol: TCP
+        - name: metrics
+          containerPort: {{ .Values.config.metrics.port }}
+          protocol: TCP
+        env:
+        - name: KVIRTUALSTAGE_CONFIG_PATH
+          value: "/etc/kvirtualstage/kvirtualstage.toml"
+        {{- if .Values.redis.enabled }}
+        {{- if .Values.redis.auth.enabled }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "kvirtualstage.redis.secretName" . }}
+              key: {{ include "kvirtualstage.redis.secretPasswordKey" . }}
+        {{- end }}
+        {{- end }}
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        {{- with .Values.kvirtualstage.env }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/kvirtualstage
+          readOnly: true
+        {{- with .Values.kvirtualstage.volumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.kvirtualstage.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.kvirtualstage.livenessProbe.httpGet.path }}
+            port: {{ .Values.kvirtualstage.livenessProbe.httpGet.port }}
+            scheme: HTTP
+          initialDelaySeconds: {{ .Values.kvirtualstage.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.kvirtualstage.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.kvirtualstage.livenessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.kvirtualstage.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.kvirtualstage.livenessProbe.successThreshold }}
+        {{- end }}
+        {{- if .Values.kvirtualstage.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.kvirtualstage.readinessProbe.httpGet.path }}
+            port: {{ .Values.kvirtualstage.readinessProbe.httpGet.port }}
+            scheme: HTTP
+          initialDelaySeconds: {{ .Values.kvirtualstage.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.kvirtualstage.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.kvirtualstage.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.kvirtualstage.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.kvirtualstage.readinessProbe.successThreshold }}
+        {{- end }}
+        {{- if .Values.kvirtualstage.startupProbe.enabled }}
+        startupProbe:
+          httpGet:
+            path: {{ .Values.kvirtualstage.startupProbe.httpGet.path }}
+            port: {{ .Values.kvirtualstage.startupProbe.httpGet.port }}
+            scheme: HTTP
+          initialDelaySeconds: {{ .Values.kvirtualstage.startupProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.kvirtualstage.startupProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.kvirtualstage.startupProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.kvirtualstage.startupProbe.failureThreshold }}
+          successThreshold: {{ .Values.kvirtualstage.startupProbe.successThreshold }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.kvirtualstage.resources | nindent 12 }}
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ include "kvirtualstage.fullname" . }}-config
+          items:
+          - key: kvirtualstage.toml
+            path: kvirtualstage.toml
+      {{- with .Values.kvirtualstage.volumes }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 30
+      {{- with .Values.kvirtualstage.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kvirtualstage.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kvirtualstage.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      dnsPolicy: ClusterFirst

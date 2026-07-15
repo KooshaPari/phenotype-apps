@@ -1,0 +1,657 @@
+🌊 KodeVibe - Scanning for bad vibes...
+📁 Paths: integration-test-workspace
+
+{"level":"info","msg":"Starting scan","paths":["integration-test-workspace"],"scan_id":"d9b41f0a-d124-4250-bb4e-5fa728ee14db","time":"2025-07-07T23:36:26-04:00","vibes":[]}
+{"filtered_files":5,"level":"info","msg":"File discovery completed","skipped_files":0,"time":"2025-07-07T23:36:26-04:00","total_files":5}
+{"duration":10416500,"errors":1,"info":10,"level":"info","msg":"Scan completed","scan_id":"d9b41f0a-d124-4250-bb4e-5fa728ee14db","time":"2025-07-07T23:36:26-04:00","total_issues":27,"warnings":16}
+{
+  "scan_id": "",
+  "id": "d9b41f0a-d124-4250-bb4e-5fa728ee14db",
+  "start_time": "2025-07-07T23:36:26.555229-04:00",
+  "end_time": "2025-07-07T23:36:26.565645-04:00",
+  "duration": 10416500,
+  "timestamp": "0001-01-01T00:00:00Z",
+  "project_path": "integration-test-workspace",
+  "files_scanned": 5,
+  "files_skipped": 0,
+  "issues": [
+    {
+      "id": "afe36667-683b-47ef-b4f4-e76f7417cd5e",
+      "type": "code",
+      "severity": "info",
+      "title": "TODO/FIXME comment found",
+      "message": "TODO/FIXME comments should be tracked in issues",
+      "file": "integration-test-workspace/test.go",
+      "line": 9,
+      "column": 0,
+      "rule": "todo-comments",
+      "context": "    ctx := context.TODO()  // Should use proper context",
+      "fixable": false,
+      "fix_suggestion": "Create an issue to track this task",
+      "confidence": 1,
+      "created_at": "2025-07-07T23:36:26.559353-04:00"
+    },
+    {
+      "id": "65405a30-b42f-454c-a39b-8ee56ef95072",
+      "type": "code",
+      "severity": "info",
+      "title": "context.TODO() usage",
+      "message": "Replace context.TODO() with proper context",
+      "file": "integration-test-workspace/test.go",
+      "line": 9,
+      "column": 0,
+      "rule": "no-context-todo",
+      "context": "    ctx := context.TODO()  // Should use proper context",
+      "fixable": true,
+      "fix_suggestion": "Use context.Background() or pass context from caller",
+      "confidence": 0.9,
+      "created_at": "2025-07-07T23:36:26.559354-04:00"
+    },
+    {
+      "id": "c128898a-c14f-43b2-9939-eb24c8667523",
+      "type": "code",
+      "severity": "warning",
+      "title": "Panic usage detected",
+      "message": "Avoid panic, return errors instead",
+      "file": "integration-test-workspace/test.go",
+      "line": 14,
+      "column": 0,
+      "rule": "no-panic",
+      "context": "        panic(\"Something went wrong\")  // Should return error instead",
+      "fixable": true,
+      "fix_suggestion": "Return error instead of using panic",
+      "confidence": 0.8,
+      "created_at": "2025-07-07T23:36:26.559355-04:00"
+    },
+    {
+      "id": "101aa01f-af9f-4c43-92ef-52319d56c293",
+      "type": "code",
+      "severity": "warning",
+      "title": "Duplicate code detected",
+      "message": "Code block appears 2 times in the file",
+      "file": "integration-test-workspace/test.go",
+      "line": 2,
+      "column": 0,
+      "rule": "duplicate-code",
+      "context": "import (\n\"context\"\n\"fmt\"\n)",
+      "fixable": true,
+      "fix_suggestion": "Extract duplicate code into a reusable function",
+      "confidence": 0.7,
+      "created_at": "2025-07-07T23:36:26.559355-04:00"
+    },
+    {
+      "id": "c6f3552b-7b72-4500-8cca-1b0c3dd89954",
+      "type": "code",
+      "severity": "warning",
+      "title": "Duplicate code detected",
+      "message": "Code block appears 2 times in the file",
+      "file": "integration-test-workspace/test.go",
+      "line": 3,
+      "column": 0,
+      "rule": "duplicate-code",
+      "context": "import (\n\"context\"\n\"fmt\"\n)",
+      "fixable": true,
+      "fix_suggestion": "Extract duplicate code into a reusable function",
+      "confidence": 0.7,
+      "created_at": "2025-07-07T23:36:26.559356-04:00"
+    },
+    {
+      "id": "8638ed97-abb0-4d80-972c-025682b9da77",
+      "type": "code",
+      "severity": "warning",
+      "title": "System.out.println found",
+      "message": "Use proper logging instead of System.out.println",
+      "file": "integration-test-workspace/test.java",
+      "line": 3,
+      "column": 0,
+      "rule": "no-system-out",
+      "context": "        System.out.println(\"Hello World\");  // Should use logging",
+      "fixable": true,
+      "fix_suggestion": "Use a logging framework like SLF4J",
+      "confidence": 1,
+      "created_at": "2025-07-07T23:36:26.559356-04:00"
+    },
+    {
+      "id": "d8881dd9-5f82-4787-bcae-a3f525a882e5",
+      "type": "code",
+      "severity": "warning",
+      "title": "Use let/const instead of var",
+      "message": "Prefer let or const over var for variable declarations",
+      "file": "integration-test-workspace/test.js",
+      "line": 2,
+      "column": 0,
+      "rule": "no-var",
+      "context": "var globalVar = \"bad practice\";",
+      "fixable": true,
+      "fix_suggestion": "Replace var with let or const",
+      "confidence": 0.9,
+      "created_at": "2025-07-07T23:36:26.559357-04:00"
+    },
+    {
+      "id": "62fb2e00-4109-43e7-8d60-9930f82bd73c",
+      "type": "code",
+      "severity": "warning",
+      "title": "Console.log statement found",
+      "message": "Console.log statements should be removed before production",
+      "file": "integration-test-workspace/test.js",
+      "line": 3,
+      "column": 0,
+      "rule": "no-console-log",
+      "context": "console.log(\"Debug message that should be removed\");",
+      "fixable": true,
+      "fix_suggestion": "Remove console.log or use a proper logging library",
+      "confidence": 1,
+      "created_at": "2025-07-07T23:36:26.559357-04:00"
+    },
+    {
+      "id": "d05d2e28-843f-432c-a230-d44b3c64428c",
+      "type": "code",
+      "severity": "warning",
+      "title": "Use strict equality",
+      "message": "Use === instead of == for strict equality comparison",
+      "file": "integration-test-workspace/test.js",
+      "line": 6,
+      "column": 0,
+      "rule": "strict-equality",
+      "context": "    if (globalVar == \"test\") {  // Should use === instead of ==",
+      "fixable": true,
+      "fix_suggestion": "Replace == with ===",
+      "confidence": 0.9,
+      "created_at": "2025-07-07T23:36:26.559358-04:00"
+    },
+    {
+      "id": "fe4e124b-deea-43db-9136-634267214ec4",
+      "type": "code",
+      "severity": "info",
+      "title": "Magic number detected",
+      "message": "Magic number '42' should be replaced with a named constant",
+      "file": "integration-test-workspace/test.js",
+      "line": 7,
+      "column": 0,
+      "rule": "magic-numbers",
+      "context": "        var localVar = 42;  // Magic number",
+      "fixable": true,
+      "fix_suggestion": "Replace magic number with a named constant",
+      "confidence": 0.6,
+      "created_at": "2025-07-07T23:36:26.559358-04:00"
+    },
+    {
+      "id": "95c6dd23-f764-4f25-ba45-82e02a7efba0",
+      "type": "code",
+      "severity": "warning",
+      "title": "Use let/const instead of var",
+      "message": "Prefer let or const over var for variable declarations",
+      "file": "integration-test-workspace/test.js",
+      "line": 7,
+      "column": 0,
+      "rule": "no-var",
+      "context": "        var localVar = 42;  // Magic number",
+      "fixable": true,
+      "fix_suggestion": "Replace var with let or const",
+      "confidence": 0.9,
+      "created_at": "2025-07-07T23:36:26.559359-04:00"
+    },
+    {
+      "id": "03aeb2fc-ec3e-4a61-8b94-547be980a899",
+      "type": "code",
+      "severity": "warning",
+      "title": "Console.log statement found",
+      "message": "Console.log statements should be removed before production",
+      "file": "integration-test-workspace/test.js",
+      "line": 8,
+      "column": 0,
+      "rule": "no-console-log",
+      "context": "        console.log(localVar);",
+      "fixable": true,
+      "fix_suggestion": "Remove console.log or use a proper logging library",
+      "confidence": 1,
+      "created_at": "2025-07-07T23:36:26.559359-04:00"
+    },
+    {
+      "id": "12280537-de21-4aa2-b2d5-bb88924d395d",
+      "type": "code",
+      "severity": "info",
+      "title": "Magic number detected",
+      "message": "Magic number '40' should be replaced with a named constant",
+      "file": "integration-test-workspace/test.js",
+      "line": 9,
+      "column": 0,
+      "rule": "magic-numbers",
+      "context": "        if (localVar \u003e 40) {",
+      "fixable": true,
+      "fix_suggestion": "Replace magic number with a named constant",
+      "confidence": 0.6,
+      "created_at": "2025-07-07T23:36:26.55936-04:00"
+    },
+    {
+      "id": "957a36c0-f22e-46df-b427-345aa228d183",
+      "type": "code",
+      "severity": "info",
+      "title": "Magic number detected",
+      "message": "Magic number '50' should be replaced with a named constant",
+      "file": "integration-test-workspace/test.js",
+      "line": 10,
+      "column": 0,
+      "rule": "magic-numbers",
+      "context": "            if (localVar \u003c 50) {",
+      "fixable": true,
+      "fix_suggestion": "Replace magic number with a named constant",
+      "confidence": 0.6,
+      "created_at": "2025-07-07T23:36:26.55936-04:00"
+    },
+    {
+      "id": "81109ab1-0f95-4825-ad32-5b976caa08be",
+      "type": "code",
+      "severity": "info",
+      "title": "TODO/FIXME comment found",
+      "message": "TODO/FIXME comments should be tracked in issues",
+      "file": "integration-test-workspace/test.js",
+      "line": 18,
+      "column": 0,
+      "rule": "todo-comments",
+      "context": "// TODO: This should be tracked in issues",
+      "fixable": false,
+      "fix_suggestion": "Create an issue to track this task",
+      "confidence": 1,
+      "created_at": "2025-07-07T23:36:26.559361-04:00"
+    },
+    {
+      "id": "75220b71-46e7-41f3-b726-1bdb8748b3a3",
+      "type": "code",
+      "severity": "warning",
+      "title": "Use let/const instead of var",
+      "message": "Prefer let or const over var for variable declarations",
+      "file": "integration-test-workspace/test.js",
+      "line": 19,
+      "column": 0,
+      "rule": "no-var",
+      "context": "// var commentedCode = \"should be removed\";",
+      "fixable": true,
+      "fix_suggestion": "Replace var with let or const",
+      "confidence": 0.9,
+      "created_at": "2025-07-07T23:36:26.559361-04:00"
+    },
+    {
+      "id": "87e8345c-ddac-4390-b7f8-279401f8b0a4",
+      "type": "code",
+      "severity": "warning",
+      "title": "Excessive nesting depth",
+      "message": "Maximum nesting depth (5) exceeds recommended limit (4)",
+      "file": "integration-test-workspace/test.js",
+      "line": 10,
+      "column": 0,
+      "rule": "nesting-depth",
+      "context": "            if (localVar \u003c 50) {",
+      "fixable": true,
+      "fix_suggestion": "Refactor code to reduce nesting using early returns or helper functions",
+      "confidence": 0.8,
+      "created_at": "2025-07-07T23:36:26.559362-04:00"
+    },
+    {
+      "id": "5b3a2541-4a36-48e2-a511-f86165a05fa4",
+      "type": "code",
+      "severity": "info",
+      "title": "Print statement found",
+      "message": "Consider using logging instead of print statements",
+      "file": "integration-test-workspace/test.py",
+      "line": 5,
+      "column": 0,
+      "rule": "no-print",
+      "context": "    print(\"Debug print statement\")",
+      "fixable": true,
+      "fix_suggestion": "Use logging module instead of print",
+      "confidence": 0.7,
+      "created_at": "2025-07-07T23:36:26.559362-04:00"
+    },
+    {
+      "id": "6a0162ca-ceac-43b8-aa89-2322ca734578",
+      "type": "code",
+      "severity": "info",
+      "title": "Print statement found",
+      "message": "Consider using logging instead of print statements",
+      "file": "integration-test-workspace/test.py",
+      "line": 12,
+      "column": 0,
+      "rule": "no-print",
+      "context": "                print(\"Too much nesting\")",
+      "fixable": true,
+      "fix_suggestion": "Use logging module instead of print",
+      "confidence": 0.7,
+      "created_at": "2025-07-07T23:36:26.559363-04:00"
+    },
+    {
+      "id": "88643399-236e-4421-b0c5-a43eb9d528c5",
+      "type": "code",
+      "severity": "info",
+      "title": "TODO/FIXME comment found",
+      "message": "TODO/FIXME comments should be tracked in issues",
+      "file": "integration-test-workspace/test.py",
+      "line": 16,
+      "column": 0,
+      "rule": "todo-comments",
+      "context": "# FIXME: This needs to be fixed",
+      "fixable": false,
+      "fix_suggestion": "Create an issue to track this task",
+      "confidence": 1,
+      "created_at": "2025-07-07T23:36:26.559363-04:00"
+    },
+    {
+      "id": "1e6fa790-611d-4051-9d14-315bacafb0d2",
+      "type": "code",
+      "severity": "info",
+      "title": "Magic number detected",
+      "message": "Magic number '42' should be replaced with a named constant",
+      "file": "integration-test-workspace/test.py",
+      "line": 17,
+      "column": 0,
+      "rule": "magic-numbers",
+      "context": "x = 42  # Magic number",
+      "fixable": true,
+      "fix_suggestion": "Replace magic number with a named constant",
+      "confidence": 0.6,
+      "created_at": "2025-07-07T23:36:26.559364-04:00"
+    },
+    {
+      "id": "690ead81-257e-410e-96cd-1949fb921da0",
+      "type": "code",
+      "severity": "warning",
+      "title": "Duplicate code detected",
+      "message": "Code block appears 2 times in the file",
+      "file": "integration-test-workspace/test.py",
+      "line": 3,
+      "column": 0,
+      "rule": "duplicate-code",
+      "context": "def test_function():\nprint(\"Debug print statement\")\npassword = \"hardcoded_secret\"  # Security issue\n",
+      "fixable": true,
+      "fix_suggestion": "Extract duplicate code into a reusable function",
+      "confidence": 0.7,
+      "created_at": "2025-07-07T23:36:26.559364-04:00"
+    },
+    {
+      "id": "f1902455-4e61-4a9b-88e5-c2fc9a8f8665",
+      "type": "code",
+      "severity": "warning",
+      "title": "Duplicate code detected",
+      "message": "Code block appears 2 times in the file",
+      "file": "integration-test-workspace/test.py",
+      "line": 4,
+      "column": 0,
+      "rule": "duplicate-code",
+      "context": "def test_function():\nprint(\"Debug print statement\")\npassword = \"hardcoded_secret\"  # Security issue\n",
+      "fixable": true,
+      "fix_suggestion": "Extract duplicate code into a reusable function",
+      "confidence": 0.7,
+      "created_at": "2025-07-07T23:36:26.559365-04:00"
+    },
+    {
+      "id": "c4e69d92-5105-4be5-b856-1fcc80f24d0b",
+      "type": "code",
+      "severity": "warning",
+      "title": "Duplicate code detected",
+      "message": "Code block appears 2 times in the file",
+      "file": "integration-test-workspace/test.py",
+      "line": 8,
+      "column": 0,
+      "rule": "duplicate-code",
+      "context": "if True:\nif True:\nif True:\nprint(\"Too much nesting\")",
+      "fixable": true,
+      "fix_suggestion": "Extract duplicate code into a reusable function",
+      "confidence": 0.7,
+      "created_at": "2025-07-07T23:36:26.559365-04:00"
+    },
+    {
+      "id": "2768bdfe-3d81-4f6f-9f1b-55054e9b9314",
+      "type": "code",
+      "severity": "warning",
+      "title": "Duplicate code detected",
+      "message": "Code block appears 2 times in the file",
+      "file": "integration-test-workspace/test.py",
+      "line": 9,
+      "column": 0,
+      "rule": "duplicate-code",
+      "context": "if True:\nif True:\nif True:\nprint(\"Too much nesting\")",
+      "fixable": true,
+      "fix_suggestion": "Extract duplicate code into a reusable function",
+      "confidence": 0.7,
+      "created_at": "2025-07-07T23:36:26.559366-04:00"
+    },
+    {
+      "id": "349aa79b-42c3-443c-ac09-1c54d280f279",
+      "type": "security",
+      "severity": "warning",
+      "title": "Dangerous eval() usage",
+      "message": "Using eval() or similar functions can lead to code injection vulnerabilities",
+      "file": "integration-test-workspace/test.py",
+      "line": 4,
+      "column": 0,
+      "rule": "eval-usage",
+      "context": "def test_function():",
+      "fixable": true,
+      "fix_suggestion": "Avoid eval(), use safer alternatives like JSON.parse() for data",
+      "confidence": 0.9,
+      "created_at": "2025-07-07T23:36:26.565633-04:00"
+    },
+    {
+      "id": "037416ce-b3e5-4add-bab0-a2657babdddc",
+      "type": "security",
+      "severity": "error",
+      "title": "Hardcoded credentials detected",
+      "message": "Hardcoded passwords, keys, or tokens should not be stored in source code",
+      "file": "integration-test-workspace/test.py",
+      "line": 6,
+      "column": 0,
+      "rule": "hardcoded-credentials",
+      "context": "    password = \"hardcoded_secret\"  # Security issue",
+      "fixable": true,
+      "fix_suggestion": "Use environment variables or secure configuration management",
+      "confidence": 0.8,
+      "created_at": "2025-07-07T23:36:26.565634-04:00"
+    }
+  ],
+  "summary": {
+    "total_issues": 27,
+    "critical_issues": 0,
+    "error_issues": 1,
+    "warning_issues": 16,
+    "info_issues": 10,
+    "files_scanned": 0,
+    "issues_by_type": {
+      "code": 25,
+      "security": 2
+    },
+    "issues_by_severity": {
+      "error": 1,
+      "info": 10,
+      "warning": 16
+    },
+    "top_issues": null,
+    "score": 0,
+    "grade": "F"
+  },
+  "configuration": {
+    "scanner": {
+      "max_concurrency": 0,
+      "timeout": 0,
+      "enabled_vibes": null,
+      "exclude_patterns": null
+    },
+    "server": {
+      "host": "localhost",
+      "port": 8080,
+      "tls": false,
+      "auth": {
+        "enabled": false,
+        "type": "",
+        "secret": "",
+        "token_ttl": 0
+      },
+      "rate_limit": {
+        "enabled": false,
+        "rps": 0,
+        "burst": 0
+      },
+      "cors": {
+        "enabled": true,
+        "allowed_origins": null,
+        "allowed_methods": null,
+        "allowed_headers": null
+      },
+      "monitoring": {
+        "enabled": true,
+        "prometheus": true,
+        "grafana": false,
+        "health_check": false,
+        "metrics_path": ""
+      }
+    },
+    "vibes": {
+      "code": {
+        "enabled": true,
+        "level": "moderate",
+        "settings": {
+          "max_function_length": 50,
+          "max_nesting_depth": 4
+        }
+      },
+      "dependency": {
+        "enabled": true,
+        "level": "moderate",
+        "settings": {
+          "check_vulnerabilities": true
+        }
+      },
+      "documentation": {
+        "enabled": false,
+        "level": "moderate"
+      },
+      "file": {
+        "enabled": true,
+        "level": "strict"
+      },
+      "git": {
+        "enabled": true,
+        "level": "moderate",
+        "settings": {
+          "min_commit_message_length": 10
+        }
+      },
+      "performance": {
+        "enabled": true,
+        "level": "moderate",
+        "settings": {
+          "max_bundle_size": "2MB"
+        }
+      },
+      "security": {
+        "enabled": true,
+        "level": "strict"
+      }
+    },
+    "project": {
+      "type": "auto-detect",
+      "language": "auto-detect",
+      "framework": ""
+    },
+    "exclude": {
+      "files": [
+        "node_modules/**/*",
+        ".git/**/*",
+        "coverage/**/*",
+        "*.min.js",
+        "*.min.css",
+        "vendor/**/*",
+        "build/**/*",
+        "dist/**/*"
+      ],
+      "patterns": [
+        "test-*",
+        "*.test.*",
+        "*.spec.*"
+      ]
+    },
+    "custom_rules": null,
+    "integrations": {
+      "slack": {
+        "enabled": false,
+        "webhook_url": "",
+        "channel": ""
+      },
+      "github": {
+        "enabled": false,
+        "token": "",
+        "owner": "",
+        "repo": "",
+        "create_issues": false
+      },
+      "jira": {
+        "enabled": false,
+        "url": "",
+        "username": "",
+        "token": "",
+        "project_key": ""
+      },
+      "teams": {
+        "enabled": false,
+        "webhook_url": ""
+      },
+      "webhook": {
+        "enabled": false,
+        "url": ""
+      }
+    },
+    "advanced": {
+      "entropy_analysis": false,
+      "entropy_threshold": 4.5,
+      "ai_detection": false,
+      "ai_provider": "",
+      "ai_model": "",
+      "external_scanners": null,
+      "performance_profiling": false,
+      "cache_enabled": false,
+      "cache_ttl": 0,
+      "max_concurrency": 10,
+      "timeout": 300000000000,
+      "custom_analyzers": null
+    },
+    "languages": null,
+    "ci_cd": {
+      "github_actions": {
+        "enabled": false,
+        "fail_on": null
+      },
+      "gitlab_ci": {
+        "enabled": false
+      },
+      "jenkins": {
+        "enabled": false
+      },
+      "quality_gates": {
+        "min_code_coverage": 0,
+        "max_complexity_score": 0,
+        "max_security_issues": 0,
+        "max_performance_issues": 0
+      }
+    },
+    "reporting": {
+      "generate_reports": false,
+      "report_format": "",
+      "report_path": "",
+      "logging": {
+        "enabled": true,
+        "level": "info",
+        "format": "json",
+        "file": ""
+      }
+    }
+  }
+}
+==================================================
+📊 Scan Summary
+⏱️  Duration: 11.808667ms
+📄 Files scanned: 5
+⚠️  Total issues: 27
+❌ Errors: 1
+⚠️  Warnings: 16
+ℹ️  Info: 10
+📈 Score: 0.0 (F)
+==================================================

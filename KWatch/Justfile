@@ -1,0 +1,98 @@
+# KWatch Justfile
+#
+# Tier-0 hygiene batch — Go-only recipes. KWatch itself is Go-only
+# (see `AGENTS.md`), so the historical `cargo` recipes that lived here
+# are gone. The recipes below map 1:1 onto the Go quality gates called
+# out in `AGENTS.md` and onto the matching GitHub Actions workflows in
+# `.github/workflows/`.
+#
+# Usage: `just <recipe>` (or `just --list`).
+
+# ---------- meta ------------------------------------------------------------
+
+# Print every available recipe.
+list:
+    @just --list
+
+# Show toolchain versions in use. Useful for "does my env match CI?" checks.
+env:
+    @echo "go:    $(go version)"
+    @echo "just:  $(just --version)"
+    @echo "shell: ${SHELL}"
+
+# ---------- core quality gates (mirror .github/workflows/ci.yml) ------------
+
+# Compile every package. Equivalent to `go build ./...`.
+build:
+    go build ./...
+
+# Run the test suite. `go test ./...` is currently vacuous — see
+# `AGENTS.md` and `CONTRIBUTING.md` "Test framework status".
+test:
+    go test ./...
+
+# Run `go vet` across the module.
+lint:
+    go vet ./...
+
+# Verify the tree is `gofmt`-clean. Fails (non-zero) on any unformatted
+# file. Mirrors the gating in `.github/workflows/ci.yml`.
+fmt:
+    @test -z "$(gofmt -l .)" || (echo "gofmt -l . found drift; run \`just fmt-fix\`" && exit 1)
+    @echo "gofmt clean."
+
+# Rewrite every Go file in place to canonical `gofmt` formatting.
+fmt-fix:
+    gofmt -w .
+
+# ---------- security & supply chain ----------------------------------------
+
+# Audit the dependency graph. Runs `go mod verify` (checksums) and, if
+# `govulncheck` is on PATH, a CVE scan against the Go vulnerability
+# database. Mirrors `.github/workflows/audit.yml`.
+audit:
+    go mod verify
+    @if command -v govulncheck >/dev/null 2>&1; then \
+        govulncheck ./...; \
+    else \
+        echo "govulncheck not installed; install with \`go install golang.org/x/vuln/cmd/govulncheck@latest\`"; \
+    fi
+
+# Dependency-policy check. KWatch is Go-only, so the Rust-flavoured
+# `deny.toml` is dormant (see that file's header). The Go equivalent
+# here is a tidy + license-allowlist spot check via `go-licenses` if
+# available. Mirrors `.github/workflows/deny.yml`.
+deny:
+    go mod tidy -v
+    @if command -v go-licenses >/dev/null 2>&1; then \
+        go-licenses check ./...; \
+    else \
+        echo "go-licenses not installed; install with \`go install github.com/google/go-licenses@latest\`"; \
+    fi
+
+# ---------- meta-grade -----------------------------------------------------
+
+# OpenSSF Scorecard "grade" is computed by `.github/workflows/scorecard.yml`
+# on a weekly cron + manual dispatch. This recipe surfaces the local
+# signals the scorecard inspects (branch protection, dependency update
+# tooling, pinned actions, SAST, etc.) so contributors can self-check
+# before pushing. It is informational; the authoritative grade comes
+# from the scorecard workflow.
+grade:
+    @echo "OpenSSF Scorecard signals (informational):"
+    @echo "  - branch protection:           see GitHub branch protection rules"
+    @echo "  - dependency updates:          .github/dependabot.yml"
+    @echo "  - pinned third-party actions:  .github/workflows/governance.yml"
+    @echo "  - SAST / security audit:       .github/workflows/audit.yml"
+    @echo "  - license/dependency policy:   .github/workflows/deny.yml"
+    @echo "  - fuzzing:                     n/a (Go daemon; fuzz targets TBD)"
+    @echo ""
+    @echo "Run the scorecard workflow on GitHub Actions for the authoritative grade."
+
+# ---------- aggregate -------------------------------------------------------
+
+# Run the full local CI simulation: format check, vet, build, test, audit.
+# Mirrors the gates enforced by `.github/workflows/ci.yml` and
+# `.github/workflows/audit.yml`. Use this before opening a PR.
+ci: fmt lint build test audit
+    @echo "Local CI simulation passed."

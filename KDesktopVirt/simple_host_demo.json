@@ -1,0 +1,102 @@
+{
+  "name": "Simple KVirtualStage Host Demo",
+  "description": "Basic demonstration of KVirtualStage host-side automation with smooth cursor movement",
+  "version": "1.0",
+  "workflow": [
+    {
+      "step": 1,
+      "name": "Take Initial Screenshot",
+      "action": "take_screenshot",
+      "output": "/tmp/kvs_demo_start.png",
+      "description": "Capture initial desktop state"
+    },
+    {
+      "step": 2,
+      "name": "Open Application via Spotlight",
+      "action": "open_application",
+      "target": "Calculator",
+      "method": "spotlight_search",
+      "wait": 2000,
+      "description": "Demonstrate proper app launching"
+    },
+    {
+      "step": 3,
+      "name": "Take App Screenshot",
+      "action": "take_screenshot",
+      "output": "/tmp/kvs_app_opened.png",
+      "description": "Verify application opened successfully"
+    },
+    {
+      "step": 4,
+      "name": "Perform Calculation",
+      "actions": [
+        {
+          "action": "click_coordinate",
+          "x": 150,
+          "y": 200,
+          "description": "Click number 1",
+          "wait": 300
+        },
+        {
+          "action": "click_coordinate",
+          "x": 200,
+          "y": 200,
+          "description": "Click number 2",
+          "wait": 300
+        },
+        {
+          "action": "click_coordinate",
+          "x": 250,
+          "y": 200,
+          "description": "Click number 3",
+          "wait": 300
+        },
+        {
+          "action": "click_coordinate",
+          "x": 200,
+          "y": 160,
+          "description": "Click plus",
+          "wait": 300
+        },
+        {
+          "action": "click_coordinate",
+          "x": 150,
+          "y": 240,
+          "description": "Click number 4",
+          "wait": 300
+        },
+        {
+          "action": "click_coordinate",
+          "x": 200,
+          "y": 280,
+          "description": "Click equals",
+          "wait": 1000
+        }
+      ]
+    },
+    {
+      "step": 5,
+      "name": "Take Result Screenshot",
+      "action": "take_screenshot",
+      "output": "/tmp/kvs_calculation_result.png",
+      "description": "Capture calculation result: 123 + 4 = 127"
+    },
+    {
+      "step": 6,
+      "name": "Close Application",
+      "action": "key_combination",
+      "keys": ["cmd", "q"],
+      "description": "Close Calculator"
+    }
+  ],
+  "summary": {
+    "total_steps": 6,
+    "demonstrates": [
+      "Host-side KVirtualStage automation",
+      "Application launching",
+      "Click automation with coordinates",
+      "Screenshot capture",
+      "Keyboard automation"
+    ]
+  }
+}

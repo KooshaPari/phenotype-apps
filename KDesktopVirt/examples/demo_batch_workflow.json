@@ -1,0 +1,189 @@
+{
+  "name": "KVirtualStage Batch Workflow Demo",
+  "description": "Comprehensive demonstration of KVirtualStage automation capabilities",
+  "version": "1.0",
+  "metadata": {
+    "created": "2025-07-10",
+    "platform": "macOS",
+    "kvirtualstage_version": "0.1.0"
+  },
+  "workflow": [
+    {
+      "step": 1,
+      "name": "Initial Desktop Capture",
+      "action": "take_screenshot",
+      "output": "/tmp/demo_workflow_start.png",
+      "description": "Capture initial desktop state"
+    },
+    {
+      "step": 2,
+      "name": "Open System Information",
+      "action": "open_application",
+      "target": "System Information",
+      "method": "spotlight_search",
+      "wait": 3000
+    },
+    {
+      "step": 3,
+      "name": "Capture System Info",
+      "action": "take_screenshot",
+      "output": "/tmp/demo_system_info.png",
+      "description": "System Information app opened"
+    },
+    {
+      "step": 4,
+      "name": "Close System Information",
+      "action": "key_combination",
+      "keys": ["cmd", "q"],
+      "description": "Close System Information (Cmd+Q)"
+    },
+    {
+      "step": 5,
+      "name": "Open Terminal",
+      "action": "open_application", 
+      "target": "Terminal",
+      "method": "spotlight_search",
+      "wait": 2000
+    },
+    {
+      "step": 6,
+      "name": "Terminal Commands",
+      "actions": [
+        {
+          "action": "type_text",
+          "text": "echo 'KVirtualStage Demo - Terminal Automation'",
+          "wait": 500
+        },
+        {
+          "action": "key_press",
+          "key": "return",
+          "wait": 1000
+        },
+        {
+          "action": "type_text", 
+          "text": "date",
+          "wait": 500
+        },
+        {
+          "action": "key_press",
+          "key": "return",
+          "wait": 1000
+        },
+        {
+          "action": "type_text",
+          "text": "uname -a",
+          "wait": 500
+        },
+        {
+          "action": "key_press",
+          "key": "return",
+          "wait": 1000
+        }
+      ]
+    },
+    {
+      "step": 7,
+      "name": "Capture Terminal Output",
+      "action": "take_screenshot",
+      "output": "/tmp/demo_terminal.png",
+      "description": "Terminal with automation commands executed"
+    },
+    {
+      "step": 8,
+      "name": "Open Calculator",
+      "action": "open_application",
+      "target": "Calculator",
+      "method": "spotlight_search",
+      "wait": 2000
+    },
+    {
+      "step": 9,
+      "name": "Calculator Operations",
+      "description": "Demonstrate UI element clicking for calculations",
+      "actions": [
+        {
+          "action": "click_coordinate",
+          "x": 150,
+          "y": 180,
+          "description": "Click 2",
+          "wait": 300
+        },
+        {
+          "action": "click_coordinate",
+          "x": 200,
+          "y": 160,
+          "description": "Click ×",
+          "wait": 300
+        },
+        {
+          "action": "click_coordinate",
+          "x": 150,
+          "y": 180,
+          "description": "Click 2", 
+          "wait": 300
+        },
+        {
+          "action": "click_coordinate",
+          "x": 150,
+          "y": 220,
+          "description": "Click =",
+          "wait": 1000
+        }
+      ]
+    },
+    {
+      "step": 10,
+      "name": "Capture Calculator Result",
+      "action": "take_screenshot",
+      "output": "/tmp/demo_calculator_result.png",
+      "description": "Calculator showing 2 × 2 = 4"
+    },
+    {
+      "step": 11,
+      "name": "Final Desktop State",
+      "action": "take_screenshot",
+      "output": "/tmp/demo_workflow_end.png",
+      "description": "Final desktop with multiple apps opened via automation"
+    },
+    {
+      "step": 12,
+      "name": "Cleanup",
+      "description": "Close opened applications",
+      "actions": [
+        {
+          "action": "app_switch",
+          "target": "Calculator",
+          "method": "cmd_tab"
+        },
+        {
+          "action": "key_combination",
+          "keys": ["cmd", "q"],
+          "wait": 500
+        },
+        {
+          "action": "app_switch",
+          "target": "Terminal",
+          "method": "cmd_tab"
+        },
+        {
+          "action": "key_combination", 
+          "keys": ["cmd", "q"],
+          "wait": 500
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_steps": 12,
+    "applications_used": ["System Information", "Terminal", "Calculator"],
+    "screenshots_captured": 6,
+    "automation_features": [
+      "Application launching",
+      "Keyboard automation",
+      "Mouse/click automation", 
+      "Text input",
+      "Screenshot capture",
+      "Multi-app workflow"
+    ]
+  }
+}

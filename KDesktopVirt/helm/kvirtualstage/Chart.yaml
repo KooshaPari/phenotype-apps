@@ -1,0 +1,44 @@
+apiVersion: v2
+name: kvirtualstage
+description: A Helm chart for KVirtualStage enterprise deployment
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+home: https://kvirtualstage.dev
+sources:
+  - https://github.com/KooshaPari/KVirtualStage
+maintainers:
+  - name: KVirtualStage Team
+    email: team@kvirtualstage.dev
+    url: https://kvirtualstage.dev
+keywords:
+  - desktop-automation
+  - virtualization
+  - playwright
+  - ai-agents
+  - enterprise
+dependencies:
+  - name: redis
+    version: 18.1.5
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
+  - name: prometheus
+    version: 23.4.0
+    repository: https://prometheus-community.github.io/helm-charts
+    condition: monitoring.prometheus.enabled
+  - name: grafana
+    version: 7.0.8
+    repository: https://grafana.github.io/helm-charts
+    condition: monitoring.grafana.enabled
+annotations:
+  category: Development
+  licenses: MIT
+  images: |
+    - name: kvirtualstage
+      image: kvirtualstage:latest
+    - name: redis
+      image: redis:7.2-alpine
+    - name: prometheus
+      image: prom/prometheus:latest
+    - name: grafana
+      image: grafana/grafana:latest

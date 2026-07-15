@@ -1,0 +1,326 @@
+# KVirtualStage Development and Testing Stack
+# This Docker Compose file provides a complete development environment
+# with Redis, monitoring, and all necessary services
+
+version: '3.8'
+
+services:
+  # Main KVirtualStage application
+  kvirtualstage:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: kvirtualstage-app
+    ports:
+      - "8080:8080"
+      - "9090:9090"  # Metrics port
+    environment:
+      - RUST_LOG=info
+      - RUST_BACKTRACE=1
+      - KVIRTUALSTAGE_CONFIG_PATH=/app/config/kvirtualstage.toml
+      - REDIS_URL=redis://redis:6379
+      - REDIS_PASSWORD=KVirtualStageRedisPass
+    volumes:
+      - ./docker/kvirtualstage.toml:/app/config/kvirtualstage.toml:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - kvirtualstage-sessions:/app/sessions
+      - kvirtualstage-tmp:/tmp
+    depends_on:
+      - redis
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - kvirtualstage-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+
+  # Redis for distributed session storage
+  redis:
+    image: redis:7.2-alpine
+    container_name: kvirtualstage-redis
+    ports:
+      - "6379:6379"
+    command: >
+      redis-server
+      --requirepass KVirtualStageRedisPass
+      --appendonly yes
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+      --maxmemory 2gb
+      --maxmemory-policy allkeys-lru
+      --tcp-keepalive 60
+      --timeout 300
+    volumes:
+      - redis-data:/data
+      - ./docker/redis.conf:/etc/redis/redis.conf:ro
+    restart: unless-stopped
+    networks:
+      - kvirtualstage-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "--no-auth-warning", "-a", "KVirtualStageRedisPass", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.2'
+          memory: 512M
+
+  # Redis Exporter for metrics
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.45.0
+    container_name: kvirtualstage-redis-exporter
+    ports:
+      - "9121:9121"
+    environment:
+      - REDIS_ADDR=redis://redis:6379
+      - REDIS_PASSWORD=KVirtualStageRedisPass
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - kvirtualstage-net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 128M
+        reservations:
+          cpus: '0.05'
+          memory: 64M
+
+  # Prometheus for metrics collection
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: kvirtualstage-prometheus
+    ports:
+      - "9091:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=15d'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./docker/kvirtualstage_rules.yml:/etc/prometheus/kvirtualstage_rules.yml:ro
+      - prometheus-data:/prometheus
+    restart: unless-stopped
+    networks:
+      - kvirtualstage-net
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.2'
+          memory: 512M
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:10.0.0
+    container_name: kvirtualstage-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-clock-panel
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - kvirtualstage-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+        reservations:
+          cpus: '0.1'
+          memory: 256M
+
+  # Nginx reverse proxy (optional for development)
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: kvirtualstage-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - kvirtualstage
+    restart: unless-stopped
+    networks:
+      - kvirtualstage-net
+    profiles:
+      - nginx
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ElasticSearch for log aggregation (optional)
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
+    container_name: kvirtualstage-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    restart: unless-stopped
+    networks:
+      - kvirtualstage-net
+    profiles:
+      - logging
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.2'
+          memory: 512M
+
+  # Kibana for log visualization (optional)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.9.0
+    container_name: kvirtualstage-kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+    networks:
+      - kvirtualstage-net
+    profiles:
+      - logging
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+        reservations:
+          cpus: '0.1'
+          memory: 256M
+
+  # Jaeger for distributed tracing (optional)
+  jaeger:
+    image: jaegertracing/all-in-one:1.47
+    container_name: kvirtualstage-jaeger
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    restart: unless-stopped
+    networks:
+      - kvirtualstage-net
+    profiles:
+      - tracing
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+        reservations:
+          cpus: '0.1'
+          memory: 256M
+
+  # Load testing with K6 (optional)
+  k6:
+    image: grafana/k6:0.45.0
+    container_name: kvirtualstage-k6
+    volumes:
+      - ./tests/load:/scripts:ro
+    command: run /scripts/load-test.js
+    depends_on:
+      - kvirtualstage
+    networks:
+      - kvirtualstage-net
+    profiles:
+      - testing
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+networks:
+  kvirtualstage-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  redis-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  elasticsearch-data:
+    driver: local
+  kvirtualstage-sessions:
+    driver: local
+  kvirtualstage-tmp:
+    driver: local
+
+# Development and testing profiles
+# Usage examples:
+# docker-compose up                              # Basic stack (app + redis + prometheus + grafana)
+# docker-compose --profile nginx up             # Include nginx reverse proxy
+# docker-compose --profile logging up           # Include ELK stack for logging
+# docker-compose --profile tracing up           # Include Jaeger for tracing
+# docker-compose --profile testing up           # Include load testing
+# docker-compose --profile nginx --profile logging --profile tracing up  # Full stack

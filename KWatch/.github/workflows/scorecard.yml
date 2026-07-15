@@ -1,0 +1,40 @@
+name: Scorecard
+
+on:
+  branch_protection_rule:
+  schedule:
+    - cron: '23 8 * * 3'
+  workflow_dispatch:
+
+permissions: read-all
+
+# Tier-0 hygiene: cancel superseded scorecard runs per ref. Scorecard
+# pulls a fresh advisory database on every run, so a slow in-flight
+# run is rarely worth waiting on; cancel and re-run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scorecard:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      id-token: write
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+        with:
+          persist-credentials: false
+      - name: Run Scorecard
+        uses: ossf/scorecard-action@0864cf19026789058feabb7e87baa5f140aac736
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@2f9d3689d64dcc268b40b43b00ed0691ddb96c5f
+        with:
+          sarif_file: results.sarif

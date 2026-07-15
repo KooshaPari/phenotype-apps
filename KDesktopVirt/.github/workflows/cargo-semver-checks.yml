@@ -1,0 +1,17 @@
+name: cargo-semver-checks
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request: { paths: ['**/Cargo.toml'] }
+  workflow_dispatch:
+jobs:
+  semver-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      - uses: obi1kenobi/cargo-semver-checks-action

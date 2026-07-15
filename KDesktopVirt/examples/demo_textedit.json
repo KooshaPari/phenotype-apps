@@ -1,0 +1,52 @@
+{
+  "name": "TextEdit Demo",
+  "description": "Open TextEdit and create a document with automation",
+  "version": "1.0",
+  "steps": [
+    {
+      "action": "open_application",
+      "target": "TextEdit",
+      "method": "macos_open",
+      "wait": 2000
+    },
+    {
+      "action": "take_screenshot",
+      "output": "/tmp/textedit_opened.png",
+      "description": "TextEdit opened"
+    },
+    {
+      "action": "type_text",
+      "text": "Hello from KVirtualStage!\n\nThis document was created using desktop automation.\n\nFeatures demonstrated:\n- Application launching\n- Text input automation\n- Screenshot capture\n- MCP tool integration\n\nKVirtualStage v0.1.0 - AI-powered desktop automation platform.",
+      "description": "Type demo content"
+    },
+    {
+      "action": "take_screenshot",
+      "output": "/tmp/textedit_content.png",
+      "description": "Document with typed content"
+    },
+    {
+      "action": "key_combination",
+      "keys": ["cmd", "s"],
+      "description": "Save document (Cmd+S)"
+    },
+    {
+      "action": "wait",
+      "duration": 1000
+    },
+    {
+      "action": "type_text",
+      "text": "kvirtualstage_demo.txt",
+      "description": "Enter filename"
+    },
+    {
+      "action": "key_press",
+      "key": "return",
+      "description": "Press Enter to save"
+    },
+    {
+      "action": "take_screenshot",
+      "output": "/tmp/textedit_saved.png",
+      "description": "Document saved"
+    }
+  ]
+}

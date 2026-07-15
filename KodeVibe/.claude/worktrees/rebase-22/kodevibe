@@ -1,0 +1,1510 @@
+#!/usr/bin/env bash
+
+# KodeVibe - The Ultimate Code Quality Guardian
+# Version: 1.0.0
+# Author: KooshaPari
+# License: MIT
+
+set -euo pipefail
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+WHITE='\033[1;37m'
+NC='\033[0m' # No Color
+
+# KodeVibe configuration
+KODEVIBE_VERSION="1.0.0"
+KODEVIBE_CONFIG_FILE=".kodevibe.yaml"
+KODEVIBE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+KODEVIBE_TEMP_DIR="/tmp/kodevibe-$$"
+KODEVIBE_REPORT_DIR="./kodevibe-reports"
+
+# Default configuration
+DEFAULT_VIBES="security,code,file"
+DEFAULT_SEVERITY="warning"
+DEFAULT_OUTPUT_FORMAT="text"
+
+# Issue counters
+SECURITY_ISSUES=0
+CODE_ISSUES=0
+PERFORMANCE_ISSUES=0
+FILE_ISSUES=0
+GIT_ISSUES=0
+DEPENDENCY_ISSUES=0
+DOCUMENTATION_ISSUES=0
+
+# Total counters
+TOTAL_ERRORS=0
+TOTAL_WARNINGS=0
+TOTAL_INFO=0
+
+# Prefer the Go engine (migrated from KodeVibeGo) when a binary is available.
+kodevibe_engine_bin() {
+    local candidate
+    for candidate in \
+        "${KODEVIBE_ENGINE_BIN:-}" \
+        "${KODEVIBE_DIR}/engine/build/kodevibe" \
+        "${KODEVIBE_DIR}/engine/build/kodevibe.exe" \
+        "$(command -v kodevibe-engine 2>/dev/null || true)"; do
+        if [[ -n "$candidate" && -x "$candidate" ]]; then
+            echo "$candidate"
+            return 0
+        fi
+    done
+    return 1
+}
+
+dispatch_to_engine() {
+    local bin
+    if bin="$(kodevibe_engine_bin)"; then
+        exec "$bin" "$@"
+    fi
+}
+
+# Main function
+main() {
+    case "${1:-}" in
+        "scan"|"check"|"")
+            shift || true
+            scan_command "$@"
+            ;;
+        "install")
+            shift || true
+            install_command "$@"
+            ;;
+        "hooks")
+            shift || true
+            hooks_command "$@"
+            ;;
+        "config")
+            shift || true
+            config_command "$@"
+            ;;
+        "fix")
+            shift || true
+            fix_command "$@"
+            ;;
+        "report")
+            shift || true
+            report_command "$@"
+            ;;
+        "profile")
+            shift || true
+            profile_command "$@"
+            ;;
+        "watch")
+            shift || true
+            watch_command "$@"
+            ;;
+        "server")
+            shift || true
+            server_command "$@"
+            ;;
+        "update")
+            update_command
+            ;;
+        "version"|"-v"|"--version")
+            version_command
+            ;;
+        "help"|"-h"|"--help")
+            help_command
+            ;;
+        *)
+            echo -e "${RED}Unknown command: $1${NC}"
+            help_command
+            exit 1
+            ;;
+    esac
+}
+
+# Scan command - main functionality
+scan_command() {
+    dispatch_to_engine scan "$@"
+    local vibes="$DEFAULT_VIBES"
+    local paths=(".")
+    local exclude_patterns=()
+    local min_severity="$DEFAULT_SEVERITY"
+    local output_format="$DEFAULT_OUTPUT_FORMAT"
+    local ci_mode=false
+    local strict_mode=false
+    local generate_report=false
+    local report_file=""
+    local staged_only=false
+    local diff_target=""
+    local timeout=300
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --vibes)
+                vibes="$2"
+                shift 2
+                ;;
+            --path)
+                paths+=("$2")
+                shift 2
+                ;;
+            --exclude)
+                exclude_patterns+=("$2")
+                shift 2
+                ;;
+            --min-severity)
+                min_severity="$2"
+                shift 2
+                ;;
+            --format)
+                output_format="$2"
+                shift 2
+                ;;
+            --ci)
+                ci_mode=true
+                shift
+                ;;
+            --strict)
+                strict_mode=true
+                shift
+                ;;
+            --report)
+                generate_report=true
+                shift
+                ;;
+            --output)
+                report_file="$2"
+                generate_report=true
+                shift 2
+                ;;
+            --staged)
+                staged_only=true
+                shift
+                ;;
+            --diff)
+                diff_target="$2"
+                shift 2
+                ;;
+            --timeout)
+                timeout="$2"
+                shift 2
+                ;;
+            -*)
+                echo -e "${RED}Unknown option: $1${NC}"
+                exit 1
+                ;;
+            *)
+                paths+=("$1")
+                shift
+                ;;
+        esac
+    done
+
+    # Load configuration
+    load_configuration
+
+    # Show header
+    if [[ "$ci_mode" != "true" ]]; then
+        show_header
+    fi
+
+    # Create temp directory
+    mkdir -p "$KODEVIBE_TEMP_DIR"
+    trap "rm -rf '$KODEVIBE_TEMP_DIR'" EXIT
+
+    # Prepare file list
+    local file_list="$KODEVIBE_TEMP_DIR/files.txt"
+    prepare_file_list "${paths[@]}" > "$file_list"
+
+    # Apply exclusions
+    apply_exclusions "$file_list" "${exclude_patterns[@]}"
+
+    # Apply staged/diff filters
+    if [[ "$staged_only" == "true" ]]; then
+        filter_staged_files "$file_list"
+    elif [[ -n "$diff_target" ]]; then
+        filter_diff_files "$file_list" "$diff_target"
+    fi
+
+    # Count files to process
+    local total_files
+    total_files=$(wc -l < "$file_list")
+
+    if [[ "$total_files" -eq 0 ]]; then
+        echo -e "${YELLOW}No files to check${NC}"
+        exit 0
+    fi
+
+    echo -e "${BLUE}🌊 Checking $total_files files for bad vibes...${NC}"
+    echo
+
+    # Run vibe checks
+    IFS=',' read -ra VIBE_ARRAY <<< "$vibes"
+    for vibe in "${VIBE_ARRAY[@]}"; do
+        vibe=$(echo "$vibe" | xargs)  # trim whitespace
+        case "$vibe" in
+            "security")
+                run_security_vibe "$file_list"
+                ;;
+            "code")
+                run_code_vibe "$file_list"
+                ;;
+            "performance")
+                run_performance_vibe "$file_list"
+                ;;
+            "file")
+                run_file_vibe "$file_list"
+                ;;
+            "git")
+                run_git_vibe "$file_list"
+                ;;
+            "dependency")
+                run_dependency_vibe "$file_list"
+                ;;
+            "documentation")
+                run_documentation_vibe "$file_list"
+                ;;
+            *)
+                echo -e "${YELLOW}Unknown vibe: $vibe${NC}"
+                ;;
+        esac
+    done
+
+    # Show summary
+    show_summary "$ci_mode" "$strict_mode"
+
+    # Generate report if requested
+    if [[ "$generate_report" == "true" ]]; then
+        generate_report_file "$output_format" "$report_file"
+    fi
+
+    # Exit with appropriate code for CI
+    if [[ "$ci_mode" == "true" ]]; then
+        if [[ "$strict_mode" == "true" && $(($TOTAL_ERRORS + $TOTAL_WARNINGS + $TOTAL_INFO)) -gt 0 ]]; then
+            exit 1
+        elif [[ "$TOTAL_ERRORS" -gt 0 ]]; then
+            exit 1
+        fi
+    fi
+}
+
+# Security vibe checker
+run_security_vibe() {
+    local file_list="$1"
+    echo -e "${RED}🔒 SecurityVibe - Scanning for secrets and vulnerabilities...${NC}"
+    
+    local issues_found=0
+    
+    # Secret patterns
+    local secret_patterns=(
+        "sk-[a-zA-Z0-9]{48}"                                    # OpenAI API Key
+        "ghp_[a-zA-Z0-9]{36}"                                   # GitHub Personal Access Token
+        "gho_[a-zA-Z0-9]{36}"                                   # GitHub OAuth Token
+        "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}"          # GitHub Fine-grained Token
+        "xoxb-[0-9]{12}-[0-9]{12}-[a-zA-Z0-9]{24}"            # Slack Bot Token
+        "xoxa-[0-9]{12}-[0-9]{12}-[a-zA-Z0-9]{24}"            # Slack App Token
+        "AKIA[0-9A-Z]{16}"                                      # AWS Access Key
+        "AIza[0-9A-Za-z_-]{35}"                                # Google API Key
+        "sk_live_[0-9a-zA-Z]{24}"                              # Stripe Live Secret Key
+        "pk_live_[0-9a-zA-Z]{24}"                              # Stripe Live Publishable Key
+        "sk_test_[0-9a-zA-Z]{24}"                              # Stripe Test Secret Key
+        "rk_live_[0-9a-zA-Z]{24}"                              # Stripe Restricted Key
+        "SK[a-z0-9]{32}"                                        # Twilio API Key
+        "AC[a-z0-9]{32}"                                        # Twilio Account SID
+        "SG\\.[a-zA-Z0-9_-]{22}\\.[a-zA-Z0-9_-]{43}"          # SendGrid API Key
+        "[MN][A-Za-z\\d]{23}\\.[A-Za-z\\d]{6}\\.[A-Za-z\\d_-]{27}" # Discord Token
+        "key-[a-z0-9]{32}"                                      # Mailgun API Key
+        "-----BEGIN [A-Z]+ PRIVATE KEY-----"                   # Private Keys
+        "eyJ[A-Za-z0-9_-]*\\.[A-Za-z0-9_-]*\\.[A-Za-z0-9_-]*" # JWT Tokens
+    )
+    
+    # Scan for secrets
+    while IFS= read -r file; do
+        if [[ -f "$file" && -r "$file" ]]; then
+            for pattern in "${secret_patterns[@]}"; do
+                if grep -qE "$pattern" "$file" 2>/dev/null; then
+                    # Check if it's in an excluded context
+                    if ! is_excluded_secret "$file" "$pattern"; then
+                        echo -e "  ${RED}ERROR${NC}: Potential secret found in ${WHITE}$file${NC}"
+                        echo -e "         Pattern: $pattern"
+                        grep -nE "$pattern" "$file" | head -3 | sed 's/^/         /'
+                        echo
+                        ((issues_found++))
+                        ((TOTAL_ERRORS++))
+                    fi
+                fi
+            done
+            
+            # Check for hardcoded passwords
+            if grep -qE "(password|pwd|pass)\\s*[=:]\\s*[\"'][^\"']{8,}[\"']" "$file" 2>/dev/null; then
+                echo -e "  ${RED}ERROR${NC}: Hardcoded password in ${WHITE}$file${NC}"
+                grep -nE "(password|pwd|pass)\\s*[=:]\\s*[\"'][^\"']{8,}[\"']" "$file" | head -2 | sed 's/^/         /'
+                echo
+                ((issues_found++))
+                ((TOTAL_ERRORS++))
+            fi
+            
+            # Check for SQL injection risks
+            if grep -qE "(SELECT|INSERT|UPDATE|DELETE).*\\+.*\\+|\\$\\{.*\\}" "$file" 2>/dev/null; then
+                echo -e "  ${YELLOW}WARNING${NC}: Potential SQL injection risk in ${WHITE}$file${NC}"
+                grep -nE "(SELECT|INSERT|UPDATE|DELETE).*\\+.*\\+|\\$\\{.*\\}" "$file" | head -2 | sed 's/^/         /'
+                echo
+                ((issues_found++))
+                ((TOTAL_WARNINGS++))
+            fi
+            
+            # Check for eval usage
+            if grep -qE "\\beval\\s*\\(" "$file" 2>/dev/null; then
+                echo -e "  ${YELLOW}WARNING${NC}: Use of eval() detected in ${WHITE}$file${NC}"
+                grep -nE "\\beval\\s*\\(" "$file" | head -2 | sed 's/^/         /'
+                echo
+                ((issues_found++))
+                ((TOTAL_WARNINGS++))
+            fi
+        fi
+    done < "$file_list"
+    
+    SECURITY_ISSUES=$issues_found
+    if [[ $issues_found -eq 0 ]]; then
+        echo -e "  ${GREEN}✓ No security issues found${NC}"
+    else
+        echo -e "  ${RED}✗ Found $issues_found security issues${NC}"
+    fi
+    echo
+}
+
+# Code vibe checker
+run_code_vibe() {
+    local file_list="$1"
+    echo -e "${PURPLE}💎 CodeVibe - Analyzing code quality...${NC}"
+    
+    local issues_found=0
+    
+    while IFS= read -r file; do
+        if [[ -f "$file" && -r "$file" ]]; then
+            # Skip binary files
+            if file "$file" | grep -q "text"; then
+                # Check for console.log statements
+                if grep -qE "console\\.(log|debug|info)" "$file" 2>/dev/null; then
+                    echo -e "  ${YELLOW}WARNING${NC}: Console statements in ${WHITE}$file${NC}"
+                    grep -nE "console\\.(log|debug|info)" "$file" | head -3 | sed 's/^/         /'
+                    echo
+                    ((issues_found++))
+                    ((TOTAL_WARNINGS++))
+                fi
+                
+                # Check for TODO/FIXME comments
+                if grep -qE "\\b(TODO|FIXME|HACK|XXX)\\b" "$file" 2>/dev/null; then
+                    echo -e "  ${CYAN}INFO${NC}: TODO/FIXME comments in ${WHITE}$file${NC}"
+                    grep -nE "\\b(TODO|FIXME|HACK|XXX)\\b" "$file" | head -3 | sed 's/^/         /'
+                    echo
+                    ((issues_found++))
+                    ((TOTAL_INFO++))
+                fi
+                
+                # Check for long lines (>120 characters)
+                local long_lines
+                long_lines=$(awk 'length > 120 { count++ } END { print count+0 }' "$file")
+                if [[ "$long_lines" -gt 5 ]]; then
+                    echo -e "  ${YELLOW}WARNING${NC}: $long_lines long lines (>120 chars) in ${WHITE}$file${NC}"
+                    awk 'length > 120 { print NR ": " substr($0, 1, 100) "..." }' "$file" | head -3 | sed 's/^/         /'
+                    echo
+                    ((issues_found++))
+                    ((TOTAL_WARNINGS++))
+                fi
+                
+                # Check for commented out code
+                local commented_code
+                commented_code=$(grep -E "^\\s*//\\s*(function|class|if|for|while)" "$file" | wc -l)
+                if [[ "$commented_code" -gt 3 ]]; then
+                    echo -e "  ${YELLOW}WARNING${NC}: Commented out code in ${WHITE}$file${NC}"
+                    echo "         Found $commented_code lines of commented code"
+                    echo
+                    ((issues_found++))
+                    ((TOTAL_WARNINGS++))
+                fi
+                
+                # Language-specific checks
+                case "${file##*.}" in
+                    js|jsx|ts|tsx)
+                        check_javascript_issues "$file"
+                        ;;
+                    py)
+                        check_python_issues "$file"
+                        ;;
+                    go)
+                        check_go_issues "$file"
+                        ;;
+                    java)
+                        check_java_issues "$file"
+                        ;;
+                esac
+            fi
+        fi
+    done < "$file_list"
+    
+    CODE_ISSUES=$issues_found
+    if [[ $issues_found -eq 0 ]]; then
+        echo -e "  ${GREEN}✓ No code quality issues found${NC}"
+    else
+        echo -e "  ${PURPLE}✗ Found $issues_found code quality issues${NC}"
+    fi
+    echo
+}
+
+# Performance vibe checker
+run_performance_vibe() {
+    local file_list="$1"
+    echo -e "${YELLOW}⚡ PerformanceVibe - Checking for performance issues...${NC}"
+    
+    local issues_found=0
+    
+    while IFS= read -r file; do
+        if [[ -f "$file" && -r "$file" ]]; then
+            # Check for synchronous file operations
+            if grep -qE "(readFileSync|writeFileSync|existsSync)" "$file" 2>/dev/null; then
+                echo -e "  ${YELLOW}WARNING${NC}: Synchronous file operations in ${WHITE}$file${NC}"
+                grep -nE "(readFileSync|writeFileSync|existsSync)" "$file" | head -2 | sed 's/^/         /'
+                echo
+                ((issues_found++))
+                ((TOTAL_WARNINGS++))
+            fi
+            
+            # Check for nested loops (potential O(n²))
+            if grep -A5 -B1 "for.*{" "$file" | grep -q "for.*{" 2>/dev/null; then
+                echo -e "  ${YELLOW}WARNING${NC}: Nested loops detected in ${WHITE}$file${NC}"
+                echo "         Potential O(n²) complexity"
+                echo
+                ((issues_found++))
+                ((TOTAL_WARNINGS++))
+            fi
+            
+            # Check for inefficient array operations
+            if grep -qE "\\.forEach\\(.*\\.push\\(" "$file" 2>/dev/null; then
+                echo -e "  ${CYAN}INFO${NC}: Consider using map() instead of forEach+push in ${WHITE}$file${NC}"
+                grep -nE "\\.forEach\\(.*\\.push\\(" "$file" | head -2 | sed 's/^/         /'
+                echo
+                ((issues_found++))
+                ((TOTAL_INFO++))
+            fi
+            
+            # Check for large bundle warnings (JavaScript)
+            if [[ "${file##*.}" =~ ^(js|jsx|ts|tsx)$ ]]; then
+                local file_size
+                file_size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo 0)
+                if [[ "$file_size" -gt 1048576 ]]; then  # 1MB
+                    echo -e "  ${YELLOW}WARNING${NC}: Large JavaScript file in ${WHITE}$file${NC}"
+                    echo "         Size: $(($file_size / 1024))KB - consider code splitting"
+                    echo
+                    ((issues_found++))
+                    ((TOTAL_WARNINGS++))
+                fi
+            fi
+        fi
+    done < "$file_list"
+    
+    PERFORMANCE_ISSUES=$issues_found
+    if [[ $issues_found -eq 0 ]]; then
+        echo -e "  ${GREEN}✓ No performance issues found${NC}"
+    else
+        echo -e "  ${YELLOW}✗ Found $issues_found performance issues${NC}"
+    fi
+    echo
+}
+
+# File vibe checker
+run_file_vibe() {
+    local file_list="$1"
+    echo -e "${CYAN}📁 FileVibe - Checking file organization...${NC}"
+    
+    local issues_found=0
+    
+    # Check for system junk files
+    local junk_patterns=(
+        "\\.DS_Store"
+        "Thumbs\\.db"
+        "desktop\\.ini"
+        "\\._.*"
+        "\\.tmp"
+        "\\.swp"
+        ".*~$"
+        "\\.log$"
+        "\\.cache"
+    )
+    
+    for pattern in "${junk_patterns[@]}"; do
+        while IFS= read -r file; do
+            if [[ "$file" =~ $pattern ]]; then
+                echo -e "  ${RED}ERROR${NC}: Junk file detected: ${WHITE}$file${NC}"
+                echo "         Should be in .gitignore or removed"
+                echo
+                ((issues_found++))
+                ((TOTAL_ERRORS++))
+            fi
+        done < "$file_list"
+    done
+    
+    # Check for large files
+    while IFS= read -r file; do
+        if [[ -f "$file" ]]; then
+            local file_size
+            file_size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo 0)
+            if [[ "$file_size" -gt 10485760 ]]; then  # 10MB
+                echo -e "  ${YELLOW}WARNING${NC}: Large file detected: ${WHITE}$file${NC}"
+                echo "         Size: $(($file_size / 1048576))MB - consider Git LFS"
+                echo
+                ((issues_found++))
+                ((TOTAL_WARNINGS++))
+            fi
+        fi
+    done < "$file_list"
+    
+    # Check for duplicate files (basic check by name)
+    local temp_names="$KODEVIBE_TEMP_DIR/filenames.txt"
+    while IFS= read -r file; do
+        basename "$file"
+    done < "$file_list" | sort | uniq -d > "$temp_names"
+    
+    if [[ -s "$temp_names" ]]; then
+        echo -e "  ${CYAN}INFO${NC}: Potential duplicate filenames detected:"
+        while IFS= read -r filename; do
+            echo "         $filename"
+            ((issues_found++))
+            ((TOTAL_INFO++))
+        done < "$temp_names"
+        echo
+    fi
+    
+    FILE_ISSUES=$issues_found
+    if [[ $issues_found -eq 0 ]]; then
+        echo -e "  ${GREEN}✓ No file organization issues found${NC}"
+    else
+        echo -e "  ${CYAN}✗ Found $issues_found file organization issues${NC}"
+    fi
+    echo
+}
+
+# Git vibe checker
+run_git_vibe() {
+    local file_list="$1"
+    echo -e "${GREEN}🔀 GitVibe - Checking git hygiene...${NC}"
+    
+    local issues_found=0
+    
+    # Check if we're in a git repository
+    if ! git rev-parse --git-dir > /dev/null 2>&1; then
+        echo -e "  ${CYAN}INFO${NC}: Not a git repository, skipping git checks"
+        echo
+        return
+    fi
+    
+    # Check recent commit message quality
+    local recent_commit
+    recent_commit=$(git log --oneline -1 2>/dev/null || echo "")
+    if [[ -n "$recent_commit" ]]; then
+        local commit_length=${#recent_commit}
+        if [[ $commit_length -lt 10 ]]; then
+            echo -e "  ${YELLOW}WARNING${NC}: Recent commit message too short"
+            echo "         '$recent_commit'"
+            echo "         Consider more descriptive commit messages"
+            echo
+            ((issues_found++))
+            ((TOTAL_WARNINGS++))
+        fi
+        
+        # Check for conventional commit format
+        if [[ ! "$recent_commit" =~ ^[a-f0-9]+[[:space:]]+(feat|fix|docs|style|refactor|test|chore)(\(.+\))?:[[:space:]].+ ]]; then
+            echo -e "  ${CYAN}INFO${NC}: Consider using conventional commit format"
+            echo "         Current: '$recent_commit'"
+            echo "         Example: 'feat: add user authentication'"
+            echo
+            ((issues_found++))
+            ((TOTAL_INFO++))
+        fi
+    fi
+    
+    # Check for large commits (too many files changed)
+    local changed_files
+    changed_files=$(git diff --cached --name-only | wc -l)
+    if [[ $changed_files -gt 20 ]]; then
+        echo -e "  ${YELLOW}WARNING${NC}: Large commit detected ($changed_files files)"
+        echo "         Consider splitting into smaller, atomic commits"
+        echo
+        ((issues_found++))
+        ((TOTAL_WARNINGS++))
+    fi
+    
+    # Check for merge conflict markers
+    while IFS= read -r file; do
+        if [[ -f "$file" ]] && grep -qE "^(<{7}|={7}|>{7})" "$file" 2>/dev/null; then
+            echo -e "  ${RED}ERROR${NC}: Merge conflict markers in ${WHITE}$file${NC}"
+            grep -nE "^(<{7}|={7}|>{7})" "$file" | head -3 | sed 's/^/         /'
+            echo
+            ((issues_found++))
+            ((TOTAL_ERRORS++))
+        fi
+    done < "$file_list"
+    
+    GIT_ISSUES=$issues_found
+    if [[ $issues_found -eq 0 ]]; then
+        echo -e "  ${GREEN}✓ No git hygiene issues found${NC}"
+    else
+        echo -e "  ${GREEN}✗ Found $issues_found git hygiene issues${NC}"
+    fi
+    echo
+}
+
+# Dependency vibe checker
+run_dependency_vibe() {
+    local file_list="$1"
+    echo -e "${BLUE}📦 DependencyVibe - Checking dependencies...${NC}"
+    
+    local issues_found=0
+    
+    # Check package.json for Node.js projects
+    if [[ -f "package.json" ]]; then
+        # Check for outdated dependencies (basic check)
+        if command -v npm >/dev/null 2>&1; then
+            if npm outdated --json 2>/dev/null | grep -q '"current"'; then
+                echo -e "  ${YELLOW}WARNING${NC}: Outdated npm dependencies detected"
+                echo "         Run 'npm outdated' to see details"
+                echo
+                ((issues_found++))
+                ((TOTAL_WARNINGS++))
+            fi
+        fi
+        
+        # Check for security vulnerabilities
+        if command -v npm >/dev/null 2>&1; then
+            if npm audit --json 2>/dev/null | grep -q '"vulnerabilities"'; then
+                echo -e "  ${RED}ERROR${NC}: Security vulnerabilities in dependencies"
+                echo "         Run 'npm audit' to see details"
+                echo
+                ((issues_found++))
+                ((TOTAL_ERRORS++))
+            fi
+        fi
+        
+        # Check for unused dependencies (basic check)
+        local dependencies
+        dependencies=$(jq -r '.dependencies | keys[]' package.json 2>/dev/null || echo "")
+        for dep in $dependencies; do
+            if ! grep -rq "require.*$dep\|import.*$dep" . --include="*.js" --include="*.ts" --include="*.jsx" --include="*.tsx" 2>/dev/null; then
+                echo -e "  ${CYAN}INFO${NC}: Potentially unused dependency: ${WHITE}$dep${NC}"
+                ((issues_found++))
+                ((TOTAL_INFO++))
+            fi
+        done
+    fi
+    
+    # Check requirements.txt for Python projects
+    if [[ -f "requirements.txt" ]]; then
+        echo -e "  ${CYAN}INFO${NC}: Python requirements.txt detected"
+        echo "         Consider using 'pip-audit' for vulnerability scanning"
+        echo
+        ((issues_found++))
+        ((TOTAL_INFO++))
+    fi
+    
+    # Check go.mod for Go projects
+    if [[ -f "go.mod" ]]; then
+        if command -v go >/dev/null 2>&1; then
+            if go mod why > /dev/null 2>&1; then
+                echo -e "  ${GREEN}✓ Go modules appear healthy${NC}"
+            else
+                echo -e "  ${YELLOW}WARNING${NC}: Issues with Go modules"
+                echo "         Run 'go mod tidy' to clean up"
+                echo
+                ((issues_found++))
+                ((TOTAL_WARNINGS++))
+            fi
+        fi
+    fi
+    
+    DEPENDENCY_ISSUES=$issues_found
+    if [[ $issues_found -eq 0 ]]; then
+        echo -e "  ${GREEN}✓ No dependency issues found${NC}"
+    else
+        echo -e "  ${BLUE}✗ Found $issues_found dependency issues${NC}"
+    fi
+    echo
+}
+
+# Documentation vibe checker
+run_documentation_vibe() {
+    local file_list="$1"
+    echo -e "${WHITE}📚 DocumentationVibe - Checking documentation...${NC}"
+    
+    local issues_found=0
+    
+    # Check for README
+    if [[ ! -f "README.md" && ! -f "README.rst" && ! -f "README.txt" ]]; then
+        echo -e "  ${YELLOW}WARNING${NC}: No README file found"
+        echo "         Consider adding a README.md with project description"
+        echo
+        ((issues_found++))
+        ((TOTAL_WARNINGS++))
+    fi
+    
+    # Check for license
+    if [[ ! -f "LICENSE" && ! -f "LICENSE.md" && ! -f "LICENSE.txt" ]]; then
+        echo -e "  ${CYAN}INFO${NC}: No LICENSE file found"
+        echo "         Consider adding a license for open source projects"
+        echo
+        ((issues_found++))
+        ((TOTAL_INFO++))
+    fi
+    
+    # Check for changelog
+    if [[ ! -f "CHANGELOG.md" && ! -f "CHANGELOG.rst" && ! -f "CHANGELOG.txt" ]]; then
+        echo -e "  ${CYAN}INFO${NC}: No CHANGELOG file found"
+        echo "         Consider maintaining a changelog for releases"
+        echo
+        ((issues_found++))
+        ((TOTAL_INFO++))
+    fi
+    
+    # Check for API documentation (basic check)
+    local has_api_docs=false
+    if [[ -d "docs" || -f "docs.md" || -f "API.md" ]]; then
+        has_api_docs=true
+    fi
+    
+    # Check for code with no comments (basic heuristic)
+    local code_files=0
+    local commented_files=0
+    while IFS= read -r file; do
+        if [[ "${file##*.}" =~ ^(js|jsx|ts|tsx|py|go|java|c|cpp|h|hpp)$ ]]; then
+            ((code_files++))
+            if grep -qE "^\\s*(//|#|/\\*)" "$file" 2>/dev/null; then
+                ((commented_files++))
+            fi
+        fi
+    done < "$file_list"
+    
+    if [[ $code_files -gt 0 ]]; then
+        local comment_ratio=$((commented_files * 100 / code_files))
+        if [[ $comment_ratio -lt 50 ]]; then
+            echo -e "  ${CYAN}INFO${NC}: Low comment ratio (${comment_ratio}% of code files)"
+            echo "         Consider adding more documentation/comments"
+            echo
+            ((issues_found++))
+            ((TOTAL_INFO++))
+        fi
+    fi
+    
+    DOCUMENTATION_ISSUES=$issues_found
+    if [[ $issues_found -eq 0 ]]; then
+        echo -e "  ${GREEN}✓ Documentation looks good${NC}"
+    else
+        echo -e "  ${WHITE}✗ Found $issues_found documentation issues${NC}"
+    fi
+    echo
+}
+
+# Language-specific checkers
+check_javascript_issues() {
+    local file="$1"
+    
+    # Check for var usage
+    if grep -qE "\\bvar\\s+" "$file" 2>/dev/null; then
+        echo -e "  ${YELLOW}WARNING${NC}: Use of 'var' in ${WHITE}$file${NC}"
+        echo "         Consider using 'let' or 'const' instead"
+        echo
+        ((CODE_ISSUES++))
+        ((TOTAL_WARNINGS++))
+    fi
+    
+    # Check for == usage
+    if grep -qE "[^=!]==[^=]" "$file" 2>/dev/null; then
+        echo -e "  ${YELLOW}WARNING${NC}: Use of '==' in ${WHITE}$file${NC}"
+        echo "         Consider using '===' for strict equality"
+        echo
+        ((CODE_ISSUES++))
+        ((TOTAL_WARNINGS++))
+    fi
+}
+
+check_python_issues() {
+    local file="$1"
+    
+    # Check for bare except
+    if grep -qE "except:\\s*$" "$file" 2>/dev/null; then
+        echo -e "  ${YELLOW}WARNING${NC}: Bare except clause in ${WHITE}$file${NC}"
+        echo "         Specify exception types for better error handling"
+        echo
+        ((CODE_ISSUES++))
+        ((TOTAL_WARNINGS++))
+    fi
+    
+    # Check for print statements (should use logging)
+    if grep -qE "\\bprint\\s*\\(" "$file" 2>/dev/null; then
+        echo -e "  ${CYAN}INFO${NC}: Print statements in ${WHITE}$file${NC}"
+        echo "         Consider using logging for production code"
+        echo
+        ((CODE_ISSUES++))
+        ((TOTAL_INFO++))
+    fi
+}
+
+check_go_issues() {
+    local file="$1"
+    
+    # Check for panic usage
+    if grep -qE "\\bpanic\\s*\\(" "$file" 2>/dev/null; then
+        echo -e "  ${YELLOW}WARNING${NC}: Panic usage in ${WHITE}$file${NC}"
+        echo "         Consider returning errors instead"
+        echo
+        ((CODE_ISSUES++))
+        ((TOTAL_WARNINGS++))
+    fi
+    
+    # Check for context.TODO
+    if grep -qE "context\\.TODO\\(\\)" "$file" 2>/dev/null; then
+        echo -e "  ${CYAN}INFO${NC}: context.TODO() usage in ${WHITE}$file${NC}"
+        echo "         Consider using proper context"
+        echo
+        ((CODE_ISSUES++))
+        ((TOTAL_INFO++))
+    fi
+}
+
+check_java_issues() {
+    local file="$1"
+    
+    # Check for System.out.println
+    if grep -qE "System\\.out\\.print" "$file" 2>/dev/null; then
+        echo -e "  ${CYAN}INFO${NC}: System.out.print usage in ${WHITE}$file${NC}"
+        echo "         Consider using a logging framework"
+        echo
+        ((CODE_ISSUES++))
+        ((TOTAL_INFO++))
+    fi
+}
+
+# Helper functions
+show_header() {
+    echo -e "${CYAN}"
+    echo "🌊 KodeVibe v$KODEVIBE_VERSION - The Ultimate Code Quality Guardian"
+    echo "============================================================"
+    echo -e "${NC}"
+}
+
+show_summary() {
+    local ci_mode="$1"
+    local strict_mode="$2"
+    
+    echo -e "${WHITE}📊 KodeVibe Summary${NC}"
+    echo "===================="
+    echo
+    
+    # Show vibe-specific counts
+    [[ $SECURITY_ISSUES -gt 0 ]] && echo -e "${RED}🔒 SecurityVibe: $SECURITY_ISSUES issues${NC}"
+    [[ $CODE_ISSUES -gt 0 ]] && echo -e "${PURPLE}💎 CodeVibe: $CODE_ISSUES issues${NC}"
+    [[ $PERFORMANCE_ISSUES -gt 0 ]] && echo -e "${YELLOW}⚡ PerformanceVibe: $PERFORMANCE_ISSUES issues${NC}"
+    [[ $FILE_ISSUES -gt 0 ]] && echo -e "${CYAN}📁 FileVibe: $FILE_ISSUES issues${NC}"
+    [[ $GIT_ISSUES -gt 0 ]] && echo -e "${GREEN}🔀 GitVibe: $GIT_ISSUES issues${NC}"
+    [[ $DEPENDENCY_ISSUES -gt 0 ]] && echo -e "${BLUE}📦 DependencyVibe: $DEPENDENCY_ISSUES issues${NC}"
+    [[ $DOCUMENTATION_ISSUES -gt 0 ]] && echo -e "${WHITE}📚 DocumentationVibe: $DOCUMENTATION_ISSUES issues${NC}"
+    
+    echo
+    echo -e "${RED}Errors: $TOTAL_ERRORS${NC} | ${YELLOW}Warnings: $TOTAL_WARNINGS${NC} | ${CYAN}Info: $TOTAL_INFO${NC}"
+    
+    local total_issues=$((TOTAL_ERRORS + TOTAL_WARNINGS + TOTAL_INFO))
+    
+    if [[ $total_issues -eq 0 ]]; then
+        echo -e "${GREEN}✨ Vibes are immaculate! No issues found.${NC}"
+    else
+        echo -e "${YELLOW}🌊 Found $total_issues total issues. Consider addressing them for better code quality.${NC}"
+    fi
+    
+    echo
+}
+
+# Configuration functions
+load_configuration() {
+    if [[ -f "$KODEVIBE_CONFIG_FILE" ]]; then
+        echo -e "${BLUE}📋 Loading configuration from $KODEVIBE_CONFIG_FILE${NC}"
+        # TODO: Parse YAML configuration
+        # For now, we use defaults
+    fi
+}
+
+# Utility functions
+prepare_file_list() {
+    find "$@" -type f \( \
+        -name "*.js" -o \
+        -name "*.jsx" -o \
+        -name "*.ts" -o \
+        -name "*.tsx" -o \
+        -name "*.py" -o \
+        -name "*.go" -o \
+        -name "*.java" -o \
+        -name "*.c" -o \
+        -name "*.cpp" -o \
+        -name "*.h" -o \
+        -name "*.hpp" -o \
+        -name "*.php" -o \
+        -name "*.rb" -o \
+        -name "*.rs" -o \
+        -name "*.swift" -o \
+        -name "*.kt" -o \
+        -name "*.scala" -o \
+        -name "*.sh" -o \
+        -name "*.bash" -o \
+        -name "*.zsh" -o \
+        -name "*.fish" -o \
+        -name "*.ps1" -o \
+        -name "*.sql" -o \
+        -name "*.json" -o \
+        -name "*.yaml" -o \
+        -name "*.yml" -o \
+        -name "*.xml" -o \
+        -name "*.html" -o \
+        -name "*.css" -o \
+        -name "*.scss" -o \
+        -name "*.sass" -o \
+        -name "*.less" -o \
+        -name "*.md" -o \
+        -name "*.txt" -o \
+        -name "*.conf" -o \
+        -name "*.config" -o \
+        -name "*.env*" -o \
+        -name "Dockerfile*" -o \
+        -name "Makefile" -o \
+        -name "*.mk" \
+    \) 2>/dev/null
+}
+
+apply_exclusions() {
+    local file_list="$1"
+    shift
+    local exclude_patterns=("$@")
+    
+    # Default exclusions
+    local default_exclusions=(
+        "node_modules/"
+        ".git/"
+        ".svn/"
+        ".hg/"
+        "coverage/"
+        "dist/"
+        "build/"
+        "target/"
+        "vendor/"
+        ".venv/"
+        "venv/"
+        "__pycache__/"
+        ".pytest_cache/"
+        ".mypy_cache/"
+        ".tox/"
+        ".coverage"
+        "*.min.js"
+        "*.min.css"
+        "*.map"
+        "*.log"
+        "*.tmp"
+        "*.swp"
+        "*~"
+    )
+    
+    # Combine default and custom exclusions
+    local all_exclusions=("${default_exclusions[@]}" "${exclude_patterns[@]}")
+    
+    # Filter out excluded files
+    local temp_file="$KODEVIBE_TEMP_DIR/filtered_files.txt"
+    cp "$file_list" "$temp_file"
+    
+    for pattern in "${all_exclusions[@]}"; do
+        grep -v "$pattern" "$temp_file" > "$temp_file.new" 2>/dev/null || true
+        mv "$temp_file.new" "$temp_file"
+    done
+    
+    mv "$temp_file" "$file_list"
+}
+
+filter_staged_files() {
+    local file_list="$1"
+    local staged_files="$KODEVIBE_TEMP_DIR/staged_files.txt"
+    
+    git diff --cached --name-only > "$staged_files"
+    
+    # Only keep files that are both in our list and staged
+    grep -F -f "$staged_files" "$file_list" > "$file_list.tmp" || true
+    mv "$file_list.tmp" "$file_list"
+}
+
+filter_diff_files() {
+    local file_list="$1"
+    local diff_target="$2"
+    local diff_files="$KODEVIBE_TEMP_DIR/diff_files.txt"
+    
+    git diff --name-only "$diff_target" > "$diff_files"
+    
+    # Only keep files that are both in our list and changed
+    grep -F -f "$diff_files" "$file_list" > "$file_list.tmp" || true
+    mv "$file_list.tmp" "$file_list"
+}
+
+is_excluded_secret() {
+    local file="$1"
+    local pattern="$2"
+    
+    # Check if file is in exclusion list
+    local excluded_files=(
+        ".env.example"
+        "README.md"
+        "README.rst"
+        "CHANGELOG.md"
+        "package.json"
+        "go.mod"
+        "requirements.txt"
+        "docker-compose.yml"
+        "docker-compose.yaml"
+        ".gitignore"
+        "LICENSE"
+        "*.test.js"
+        "*.spec.js"
+        "*.test.ts"
+        "*.spec.ts"
+        "test/"
+        "tests/"
+        "__tests__/"
+        "spec/"
+        "examples/"
+        "docs/"
+    )
+    
+    for excluded in "${excluded_files[@]}"; do
+        if [[ "$file" =~ $excluded ]]; then
+            return 0  # true - is excluded
+        fi
+    done
+    
+    return 1  # false - not excluded
+}
+
+generate_report_file() {
+    local format="$1"
+    local output_file="$2"
+    
+    if [[ -z "$output_file" ]]; then
+        output_file="$KODEVIBE_REPORT_DIR/kodevibe-$(date +%Y%m%d-%H%M%S).$format"
+    fi
+    
+    mkdir -p "$(dirname "$output_file")"
+    
+    case "$format" in
+        "json")
+            generate_json_report > "$output_file"
+            ;;
+        "html")
+            generate_html_report > "$output_file"
+            ;;
+        "junit")
+            generate_junit_report > "$output_file"
+            ;;
+        *)
+            echo -e "${RED}Unknown report format: $format${NC}"
+            return 1
+            ;;
+    esac
+    
+    echo -e "${GREEN}Report generated: $output_file${NC}"
+}
+
+generate_json_report() {
+    cat << EOF
+{
+  "kodevibe": {
+    "version": "$KODEVIBE_VERSION",
+    "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+    "summary": {
+      "total_errors": $TOTAL_ERRORS,
+      "total_warnings": $TOTAL_WARNINGS,
+      "total_info": $TOTAL_INFO,
+      "total_issues": $(($TOTAL_ERRORS + $TOTAL_WARNINGS + $TOTAL_INFO))
+    },
+    "vibes": {
+      "security": { "issues": $SECURITY_ISSUES },
+      "code": { "issues": $CODE_ISSUES },
+      "performance": { "issues": $PERFORMANCE_ISSUES },
+      "file": { "issues": $FILE_ISSUES },
+      "git": { "issues": $GIT_ISSUES },
+      "dependency": { "issues": $DEPENDENCY_ISSUES },
+      "documentation": { "issues": $DOCUMENTATION_ISSUES }
+    }
+  }
+}
+EOF
+}
+
+generate_html_report() {
+    cat << EOF
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KodeVibe Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .header { color: #2563eb; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; }
+        .summary { background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .error { color: #dc2626; }
+        .warning { color: #d97706; }
+        .info { color: #0284c7; }
+        .good { color: #16a34a; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌊 KodeVibe Report</h1>
+        <p>Generated on $(date)</p>
+    </div>
+    
+    <div class="summary">
+        <h2>Summary</h2>
+        <p><span class="error">Errors: $TOTAL_ERRORS</span> | 
+           <span class="warning">Warnings: $TOTAL_WARNINGS</span> | 
+           <span class="info">Info: $TOTAL_INFO</span></p>
+    </div>
+    
+    <div class="vibes">
+        <h2>Vibe Results</h2>
+        <ul>
+            <li>🔒 SecurityVibe: $SECURITY_ISSUES issues</li>
+            <li>💎 CodeVibe: $CODE_ISSUES issues</li>
+            <li>⚡ PerformanceVibe: $PERFORMANCE_ISSUES issues</li>
+            <li>📁 FileVibe: $FILE_ISSUES issues</li>
+            <li>🔀 GitVibe: $GIT_ISSUES issues</li>
+            <li>📦 DependencyVibe: $DEPENDENCY_ISSUES issues</li>
+            <li>📚 DocumentationVibe: $DOCUMENTATION_ISSUES issues</li>
+        </ul>
+    </div>
+</body>
+</html>
+EOF
+}
+
+generate_junit_report() {
+    local total_tests=7  # Number of vibe categories
+    local failures=$(( (SECURITY_ISSUES > 0) + (CODE_ISSUES > 0) + (PERFORMANCE_ISSUES > 0) + (FILE_ISSUES > 0) + (GIT_ISSUES > 0) + (DEPENDENCY_ISSUES > 0) + (DOCUMENTATION_ISSUES > 0) ))
+    
+    cat << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="KodeVibe" tests="$total_tests" failures="$failures" errors="0" time="0">
+    <testcase classname="KodeVibe" name="SecurityVibe" time="0">
+        $([ $SECURITY_ISSUES -gt 0 ] && echo "<failure message=\"Found $SECURITY_ISSUES security issues\"/>")
+    </testcase>
+    <testcase classname="KodeVibe" name="CodeVibe" time="0">
+        $([ $CODE_ISSUES -gt 0 ] && echo "<failure message=\"Found $CODE_ISSUES code quality issues\"/>")
+    </testcase>
+    <testcase classname="KodeVibe" name="PerformanceVibe" time="0">
+        $([ $PERFORMANCE_ISSUES -gt 0 ] && echo "<failure message=\"Found $PERFORMANCE_ISSUES performance issues\"/>")
+    </testcase>
+    <testcase classname="KodeVibe" name="FileVibe" time="0">
+        $([ $FILE_ISSUES -gt 0 ] && echo "<failure message=\"Found $FILE_ISSUES file organization issues\"/>")
+    </testcase>
+    <testcase classname="KodeVibe" name="GitVibe" time="0">
+        $([ $GIT_ISSUES -gt 0 ] && echo "<failure message=\"Found $GIT_ISSUES git hygiene issues\"/>")
+    </testcase>
+    <testcase classname="KodeVibe" name="DependencyVibe" time="0">
+        $([ $DEPENDENCY_ISSUES -gt 0 ] && echo "<failure message=\"Found $DEPENDENCY_ISSUES dependency issues\"/>")
+    </testcase>
+    <testcase classname="KodeVibe" name="DocumentationVibe" time="0">
+        $([ $DOCUMENTATION_ISSUES -gt 0 ] && echo "<failure message=\"Found $DOCUMENTATION_ISSUES documentation issues\"/>")
+    </testcase>
+</testsuite>
+EOF
+}
+
+# Command implementations
+install_command() {
+    echo -e "${BLUE}🌊 Installing KodeVibe...${NC}"
+    
+    # Copy kodevibe to /usr/local/bin or ~/.local/bin
+    local install_dir="/usr/local/bin"
+    if [[ ! -w "$install_dir" ]]; then
+        install_dir="$HOME/.local/bin"
+        mkdir -p "$install_dir"
+    fi
+    
+    cp "$0" "$install_dir/kodevibe"
+    chmod +x "$install_dir/kodevibe"
+    
+    echo -e "${GREEN}✓ KodeVibe installed to $install_dir${NC}"
+    
+    # Create default configuration
+    if [[ ! -f "$KODEVIBE_CONFIG_FILE" ]]; then
+        create_default_config
+        echo -e "${GREEN}✓ Created default configuration: $KODEVIBE_CONFIG_FILE${NC}"
+    fi
+    
+    echo -e "${BLUE}🎉 Installation complete! Run 'kodevibe scan' to get started.${NC}"
+}
+
+hooks_command() {
+    case "${1:-}" in
+        "install")
+            install_git_hooks
+            ;;
+        "uninstall")
+            uninstall_git_hooks
+            ;;
+        "test")
+            test_git_hooks
+            ;;
+        *)
+            echo "Usage: kodevibe hooks [install|uninstall|test]"
+            exit 1
+            ;;
+    esac
+}
+
+install_git_hooks() {
+    if [[ ! -d ".git" ]]; then
+        echo -e "${RED}Not a git repository${NC}"
+        exit 1
+    fi
+    
+    echo -e "${BLUE}Installing git hooks...${NC}"
+    
+    # Pre-commit hook
+    cat > .git/hooks/pre-commit << 'EOF'
+#!/bin/bash
+echo "🌊 KodeVibe - Pre-commit scan..."
+kodevibe scan --vibes security,code,file --staged --ci
+exit $?
+EOF
+
+    # Pre-push hook  
+    cat > .git/hooks/pre-push << 'EOF'
+#!/bin/bash
+echo "🌊 KodeVibe - Pre-push validation..."
+kodevibe scan --vibes security,code,performance,git --ci
+exit $?
+EOF
+
+    chmod +x .git/hooks/pre-commit .git/hooks/pre-push
+    
+    echo -e "${GREEN}✓ Git hooks installed${NC}"
+}
+
+uninstall_git_hooks() {
+    rm -f .git/hooks/pre-commit .git/hooks/pre-push
+    echo -e "${GREEN}✓ Git hooks removed${NC}"
+}
+
+test_git_hooks() {
+    echo -e "${BLUE}Testing git hooks...${NC}"
+    
+    if [[ -x ".git/hooks/pre-commit" ]]; then
+        echo "Testing pre-commit hook..."
+        .git/hooks/pre-commit
+    fi
+    
+    if [[ -x ".git/hooks/pre-push" ]]; then
+        echo "Testing pre-push hook..."
+        .git/hooks/pre-push
+    fi
+}
+
+config_command() {
+    case "${1:-show}" in
+        "show")
+            show_configuration
+            ;;
+        "init")
+            create_default_config
+            ;;
+        *)
+            echo "Usage: kodevibe config [show|init]"
+            exit 1
+            ;;
+    esac
+}
+
+show_configuration() {
+    if [[ -f "$KODEVIBE_CONFIG_FILE" ]]; then
+        echo -e "${BLUE}Current configuration ($KODEVIBE_CONFIG_FILE):${NC}"
+        cat "$KODEVIBE_CONFIG_FILE"
+    else
+        echo -e "${YELLOW}No configuration file found. Run 'kodevibe config init' to create one.${NC}"
+    fi
+}
+
+create_default_config() {
+    cat > "$KODEVIBE_CONFIG_FILE" << 'EOF'
+# KodeVibe Configuration
+vibes:
+  security:
+    enabled: true
+    level: strict
+    
+  code:
+    enabled: true
+    level: moderate
+    max_function_length: 50
+    max_nesting_depth: 4
+    
+  performance:
+    enabled: true
+    level: moderate
+    
+  file:
+    enabled: true
+    level: strict
+    
+  git:
+    enabled: true
+    min_commit_message_length: 10
+    
+  dependency:
+    enabled: true
+    
+  documentation:
+    enabled: false
+
+# File exclusions
+exclude:
+  files:
+    - "node_modules/**/*"
+    - ".git/**/*"
+    - "coverage/**/*"
+    - "dist/**/*"
+    - "build/**/*"
+    - "*.min.js"
+    - "*.min.css"
+
+# Custom rules
+custom_rules:
+  - name: "no-console-log"
+    pattern: "console\\.log\\("
+    message: "Remove console.log statements"
+    severity: warning
+EOF
+
+    echo -e "${GREEN}✓ Created default configuration: $KODEVIBE_CONFIG_FILE${NC}"
+}
+
+fix_command() {
+    dispatch_to_engine fix "$@"
+    echo -e "${BLUE}🔧 Auto-fixing issues...${NC}"
+    echo -e "${YELLOW}Auto-fix functionality coming soon!${NC}"
+    # TODO: Implement auto-fix for common issues
+}
+
+report_command() {
+    echo -e "${BLUE}📊 Generating detailed report...${NC}"
+    scan_command --report --format html "$@"
+}
+
+profile_command() {
+    echo -e "${BLUE}📈 Performance profiling...${NC}"
+    echo -e "${YELLOW}Profiling functionality coming soon!${NC}"
+    # TODO: Implement performance profiling
+}
+
+watch_command() {
+    dispatch_to_engine watch "$@"
+    echo -e "${BLUE}👀 Watching for changes...${NC}"
+    echo -e "${YELLOW}Watch mode coming soon!${NC}"
+    # TODO: Implement file watching
+}
+
+server_command() {
+    dispatch_to_engine server "$@"
+    echo -e "${BLUE}🚀 Starting KodeVibe server...${NC}"
+    echo -e "${YELLOW}Server mode coming soon!${NC}"
+    # TODO: Implement HTTP server
+}
+
+update_command() {
+    echo -e "${BLUE}🔄 Updating KodeVibe...${NC}"
+    
+    # Check for updates (GitHub releases)
+    local latest_version
+    latest_version=$(curl -s "https://api.github.com/repos/kooshapari/kodevibe/releases/latest" | grep -o '"tag_name": "v[^"]*"' | cut -d'"' -f4 | sed 's/v//' || echo "")
+    
+    if [[ -n "$latest_version" && "$latest_version" != "$KODEVIBE_VERSION" ]]; then
+        echo -e "${YELLOW}New version available: $latest_version (current: $KODEVIBE_VERSION)${NC}"
+        echo "Visit https://github.com/kooshapari/kodevibe for update instructions"
+    else
+        echo -e "${GREEN}✓ KodeVibe is up to date${NC}"
+    fi
+}
+
+version_command() {
+    echo "KodeVibe v$KODEVIBE_VERSION"
+    echo "The Ultimate Code Quality Guardian"
+    echo "https://github.com/kooshapari/kodevibe"
+}
+
+help_command() {
+    cat << EOF
+🌊 KodeVibe v$KODEVIBE_VERSION - The Ultimate Code Quality Guardian
+
+USAGE:
+    kodevibe [COMMAND] [OPTIONS]
+
+COMMANDS:
+    scan, check         Scan for code quality issues (default)
+    install             Install KodeVibe system-wide
+    hooks               Manage git hooks (install/uninstall/test)
+    config              Manage configuration (show/init)
+    fix                 Auto-fix issues where possible
+    report              Generate detailed report
+    profile             Performance profiling
+    watch               Watch for changes and scan automatically
+    server              Start HTTP API server
+    update              Check for updates
+    version             Show version information
+    help                Show this help message
+
+SCAN OPTIONS:
+    --vibes VIBES       Comma-separated list of vibes to check
+                        (security,code,performance,file,git,dependency,documentation)
+    --path PATH         Scan specific path (can be used multiple times)
+    --exclude PATTERN   Exclude files matching pattern
+    --min-severity LVL  Minimum severity level (error,warning,info)
+    --format FORMAT     Output format (text,json,html,junit)
+    --ci                CI mode (exit codes for automation)
+    --strict            Strict mode (fail on any issues)
+    --report            Generate report file
+    --output FILE       Report output file
+    --staged            Only scan staged files
+    --diff TARGET       Only scan files changed since TARGET
+    --timeout SECONDS   Timeout for scan operation
+
+EXAMPLES:
+    kodevibe                                    # Scan with default vibes
+    kodevibe scan --vibes security,code        # Scan specific vibes
+    kodevibe scan --path src/ --path tests/    # Scan specific directories
+    kodevibe scan --staged                     # Scan only staged files
+    kodevibe scan --ci --strict                # CI mode with strict checking
+    kodevibe hooks install                     # Install git hooks
+    kodevibe config init                       # Create default configuration
+
+VIBES:
+    🔒 SecurityVibe     - Secrets, vulnerabilities, security anti-patterns
+    💎 CodeVibe         - Code quality, smells, style violations
+    ⚡ PerformanceVibe  - Performance issues, anti-patterns
+    📁 FileVibe         - File organization, junk files
+    🔀 GitVibe          - Git hygiene, commit quality  
+    📦 DependencyVibe   - Dependency issues, vulnerabilities
+    📚 DocumentationVibe - Missing docs, outdated documentation
+
+For more information, visit: https://github.com/kooshapari/kodevibe
+EOF
+}
+
+# Cleanup function
+cleanup() {
+    rm -rf "$KODEVIBE_TEMP_DIR" 2>/dev/null || true
+}
+
+# Set up signal handling
+trap cleanup EXIT INT TERM
+
+# Run main function
+main "$@"

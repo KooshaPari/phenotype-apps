@@ -1,0 +1,61 @@
+name: Governance
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  governance-checks:
+    name: Governance checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+        with:
+          persist-credentials: false
+
+      - name: Verify CODEOWNERS is present and non-empty
+        run: |
+          set -euo pipefail
+          if [ ! -s .github/CODEOWNERS ] && [ ! -s CODEOWNERS ] && [ ! -s docs/CODEOWNERS ]; then
+            echo "::error::No CODEOWNERS file found."
+            exit 1
+          fi
+
+      - name: Verify required governance files
+        run: |
+          set -euo pipefail
+          missing=()
+          for f in SECURITY.md README.md LICENSE; do
+            if [ ! -s "$f" ]; then
+              missing+=("$f")
+            fi
+          done
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::error::Missing required files: ${missing[*]}"
+            exit 1
+          fi
+
+      - name: Verify workflow pin integrity
+        run: |
+          set -euo pipefail
+          bad=$(grep -rE 'uses:\s+[^@]+@(v[0-9]+|main|master)' .github/workflows/ || true)
+          if [ -n "$bad" ]; then
+            echo "::error::Unpinned actions (use full commit SHA):"
+            echo "$bad"
+            exit 1
+          fi
+          echo "All third-party actions are pinned to a commit SHA."

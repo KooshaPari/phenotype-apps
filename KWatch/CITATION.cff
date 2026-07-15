@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use KWatch, please cite this repository."
+title: KWatch
+type: software
+authors:
+  - family-names: Pari
+    given-names: Koosha
+repository-code: "https://github.com/KooshaPari/KWatch"
+license: MIT

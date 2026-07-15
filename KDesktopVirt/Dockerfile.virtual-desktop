@@ -1,0 +1,69 @@
+# KVirtualStage Virtual Desktop Environment
+# Lightweight container with full desktop environment for AI agent automation
+
+FROM ubuntu:22.04
+
+# Prevent interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+ENV USER=kvirtualstage
+ENV HOME=/app
+
+# Install desktop environment and VNC server
+RUN apt-get update && apt-get install -y \
+    sudo curl wget git \
+    xorg x11-xserver-utils \
+    xfce4 xfce4-goodies \
+    tigervnc-standalone-server tigervnc-common \
+    pulseaudio alsa-utils \
+    firefox \
+    thunar \
+    mousepad \
+    galculator \
+    xfce4-terminal \
+    build-essential pkg-config libssl-dev \
+    ffmpeg scrot \
+    xdotool wmctrl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create user for virtual desktop
+RUN useradd -m -s /bin/bash $USER && \
+    echo "$USER:$USER" | chpasswd && \
+    usermod -aG sudo,audio,video $USER && \
+    mkdir -p $HOME/.vnc $HOME/.config/xfce4
+
+# Set VNC password
+RUN echo "$USER" | vncpasswd -f > $HOME/.vnc/passwd && \
+    chmod 600 $HOME/.vnc/passwd && \
+    chown -R $USER:$USER $HOME
+
+# Copy VNC startup script
+COPY docker/xstartup $HOME/.vnc/xstartup
+COPY docker/entrypoint-desktop.sh /entrypoint.sh
+
+# Make scripts executable
+RUN chmod +x $HOME/.vnc/xstartup /entrypoint.sh && \
+    chown $USER:$USER $HOME/.vnc/xstartup
+
+# Copy pre-built KVirtualStage binary
+COPY target/release/kvirtualstage /usr/local/bin/kvirtualstage
+RUN chmod +x /usr/local/bin/kvirtualstage
+
+# Switch to user and setup environment
+USER $USER
+WORKDIR $HOME
+
+# Create desktop directories
+RUN mkdir -p Desktop Documents Downloads Pictures \
+    .config/autostart \
+    .local/share/applications
+
+# Expose VNC port and web UI port
+EXPOSE 5901 3000
+
+# Set environment variables
+ENV DISPLAY=:1
+ENV XDG_SESSION_TYPE=x11
+ENV XDG_CURRENT_DESKTOP=XFCE
+
+# Start virtual desktop
+ENTRYPOINT ["/entrypoint.sh"]

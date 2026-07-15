@@ -1,0 +1,39 @@
+[collection]
+name = "Eidolon"
+version = "0.0.1"
+repo = "https://github.com/KooshaPari/phenotype-infrakit"
+description = "Unified trait-based device automation for desktop, mobile, and sandbox environments"
+authors = ["Phenotype Team"]
+license = "MIT OR Apache-2.0"
+theme = "device automation"
+
+[[crate]]
+name = "eidolon-core"
+version = "0.0.1"
+status = "alpha"
+stability = "0.x"
+description = "Traits, events, error types for device automation (no implementation)"
+
+[[crate]]
+name = "eidolon-desktop"
+version = "0.0.1"
+status = "stub"
+stability = "0.x"
+description = "Desktop automation for macOS, Windows, Linux (FFmpeg integration)"
+source = "KDesktopVirt"
+
+[[crate]]
+name = "eidolon-mobile"
+version = "0.0.1"
+status = "stub"
+stability = "0.x"
+description = "Mobile automation for iOS, Android (XCTest/UiAutomator)"
+source = "kmobile"
+
+[[crate]]
+name = "eidolon-sandbox"
+version = "0.0.1"
+status = "stub"
+stability = "0.x"
+description = "Sandbox automation for Docker, nanoVMs, KVM"
+source = "KVirtualStage"

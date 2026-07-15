@@ -1,0 +1,152 @@
+FROM ubuntu:22.04
+
+# Prevent interactive prompts during installation
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DISPLAY=:1
+
+# Install KDE Plasma and automation tools
+RUN apt-get update && apt-get install -y \
+    # KDE Desktop Environment
+    kde-plasma-desktop \
+    plasma-desktop \
+    konsole \
+    dolphin \
+    kate \
+    kcalc \
+    # Display and VNC
+    xvfb \
+    x11vnc \
+    x11-utils \
+    x11-xserver-utils \
+    # Automation tools
+    python3 \
+    python3-pip \
+    python3-dev \
+    python3-xlib \
+    # Accessibility
+    at-spi2-core \
+    python3-pyatspi \
+    # Computer vision
+    libopencv-dev \
+    python3-opencv \
+    # Additional tools
+    curl \
+    wget \
+    unzip \
+    supervisor \
+    dbus-x11 \
+    # Image manipulation
+    imagemagick \
+    scrot \
+    # Browsers for testing
+    firefox \
+    chromium-browser \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python automation libraries
+RUN pip3 install --no-cache-dir \
+    pyautogui \
+    opencv-python \
+    pillow \
+    numpy \
+    python-xlib \
+    dogtail \
+    selenium \
+    playwright \
+    pynput \
+    screeninfo \
+    easyocr \
+    # UI-TARS dependencies
+    torch \
+    transformers \
+    diffusers
+
+# Install Playwright browsers
+RUN playwright install chromium firefox
+
+# Set up accessibility for KDE
+ENV QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+ENV QT_ACCESSIBILITY=1
+ENV GNOME_ACCESSIBILITY=1
+
+# Create automation user
+RUN useradd -m -s /bin/bash automation && \
+    echo 'automation:automation' | chpasswd && \
+    usermod -aG sudo automation
+
+# Create directories
+RUN mkdir -p /home/automation/.vnc /home/automation/automation /var/log/supervisor
+
+# Copy automation scripts
+COPY automation_stack.py /home/automation/automation/
+COPY kde_automation_demo.py /home/automation/automation/
+COPY mcp_integration.py /home/automation/automation/
+
+# Create supervisor configuration file
+RUN echo '[supervisord]\n\
+nodaemon=true\n\
+user=root\n\
+\n\
+[program:xvfb]\n\
+command=/usr/bin/Xvfb :1 -screen 0 1280x1024x24 -ac +extension GLX +render -noreset\n\
+user=automation\n\
+autorestart=true\n\
+\n\
+[program:kde]\n\
+command=/usr/bin/startplasma-x11\n\
+user=automation\n\
+environment=DISPLAY=":1",HOME="/home/automation",USER="automation"\n\
+autorestart=true\n\
+\n\
+[program:x11vnc]\n\
+command=/usr/bin/x11vnc -display :1 -nopw -listen localhost -xkb -ncache 10 -ncache_cr -forever -shared\n\
+user=automation\n\
+autorestart=true\n\
+\n\
+[program:dbus]\n\
+command=/usr/bin/dbus-launch --exit-with-session\n\
+user=automation\n\
+autorestart=true' > /etc/supervisor/conf.d/supervisord.conf
+
+# Set permissions
+RUN chown -R automation:automation /home/automation
+
+# Create startup script  
+RUN echo '#!/bin/bash\n\
+export DISPLAY=:1\n\
+export HOME=/home/automation\n\
+export USER=automation\n\
+\n\
+# Start dbus\n\
+dbus-launch --sh-syntax --exit-with-session &\n\
+\n\
+# Wait for X to start\n\
+sleep 5\n\
+\n\
+# Start supervisor\n\
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf' > /startup.sh
+
+RUN chmod +x /startup.sh
+
+# Expose VNC port
+EXPOSE 5900
+
+# Switch to automation user for final setup
+USER automation
+WORKDIR /home/automation
+
+# Configure KDE for automation
+RUN mkdir -p ~/.config/autostart ~/.local/share/applications
+
+# Create desktop entry for automation script
+RUN echo '[Desktop Entry]\n\
+Name=Automation Demo\n\
+Comment=KDE Automation Demonstration\n\
+Exec=python3 /home/automation/automation/kde_automation_demo.py\n\
+Terminal=false\n\
+Type=Application\n\
+Categories=Development;' > ~/.local/share/applications/automation-demo.desktop
+
+USER root
+
+CMD ["/startup.sh"]

@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kvirtualstage-config
+  namespace: kvirtualstage
+  labels:
+    app: kvirtualstage
+    component: config
+data:
+  kvirtualstage.toml: |
+    [server]
+    host = "0.0.0.0"
+    port = 8080
+    workers = 8
+    max_connections = 1000
+
+    [redis]
+    url = "redis://kvirtualstage-redis:6379"
+    pool_size = 20
+    connection_timeout = 5
+    command_timeout = 3
+    retry_attempts = 3
+
+    [session]
+    ttl = 86400  # 24 hours
+    cleanup_interval = 3600  # 1 hour
+    max_sessions_per_user = 10
+
+    [metrics]
+    enabled = true
+    port = 9090
+    path = "/metrics"
+    
+    [logging]
+    level = "info"
+    format = "json"
+    
+    [security]
+    cors_origins = ["*"]
+    rate_limit_rpm = 1000
+    
+    [virtualization]
+    docker_socket = "/var/run/docker.sock"
+    image_pull_policy = "IfNotPresent"
+    container_timeout = 300
+    max_containers_per_session = 5
+
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+
+    rule_files:
+      - "kvirtualstage_rules.yml"
+
+    scrape_configs:
+      - job_name: 'kvirtualstage'
+        static_configs:
+          - targets: ['kvirtualstage-service:9090']
+        metrics_path: /metrics
+        scrape_interval: 10s
+
+      - job_name: 'redis'
+        static_configs:
+          - targets: ['kvirtualstage-redis:6379']
+
+  kvirtualstage_rules.yml: |
+    groups:
+    - name: kvirtualstage
+      rules:
+      - alert: HighMemoryUsage
+        expr: kvirtualstage_memory_usage_percent > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is above 85% for more than 5 minutes"
+
+      - alert: HighSessionCount
+        expr: kvirtualstage_active_sessions > 800
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High number of active sessions"
+          description: "Active sessions count is above 800"
+
+      - alert: RedisConnectionFailure
+        expr: kvirtualstage_redis_connection_errors_total > 10
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis connection failures"
+          description: "Redis connection errors exceeded threshold"

@@ -1,0 +1,49 @@
+{
+  "name": "macOS Calculator Demo - Immediate Execution",
+  "description": "Simple calculator automation for immediate testing",
+  "version": "1.0",
+  "metadata": {
+    "platform": "macos",
+    "target_app": "Calculator"
+  },
+  "steps": [
+    {
+      "step": 1,
+      "action": "take_screenshot",
+      "output": "screenshots/01_host_desktop.png",
+      "description": "Capture initial desktop state"
+    },
+    {
+      "step": 2,
+      "action": "open_application",
+      "target": "Calculator",
+      "method": "spotlight",
+      "wait": 2000,
+      "description": "Open Calculator via Spotlight"
+    },
+    {
+      "step": 3,
+      "action": "take_screenshot", 
+      "output": "screenshots/02_calculator_opened.png",
+      "description": "Calculator opened"
+    },
+    {
+      "step": 4,
+      "action": "type_text",
+      "text": "123*456",
+      "description": "Enter calculation"
+    },
+    {
+      "step": 5,
+      "action": "key_press",
+      "key": "return",
+      "description": "Execute calculation"
+    },
+    {
+      "step": 6,
+      "action": "take_screenshot",
+      "output": "screenshots/03_calculation_result.png", 
+      "description": "Capture result: 123 × 456 = 56,088"
+    }
+  ]
+}

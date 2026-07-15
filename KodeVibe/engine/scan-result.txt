@@ -1,0 +1,117 @@
+🌊 KodeVibe - Scanning for bad vibes...
+📁 Paths: integration-test-workspace
+
+{"level":"info","msg":"Starting scan","paths":["integration-test-workspace"],"scan_id":"ab5c5240-6c85-41f3-b0a4-dc7b56efbd06","time":"2025-07-07T23:36:23-04:00","vibes":[]}
+{"filtered_files":3,"level":"info","msg":"File discovery completed","skipped_files":0,"time":"2025-07-07T23:36:23-04:00","total_files":3}
+{"duration":6922750,"errors":1,"info":10,"level":"info","msg":"Scan completed","scan_id":"ab5c5240-6c85-41f3-b0a4-dc7b56efbd06","time":"2025-07-07T23:36:23-04:00","total_issues":26,"warnings":15}
+🌊 KodeVibe Scan Report
+==================================================
+Scan ID: ab5c5240-6c85-41f3-b0a4-dc7b56efbd06
+Started: 2025-07-07T23:36:23-04:00
+Duration: 6.92275ms
+Files Scanned: 3
+Files Skipped: 0
+
+📊 Summary
+--------------------
+Total Issues: 26
+Errors: 1
+Warnings: 15
+Info: 10
+Score: 5.0 (F)
+
+🎯 Issues by Type
+--------------------
+code: 24
+security: 2
+
+🔍 Detailed Issues
+--------------------
+
+🔸 code (24 issues)
+  ℹ️ TODO/FIXME comment found
+    File: integration-test-workspace/test.go:9
+    Rule: todo-comments
+    Message: TODO/FIXME comments should be tracked in issues
+    Fix: Create an issue to track this task
+
+  ℹ️ context.TODO() usage
+    File: integration-test-workspace/test.go:9
+    Rule: no-context-todo
+    Message: Replace context.TODO() with proper context
+    Fix: Use context.Background() or pass context from caller
+
+  ⚠️ Panic usage detected
+    File: integration-test-workspace/test.go:14
+    Rule: no-panic
+    Message: Avoid panic, return errors instead
+    Fix: Return error instead of using panic
+
+  ⚠️ Duplicate code detected
+    File: integration-test-workspace/test.go:2
+    Rule: duplicate-code
+    Message: Code block appears 2 times in the file
+    Fix: Extract duplicate code into a reusable function
+
+  ⚠️ Duplicate code detected
+    File: integration-test-workspace/test.go:3
+    Rule: duplicate-code
+    Message: Code block appears 2 times in the file
+    Fix: Extract duplicate code into a reusable function
+
+  ⚠️ Use let/const instead of var
+    File: integration-test-workspace/test.js:2
+    Rule: no-var
+    Message: Prefer let or const over var for variable declarations
+    Fix: Replace var with let or const
+
+  ⚠️ Console.log statement found
+    File: integration-test-workspace/test.js:3
+    Rule: no-console-log
+    Message: Console.log statements should be removed before production
+    Fix: Remove console.log or use a proper logging library
+
+  ⚠️ Use strict equality
+    File: integration-test-workspace/test.js:6
+    Rule: strict-equality
+    Message: Use === instead of == for strict equality comparison
+    Fix: Replace == with ===
+
+  ℹ️ Magic number detected
+    File: integration-test-workspace/test.js:7
+    Rule: magic-numbers
+    Message: Magic number '42' should be replaced with a named constant
+    Fix: Replace magic number with a named constant
+
+  ⚠️ Use let/const instead of var
+    File: integration-test-workspace/test.js:7
+    Rule: no-var
+    Message: Prefer let or const over var for variable declarations
+    Fix: Replace var with let or const
+
+  ... and 14 more issues
+
+🔸 security (2 issues)
+  ⚠️ Dangerous eval() usage
+    File: integration-test-workspace/test.py:4
+    Rule: eval-usage
+    Message: Using eval() or similar functions can lead to code injection vulnerabilities
+    Fix: Avoid eval(), use safer alternatives like JSON.parse() for data
+
+  ❌ Hardcoded credentials detected
+    File: integration-test-workspace/test.py:6
+    Rule: hardcoded-credentials
+    Message: Hardcoded passwords, keys, or tokens should not be stored in source code
+    Fix: Use environment variables or secure configuration management
+
+
+==================================================
+📊 Scan Summary
+⏱️  Duration: 7.296125ms
+📄 Files scanned: 3
+⚠️  Total issues: 26
+❌ Errors: 1
+⚠️  Warnings: 15
+ℹ️  Info: 10
+📈 Score: 5.0 (F)
+==================================================

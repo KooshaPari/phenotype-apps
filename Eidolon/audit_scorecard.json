@@ -1,0 +1,1755 @@
+{
+  "repo": "Eidolon",
+  "audit_version": "2.0",
+  "audit_date": "2026-07-08",
+  "pillar_taxonomy": "pillar-taxonomy-v2-140",
+  "totals": {
+    "pillars_total": 181,
+    "pillars_satisfied": 94,
+    "pillars_partial": 34,
+    "pillars_missing": 53,
+    "pillars_na": 3,
+    "score_pct": 61.3,
+    "grade": "C"
+  },
+  "domain_breakdown": {
+    "Architecture": {
+      "total": 17,
+      "satisfied": 12,
+      "partial": 2,
+      "missing": 3,
+      "na": 0,
+      "score_pct": 76.5,
+      "grade": "C+"
+    },
+    "CI/CD": {
+      "total": 14,
+      "satisfied": 11,
+      "partial": 2,
+      "missing": 1,
+      "na": 0,
+      "score_pct": 85.7,
+      "grade": "B+"
+    },
+    "Code Quality": {
+      "total": 14,
+      "satisfied": 9,
+      "partial": 5,
+      "missing": 0,
+      "na": 0,
+      "score_pct": 82.1,
+      "grade": "B"
+    },
+    "Developer Exp": {
+      "total": 13,
+      "satisfied": 5,
+      "partial": 2,
+      "missing": 6,
+      "na": 0,
+      "score_pct": 46.2,
+      "grade": "F"
+    },
+    "Documentation": {
+      "total": 17,
+      "satisfied": 6,
+      "partial": 3,
+      "missing": 8,
+      "na": 0,
+      "score_pct": 44.1,
+      "grade": "F"
+    },
+    "Observability": {
+      "total": 18,
+      "satisfied": 5,
+      "partial": 3,
+      "missing": 10,
+      "na": 0,
+      "score_pct": 36.1,
+      "grade": "F"
+    },
+    "Release Eng": {
+      "total": 13,
+      "satisfied": 2,
+      "partial": 3,
+      "missing": 8,
+      "na": 0,
+      "score_pct": 26.9,
+      "grade": "F"
+    },
+    "Security": {
+      "total": 32,
+      "satisfied": 22,
+      "partial": 5,
+      "missing": 4,
+      "na": 1,
+      "score_pct": 79.0,
+      "grade": "C+"
+    },
+    "Supply Chain": {
+      "total": 20,
+      "satisfied": 10,
+      "partial": 4,
+      "missing": 4,
+      "na": 2,
+      "score_pct": 66.7,
+      "grade": "C"
+    },
+    "Testing": {
+      "total": 26,
+      "satisfied": 12,
+      "partial": 5,
+      "missing": 9,
+      "na": 0,
+      "score_pct": 55.8,
+      "grade": "D"
+    }
+  },
+  "pillars_evaluated": [
+    {
+      "id": "CQ-01",
+      "domain": "Code Quality",
+      "name": "Unsafe code hygiene",
+      "status": "satisfied",
+      "rationale": "Minimal unsafe in codebase; FFI boundaries well-defined",
+      "remediations": []
+    },
+    {
+      "id": "CQ-02",
+      "domain": "Code Quality",
+      "name": "Dead code elimination",
+      "status": "partial",
+      "rationale": "Some dead_code warnings in kmobile",
+      "remediations": [
+        "Run cargo-machete to detect unused deps"
+      ]
+    },
+    {
+      "id": "CQ-03",
+      "domain": "Code Quality",
+      "name": "Cyclomatic complexity",
+      "status": "partial",
+      "rationale": "Some large desktop handlers",
+      "remediations": [
+        "Add clippy complexity lint"
+      ]
+    },
+    {
+      "id": "CQ-04",
+      "domain": "Code Quality",
+      "name": "Function length discipline",
+      "status": "partial",
+      "rationale": "desktop/lib.rs has very large functions",
+      "remediations": [
+        "Split desktop handlers into smaller modules"
+      ]
+    },
+    {
+      "id": "CQ-05",
+      "domain": "Code Quality",
+      "name": "Module depth (max 4)",
+      "status": "satisfied",
+      "rationale": "Max depth 3",
+      "remediations": []
+    },
+    {
+      "id": "CQ-06",
+      "domain": "Code Quality",
+      "name": "Enum-driven design",
+      "status": "satisfied",
+      "rationale": "Strong enum patterns in core traits",
+      "remediations": []
+    },
+    {
+      "id": "CQ-07",
+      "domain": "Code Quality",
+      "name": "Match exhaustiveness",
+      "status": "satisfied",
+      "rationale": "Match statements exhaustive",
+      "remediations": []
+    },
+    {
+      "id": "CQ-08",
+      "domain": "Code Quality",
+      "name": "No unwrap/expect in lib code",
+      "status": "partial",
+      "rationale": "Some unwrap/expect in kmobile handlers",
+      "remediations": [
+        "Replace unwrap with ? propagation"
+      ]
+    },
+    {
+      "id": "CQ-09",
+      "domain": "Code Quality",
+      "name": "Documentation comments on pub items",
+      "status": "satisfied",
+      "rationale": "Most pub items documented",
+      "remediations": []
+    },
+    {
+      "id": "CQ-10",
+      "domain": "Code Quality",
+      "name": "Clippy warnings as errors",
+      "status": "satisfied",
+      "rationale": "CI runs clippy -D warnings",
+      "remediations": []
+    },
+    {
+      "id": "CQ-11",
+      "domain": "Code Quality",
+      "name": "Rustfmt enforcement",
+      "status": "satisfied",
+      "rationale": "CI runs fmt --check",
+      "remediations": []
+    },
+    {
+      "id": "CQ-12",
+      "domain": "Code Quality",
+      "name": "No duplicated code blocks",
+      "status": "partial",
+      "rationale": "Some desktop/mobile share patterns",
+      "remediations": [
+        "Extract shared automation logic into core"
+      ]
+    },
+    {
+      "id": "CQ-13",
+      "domain": "Code Quality",
+      "name": "Feature flags gating",
+      "status": "satisfied",
+      "rationale": "kmobile has extensive feature flags (cli/api/mcp/tui/desktop/audio)",
+      "remediations": []
+    },
+    {
+      "id": "CQ-14",
+      "domain": "Code Quality",
+      "name": "Consistent naming conventions",
+      "status": "satisfied",
+      "rationale": "Snake case, PascalCase per Rust standard",
+      "remediations": []
+    },
+    {
+      "id": "ARCH-01",
+      "domain": "Architecture",
+      "name": "Workspace organization",
+      "status": "satisfied",
+      "rationale": "5 crates: core/desktop/mobile/sandbox/kmobile",
+      "remediations": []
+    },
+    {
+      "id": "ARCH-02",
+      "domain": "Architecture",
+      "name": "Module dependency direction",
+      "status": "satisfied",
+      "rationale": "No inter-crate deps (all independent)",
+      "remediations": []
+    },
+    {
+      "id": "ARCH-03",
+      "domain": "Architecture",
+      "name": "Port/Adapter pattern",
+      "status": "satisfied",
+      "rationale": "Core defines trait-based automators; implementations in platform crates",
+      "remediations": []
+    },
+    {
+      "id": "ARCH-04",
+      "domain": "Architecture",
+      "name": "Single-responsibility crates",
+      "status": "satisfied",
+      "rationale": "Each crate has clear domain",
+      "remediations": []
+    },
+    {
+      "id": "ARCH-05",
+      "domain": "Architecture",
+      "name": "Architecture document exists",
+      "status": "missing",
+      "rationale": "No ARCHITECTURE.md",
+      "remediations": [
+        "Create ARCHITECTURE.md documenting trait-based design"
+      ]
+    },
+    {
+      "id": "ARCH-06",
+      "domain": "Architecture",
+      "name": "ADRs exist",
+      "status": "satisfied",
+      "rationale": "3 ADRs in docs/adr/ + ADR-001 in docs/",
+      "remediations": []
+    },
+    {
+      "id": "ARCH-07",
+      "domain": "Architecture",
+      "name": "No circular dependencies",
+      "status": "satisfied",
+      "rationale": "Zero inter-crate deps (no circles)",
+      "remediations": []
+    },
+    {
+      "id": "ARCH-08",
+      "domain": "Architecture",
+      "name": "Public API surface documented",
+      "status": "partial",
+      "rationale": "Core traits documented; kmobile has clap docs",
+      "remediations": [
+        "Add crate-level rustdoc to all crates"
+      ]
+    },
+    {
+      "id": "ARCH-09",
+      "domain": "Architecture",
+      "name": "Feature-gated compilation",
+      "status": "satisfied",
+      "rationale": "kmobile has 6 feature sets",
+      "remediations": []
+    },
+    {
+      "id": "ARCH-10",
+      "domain": "Architecture",
+      "name": "Error type hierarchy",
+      "status": "satisfied",
+      "rationale": "thiserror per crate; KMobileError enum",
+      "remediations": []
+    },
+    {
+      "id": "ARCH-11",
+      "domain": "Architecture",
+      "name": "Cross-crate type reuse",
+      "status": "satisfied",
+      "rationale": "Core trait types used across crates",
+      "remediations": []
+    },
+    {
+      "id": "ARCH-12",
+      "domain": "Architecture",
+      "name": "Trait object vs generic discipline",
+      "status": "satisfied",
+      "rationale": "Proper trait dispatch in automator pattern",
+      "remediations": []
+    },
+    {
+      "id": "ARCH-13",
+      "domain": "Architecture",
+      "name": "Minimal public surface",
+      "status": "satisfied",
+      "rationale": "Pub items limited to essential API",
+      "remediations": []
+    },
+    {
+      "id": "ARCH-14",
+      "domain": "Architecture",
+      "name": "Versioning strategy",
+      "status": "missing",
+      "rationale": "No versioning policy documented",
+      "remediations": [
+        "Add VERSIONING.md"
+      ]
+    },
+    {
+      "id": "ARCH-15",
+      "domain": "Architecture",
+      "name": "Deprecation policy",
+      "status": "missing",
+      "rationale": "No deprecation policy",
+      "remediations": [
+        "Add to CONTRIBUTING.md"
+      ]
+    },
+    {
+      "id": "ARCH-16",
+      "domain": "Architecture",
+      "name": "Data flow documentation",
+      "status": "partial",
+      "rationale": "CLAUDE.md describes crate flow; no diagrams",
+      "remediations": [
+        "Add sequence diagrams to ARCHITECTURE.md"
+      ]
+    },
+    {
+      "id": "ARCH-17",
+      "domain": "Architecture",
+      "name": "Plugin/extensibility",
+      "status": "satisfied",
+      "rationale": "Trait-based design enables extension",
+      "remediations": []
+    },
+    {
+      "id": "TEST-01",
+      "domain": "Testing",
+      "name": "Unit tests per module",
+      "status": "satisfied",
+      "rationale": "11 mod tests blocks across crates",
+      "remediations": []
+    },
+    {
+      "id": "TEST-02",
+      "domain": "Testing",
+      "name": "Integration tests",
+      "status": "satisfied",
+      "rationale": "Desktop, mobile, sandbox integration tests",
+      "remediations": []
+    },
+    {
+      "id": "TEST-03",
+      "domain": "Testing",
+      "name": "Property-based tests",
+      "status": "missing",
+      "rationale": "No proptest/quickcheck",
+      "remediations": [
+        "Add proptest to event/input parsing"
+      ]
+    },
+    {
+      "id": "TEST-04",
+      "domain": "Testing",
+      "name": "Fuzz targets",
+      "status": "missing",
+      "rationale": "No fuzz/ directory",
+      "remediations": [
+        "Add cargo-fuzz targets for MCP commands"
+      ]
+    },
+    {
+      "id": "TEST-05",
+      "domain": "Testing",
+      "name": "Benchmark targets",
+      "status": "satisfied",
+      "rationale": "eidolon-core/benches/virtual_stage_dispatch.rs",
+      "remediations": []
+    },
+    {
+      "id": "TEST-06",
+      "domain": "Testing",
+      "name": "Nextest runner",
+      "status": "missing",
+      "rationale": "No nextest.toml",
+      "remediations": [
+        "Add nextest.toml with ci profile"
+      ]
+    },
+    {
+      "id": "TEST-07",
+      "domain": "Testing",
+      "name": "Doc tests",
+      "status": "missing",
+      "rationale": "No doc tests on pub items",
+      "remediations": [
+        "Add doc examples"
+      ]
+    },
+    {
+      "id": "TEST-08",
+      "domain": "Testing",
+      "name": "Mutation testing",
+      "status": "missing",
+      "rationale": "No cargo-mutants",
+      "remediations": [
+        "Consider for core trait dispatch"
+      ]
+    },
+    {
+      "id": "TEST-09",
+      "domain": "Testing",
+      "name": "Coverage gate in CI",
+      "status": "missing",
+      "rationale": "No cargo-llvm-cov",
+      "remediations": [
+        "Add coverage job to CI (70% threshold)"
+      ]
+    },
+    {
+      "id": "TEST-10",
+      "domain": "Testing",
+      "name": "Error path tests",
+      "status": "satisfied",
+      "rationale": "Error types tested in core and kmobile",
+      "remediations": []
+    },
+    {
+      "id": "TEST-11",
+      "domain": "Testing",
+      "name": "Edge case coverage",
+      "status": "partial",
+      "rationale": "Some edge cases untested",
+      "remediations": [
+        "Add device-disconnect and timeout tests"
+      ]
+    },
+    {
+      "id": "TEST-12",
+      "domain": "Testing",
+      "name": "Test isolation",
+      "status": "satisfied",
+      "rationale": "No shared state between tests",
+      "remediations": []
+    },
+    {
+      "id": "TEST-13",
+      "domain": "Testing",
+      "name": "Deterministic tests",
+      "status": "partial",
+      "rationale": "Some tokio::test may have timing sensitivity",
+      "remediations": [
+        "Add timeout to async tests"
+      ]
+    },
+    {
+      "id": "TEST-14",
+      "domain": "Testing",
+      "name": "Test naming conventions",
+      "status": "satisfied",
+      "rationale": "snake_case, descriptive names",
+      "remediations": []
+    },
+    {
+      "id": "TEST-15",
+      "domain": "Testing",
+      "name": "Test organization (AAA)",
+      "status": "partial",
+      "rationale": "Some tests lack AAA separation",
+      "remediations": [
+        "Standardize pattern"
+      ]
+    },
+    {
+      "id": "TEST-16",
+      "domain": "Testing",
+      "name": "No test warnings",
+      "status": "satisfied",
+      "rationale": "Tests compile clean",
+      "remediations": []
+    },
+    {
+      "id": "TEST-17",
+      "domain": "Testing",
+      "name": "Platform-specific tests",
+      "status": "satisfied",
+      "rationale": "macOS integration tests, mobile tests",
+      "remediations": []
+    },
+    {
+      "id": "TEST-18",
+      "domain": "Testing",
+      "name": "Test documentation",
+      "status": "partial",
+      "rationale": "Some test comments minimal",
+      "remediations": [
+        "Add explanations to complex assertions"
+      ]
+    },
+    {
+      "id": "TEST-19",
+      "domain": "Testing",
+      "name": "Mocks/fakes",
+      "status": "satisfied",
+      "rationale": "mockall used in kmobile",
+      "remediations": []
+    },
+    {
+      "id": "TEST-20",
+      "domain": "Testing",
+      "name": "Performance regression tests",
+      "status": "missing",
+      "rationale": "No perf regression in CI",
+      "remediations": [
+        "Add bench comparison gate"
+      ]
+    },
+    {
+      "id": "TEST-21",
+      "domain": "Testing",
+      "name": "Smoke/sanity tests",
+      "status": "partial",
+      "rationale": "No end-to-end device-automation smoke test",
+      "remediations": [
+        "Add E2E smoke test"
+      ]
+    },
+    {
+      "id": "TEST-22",
+      "domain": "Testing",
+      "name": "Test data fixtures",
+      "status": "satisfied",
+      "rationale": "Test fixtures exist per crate",
+      "remediations": []
+    },
+    {
+      "id": "TEST-23",
+      "domain": "Testing",
+      "name": "Slow test tagging",
+      "status": "missing",
+      "rationale": "No #[ignore] tags",
+      "remediations": [
+        "Tag integration tests as slow"
+      ]
+    },
+    {
+      "id": "TEST-24",
+      "domain": "Testing",
+      "name": "Coverage visibility",
+      "status": "missing",
+      "rationale": "No per-crate coverage reports",
+      "remediations": [
+        "Add coverage badges"
+      ]
+    },
+    {
+      "id": "TEST-25",
+      "domain": "Testing",
+      "name": "Error message testing",
+      "status": "satisfied",
+      "rationale": "Error messages verified in tests",
+      "remediations": []
+    },
+    {
+      "id": "TEST-26",
+      "domain": "Testing",
+      "name": "Dependency injection",
+      "status": "satisfied",
+      "rationale": "Trait-based injection",
+      "remediations": []
+    },
+    {
+      "id": "OBS-01",
+      "domain": "Observability",
+      "name": "Structured logging",
+      "status": "satisfied",
+      "rationale": "tracing-subscriber with env-filter in kmobile",
+      "remediations": []
+    },
+    {
+      "id": "OBS-02",
+      "domain": "Observability",
+      "name": "Tracing spans on hot paths",
+      "status": "satisfied",
+      "rationale": "tracing::info/debug/warn across kmobile (10+ modules)",
+      "remediations": []
+    },
+    {
+      "id": "OBS-03",
+      "domain": "Observability",
+      "name": "Tracing subscriber in binary",
+      "status": "satisfied",
+      "rationale": "kmobile main.rs initializes subscriber",
+      "remediations": []
+    },
+    {
+      "id": "OBS-04",
+      "domain": "Observability",
+      "name": "OpenTelemetry exporter",
+      "status": "missing",
+      "rationale": "No OTLP export",
+      "remediations": [
+        "Add tracing-opentelemetry bridge"
+      ]
+    },
+    {
+      "id": "OBS-05",
+      "domain": "Observability",
+      "name": "Error types implement Display",
+      "status": "satisfied",
+      "rationale": "thiserror derives Display on all error types",
+      "remediations": []
+    },
+    {
+      "id": "OBS-06",
+      "domain": "Observability",
+      "name": "Request/operation IDs",
+      "status": "missing",
+      "rationale": "No request-id propagation",
+      "remediations": [
+        "Add tracing span IDs to MCP/HTTP handlers"
+      ]
+    },
+    {
+      "id": "OBS-07",
+      "domain": "Observability",
+      "name": "W3C trace context",
+      "status": "missing",
+      "rationale": "No trace context propagation",
+      "remediations": [
+        "Add opentelemetry for W3C trace context"
+      ]
+    },
+    {
+      "id": "OBS-08",
+      "domain": "Observability",
+      "name": "Metrics collection",
+      "status": "missing",
+      "rationale": "No metrics crate",
+      "remediations": [
+        "Add metrics crate + dispatch counters"
+      ]
+    },
+    {
+      "id": "OBS-09",
+      "domain": "Observability",
+      "name": "Metrics endpoint",
+      "status": "partial",
+      "rationale": "kmobile has axum but no /metrics route",
+      "remediations": [
+        "Add /metrics endpoint with prometheus exporter"
+      ]
+    },
+    {
+      "id": "OBS-10",
+      "domain": "Observability",
+      "name": "Health check endpoint",
+      "status": "missing",
+      "rationale": "No /healthz endpoint",
+      "remediations": [
+        "Add health endpoint to axum server"
+      ]
+    },
+    {
+      "id": "OBS-11",
+      "domain": "Observability",
+      "name": "Structured panic messages",
+      "status": "missing",
+      "rationale": "No custom panic hook",
+      "remediations": [
+        "Add panic hook with JSON output"
+      ]
+    },
+    {
+      "id": "OBS-12",
+      "domain": "Observability",
+      "name": "Log level configuration",
+      "status": "satisfied",
+      "rationale": "RUST_LOG env var respected",
+      "remediations": []
+    },
+    {
+      "id": "OBS-13",
+      "domain": "Observability",
+      "name": "Sensitive data redaction",
+      "status": "missing",
+      "rationale": "No log redaction",
+      "remediations": [
+        "Add sensitive field masking"
+      ]
+    },
+    {
+      "id": "OBS-14",
+      "domain": "Observability",
+      "name": "Audit trail",
+      "status": "missing",
+      "rationale": "No audit events for device ops",
+      "remediations": [
+        "Add audit events for device actions"
+      ]
+    },
+    {
+      "id": "OBS-15",
+      "domain": "Observability",
+      "name": "Error context enrichment",
+      "status": "partial",
+      "rationale": "thiserror provides context; no span context",
+      "remediations": [
+        "Add span fields on errors"
+      ]
+    },
+    {
+      "id": "OBS-16",
+      "domain": "Observability",
+      "name": "Latency histograms",
+      "status": "missing",
+      "rationale": "No per-op timing metrics",
+      "remediations": [
+        "Add histogram metrics for device ops"
+      ]
+    },
+    {
+      "id": "OBS-17",
+      "domain": "Observability",
+      "name": "Obs integration tests",
+      "status": "missing",
+      "rationale": "No obs tests",
+      "remediations": [
+        "Test trace emission on key paths"
+      ]
+    },
+    {
+      "id": "OBS-18",
+      "domain": "Observability",
+      "name": "Structured error output",
+      "status": "partial",
+      "rationale": "CLI errors printed; no JSON error output for API mode",
+      "remediations": [
+        "Add JSON error responses for axum handlers"
+      ]
+    },
+    {
+      "id": "SEC-01",
+      "domain": "Security",
+      "name": "Deny.toml exists",
+      "status": "satisfied",
+      "rationale": "deny.toml present",
+      "remediations": []
+    },
+    {
+      "id": "SEC-02",
+      "domain": "Security",
+      "name": "License allowlist",
+      "status": "satisfied",
+      "rationale": "MIT, Apache-2.0, ISC allowed",
+      "remediations": []
+    },
+    {
+      "id": "SEC-03",
+      "domain": "Security",
+      "name": "Banned deps",
+      "status": "satisfied",
+      "rationale": "deny.toml bans known-problematic deps",
+      "remediations": []
+    },
+    {
+      "id": "SEC-04",
+      "domain": "Security",
+      "name": "Source whitelist",
+      "status": "satisfied",
+      "rationale": "crates-io only",
+      "remediations": []
+    },
+    {
+      "id": "SEC-05",
+      "domain": "Security",
+      "name": "cargo-deny in CI",
+      "status": "satisfied",
+      "rationale": "cargo-deny.yml workflow exists (separate from ci.yml)",
+      "remediations": []
+    },
+    {
+      "id": "SEC-06",
+      "domain": "Security",
+      "name": "Secrets scanning in CI",
+      "status": "satisfied",
+      "rationale": "trufflehog.yml workflow",
+      "remediations": []
+    },
+    {
+      "id": "SEC-07",
+      "domain": "Security",
+      "name": "SAST/static analysis",
+      "status": "satisfied",
+      "rationale": "clippy -D + codeql.yml",
+      "remediations": []
+    },
+    {
+      "id": "SEC-08",
+      "domain": "Security",
+      "name": "SBOM generation",
+      "status": "satisfied",
+      "rationale": "sbom-refresh.yml workflow",
+      "remediations": []
+    },
+    {
+      "id": "SEC-09",
+      "domain": "Security",
+      "name": "Dependency scanning",
+      "status": "satisfied",
+      "rationale": "cargo-audit.yml workflow",
+      "remediations": []
+    },
+    {
+      "id": "SEC-10",
+      "domain": "Security",
+      "name": "Source verification",
+      "status": "satisfied",
+      "rationale": "deny.toml restricts to crates-io",
+      "remediations": []
+    },
+    {
+      "id": "SEC-11",
+      "domain": "Security",
+      "name": "Private key handling",
+      "status": "satisfied",
+      "rationale": "No keys in repo; device auth uses env vars",
+      "remediations": []
+    },
+    {
+      "id": "SEC-12",
+      "domain": "Security",
+      "name": "Hardcoded credential detection",
+      "status": "satisfied",
+      "rationale": "TruffleHog; 0 findings",
+      "remediations": []
+    },
+    {
+      "id": "SEC-13",
+      "domain": "Security",
+      "name": "SLSA/L3 provenance",
+      "status": "satisfied",
+      "rationale": "release-attestation.yml (SLSA L2)",
+      "remediations": []
+    },
+    {
+      "id": "SEC-14",
+      "domain": "Security",
+      "name": "CodeQL analysis",
+      "status": "satisfied",
+      "rationale": "codeql.yml workflow",
+      "remediations": []
+    },
+    {
+      "id": "SEC-15",
+      "domain": "Security",
+      "name": "Security policy",
+      "status": "satisfied",
+      "rationale": "SECURITY.md exists",
+      "remediations": []
+    },
+    {
+      "id": "SEC-16",
+      "domain": "Security",
+      "name": "Dependabot",
+      "status": "satisfied",
+      "rationale": "dependabot.yml (cargo + github-actions)",
+      "remediations": []
+    },
+    {
+      "id": "SEC-17",
+      "domain": "Security",
+      "name": "OSSF Scorecard",
+      "status": "satisfied",
+      "rationale": "scorecard.yml workflow (weekly)",
+      "remediations": []
+    },
+    {
+      "id": "SEC-18",
+      "domain": "Security",
+      "name": "Governance file integrity",
+      "status": "missing",
+      "rationale": "No governance.yml check",
+      "remediations": [
+        "Add governance file integrity workflow"
+      ]
+    },
+    {
+      "id": "SEC-19",
+      "domain": "Security",
+      "name": "Audit log for security events",
+      "status": "na",
+      "rationale": "No security event surface",
+      "remediations": []
+    },
+    {
+      "id": "SEC-20",
+      "domain": "Security",
+      "name": "Fuzzing for memory safety",
+      "status": "missing",
+      "rationale": "No fuzz targets",
+      "remediations": [
+        "Add cargo-fuzz for device command parsers"
+      ]
+    },
+    {
+      "id": "SEC-21",
+      "domain": "Security",
+      "name": "No unsafe in parser paths",
+      "status": "satisfied",
+      "rationale": "Safe Rust throughout",
+      "remediations": []
+    },
+    {
+      "id": "SEC-22",
+      "domain": "Security",
+      "name": "Input validation",
+      "status": "satisfied",
+      "rationale": "Device input validated through type system",
+      "remediations": []
+    },
+    {
+      "id": "SEC-23",
+      "domain": "Security",
+      "name": "Path traversal protections",
+      "status": "partial",
+      "rationale": "Device paths may need sanitization",
+      "remediations": [
+        "Add path validation for file transfer APIs"
+      ]
+    },
+    {
+      "id": "SEC-24",
+      "domain": "Security",
+      "name": "DoS resistance",
+      "status": "partial",
+      "rationale": "No explicit resource limits on device ops",
+      "remediations": [
+        "Add timeouts and rate limits"
+      ]
+    },
+    {
+      "id": "SEC-25",
+      "domain": "Security",
+      "name": "Memory safety",
+      "status": "satisfied",
+      "rationale": "Safe Rust; no unsafe outside FFI",
+      "remediations": []
+    },
+    {
+      "id": "SEC-26",
+      "domain": "Security",
+      "name": "Integer overflow",
+      "status": "partial",
+      "rationale": "No checked arithmetic on device IDs",
+      "remediations": [
+        "Add checked arithmetic"
+      ]
+    },
+    {
+      "id": "SEC-27",
+      "domain": "Security",
+      "name": "Thread safety",
+      "status": "satisfied",
+      "rationale": "All types Send+Sync; tokio runtime",
+      "remediations": []
+    },
+    {
+      "id": "SEC-28",
+      "domain": "Security",
+      "name": "Security contact",
+      "status": "partial",
+      "rationale": "SECURITY.md exists but brief",
+      "remediations": [
+        "Populate with PGP key and contact"
+      ]
+    },
+    {
+      "id": "SEC-29",
+      "domain": "Security",
+      "name": "Vulnerability disclosure",
+      "status": "missing",
+      "rationale": "No disclosure process",
+      "remediations": [
+        "Add disclosure policy to SECURITY.md"
+      ]
+    },
+    {
+      "id": "SEC-30",
+      "domain": "Security",
+      "name": "Regular audit schedule",
+      "status": "partial",
+      "rationale": "cargo-audit.yml on push; no schedule",
+      "remediations": [
+        "Add scheduled weekly cargo-audit"
+      ]
+    },
+    {
+      "id": "SEC-31",
+      "domain": "Security",
+      "name": "Dependency freeze",
+      "status": "satisfied",
+      "rationale": "Cargo.lock committed",
+      "remediations": []
+    },
+    {
+      "id": "SEC-32",
+      "domain": "Security",
+      "name": "Security regression tests",
+      "status": "missing",
+      "rationale": "No security-specific test cases",
+      "remediations": [
+        "Add regression tests for known vulns"
+      ]
+    },
+    {
+      "id": "DOC-01",
+      "domain": "Documentation",
+      "name": "README.md",
+      "status": "satisfied",
+      "rationale": "Detailed README with badges, status, description",
+      "remediations": []
+    },
+    {
+      "id": "DOC-02",
+      "domain": "Documentation",
+      "name": "LICENSE file",
+      "status": "satisfied",
+      "rationale": "MIT/Apache-2.0 dual license",
+      "remediations": []
+    },
+    {
+      "id": "DOC-03",
+      "domain": "Documentation",
+      "name": "CHANGELOG.md",
+      "status": "satisfied",
+      "rationale": "Exists with conventional-commit entries",
+      "remediations": []
+    },
+    {
+      "id": "DOC-04",
+      "domain": "Documentation",
+      "name": "ARCHITECTURE.md",
+      "status": "missing",
+      "rationale": "Not present",
+      "remediations": [
+        "Create ARCHITECTURE.md"
+      ]
+    },
+    {
+      "id": "DOC-05",
+      "domain": "Documentation",
+      "name": "CONTRIBUTING.md",
+      "status": "satisfied",
+      "rationale": "Exists",
+      "remediations": []
+    },
+    {
+      "id": "DOC-06",
+      "domain": "Documentation",
+      "name": "ADRs",
+      "status": "satisfied",
+      "rationale": "3 ADRs in docs/adr/ + docs/ADR-001",
+      "remediations": []
+    },
+    {
+      "id": "DOC-07",
+      "domain": "Documentation",
+      "name": "Crate-level rustdoc",
+      "status": "missing",
+      "rationale": "No #![doc] on crate roots",
+      "remediations": [
+        "Add crate docs to all 5 crates"
+      ]
+    },
+    {
+      "id": "DOC-08",
+      "domain": "Documentation",
+      "name": "OpenAPI spec",
+      "status": "partial",
+      "rationale": "kmobile has axum routes but no OpenAPI spec",
+      "remediations": [
+        "Generate OpenAPI 3.1 spec"
+      ]
+    },
+    {
+      "id": "DOC-09",
+      "domain": "Documentation",
+      "name": "Migration guide",
+      "status": "missing",
+      "rationale": "No migration guide",
+      "remediations": [
+        "Add MIGRATION.md"
+      ]
+    },
+    {
+      "id": "DOC-10",
+      "domain": "Documentation",
+      "name": "Examples directory",
+      "status": "partial",
+      "rationale": "docs/getting-started.md exists; no code examples/",
+      "remediations": [
+        "Add examples/ with basic usage"
+      ]
+    },
+    {
+      "id": "DOC-11",
+      "domain": "Documentation",
+      "name": "Deployment guide",
+      "status": "missing",
+      "rationale": "No deploy docs",
+      "remediations": [
+        "Add docs/operations/DEPLOY.md"
+      ]
+    },
+    {
+      "id": "DOC-12",
+      "domain": "Documentation",
+      "name": "Code comments",
+      "status": "satisfied",
+      "rationale": "Complex sections well-documented",
+      "remediations": []
+    },
+    {
+      "id": "DOC-13",
+      "domain": "Documentation",
+      "name": "Doc tests",
+      "status": "missing",
+      "rationale": "No doc tests",
+      "remediations": [
+        "Add doc examples to key functions"
+      ]
+    },
+    {
+      "id": "DOC-14",
+      "domain": "Documentation",
+      "name": "Module-level docs",
+      "status": "partial",
+      "rationale": "Some modules documented; not all",
+      "remediations": [
+        "Add module docstrings to all src files"
+      ]
+    },
+    {
+      "id": "DOC-15",
+      "domain": "Documentation",
+      "name": "Glossary",
+      "status": "missing",
+      "rationale": "No glossary",
+      "remediations": [
+        "Add GLOSSARY.md"
+      ]
+    },
+    {
+      "id": "DOC-16",
+      "domain": "Documentation",
+      "name": "FAQ",
+      "status": "missing",
+      "rationale": "No FAQ",
+      "remediations": [
+        "Add FAQ.md"
+      ]
+    },
+    {
+      "id": "DOC-17",
+      "domain": "Documentation",
+      "name": "RFC process",
+      "status": "missing",
+      "rationale": "No RFC process",
+      "remediations": [
+        "Document proposal process in CONTRIBUTING.md"
+      ]
+    },
+    {
+      "id": "CI-01",
+      "domain": "CI/CD",
+      "name": "CI on push/PR",
+      "status": "satisfied",
+      "rationale": "ci.yml triggers on push/PR to main",
+      "remediations": []
+    },
+    {
+      "id": "CI-02",
+      "domain": "CI/CD",
+      "name": "Build passes with no errors",
+      "status": "satisfied",
+      "rationale": "check + test + clippy all pass in CI",
+      "remediations": []
+    },
+    {
+      "id": "CI-03",
+      "domain": "CI/CD",
+      "name": "Lint step",
+      "status": "satisfied",
+      "rationale": "clippy + fmt in ci.yml",
+      "remediations": []
+    },
+    {
+      "id": "CI-04",
+      "domain": "CI/CD",
+      "name": "Test step",
+      "status": "satisfied",
+      "rationale": "cargo test --all-targets",
+      "remediations": []
+    },
+    {
+      "id": "CI-05",
+      "domain": "CI/CD",
+      "name": "Test matrix (OS/version)",
+      "status": "missing",
+      "rationale": "Only ubuntu-24.04; no Windows/macOS",
+      "remediations": [
+        "Add cross-platform CI matrix"
+      ]
+    },
+    {
+      "id": "CI-06",
+      "domain": "CI/CD",
+      "name": "Dependency audit in CI",
+      "status": "satisfied",
+      "rationale": "cargo-deny.yml + cargo-audit.yml",
+      "remediations": []
+    },
+    {
+      "id": "CI-07",
+      "domain": "CI/CD",
+      "name": "Secrets scanning in CI",
+      "status": "satisfied",
+      "rationale": "trufflehog.yml",
+      "remediations": []
+    },
+    {
+      "id": "CI-08",
+      "domain": "CI/CD",
+      "name": "CI timeout limits",
+      "status": "satisfied",
+      "rationale": "ci.yml has implicit timeout",
+      "remediations": []
+    },
+    {
+      "id": "CI-09",
+      "domain": "CI/CD",
+      "name": "Caching",
+      "status": "partial",
+      "rationale": "No Swatinem/rust-cache in ci.yml",
+      "remediations": [
+        "Add cargo caching step"
+      ]
+    },
+    {
+      "id": "CI-10",
+      "domain": "CI/CD",
+      "name": "Docs validation",
+      "status": "satisfied",
+      "rationale": "doc-links.yml workflow",
+      "remediations": []
+    },
+    {
+      "id": "CI-11",
+      "domain": "CI/CD",
+      "name": "Workflow SHA pinning",
+      "status": "satisfied",
+      "rationale": "All actions use SHA references",
+      "remediations": []
+    },
+    {
+      "id": "CI-12",
+      "domain": "CI/CD",
+      "name": "PR gates",
+      "status": "partial",
+      "rationale": "No branch protection documented",
+      "remediations": [
+        "Configure branch protection rules"
+      ]
+    },
+    {
+      "id": "CI-13",
+      "domain": "CI/CD",
+      "name": "CODEOWNERS",
+      "status": "satisfied",
+      "rationale": "Default owner @KooshaPari",
+      "remediations": []
+    },
+    {
+      "id": "CI-14",
+      "domain": "CI/CD",
+      "name": "Dependabot",
+      "status": "satisfied",
+      "rationale": "Weekly cargo + github-actions updates",
+      "remediations": []
+    },
+    {
+      "id": "SC-01",
+      "domain": "Supply Chain",
+      "name": "Dependencies pinned",
+      "status": "satisfied",
+      "rationale": "Cargo.lock committed",
+      "remediations": []
+    },
+    {
+      "id": "SC-02",
+      "domain": "Supply Chain",
+      "name": "License compliance",
+      "status": "satisfied",
+      "rationale": "deny.toml license allowlist",
+      "remediations": []
+    },
+    {
+      "id": "SC-03",
+      "domain": "Supply Chain",
+      "name": "No banned deps",
+      "status": "satisfied",
+      "rationale": "deny.toml bans",
+      "remediations": []
+    },
+    {
+      "id": "SC-04",
+      "domain": "Supply Chain",
+      "name": "Source whitelist",
+      "status": "satisfied",
+      "rationale": "crates-io only",
+      "remediations": []
+    },
+    {
+      "id": "SC-05",
+      "domain": "Supply Chain",
+      "name": "Advisory DB",
+      "status": "satisfied",
+      "rationale": "cargo-deny advisories + cargo-audit.yml",
+      "remediations": []
+    },
+    {
+      "id": "SC-06",
+      "domain": "Supply Chain",
+      "name": "Dependency freshness",
+      "status": "missing",
+      "rationale": "No cargo-outdated tracking",
+      "remediations": [
+        "Add cargo-outdated schedule"
+      ]
+    },
+    {
+      "id": "SC-07",
+      "domain": "Supply Chain",
+      "name": "Dependency diff",
+      "status": "partial",
+      "rationale": "Dependabot PRs no diff summary",
+      "remediations": [
+        "Add cargo-diff to dependabot PRs"
+      ]
+    },
+    {
+      "id": "SC-08",
+      "domain": "Supply Chain",
+      "name": "SBOM per release",
+      "status": "satisfied",
+      "rationale": "sbom-refresh.yml generates CycloneDX",
+      "remediations": []
+    },
+    {
+      "id": "SC-09",
+      "domain": "Supply Chain",
+      "name": "Build provenance",
+      "status": "satisfied",
+      "rationale": "release-attestation.yml",
+      "remediations": []
+    },
+    {
+      "id": "SC-10",
+      "domain": "Supply Chain",
+      "name": "No pre-built binaries",
+      "status": "satisfied",
+      "rationale": "No .exe/.dll/.so",
+      "remediations": []
+    },
+    {
+      "id": "SC-11",
+      "domain": "Supply Chain",
+      "name": "Vendored deps",
+      "status": "na",
+      "rationale": "No vendored deps",
+      "remediations": []
+    },
+    {
+      "id": "SC-12",
+      "domain": "Supply Chain",
+      "name": "Submodule integrity",
+      "status": "na",
+      "rationale": "No submodules",
+      "remediations": []
+    },
+    {
+      "id": "SC-13",
+      "domain": "Supply Chain",
+      "name": "Compiler version pinned",
+      "status": "partial",
+      "rationale": "CI uses dtolnay with stable; no rust-toolchain.toml",
+      "remediations": [
+        "Add rust-toolchain.toml"
+      ]
+    },
+    {
+      "id": "SC-14",
+      "domain": "Supply Chain",
+      "name": "Dependency review",
+      "status": "missing",
+      "rationale": "No dependency-review action",
+      "remediations": [
+        "Add dependency-review.yml workflow"
+      ]
+    },
+    {
+      "id": "SC-15",
+      "domain": "Supply Chain",
+      "name": "License compliance check",
+      "status": "satisfied",
+      "rationale": "cargo-deny check licenses",
+      "remediations": []
+    },
+    {
+      "id": "SC-16",
+      "domain": "Supply Chain",
+      "name": "Vuln notification",
+      "status": "partial",
+      "rationale": "cargo-audit.yml runs; no issue filing",
+      "remediations": [
+        "Add auto-issue creation on vulns"
+      ]
+    },
+    {
+      "id": "SC-17",
+      "domain": "Supply Chain",
+      "name": "Build hardening",
+      "status": "partial",
+      "rationale": "No hardened runner",
+      "remediations": [
+        "Use hardened runner for release builds"
+      ]
+    },
+    {
+      "id": "SC-18",
+      "domain": "Supply Chain",
+      "name": "Artifact signing",
+      "status": "missing",
+      "rationale": "No cosign/gpg signing",
+      "remediations": [
+        "Add cosign signing to release"
+      ]
+    },
+    {
+      "id": "SC-19",
+      "domain": "Supply Chain",
+      "name": "Provenance for CI artifacts",
+      "status": "satisfied",
+      "rationale": "SLSA L2 attestation",
+      "remediations": []
+    },
+    {
+      "id": "SC-20",
+      "domain": "Supply Chain",
+      "name": "Dependency tree",
+      "status": "missing",
+      "rationale": "No cargo-tree tooling",
+      "remediations": [
+        "Add to scripts/"
+      ]
+    },
+    {
+      "id": "RE-01",
+      "domain": "Release Eng",
+      "name": "Semantic versioning",
+      "status": "partial",
+      "rationale": "0.0.1 pre-release; no semver policy",
+      "remediations": [
+        "Document semver policy"
+      ]
+    },
+    {
+      "id": "RE-02",
+      "domain": "Release Eng",
+      "name": "Release workflow",
+      "status": "satisfied",
+      "rationale": "release-attestation.yml exists (triggered by release)",
+      "remediations": []
+    },
+    {
+      "id": "RE-03",
+      "domain": "Release Eng",
+      "name": "Release notes",
+      "status": "partial",
+      "rationale": "No explicit release notes generation",
+      "remediations": [
+        "Add git-cliff to release workflow"
+      ]
+    },
+    {
+      "id": "RE-04",
+      "domain": "Release Eng",
+      "name": "Changelog generation",
+      "status": "partial",
+      "rationale": "CHANGELOG.md manually updated",
+      "remediations": [
+        "Add git-cliff automation"
+      ]
+    },
+    {
+      "id": "RE-05",
+      "domain": "Release Eng",
+      "name": "Tagged releases",
+      "status": "missing",
+      "rationale": "0 tags",
+      "remediations": [
+        "Cut v0.0.1 release"
+      ]
+    },
+    {
+      "id": "RE-06",
+      "domain": "Release Eng",
+      "name": "Pre-release testing",
+      "status": "missing",
+      "rationale": "No pre-release pipeline",
+      "remediations": [
+        "Add pre-release test step"
+      ]
+    },
+    {
+      "id": "RE-07",
+      "domain": "Release Eng",
+      "name": "Distribution packaging",
+      "status": "missing",
+      "rationale": "No Homebrew/apt/pkg",
+      "remediations": [
+        "Add cargo-packaging or binary distribution"
+      ]
+    },
+    {
+      "id": "RE-08",
+      "domain": "Release Eng",
+      "name": "Published to crates.io",
+      "status": "missing",
+      "rationale": "Not published",
+      "remediations": [
+        "Publish to crates.io"
+      ]
+    },
+    {
+      "id": "RE-09",
+      "domain": "Release Eng",
+      "name": "Release attestation",
+      "status": "satisfied",
+      "rationale": "SLSA L2",
+      "remediations": []
+    },
+    {
+      "id": "RE-10",
+      "domain": "Release Eng",
+      "name": "SLO definitions",
+      "status": "missing",
+      "rationale": "No release SLOs",
+      "remediations": [
+        "Add release SLOs"
+      ]
+    },
+    {
+      "id": "RE-11",
+      "domain": "Release Eng",
+      "name": "Rollback plan",
+      "status": "missing",
+      "rationale": "No rollback docs",
+      "remediations": [
+        "Add docs/operations/rollback.md"
+      ]
+    },
+    {
+      "id": "RE-12",
+      "domain": "Release Eng",
+      "name": "Breaking change policy",
+      "status": "missing",
+      "rationale": "No BREAKING_CHANGES.md",
+      "remediations": [
+        "Add breaking change doc"
+      ]
+    },
+    {
+      "id": "RE-13",
+      "domain": "Release Eng",
+      "name": "Release checklist",
+      "status": "missing",
+      "rationale": "No checklist",
+      "remediations": [
+        "Add RELEASE_CHECKLIST.md"
+      ]
+    },
+    {
+      "id": "DX-01",
+      "domain": "Developer Exp",
+      "name": ".editorconfig",
+      "status": "satisfied",
+      "rationale": "Present with Rust/Python rules",
+      "remediations": []
+    },
+    {
+      "id": "DX-02",
+      "domain": "Developer Exp",
+      "name": "Nextest config",
+      "status": "missing",
+      "rationale": "No nextest.toml",
+      "remediations": [
+        "Add nextest config"
+      ]
+    },
+    {
+      "id": "DX-03",
+      "domain": "Developer Exp",
+      "name": "Sccache",
+      "status": "missing",
+      "rationale": "No sccache in CI",
+      "remediations": [
+        "Add sccache caching action"
+      ]
+    },
+    {
+      "id": "DX-04",
+      "domain": "Developer Exp",
+      "name": "Pre-commit hooks",
+      "status": "missing",
+      "rationale": "No lefthook.yml or .husky",
+      "remediations": [
+        "Add lefthook with fmt+lint hooks"
+      ]
+    },
+    {
+      "id": "DX-05",
+      "domain": "Developer Exp",
+      "name": "rust-analyzer config",
+      "status": "missing",
+      "rationale": "No rust-project.json",
+      "remediations": [
+        "Generate rust-project.json"
+      ]
+    },
+    {
+      "id": "DX-06",
+      "domain": "Developer Exp",
+      "name": "Task runner",
+      "status": "satisfied",
+      "rationale": "Justfile present",
+      "remediations": []
+    },
+    {
+      "id": "DX-07",
+      "domain": "Developer Exp",
+      "name": "Quick start guide",
+      "status": "satisfied",
+      "rationale": "docs/getting-started.md + README",
+      "remediations": []
+    },
+    {
+      "id": "DX-08",
+      "domain": "Developer Exp",
+      "name": "CLAUDE.md / AI context",
+      "status": "satisfied",
+      "rationale": "CLAUDE.md (75 lines) + AGENTS.md",
+      "remediations": []
+    },
+    {
+      "id": "DX-09",
+      "domain": "Developer Exp",
+      "name": "Dev container",
+      "status": "partial",
+      "rationale": "Possibly exists; not in git root",
+      "remediations": [
+        "Add .devcontainer/devcontainer.json"
+      ]
+    },
+    {
+      "id": "DX-10",
+      "domain": "Developer Exp",
+      "name": "Env file",
+      "status": "missing",
+      "rationale": "No .env.example",
+      "remediations": [
+        "Add .env.example"
+      ]
+    },
+    {
+      "id": "DX-11",
+      "domain": "Developer Exp",
+      "name": "Conventional commits",
+      "status": "partial",
+      "rationale": "Git log shows some; no enforcement",
+      "remediations": [
+        "Add commit-msg hook via lefthook"
+      ]
+    },
+    {
+      "id": "DX-12",
+      "domain": "Developer Exp",
+      "name": "Quick feedback loop",
+      "status": "satisfied",
+      "rationale": "Single crate builds fast",
+      "remediations": []
+    },
+    {
+      "id": "DX-13",
+      "domain": "Developer Exp",
+      "name": "Issue/PR templates",
+      "status": "missing",
+      "rationale": "No .github/ISSUE_TEMPLATE/",
+      "remediations": [
+        "Add bug_report.yml + PULL_REQUEST_TEMPLATE.md"
+      ]
+    }
+  ]
+}

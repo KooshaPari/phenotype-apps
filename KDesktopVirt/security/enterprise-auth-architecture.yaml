@@ -1,0 +1,434 @@
+# Enterprise Authentication and Authorization Architecture for KVirtualStage
+# This file defines the comprehensive authentication and authorization framework
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kvirtualstage-auth-config
+  namespace: kvirtualstage-security
+  labels:
+    app: kvirtualstage
+    component: auth-architecture
+    security-tier: enterprise
+data:
+  auth-config.yaml: |
+    # Authentication Configuration
+    authentication:
+      # Multi-Factor Authentication (MFA)
+      mfa:
+        enabled: true
+        provider: "totp"  # TOTP, SMS, Email, Hardware Token
+        backup_codes:
+          enabled: true
+          count: 10
+        recovery:
+          enabled: true
+          phone_verification: true
+          email_verification: true
+        enforcement:
+          admin_users: "required"
+          privileged_users: "required"
+          regular_users: "optional"
+          api_access: "required"
+        totp:
+          issuer: "KVirtualStage Enterprise"
+          algorithm: "SHA256"
+          digits: 6
+          period: 30
+        sms:
+          provider: "twilio"
+          rate_limit: 3  # per hour
+        hardware_tokens:
+          yubikey:
+            enabled: true
+            server_url: "https://api.yubico.com/wsapi/2.0/verify"
+          fido2:
+            enabled: true
+            rp_id: "kvirtualstage.company.com"
+            rp_name: "KVirtualStage Enterprise"
+
+      # Single Sign-On (SSO) Integration
+      sso:
+        enabled: true
+        primary_provider: "azure_ad"
+        fallback_providers: ["okta", "google_workspace"]
+        
+        # SAML 2.0 Configuration
+        saml:
+          enabled: true
+          metadata_url: "https://login.microsoftonline.com/{tenant-id}/federationmetadata/2007-06/federationmetadata.xml"
+          entity_id: "https://kvirtualstage.company.com"
+          assertion_consumer_service_url: "https://kvirtualstage.company.com/auth/saml/acs"
+          single_logout_service_url: "https://kvirtualstage.company.com/auth/saml/sls"
+          name_id_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+          signature_algorithm: "RSA-SHA256"
+          digest_algorithm: "SHA256"
+          certificate_validation: true
+          clock_skew: 300  # seconds
+          
+        # OAuth 2.0 / OpenID Connect Configuration
+        oauth2:
+          enabled: true
+          authorization_code_flow: true
+          pkce: true  # Required for security
+          state_validation: true
+          nonce_validation: true
+          
+          # Provider configurations
+          providers:
+            azure_ad:
+              client_id: "${AZURE_CLIENT_ID}"
+              client_secret: "${AZURE_CLIENT_SECRET}"
+              tenant_id: "${AZURE_TENANT_ID}"
+              authority: "https://login.microsoftonline.com/${AZURE_TENANT_ID}"
+              scopes: ["openid", "profile", "email", "User.Read", "Group.Read.All"]
+              
+            okta:
+              client_id: "${OKTA_CLIENT_ID}"
+              client_secret: "${OKTA_CLIENT_SECRET}"
+              domain: "${OKTA_DOMAIN}"
+              scopes: ["openid", "profile", "email", "groups"]
+              
+            google_workspace:
+              client_id: "${GOOGLE_CLIENT_ID}"
+              client_secret: "${GOOGLE_CLIENT_SECRET}"
+              hosted_domain: "company.com"
+              scopes: ["openid", "profile", "email"]
+
+      # Session Management
+      session:
+        # JWT Configuration
+        jwt:
+          algorithm: "RS256"
+          issuer: "kvirtualstage.company.com"
+          audience: ["kvirtualstage-api", "kvirtualstage-web"]
+          access_token_ttl: 900  # 15 minutes
+          refresh_token_ttl: 86400  # 24 hours
+          rotation_enabled: true
+          blacklist_enabled: true
+          
+        # Session Storage
+        storage:
+          type: "redis"
+          encryption_key: "${SESSION_ENCRYPTION_KEY}"
+          secure_cookies: true
+          same_site: "strict"
+          http_only: true
+          
+        # Session Security
+        security:
+          concurrent_sessions: 5
+          ip_binding: true
+          user_agent_binding: true
+          session_rotation: true
+          idle_timeout: 1800  # 30 minutes
+          absolute_timeout: 28800  # 8 hours
+
+    # Authorization Configuration
+    authorization:
+      # Role-Based Access Control (RBAC)
+      rbac:
+        enabled: true
+        policy_engine: "casbin"
+        policy_storage: "database"
+        
+        # Roles Definition
+        roles:
+          system_admin:
+            description: "Full system administrative access"
+            permissions:
+              - "*:*:*"
+            inheritance: []
+            
+          security_admin:
+            description: "Security and compliance management"
+            permissions:
+              - "security:*:*"
+              - "audit:*:read"
+              - "compliance:*:*"
+              - "users:*:read"
+              - "roles:*:read"
+            inheritance: []
+            
+          platform_admin:
+            description: "Platform and infrastructure management"
+            permissions:
+              - "platform:*:*"
+              - "virtualization:*:*"
+              - "monitoring:*:read"
+              - "backup:*:*"
+            inheritance: []
+            
+          user_admin:
+            description: "User and group management"
+            permissions:
+              - "users:*:*"
+              - "groups:*:*"
+              - "roles:basic:assign"
+              - "audit:user:read"
+            inheritance: []
+            
+          developer:
+            description: "Development and testing access"
+            permissions:
+              - "virtualization:environment:create"
+              - "virtualization:environment:manage"
+              - "session:own:*"
+              - "api:development:*"
+            inheritance: ["basic_user"]
+            
+          analyst:
+            description: "Data analysis and reporting"
+            permissions:
+              - "analytics:*:read"
+              - "reports:*:read"
+              - "monitoring:metrics:read"
+              - "session:own:*"
+            inheritance: ["basic_user"]
+            
+          basic_user:
+            description: "Standard user access"
+            permissions:
+              - "session:own:*"
+              - "profile:own:*"
+              - "virtualization:session:create"
+              - "virtualization:session:manage"
+            inheritance: []
+            
+          auditor:
+            description: "Audit and compliance read-only access"
+            permissions:
+              - "audit:*:read"
+              - "compliance:*:read"
+              - "security:logs:read"
+              - "reports:security:read"
+            inheritance: []
+
+        # Attribute-Based Access Control (ABAC) Extensions
+        abac:
+          enabled: true
+          policy_language: "rego"  # Open Policy Agent
+          
+          # Dynamic permissions based on attributes
+          policies:
+            time_based_access:
+              description: "Restrict access based on time"
+              rule: |
+                allow if {
+                  input.user.role in ["developer", "analyst"]
+                  input.time.hour >= 8
+                  input.time.hour <= 18
+                  input.time.weekday in [1, 2, 3, 4, 5]
+                }
+                
+            location_based_access:
+              description: "Restrict access based on location"
+              rule: |
+                allow if {
+                  input.user.clearance_level >= 3
+                  input.request.ip in data.allowed_ip_ranges
+                }
+                
+            resource_sensitivity:
+              description: "Control access to sensitive resources"
+              rule: |
+                allow if {
+                  input.resource.classification == "confidential"
+                  input.user.clearance_level >= input.resource.required_clearance
+                  input.user.mfa_verified == true
+                }
+
+      # API Key Management
+      api_keys:
+        enabled: true
+        
+        # Key Generation
+        generation:
+          algorithm: "secure_random"
+          length: 64
+          prefix: "kvs_"
+          checksum: true
+          
+        # Key Rotation
+        rotation:
+          enabled: true
+          automatic: true
+          frequency: 90  # days
+          warning_period: 14  # days before expiration
+          grace_period: 7  # days after expiration
+          
+        # Key Scoping
+        scoping:
+          enabled: true
+          default_scope: ["api:basic:read"]
+          maximum_scope: ["api:*:*"]
+          ip_restriction: true
+          referer_restriction: true
+          rate_limiting: true
+          
+        # Key Storage
+        storage:
+          hashing_algorithm: "argon2"
+          salt_length: 32
+          encrypted_storage: true
+          audit_logging: true
+
+      # Permission System
+      permissions:
+        # Resource-based permissions
+        resources:
+          - name: "virtualization"
+            actions: ["create", "read", "update", "delete", "execute", "manage"]
+            scopes: ["environment", "session", "container", "image"]
+            
+          - name: "users"
+            actions: ["create", "read", "update", "delete", "manage"]
+            scopes: ["profile", "credentials", "sessions", "groups"]
+            
+          - name: "security"
+            actions: ["read", "update", "manage", "audit"]
+            scopes: ["policies", "rules", "logs", "reports"]
+            
+          - name: "platform"
+            actions: ["read", "update", "manage", "deploy"]
+            scopes: ["infrastructure", "monitoring", "backup", "configuration"]
+            
+          - name: "api"
+            actions: ["read", "write", "execute"]
+            scopes: ["basic", "advanced", "admin", "development"]
+
+    # External Identity Provider Integration
+    external_providers:
+      # Active Directory / LDAP
+      ldap:
+        enabled: true
+        servers:
+          - host: "ldap.company.com"
+            port: 636
+            use_ssl: true
+            bind_dn: "CN=KVirtualStage,OU=Service Accounts,DC=company,DC=com"
+            bind_password: "${LDAP_BIND_PASSWORD}"
+            base_dn: "DC=company,DC=com"
+            user_search:
+              base_dn: "OU=Users,DC=company,DC=com"
+              filter: "(sAMAccountName={username})"
+              attributes: ["sAMAccountName", "displayName", "mail", "memberOf"]
+            group_search:
+              base_dn: "OU=Groups,DC=company,DC=com"
+              filter: "(member={user_dn})"
+              attributes: ["cn", "description"]
+        
+        # Group Mapping
+        group_mapping:
+          "CN=KVirtualStage_Admins,OU=Groups,DC=company,DC=com": "system_admin"
+          "CN=KVirtualStage_Security,OU=Groups,DC=company,DC=com": "security_admin"
+          "CN=KVirtualStage_Developers,OU=Groups,DC=company,DC=com": "developer"
+          "CN=KVirtualStage_Users,OU=Groups,DC=company,DC=com": "basic_user"
+
+      # Certificate-based Authentication
+      certificate_auth:
+        enabled: true
+        ca_certificates:
+          - path: "/etc/ssl/certs/company-ca.pem"
+            purpose: "client_auth"
+        client_cert_verification: "require"
+        cert_revocation_check: true
+        ocsp_enabled: true
+
+    # Security Policies
+    security_policies:
+      # Password Policy
+      password_policy:
+        enabled: true
+        minimum_length: 14
+        maximum_length: 128
+        require_uppercase: true
+        require_lowercase: true
+        require_numbers: true
+        require_special_chars: true
+        forbidden_sequences: ["123", "abc", "qwerty"]
+        history_count: 12
+        max_age: 90  # days
+        complexity_score: 80
+
+      # Account Lockout Policy
+      lockout_policy:
+        enabled: true
+        failed_attempts: 5
+        lockout_duration: 1800  # 30 minutes
+        observation_window: 900  # 15 minutes
+        progressive_delay: true
+
+      # Security Headers
+      security_headers:
+        strict_transport_security: "max-age=31536000; includeSubDomains; preload"
+        content_security_policy: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+        x_frame_options: "DENY"
+        x_content_type_options: "nosniff"
+        x_xss_protection: "1; mode=block"
+        referrer_policy: "strict-origin-when-cross-origin"
+
+---
+# OAuth 2.0 Client Registration Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kvirtualstage-oauth-clients
+  namespace: kvirtualstage-security
+type: Opaque
+stringData:
+  azure-client-id: "your-azure-client-id"
+  azure-client-secret: "your-azure-client-secret"
+  azure-tenant-id: "your-azure-tenant-id"
+  okta-client-id: "your-okta-client-id"
+  okta-client-secret: "your-okta-client-secret"
+  okta-domain: "your-okta-domain"
+  google-client-id: "your-google-client-id"
+  google-client-secret: "your-google-client-secret"
+
+---
+# JWT Signing Keys Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kvirtualstage-jwt-keys
+  namespace: kvirtualstage-security
+type: Opaque
+stringData:
+  private-key.pem: |
+    -----BEGIN RSA PRIVATE KEY-----
+    # Generate with: openssl genrsa -out private-key.pem 4096
+    # This is a placeholder - generate actual keys for production
+    -----END RSA PRIVATE KEY-----
+  public-key.pem: |
+    -----BEGIN PUBLIC KEY-----
+    # Generate with: openssl rsa -in private-key.pem -pubout -out public-key.pem
+    # This is a placeholder - generate actual keys for production
+    -----END PUBLIC KEY-----
+
+---
+# Session Encryption Key Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kvirtualstage-session-keys
+  namespace: kvirtualstage-security
+type: Opaque
+stringData:
+  encryption-key: "your-base64-encoded-256-bit-key"
+  signing-key: "your-base64-encoded-256-bit-signing-key"
+
+---
+# LDAP Integration Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kvirtualstage-ldap-config
+  namespace: kvirtualstage-security
+type: Opaque
+stringData:
+  bind-password: "your-ldap-service-account-password"
+  tls-ca-cert: |
+    -----BEGIN CERTIFICATE-----
+    # Your LDAP server CA certificate
+    -----END CERTIFICATE-----

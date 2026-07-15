@@ -1,0 +1,43 @@
+name: Go engine (KodeVibeGo)
+
+on:
+  push:
+    branches: [main, migrate/**]
+    paths:
+      - 'engine/**'
+      - '.github/workflows/go-engine.yml'
+      - 'Makefile'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'engine/**'
+      - '.github/workflows/go-engine.yml'
+      - 'Makefile'
+
+defaults:
+  run:
+    working-directory: engine
+
+jobs:
+  build-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Setup Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version: '1.25.x'
+          cache-dependency-path: engine/go.sum
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Build CLI and server
+        run: |
+          mkdir -p build
+          go build -o build/kodevibe ./cmd/cli
+          go build -o build/kodevibe-server ./cmd/server
+
+      - name: Run tests
+        run: go test ./... -count=1

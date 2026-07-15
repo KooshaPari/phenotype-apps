@@ -1,0 +1,43 @@
+# Simple Virtual Desktop for Testing
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV USER=kvirtualstage
+ENV HOME=/app
+
+# Install minimal desktop environment
+RUN apt-get update && apt-get install -y \
+    sudo curl wget \
+    xorg x11-xserver-utils \
+    xfce4-session xfce4-panel xfwm4 xfdesktop4 \
+    tigervnc-standalone-server tigervnc-common \
+    galculator mousepad thunar xfce4-terminal \
+    xdotool scrot \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create user
+RUN useradd -m -s /bin/bash $USER && \
+    echo "$USER:$USER" | chpasswd && \
+    usermod -aG sudo $USER && \
+    mkdir -p $HOME/.vnc
+
+# Set VNC password
+RUN echo "$USER" | vncpasswd -f > $HOME/.vnc/passwd && \
+    chmod 600 $HOME/.vnc/passwd && \
+    chown -R $USER:$USER $HOME
+
+# Create VNC startup script
+RUN echo '#!/bin/bash\nexport DISPLAY=:1\nexec startxfce4' > $HOME/.vnc/xstartup && \
+    chmod +x $HOME/.vnc/xstartup && \
+    chown $USER:$USER $HOME/.vnc/xstartup
+
+# Create entrypoint
+RUN echo '#!/bin/bash\nset -e\nmkdir -p /tmp/.X11-unix\nexport DISPLAY=:1\nvncserver :1 -geometry 1920x1080 -depth 24 -localhost no\ntail -f /dev/null' > /entrypoint.sh && \
+    chmod +x /entrypoint.sh
+
+USER $USER
+WORKDIR $HOME
+
+EXPOSE 5901
+
+ENTRYPOINT ["/entrypoint.sh"]

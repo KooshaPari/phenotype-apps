@@ -1,0 +1,32 @@
+# Tier-0 hygiene: CODEOWNERS for KWatch
+#
+# Each line is a file pattern followed by one or more owners.
+# Order matters: the last matching pattern takes precedence.
+# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything in the repo.
+#
+# KWatch is a single-maintainer project at the moment, so the default
+# owner is the GitHub handle of the project owner. As the Phenotype
+# org grows and additional maintainers get triage rights, layer
+# `@Phenotype-org/<team>` patterns on top of this default rather than
+# replacing it (the last matching pattern wins, so team entries should
+# come BELOW the catch-all `*` line).
+* @kooshapari
+
+# Security-critical paths — require review from the security owner.
+# Until a dedicated security team exists, the owner is the same handle.
+SECURITY.md        @kooshapari
+.gitleaks.toml     @kooshapari
+.github/workflows/audit.yml     @kooshapari
+.github/workflows/scorecard.yml @kooshapari
+
+# CI/CD workflows — require review from the platform owner.
+# Until a dedicated platform team exists, the owner is the same handle.
+.github/workflows/ @kooshapari
+
+# Go source code
+*.go               @kooshapari
+
+# Documentation
+*.md               @kooshapari

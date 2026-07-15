@@ -1,0 +1,615 @@
+# Container and Infrastructure Security for KVirtualStage Enterprise
+# This file defines comprehensive container and Kubernetes security policies
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kvirtualstage-security
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+    security.kvirtualstage.com/tier: enterprise
+  annotations:
+    scheduler.alpha.kubernetes.io/node-selector: "security-zone=high"
+
+---
+# Enhanced Pod Security Policy
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: kvirtualstage-restricted-psp
+  namespace: kvirtualstage-security
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'runtime/default'
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: 'runtime/default'
+    apparmor.security.beta.kubernetes.io/allowedProfileNames: 'runtime/default'
+    apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  allowedCapabilities: []
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
+    - 'persistentVolumeClaim'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  runAsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 10000
+        max: 65535
+  seLinux:
+    rule: 'RunAsAny'
+  fsGroup:
+    rule: 'RunAsAny'
+  readOnlyRootFilesystem: true
+
+---
+# Advanced Network Policies with Cilium
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: kvirtualstage-zero-trust-policy
+  namespace: kvirtualstage
+spec:
+  endpointSelector:
+    matchLabels:
+      app: kvirtualstage
+  ingress:
+  # Allow ingress from load balancer
+  - fromEntities:
+    - "world"
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+      rules:
+        http:
+        - method: "GET"
+          path: "/health"
+        - method: "GET"
+          path: "/ready"
+        - method: "POST"
+          path: "/api/auth/.*"
+          headers:
+          - "Content-Type: application/json"
+          - "User-Agent: .*"
+        l7proto: "http"
+        
+  # Allow ingress from monitoring namespace
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: monitoring
+    toPorts:
+    - ports:
+      - port: "9090"
+        protocol: TCP
+      
+  # Allow authenticated API access
+  - fromEndpoints:
+    - matchLabels:
+        security.kvirtualstage.com/auth-verified: "true"
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+      rules:
+        http:
+        - method: "GET"
+          path: "/api/.*"
+          headers:
+          - "Authorization: Bearer .*"
+        - method: "POST"
+          path: "/api/.*"
+          headers:
+          - "Authorization: Bearer .*"
+          - "Content-Type: application/json"
+        - method: "PUT"
+          path: "/api/.*"
+          headers:
+          - "Authorization: Bearer .*"
+        - method: "DELETE"
+          path: "/api/.*"
+          headers:
+          - "Authorization: Bearer .*"
+        l7proto: "http"
+
+  egress:
+  # Allow DNS resolution
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+        
+  # Allow Redis communication
+  - toEndpoints:
+    - matchLabels:
+        app: kvirtualstage-redis
+    toPorts:
+    - ports:
+      - port: "6379"
+        protocol: TCP
+        
+  # Allow HTTPS to external identity providers
+  - toFQDNs:
+    - matchName: "login.microsoftonline.com"
+    - matchName: "graph.microsoft.com"
+    - matchName: "*.okta.com"
+    - matchName: "accounts.google.com"
+    - matchName: "*.googleapis.com"
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+        
+  # Allow Docker registry access
+  - toFQDNs:
+    - matchName: "registry.company.com"
+    - matchName: "docker.io"
+    - matchName: "*.docker.io"
+    - matchName: "registry-1.docker.io"
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+
+---
+# Kubernetes Secrets Management with External Secrets Operator
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: kvirtualstage-vault-store
+  namespace: kvirtualstage-security
+spec:
+  provider:
+    vault:
+      server: "https://vault.company.com"
+      path: "secret"
+      version: "v2"
+      auth:
+        kubernetes:
+          mountPath: "kubernetes"
+          role: "kvirtualstage-secrets-reader"
+          serviceAccountRef:
+            name: "kvirtualstage-vault-auth"
+
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: kvirtualstage-encryption-keys
+  namespace: kvirtualstage-security
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: kvirtualstage-vault-store
+    kind: SecretStore
+  target:
+    name: kvirtualstage-encryption-keys
+    creationPolicy: Owner
+  data:
+  - secretKey: database-encryption-key
+    remoteRef:
+      key: kvirtualstage/encryption
+      property: database-key
+  - secretKey: file-encryption-key
+    remoteRef:
+      key: kvirtualstage/encryption
+      property: file-key
+  - secretKey: jwt-signing-key
+    remoteRef:
+      key: kvirtualstage/auth
+      property: jwt-signing-key
+
+---
+# Runtime Security with Falco Rules
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kvirtualstage-falco-rules
+  namespace: kvirtualstage-security
+data:
+  kvirtualstage_rules.yaml: |
+    # Custom Falco rules for KVirtualStage security monitoring
+    
+    # Detect unauthorized file access
+    - rule: Unauthorized File Access in KVirtualStage
+      desc: Detect unauthorized access to sensitive files
+      condition: >
+        (spawned_process and container.name contains "kvirtualstage" and
+         (fd.name startswith "/etc/ssl" or
+          fd.name startswith "/etc/passwd" or
+          fd.name startswith "/etc/shadow" or
+          fd.name startswith "/var/run/secrets") and
+         not proc.name in (kvirtualstage_allowed_processes))
+      output: >
+        Unauthorized file access in KVirtualStage container
+        (user=%user.name command=%proc.cmdline file=%fd.name container=%container.name)
+      priority: ERROR
+      tags: [filesystem, security, kvirtualstage]
+
+    # Detect privilege escalation attempts
+    - rule: Privilege Escalation in KVirtualStage
+      desc: Detect attempts to escalate privileges
+      condition: >
+        (spawned_process and container.name contains "kvirtualstage" and
+         (proc.name in (su, sudo, setuid_binaries) or
+          proc.args contains "chmod +s" or
+          proc.args contains "setcap"))
+      output: >
+        Privilege escalation attempt in KVirtualStage
+        (user=%user.name command=%proc.cmdline container=%container.name)
+      priority: CRITICAL
+      tags: [privilege_escalation, security, kvirtualstage]
+
+    # Detect network anomalies
+    - rule: Suspicious Network Activity from KVirtualStage
+      desc: Detect unusual network connections
+      condition: >
+        (outbound and container.name contains "kvirtualstage" and
+         not fd.sip in (allowed_destinations) and
+         not fd.sport in (allowed_ports))
+      output: >
+        Suspicious network activity from KVirtualStage
+        (connection=%fd.name container=%container.name destination=%fd.sip:%fd.sport)
+      priority: WARNING
+      tags: [network, security, kvirtualstage]
+
+    # Define allowed processes
+    - list: kvirtualstage_allowed_processes
+      items: [kvirtualstage, redis-cli, curl, wget, openssl]
+
+    # Define allowed network destinations
+    - list: allowed_destinations
+      items: [10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 
+              login.microsoftonline.com, graph.microsoft.com,
+              accounts.google.com, vault.company.com]
+
+    # Define allowed ports
+    - list: allowed_ports
+      items: [53, 80, 443, 6379, 8080, 9090]
+
+---
+# Image Security Scanning Policy
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kvirtualstage-image-security-policy
+  namespace: kvirtualstage-security
+data:
+  policy.yaml: |
+    # Image security scanning and admission control policy
+    
+    # Vulnerability scanning requirements
+    vulnerability_scanning:
+      enabled: true
+      scanner: "trivy"
+      severity_threshold: "HIGH"
+      max_fixable_vulnerabilities: 0
+      max_unfixable_vulnerabilities: 5
+      
+      # Block known vulnerable base images
+      blocked_base_images:
+        - "ubuntu:18.04"  # EOL
+        - "centos:7"      # EOL
+        - "node:10"       # EOL
+        
+      # Required security scanners
+      required_scanners:
+        - name: "trivy"
+          version: ">=0.35.0"
+        - name: "grype"
+          version: ">=0.65.0"
+
+    # Container image signing verification
+    image_signing:
+      enabled: true
+      required: true
+      sigstore:
+        enabled: true
+        keyless: true
+        issuer: "https://token.actions.githubusercontent.com"
+        subject: "https://github.com/kvirtualstage/kvirtualstage/.github/workflows/build.yml@refs/heads/main"
+      cosign:
+        enabled: true
+        public_key: |
+          -----BEGIN PUBLIC KEY-----
+          # Cosign public key for image verification
+          -----END PUBLIC KEY-----
+
+    # Base image hardening requirements
+    image_hardening:
+      # Required Dockerfile security practices
+      required_practices:
+        - non_root_user: true
+        - minimal_base_image: true
+        - specific_version_tags: true
+        - multi_stage_builds: true
+        - no_secrets_in_layers: true
+        - distroless_preferred: true
+        
+      # Forbidden instructions/patterns
+      forbidden_instructions:
+        - "ADD http"  # Use COPY or wget instead
+        - "chmod 777"
+        - "chown root:root"
+        - "su -"
+        - "sudo"
+        
+      # Required security labels
+      required_labels:
+        - "security.kvirtualstage.com/scanned"
+        - "security.kvirtualstage.com/signed"
+        - "security.kvirtualstage.com/compliance"
+
+---
+# Runtime Security Monitoring with OPA Gatekeeper
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: kvirtualstageruntimesecurity
+  namespace: kvirtualstage-security
+spec:
+  crd:
+    spec:
+      names:
+        kind: KVirtualStageRuntimeSecurity
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            allowedCapabilities:
+              type: array
+              items:
+                type: string
+            allowedSeccompProfiles:
+              type: array
+              items:
+                type: string
+            maxPrivilegedContainers:
+              type: integer
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package kvirtualstageruntimesecurity
+
+        violation[{"msg": msg}] {
+          input.review.object.spec.template.spec.securityContext.runAsRoot == true
+          msg := "Container must run as non-root user"
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.template.spec.containers[_]
+          container.securityContext.allowPrivilegeEscalation == true
+          msg := "Privilege escalation is not allowed"
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.template.spec.containers[_]
+          container.securityContext.readOnlyRootFilesystem != true
+          msg := "Root filesystem must be read-only"
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.template.spec.containers[_]
+          capability := container.securityContext.capabilities.add[_]
+          not capability in input.parameters.allowedCapabilities
+          msg := sprintf("Capability '%v' is not allowed", [capability])
+        }
+
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: KVirtualStageRuntimeSecurity
+metadata:
+  name: kvirtualstage-runtime-security
+  namespace: kvirtualstage-security
+spec:
+  match:
+    kinds:
+      - apiGroups: ["apps"]
+        kinds: ["Deployment", "ReplicaSet", "DaemonSet", "StatefulSet"]
+    namespaces: ["kvirtualstage", "kvirtualstage-security"]
+  parameters:
+    allowedCapabilities: []
+    allowedSeccompProfiles: ["runtime/default"]
+    maxPrivilegedContainers: 0
+
+---
+# Container Registry Security Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kvirtualstage-registry-security
+  namespace: kvirtualstage-security
+data:
+  registry-config.yaml: |
+    # Container registry security configuration
+    
+    registry_security:
+      # Allowed registries
+      allowed_registries:
+        - "registry.company.com"
+        - "docker.io/kvirtualstage"
+        - "gcr.io/kvirtualstage-prod"
+        - "quay.io/kvirtualstage"
+      
+      # Registry authentication
+      authentication:
+        required: true
+        methods: ["oauth2", "basic_auth", "service_account"]
+        
+      # Image pull policies
+      pull_policies:
+        default: "IfNotPresent"
+        production: "Never"  # Only pre-approved images
+        development: "Always"
+        
+      # Content trust and verification
+      content_trust:
+        enabled: true
+        required_signatures: 2
+        trusted_publishers:
+          - "kvirtualstage-ci@company.com"
+          - "security-team@company.com"
+        
+      # Vulnerability scanning integration
+      vulnerability_scanning:
+        on_push: true
+        on_pull: true
+        quarantine_vulnerable: true
+        
+      # Registry mirroring and caching
+      mirroring:
+        enabled: true
+        primary_registry: "registry.company.com"
+        cache_duration: "24h"
+        sync_schedule: "0 2 * * *"
+
+---
+# Secrets Management with Sealed Secrets
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: kvirtualstage-db-credentials
+  namespace: kvirtualstage-security
+spec:
+  encryptedData:
+    # These would be encrypted with kubeseal
+    database-username: AgBy3i4OJSWK+PiTySYZZA9rO43cGDEQAx...
+    database-password: AgBy3i4OJSWK+PiTySYZZA9rO43cGDEQAx...
+    redis-password: AgBy3i4OJSWK+PiTySYZZA9rO43cGDEQAx...
+  template:
+    metadata:
+      name: kvirtualstage-db-credentials
+      namespace: kvirtualstage-security
+    type: Opaque
+
+---
+# Kubernetes RBAC with Fine-grained Permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kvirtualstage-security-operator
+rules:
+# Security monitoring permissions
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["create", "patch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets", "daemonsets", "statefulsets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["networkpolicies"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
+- apiGroups: ["policy"]
+  resources: ["podsecuritypolicies"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
+- apiGroups: ["security.istio.io"]
+  resources: ["authorizationpolicies", "peerauthentications"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kvirtualstage-security-operator-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kvirtualstage-security-operator
+subjects:
+- kind: ServiceAccount
+  name: kvirtualstage-security-operator
+  namespace: kvirtualstage-security
+
+---
+# Service Account for Security Operations
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kvirtualstage-security-operator
+  namespace: kvirtualstage-security
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/KVirtualStageSecurityOperator
+automountServiceAccountToken: true
+
+---
+# Security Monitoring DaemonSet
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kvirtualstage-security-monitor
+  namespace: kvirtualstage-security
+spec:
+  selector:
+    matchLabels:
+      app: kvirtualstage-security-monitor
+  template:
+    metadata:
+      labels:
+        app: kvirtualstage-security-monitor
+    spec:
+      serviceAccountName: kvirtualstage-security-operator
+      hostNetwork: true
+      hostPID: true
+      containers:
+      - name: falco
+        image: falcosecurity/falco:0.35.1
+        args:
+          - /usr/bin/falco
+          - --cri=/run/containerd/containerd.sock
+          - --k8s-api
+          - --k8s-api-endpoint=https://kubernetes.default.svc.cluster.local
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: boot
+          mountPath: /host/boot
+          readOnly: true
+        - name: lib-modules
+          mountPath: /host/lib/modules
+          readOnly: true
+        - name: usr
+          mountPath: /host/usr
+          readOnly: true
+        - name: etc
+          mountPath: /host/etc
+          readOnly: true
+        - name: falco-config
+          mountPath: /etc/falco
+          readOnly: true
+      volumes:
+      - name: boot
+        hostPath:
+          path: /boot
+      - name: lib-modules
+        hostPath:
+          path: /lib/modules
+      - name: usr
+        hostPath:
+          path: /usr
+      - name: etc
+        hostPath:
+          path: /etc
+      - name: falco-config
+        configMap:
+          name: kvirtualstage-falco-rules

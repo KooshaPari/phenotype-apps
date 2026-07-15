@@ -1,0 +1,783 @@
+# Zero-Trust Security Model for KVirtualStage Enterprise
+# This file defines comprehensive zero-trust architecture with micro-segmentation and continuous verification
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kvirtualstage-zero-trust-config
+  namespace: kvirtualstage-security
+  labels:
+    app: kvirtualstage
+    component: zero-trust
+    security-tier: enterprise
+data:
+  zero-trust-config.yaml: |
+    # Zero Trust Security Architecture
+    zero_trust:
+      # Core Principles
+      principles:
+        never_trust_always_verify: true
+        least_privilege_access: true
+        assume_breach: true
+        verify_explicitly: true
+        continuous_monitoring: true
+        
+      # Identity-Centric Security
+      identity_centric:
+        # User Identity Verification
+        user_verification:
+          multi_factor_authentication: "required"
+          continuous_authentication: true
+          risk_based_authentication: true
+          biometric_authentication: "optional"
+          
+          # Identity verification methods
+          verification_methods:
+            something_you_know: "password"
+            something_you_have: "hardware_token"
+            something_you_are: "biometric"
+            somewhere_you_are: "geolocation"
+            something_you_do: "behavioral_pattern"
+            
+          # Risk-based authentication triggers
+          risk_triggers:
+            new_device: "step_up_auth"
+            unusual_location: "step_up_auth"
+            unusual_time: "step_up_auth"
+            high_risk_action: "additional_verification"
+            anomalous_behavior: "security_review"
+            
+        # Device Identity and Trust
+        device_trust:
+          device_registration: "required"
+          device_certificates: true
+          device_compliance_check: true
+          device_encryption: "required"
+          
+          # Device trust levels
+          trust_levels:
+            corporate_managed:
+              trust_score: 100
+              access_level: "full"
+              monitoring: "standard"
+              
+            personal_enrolled:
+              trust_score: 75
+              access_level: "limited"
+              monitoring: "enhanced"
+              
+            guest_device:
+              trust_score: 25
+              access_level: "minimal"
+              monitoring: "intensive"
+              
+            unknown_device:
+              trust_score: 0
+              access_level: "denied"
+              monitoring: "blocked"
+              
+          # Device compliance requirements
+          compliance_requirements:
+            encryption: "full_disk_encryption"
+            antivirus: "real_time_protection"
+            firewall: "enabled"
+            os_updates: "current"
+            security_patches: "up_to_date"
+            vpn_required: true
+            
+        # Service Identity and Authentication
+        service_identity:
+          service_accounts: "minimal"
+          workload_identity: true
+          certificate_based_auth: true
+          secret_management: "vault"
+          
+          # Service-to-service authentication
+          service_mesh_auth:
+            mutual_tls: "enforced"
+            service_certificates: "auto_rotation"
+            identity_propagation: true
+            token_validation: "strict"
+
+      # Network Micro-Segmentation
+      micro_segmentation:
+        # Network Zones
+        network_zones:
+          dmz:
+            description: "Demilitarized zone for public-facing services"
+            trust_level: "untrusted"
+            ingress_rules: "strict"
+            egress_rules: "monitored"
+            
+          corporate_network:
+            description: "Internal corporate network"
+            trust_level: "medium"
+            ingress_rules: "authenticated"
+            egress_rules: "filtered"
+            
+          privileged_network:
+            description: "High-security zone for sensitive operations"
+            trust_level: "high"
+            ingress_rules: "multi_factor_auth"
+            egress_rules: "highly_restricted"
+            
+          isolated_workloads:
+            description: "Isolated environments for untrusted workloads"
+            trust_level: "zero"
+            ingress_rules: "denied"
+            egress_rules: "proxy_only"
+            
+        # Software-Defined Perimeter (SDP)
+        software_defined_perimeter:
+          enabled: true
+          technology: "istio_service_mesh"
+          
+          # SDP controllers
+          controllers:
+            authentication_server:
+              address: "auth.kvirtualstage.company.com"
+              certificate_authority: "internal_ca"
+              
+            policy_engine:
+              address: "policy.kvirtualstage.company.com"
+              rules_engine: "open_policy_agent"
+              
+          # SDP gateways
+          gateways:
+            ingress_gateway:
+              external_facing: true
+              authentication_required: true
+              encryption: "tls_1_3"
+              
+            internal_gateway:
+              internal_facing: true
+              mutual_tls: true
+              policy_enforcement: "strict"
+              
+        # Network Policies
+        network_policies:
+          default_deny: true
+          explicit_allow: true
+          
+          # Policy templates
+          policy_templates:
+            web_tier:
+              allowed_ingress:
+                - "load_balancer"
+                - "monitoring"
+              allowed_egress:
+                - "api_tier"
+                - "dns"
+                
+            api_tier:
+              allowed_ingress:
+                - "web_tier"
+                - "mobile_apps"
+              allowed_egress:
+                - "database_tier"
+                - "external_apis"
+                
+            database_tier:
+              allowed_ingress:
+                - "api_tier"
+                - "backup_service"
+              allowed_egress:
+                - "dns"
+                - "ntp"
+
+      # Continuous Verification and Monitoring
+      continuous_verification:
+        # Real-time Risk Assessment
+        risk_assessment:
+          enabled: true
+          assessment_interval: "real_time"
+          
+          # Risk factors
+          risk_factors:
+            user_behavior:
+              login_patterns: true
+              access_patterns: true
+              data_usage_patterns: true
+              velocity_checks: true
+              
+            device_behavior:
+              location_changes: true
+              network_changes: true
+              configuration_changes: true
+              usage_patterns: true
+              
+            network_behavior:
+              traffic_patterns: true
+              protocol_usage: true
+              bandwidth_usage: true
+              connection_patterns: true
+              
+            application_behavior:
+              api_usage_patterns: true
+              resource_consumption: true
+              error_rates: true
+              response_times: true
+              
+          # Risk scoring algorithm
+          scoring:
+            algorithm: "machine_learning"
+            model: "ensemble"
+            features: ["behavioral", "contextual", "historical"]
+            update_frequency: "daily"
+            
+        # Behavioral Analytics
+        behavioral_analytics:
+          enabled: true
+          technology: "ueba"  # User and Entity Behavior Analytics
+          
+          # ML models for anomaly detection
+          ml_models:
+            user_behavior_baseline:
+              algorithm: "isolation_forest"
+              training_period: "30_days"
+              sensitivity: "high"
+              
+            entity_behavior_baseline:
+              algorithm: "one_class_svm"
+              training_period: "14_days"
+              sensitivity: "medium"
+              
+            network_traffic_baseline:
+              algorithm: "autoencoder"
+              training_period: "7_days"
+              sensitivity: "medium"
+              
+          # Anomaly detection categories
+          anomaly_categories:
+            impossible_travel:
+              threshold: "400_mph"
+              action: "block_access"
+              
+            unusual_data_access:
+              threshold: "3_standard_deviations"
+              action: "require_additional_auth"
+              
+            privilege_escalation:
+              threshold: "immediate"
+              action: "alert_security_team"
+              
+            credential_stuffing:
+              threshold: "5_attempts"
+              action: "temporary_account_lock"
+              
+        # Adaptive Security Policies
+        adaptive_policies:
+          enabled: true
+          
+          # Policy adaptation triggers
+          adaptation_triggers:
+            threat_level_change:
+              high_threat: "increase_security_posture"
+              low_threat: "normal_security_posture"
+              
+            user_risk_score_change:
+              score_increase: "additional_verification"
+              score_decrease: "normal_access"
+              
+            environmental_changes:
+              new_vulnerabilities: "restrict_access"
+              security_incidents: "enhanced_monitoring"
+              
+          # Dynamic policy rules
+          dynamic_rules:
+            access_control:
+              high_risk_users: "limited_access"
+              compromised_devices: "no_access"
+              suspicious_networks: "proxy_access_only"
+              
+            data_access:
+              sensitive_data: "additional_authorization"
+              bulk_operations: "manager_approval"
+              external_sharing: "dlp_scanning"
+
+      # Application-Level Security Controls
+      application_security:
+        # Zero Trust Application Access
+        application_access:
+          proxy_based_access: true
+          application_firewall: true
+          api_gateway_enforcement: true
+          
+          # Application segmentation
+          segmentation:
+            by_sensitivity:
+              public: "open_access"
+              internal: "authenticated_access"
+              confidential: "authorized_access"
+              restricted: "privileged_access"
+              
+            by_function:
+              user_facing: "web_application_firewall"
+              api_services: "api_gateway"
+              admin_interfaces: "privileged_access_workstation"
+              
+        # API Security
+        api_security:
+          authentication: "oauth2_with_pkce"
+          authorization: "fine_grained_rbac"
+          rate_limiting: true
+          input_validation: "strict"
+          output_filtering: true
+          
+          # API protection mechanisms
+          protection_mechanisms:
+            ddos_protection: true
+            bot_detection: true
+            injection_prevention: true
+            data_leakage_prevention: true
+            
+        # Container Security in Zero Trust
+        container_security:
+          # Runtime protection
+          runtime_protection:
+            security_policies: "gatekeeper"
+            runtime_scanning: "falco"
+            behavior_monitoring: "sysdig"
+            
+          # Supply chain security
+          supply_chain:
+            image_signing: "cosign"
+            vulnerability_scanning: "trivy"
+            compliance_scanning: "docker_bench"
+            
+          # Workload isolation
+          workload_isolation:
+            network_policies: "calico"
+            pod_security_standards: "restricted"
+            resource_quotas: "enforced"
+
+      # Data-Centric Security
+      data_centric_security:
+        # Data Classification Integration
+        classification_integration:
+          automatic_classification: true
+          policy_enforcement: true
+          access_control_integration: true
+          
+        # Data Loss Prevention (DLP) in Zero Trust
+        dlp_integration:
+          real_time_scanning: true
+          policy_enforcement: "block"
+          user_education: true
+          
+        # Encryption Everywhere
+        encryption_everywhere:
+          data_at_rest: "mandatory"
+          data_in_transit: "mandatory"
+          data_in_use: "optional"  # Confidential computing
+          
+          # Key management in zero trust
+          key_management:
+            zero_trust_kms: true
+            attribute_based_encryption: true
+            key_rotation: "automatic"
+
+      # Privileged Access Management (PAM)
+      privileged_access:
+        # Just-In-Time (JIT) Access
+        jit_access:
+          enabled: true
+          approval_workflow: true
+          time_limited_access: true
+          session_recording: true
+          
+          # JIT access policies
+          policies:
+            emergency_access:
+              duration: "2_hours"
+              approval: "automatic"
+              monitoring: "intensive"
+              
+            standard_privileged_access:
+              duration: "8_hours"
+              approval: "manager"
+              monitoring: "enhanced"
+              
+            administrative_access:
+              duration: "4_hours"
+              approval: "security_team"
+              monitoring: "maximum"
+              
+        # Privileged Session Management
+        session_management:
+          session_isolation: true
+          session_recording: true
+          session_monitoring: true
+          keystroke_logging: "sensitive_operations"
+          
+        # Break-Glass Procedures
+        break_glass:
+          emergency_procedures: true
+          multi_person_authorization: true
+          audit_trail: "immutable"
+          time_limited: true
+
+---
+# Zero Trust Network Policies with Cilium
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: kvirtualstage-zero-trust-ingress
+  namespace: kvirtualstage
+spec:
+  endpointSelector:
+    matchLabels:
+      app: kvirtualstage
+  ingress:
+  # Deny all by default (zero trust)
+  - {}
+  
+  # Allow specific authenticated traffic
+  - fromEndpoints:
+    - matchLabels:
+        security.kvirtualstage.com/trust-level: "high"
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+      rules:
+        http:
+        - method: "POST"
+          path: "/api/.*"
+          headers:
+          - "Authorization: Bearer .*"
+          - "X-Client-Certificate: .*"
+        l7proto: "http"
+
+---
+# Service Mesh Authorization Policies
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: kvirtualstage-zero-trust-authz
+  namespace: kvirtualstage
+spec:
+  selector:
+    matchLabels:
+      app: kvirtualstage
+  rules:
+  - to:
+    - operation:
+        methods: ["GET"]
+        paths: ["/health", "/ready"]
+    # Health checks allowed without authentication
+    
+  - from:
+    - source:
+        principals: ["cluster.local/ns/kvirtualstage/sa/kvirtualstage-api"]
+    to:
+    - operation:
+        methods: ["POST", "PUT", "DELETE"]
+        paths: ["/api/*"]
+    when:
+    - key: source.certificate_fingerprint
+      values: ["*"]  # Valid client certificate required
+    - key: request.headers[x-user-risk-score]
+      values: ["0", "1", "2"]  # Low to medium risk only
+    - key: request.headers[x-device-trust-level]
+      values: ["corporate", "enrolled"]  # Trusted devices only
+
+---
+# User and Entity Behavior Analytics (UEBA) Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kvirtualstage-ueba-config
+  namespace: kvirtualstage-security
+data:
+  ueba-config.yaml: |
+    # UEBA Configuration for Zero Trust
+    ueba:
+      # Data Sources
+      data_sources:
+        authentication_logs: true
+        network_traffic: true
+        application_logs: true
+        file_access_logs: true
+        database_query_logs: true
+        api_access_logs: true
+        
+      # Machine Learning Models
+      ml_models:
+        user_behavior:
+          algorithm: "unsupervised_clustering"
+          features:
+            - "login_times"
+            - "access_patterns"
+            - "application_usage"
+            - "data_volume_accessed"
+            - "geographic_locations"
+          training_window: "30_days"
+          update_frequency: "daily"
+          
+        entity_behavior:
+          algorithm: "autoencoder"
+          features:
+            - "network_connections"
+            - "resource_consumption"
+            - "api_call_patterns"
+            - "error_rates"
+          training_window: "14_days"
+          update_frequency: "hourly"
+          
+      # Anomaly Detection Rules
+      anomaly_rules:
+        high_severity:
+          - name: "impossible_travel"
+            description: "User appears in two locations impossibly fast"
+            threshold: "500_mph"
+            action: "block_account"
+            
+          - name: "privilege_escalation"
+            description: "Sudden increase in access privileges"
+            threshold: "immediate"
+            action: "alert_security_team"
+            
+          - name: "data_exfiltration"
+            description: "Unusual volume of data access/download"
+            threshold: "10x_baseline"
+            action: "require_approval"
+            
+        medium_severity:
+          - name: "unusual_login_time"
+            description: "Login outside normal hours"
+            threshold: "3_standard_deviations"
+            action: "additional_verification"
+            
+          - name: "new_device_access"
+            description: "Access from unrecognized device"
+            threshold: "immediate"
+            action: "device_registration_required"
+
+---
+# Adaptive Access Control Policies
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: adaptive-access-control
+  namespace: kvirtualstage-security
+spec:
+  entrypoint: evaluate-access-request
+  templates:
+  - name: evaluate-access-request
+    inputs:
+      parameters:
+      - name: user-id
+      - name: resource
+      - name: action
+      - name: context
+    steps:
+    - - name: calculate-risk-score
+        template: risk-calculation
+        arguments:
+          parameters:
+          - name: user-id
+            value: "{{inputs.parameters.user-id}}"
+          - name: context
+            value: "{{inputs.parameters.context}}"
+            
+    - - name: policy-decision
+        template: make-policy-decision
+        arguments:
+          parameters:
+          - name: risk-score
+            value: "{{steps.calculate-risk-score.outputs.result}}"
+          - name: resource
+            value: "{{inputs.parameters.resource}}"
+          - name: action
+            value: "{{inputs.parameters.action}}"
+            
+    - - name: enforce-decision
+        template: enforce-access-decision
+        arguments:
+          parameters:
+          - name: decision
+            value: "{{steps.policy-decision.outputs.result}}"
+          - name: user-id
+            value: "{{inputs.parameters.user-id}}"
+
+---
+# Zero Trust Monitoring Dashboard
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kvirtualstage-zero-trust-dashboard
+  namespace: kvirtualstage-security
+data:
+  dashboard.json: |
+    {
+      "dashboard": {
+        "title": "KVirtualStage Zero Trust Security Dashboard",
+        "panels": [
+          {
+            "title": "Trust Score Distribution",
+            "type": "piechart",
+            "targets": [
+              {
+                "expr": "kvirtualstage_user_trust_score_bucket",
+                "legendFormat": "Trust Level {{le}}"
+              }
+            ]
+          },
+          {
+            "title": "Authentication Events",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(kvirtualstage_auth_attempts_total[5m])",
+                "legendFormat": "Auth Attempts"
+              },
+              {
+                "expr": "rate(kvirtualstage_auth_failures_total[5m])",
+                "legendFormat": "Auth Failures"
+              }
+            ]
+          },
+          {
+            "title": "Risk-Based Blocks",
+            "type": "singlestat",
+            "targets": [
+              {
+                "expr": "increase(kvirtualstage_risk_based_blocks_total[1h])",
+                "legendFormat": "Blocks"
+              }
+            ]
+          },
+          {
+            "title": "Device Trust Levels",
+            "type": "bargraph",
+            "targets": [
+              {
+                "expr": "kvirtualstage_device_trust_level",
+                "legendFormat": "{{trust_level}}"
+              }
+            ]
+          },
+          {
+            "title": "Anomaly Detection Alerts",
+            "type": "table",
+            "targets": [
+              {
+                "expr": "kvirtualstage_anomalies_detected",
+                "format": "table"
+              }
+            ]
+          }
+        ]
+      }
+    }
+
+---
+# Device Trust Evaluation Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kvirtualstage-device-trust
+  namespace: kvirtualstage-security
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: device-trust-service
+  template:
+    metadata:
+      labels:
+        app: device-trust-service
+        security.kvirtualstage.com/zero-trust: "enabled"
+    spec:
+      serviceAccountName: device-trust-service
+      containers:
+      - name: device-trust
+        image: kvirtualstage/device-trust:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: TRUST_ALGORITHM
+          value: "composite_scoring"
+        - name: COMPLIANCE_CHECKS
+          value: "enabled"
+        - name: CERTIFICATE_VALIDATION
+          value: "strict"
+        - name: DEVICE_REGISTRY_URL
+          value: "https://device-registry.company.com"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          capabilities:
+            drop:
+            - ALL
+
+---
+# Continuous Risk Assessment Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kvirtualstage-risk-engine
+  namespace: kvirtualstage-security
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: risk-assessment-engine
+  template:
+    metadata:
+      labels:
+        app: risk-assessment-engine
+        security.kvirtualstage.com/zero-trust: "enabled"
+    spec:
+      serviceAccountName: risk-assessment-service
+      containers:
+      - name: risk-engine
+        image: kvirtualstage/risk-engine:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ML_MODEL_PATH
+          value: "/models"
+        - name: RISK_FACTORS_CONFIG
+          value: "/config/risk-factors.yaml"
+        - name: ALERT_THRESHOLD
+          value: "0.7"
+        - name: KAFKA_BROKERS
+          value: "kafka.monitoring.svc.cluster.local:9092"
+        volumeMounts:
+        - name: ml-models
+          mountPath: /models
+          readOnly: true
+        - name: config
+          mountPath: /config
+          readOnly: true
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+            nvidia.com/gpu: 1
+          limits:
+            cpu: 2
+            memory: 4Gi
+            nvidia.com/gpu: 1
+      volumes:
+      - name: ml-models
+        configMap:
+          name: risk-assessment-models
+      - name: config
+        configMap:
+          name: kvirtualstage-zero-trust-config

@@ -1,0 +1,26 @@
+[package]
+name = "desktop-validator-cli"
+version = "1.0.0"
+edition = "2021"
+description = "High-performance CLI tool for KVirtualStage desktop interaction validation"
+license = "MIT"
+
+[[bin]]
+name = "desktop-validator"
+path = "desktop_validator_cli.rs"
+
+[dependencies]
+anyhow = "1.0"
+clap = "4.5"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+chrono = { version = "0.4", features = ["serde"] }
+fastrand = "2.0"
+
+[features]
+default = []
+mcp-integration = []
+high-performance = []

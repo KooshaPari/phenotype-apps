@@ -1,0 +1,169 @@
+# KVirtualStage Prometheus Alert Rules
+groups:
+- name: kvirtualstage.rules
+  interval: 30s
+  rules:
+  # Application health alerts
+  - alert: KVirtualStageDown
+    expr: up{job="kvirtualstage"} == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "KVirtualStage instance is down"
+      description: "KVirtualStage instance {{ $labels.instance }} has been down for more than 1 minute"
+
+  - alert: KVirtualStageHighMemoryUsage
+    expr: kvirtualstage_memory_usage_percent > 85
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High memory usage detected"
+      description: "Memory usage is {{ $value }}% for more than 5 minutes"
+
+  - alert: KVirtualStageHighCPUUsage
+    expr: kvirtualstage_cpu_usage_percent > 80
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High CPU usage detected"
+      description: "CPU usage is {{ $value }}% for more than 5 minutes"
+
+  # Session management alerts
+  - alert: KVirtualStageHighSessionCount
+    expr: kvirtualstage_active_sessions > 100
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High number of active sessions"
+      description: "Active sessions count is {{ $value }}, which is above the development threshold"
+
+  - alert: KVirtualStageSessionCreationFailures
+    expr: increase(kvirtualstage_failed_session_operations[5m]) > 10
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High session creation failure rate"
+      description: "{{ $value }} session creation failures in the last 5 minutes"
+
+  # Redis alerts
+  - alert: RedisDown
+    expr: up{job="redis"} == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Redis instance is down"
+      description: "Redis instance {{ $labels.instance }} has been down for more than 1 minute"
+
+  - alert: KVirtualStageRedisConnectionFailures
+    expr: increase(kvirtualstage_redis_connection_errors_total[5m]) > 5
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Redis connection failures"
+      description: "{{ $value }} Redis connection errors in the last 5 minutes"
+
+  - alert: RedisHighMemoryUsage
+    expr: redis_memory_used_bytes / redis_memory_max_bytes * 100 > 90
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Redis high memory usage"
+      description: "Redis memory usage is {{ $value }}%"
+
+  # HTTP performance alerts
+  - alert: KVirtualStageHighErrorRate
+    expr: |
+      (
+        sum(rate(kvirtualstage_http_requests_total{status=~"5.."}[5m])) /
+        sum(rate(kvirtualstage_http_requests_total[5m]))
+      ) * 100 > 5
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High HTTP error rate"
+      description: "HTTP error rate is {{ $value }}% over the last 5 minutes"
+
+  - alert: KVirtualStageHighResponseTime
+    expr: histogram_quantile(0.95, rate(kvirtualstage_http_request_duration_seconds_bucket[5m])) > 2
+    for: 3m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High HTTP response time"
+      description: "95th percentile response time is {{ $value }}s over the last 5 minutes"
+
+  # Container and virtualization alerts
+  - alert: KVirtualStageHighContainerCount
+    expr: kvirtualstage_containers_running > 50
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High number of running containers"
+      description: "{{ $value }} containers are currently running"
+
+  - alert: KVirtualStageContainerCreationFailures
+    expr: increase(kvirtualstage_container_creation_failures[5m]) > 5
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Container creation failures"
+      description: "{{ $value }} container creation failures in the last 5 minutes"
+
+  # Security alerts
+  - alert: KVirtualStageAuthenticationFailures
+    expr: increase(kvirtualstage_authentication_failures_total[5m]) > 10
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High authentication failure rate"
+      description: "{{ $value }} authentication failures in the last 5 minutes"
+
+  - alert: KVirtualStageRateLimitViolations
+    expr: increase(kvirtualstage_rate_limit_violations[5m]) > 20
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High rate limit violation rate"
+      description: "{{ $value }} rate limit violations in the last 5 minutes"
+
+# Recording rules for performance optimization
+- name: kvirtualstage.recording
+  interval: 30s
+  rules:
+  - record: kvirtualstage:request_rate
+    expr: rate(kvirtualstage_http_requests_total[5m])
+
+  - record: kvirtualstage:error_rate
+    expr: |
+      sum(rate(kvirtualstage_http_requests_total{status=~"5.."}[5m])) /
+      sum(rate(kvirtualstage_http_requests_total[5m]))
+
+  - record: kvirtualstage:response_time_p95
+    expr: histogram_quantile(0.95, rate(kvirtualstage_http_request_duration_seconds_bucket[5m]))
+
+  - record: kvirtualstage:response_time_p99
+    expr: histogram_quantile(0.99, rate(kvirtualstage_http_request_duration_seconds_bucket[5m]))
+
+  - record: kvirtualstage:session_creation_rate
+    expr: rate(kvirtualstage_sessions_created_total[5m])
+
+  - record: kvirtualstage:redis_operation_rate
+    expr: rate(kvirtualstage_redis_operations_total[5m])
+
+  - record: kvirtualstage:cache_hit_rate
+    expr: |
+      kvirtualstage_redis_cache_hits /
+      (kvirtualstage_redis_cache_hits + kvirtualstage_redis_cache_misses)

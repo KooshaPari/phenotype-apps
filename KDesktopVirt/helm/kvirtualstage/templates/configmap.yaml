@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kvirtualstage.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kvirtualstage.labels" . | nindent 4 }}
+    app.kubernetes.io/component: config
+data:
+  kvirtualstage.toml: |
+    [server]
+    host = "{{ .Values.config.server.host }}"
+    port = {{ .Values.config.server.port }}
+    workers = {{ .Values.config.server.workers }}
+    max_connections = {{ .Values.config.server.maxConnections }}
+
+    [redis]
+    url = "{{ include "kvirtualstage.redis.url" . }}"
+    pool_size = {{ .Values.config.redis.poolSize }}
+    connection_timeout = {{ .Values.config.redis.connectionTimeout }}
+    command_timeout = {{ .Values.config.redis.commandTimeout }}
+    retry_attempts = {{ .Values.config.redis.retryAttempts }}
+
+    [session]
+    ttl = {{ .Values.config.session.ttl }}
+    cleanup_interval = {{ .Values.config.session.cleanupInterval }}
+    max_sessions_per_user = {{ .Values.config.session.maxSessionsPerUser }}
+
+    [metrics]
+    enabled = {{ .Values.config.metrics.enabled }}
+    port = {{ .Values.config.metrics.port }}
+    path = "{{ .Values.config.metrics.path }}"
+    
+    [logging]
+    level = "{{ include "kvirtualstage.logLevel" . }}"
+    format = "{{ .Values.config.logging.format }}"
+    {{- if .Values.monitoring.logging.structured }}
+    structured = true
+    {{- end }}
+    
+    [security]
+    {{- with .Values.config.security.corsOrigins }}
+    cors_origins = {{ toJson . }}
+    {{- end }}
+    rate_limit_rpm = {{ .Values.config.security.rateLimitRpm }}
+    
+    [virtualization]
+    docker_socket = "{{ .Values.config.virtualization.dockerSocket }}"
+    image_pull_policy = "{{ .Values.config.virtualization.imagePullPolicy }}"
+    container_timeout = {{ .Values.config.virtualization.containerTimeout }}
+    max_containers_per_session = {{ .Values.config.virtualization.maxContainersPerSession }}
+
+    {{- if .Values.enterprise.enabled }}
+    [enterprise]
+    {{- include "kvirtualstage.enterpriseConfig" . | nindent 4 }}
+    {{- end }}
+
+    {{- if .Values.development.enabled }}
+    [development]
+    enabled = true
+    debug_mode = {{ .Values.development.debugMode }}
+    {{- end }}

@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  kodevibe-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kodevibe-server
+    ports:
+      - "8080:8080"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8080
+      - LOG_LEVEL=info
+    volumes:
+      - ./test-workspace:/workspace:ro
+      - ./reports:/app/reports
+    command: ["kodevibe-server", "--host", "0.0.0.0", "--port", "8080"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - kodevibe-network
+
+  kodevibe-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kodevibe-cli
+    volumes:
+      - ./test-workspace:/workspace
+      - ./reports:/reports
+    command: ["kodevibe", "scan", "/workspace", "--format", "json"]
+    depends_on:
+      kodevibe-server:
+        condition: service_healthy
+    networks:
+      - kodevibe-network
+    profiles:
+      - cli
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: kodevibe-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - kodevibe-network
+    profiles:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: kodevibe-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./monitoring/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+      - ./monitoring/grafana-dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
+    networks:
+      - kodevibe-network
+    profiles:
+      - monitoring
+
+  redis:
+    image: redis:7-alpine
+    container_name: kodevibe-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - kodevibe-network
+    profiles:
+      - cache
+
+networks:
+  kodevibe-network:
+    driver: bridge
+
+volumes:
+  grafana-storage:
+  redis-data:

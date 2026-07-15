@@ -1,0 +1,64 @@
+{
+  "name": "Personal Greeting Automation",
+  "description": "Open TextEdit and write a personal greeting message",
+  "version": "1.0",
+  "metadata": {
+    "created": "2025-07-10",
+    "platform": "macOS",
+    "target_app": "TextEdit"
+  },
+  "steps": [
+    {
+      "step": 1,
+      "action": "focus_application",
+      "target": "TextEdit",
+      "description": "Ensure TextEdit is focused and ready for input"
+    },
+    {
+      "step": 2,
+      "action": "type_text",
+      "text": "Hello there! 👋\n\nThis greeting was written by KVirtualStage v0.1.0 - an AI-powered desktop automation platform!\n\n🤖 What I just demonstrated:\n✅ Opened TextEdit application automatically\n✅ Focused the text input area\n✅ Typed this entire message programmatically\n✅ Used structured automation workflows\n\n🎯 KVirtualStage Features:\n• MCP (Model Context Protocol) integration for AI agents\n• Cross-platform desktop automation (Linux, macOS, Windows)\n• JSON-based workflow scripting\n• Real-time screenshot and recording capabilities\n• Secure credential management\n• Virtual desktop orchestration with Docker\n\n🚀 Perfect for:\n• AI agent desktop control\n• Automated testing workflows\n• Business process automation\n• Development environment setup\n• Continuous integration tasks\n\nThank you for checking out this demo! The future of AI-powered desktop automation is here.\n\n- KVirtualStage Team\n  https://github.com/KooshaPari/KVirtualStage",
+      "description": "Type comprehensive greeting and feature overview",
+      "typing_speed": "human_like",
+      "wait_after": 1000
+    },
+    {
+      "step": 3,
+      "action": "save_document",
+      "method": "keyboard_shortcut",
+      "keys": ["cmd", "s"],
+      "description": "Save the document using Cmd+S"
+    },
+    {
+      "step": 4,
+      "action": "type_text",
+      "text": "KVirtualStage_Greeting_Demo.txt",
+      "description": "Enter filename for the document",
+      "wait_after": 500
+    },
+    {
+      "step": 5,
+      "action": "confirm_save",
+      "method": "keyboard_shortcut",
+      "keys": ["return"],
+      "description": "Press Enter to confirm save"
+    },
+    {
+      "step": 6,
+      "action": "take_screenshot",
+      "output": "screenshots/04_greeting_completed.png",
+      "description": "Capture final state with greeting message completed"
+    }
+  ],
+  "expected_outcome": {
+    "document_created": true,
+    "filename": "KVirtualStage_Greeting_Demo.txt",
+    "content_lines": 25,
+    "demonstrates": [
+      "Text automation",
+      "File saving workflows", 
+      "Keyboard shortcut automation",
+      "Multi-step process coordination"
+    ]
+  }
+}

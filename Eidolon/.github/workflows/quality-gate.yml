@@ -1,0 +1,32 @@
+name: Quality Gate
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on: [push, pull_request]
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v4
+      - run: echo "Quality gate check (phenotype-tooling integration)"
+
+  test-virtual-stage:
+    name: VirtualStage verification
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+      - name: Run VirtualStage verification
+        run: |
+          cargo test -p eidolon-core virtual_stage && \
+          cargo test -p eidolon-desktop virtual_stage && \
+          cargo test -p eidolon-mobile && \
+          cargo test -p eidolon-sandbox

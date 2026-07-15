@@ -1,0 +1,35 @@
+# gitleaks configuration for KWatch
+# https://github.com/gitleaks/gitleaks
+
+title = "KWatch gitleaks config"
+
+# Extend the default gitleaks ruleset
+[extend]
+useDefault = true
+
+# Allow specific paths/patterns that may trigger false positives
+[allowlist]
+description = "Known safe paths and test fixtures"
+paths = [
+    # Go vendor/module cache is not committed
+    "(?i)vendor/",
+    # Test data with placeholder values
+    "(?i)testdata/",
+    # Git internal data
+    "(?i).git/",
+    # Go sum file with checksum values (not secrets)
+    "go.sum",
+]
+
+# Custom regex rules specific to KWatch
+[[rules]]
+id = "kwatch-api-token"
+description = "KWatch API token or key"
+regex = '''(?i)(?:kwatch|kw)_(?:api[_-]?key|token|secret)\s*[=:]\s*["'][A-Za-z0-9_\-]{16,}["']'''
+tags = ["kwatch", "api-token"]
+
+[[rules]]
+id = "kwatch-bearer-token"
+description = "Bearer token in KWatch config"
+regex = '''(?i)(?:bearer|Bearer)\s+[A-Za-z0-9\-_=]{20,}'''
+tags = ["kwatch", "bearer", "token"]

@@ -1,0 +1,163 @@
+[workspace]
+
+[package]
+name = "kvirtualstage"
+version = "0.2.1"
+edition = "2021"
+description = "A Playwright-equivalent desktop automation platform for AI agents"
+authors = ["KVirtualStage Team"]
+license = "MIT"
+repository = "https://github.com/KooshaPari/KVirtualStage"
+homepage = "https://kvirtualstage.dev"
+keywords = ["automation", "desktop", "virtualization", "ai", "playwright"]
+categories = ["command-line-utilities", "development-tools", "virtualization"]
+
+[dependencies]
+# Core framework
+tokio = { version = "1.39", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+thiserror = "2.0"
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+url = "2.4"
+dirs = "5.0"
+futures = "0.3"
+num_cpus = "1.16"
+
+# Language bindings
+# Tier-2 CVE sweep: pyo3 0.20 -> 0.24 (RUSTSEC-2024-0346 et al)
+pyo3 = { version = "0.24", features = ["extension-module"], optional = true }
+
+# CLI and TUI
+clap = { version = "4.5", features = ["derive"] }
+ratatui = { version = "0.30", default-features = false, features = ["crossterm", "underline-color", "all-widgets", "macros", "layout-cache"], optional = true }
+crossterm = { version = "0.27", optional = true }
+
+# HTTP and Web (optimized)
+axum = { version = "0.7", default-features = false, features = ["tokio", "json", "http1", "http2", "ws"], optional = true }
+tower-http = { version = "0.5", default-features = false, features = ["cors"], optional = true }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "multipart"] }
+
+# Container orchestration (optimized)
+bollard = { version = "0.20", default-features = false, features = ["ssl"] }
+
+# UI automation
+image = "0.24"
+
+# Security and crypto
+ring = "0.17"
+argon2 = "0.5"
+aes-gcm = "0.10"
+base64 = "0.21"
+sha2 = "0.10"
+
+# Additional dependencies for new modules
+fastrand = "2.0"
+urlencoding = "2.1"
+async-trait = "0.1"
+# Tier-2 CVE sweep: `users` crate is unmaintained (RUSTSEC-2023-0040). Replace
+# with the maintained `uzers` fork (drop-in API-compatible).
+uzers = "0.12"
+rand = "0.8"
+
+# Database (optimized)
+# Tier-2 CVE sweep: sqlx 0.7 -> 0.8 (RUSTSEC-2024-0363 binary protocol misencoding).
+redis = { version = "0.24", default-features = false, features = ["tokio-comp"], optional = true }
+
+# Configuration
+toml = "0.8"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Testing
+criterion = "0.5"
+
+[[bench]]
+name = "virtualization_benchmarks"
+harness = false
+
+[dev-dependencies]
+axum = { version = "0.7", default-features = false, features = ["tokio", "json", "ws"] }
+tower-http = { version = "0.5", default-features = false, features = ["cors"] }
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
+
+[features]
+default = ["tui"]
+# Core features
+tui = ["ratatui", "crossterm"]
+web-ui = ["axum", "tower-http"]
+database = ["redis"]
+# Language bindings
+python-bindings = ["pyo3"]
+c-ffi = []
+# Combined features
+full-server = ["web-ui", "database"]
+enterprise = ["full-server"]
+all-bindings = ["python-bindings", "c-ffi"]
+# Performance features
+gpu-acceleration = []
+performance-optimized = []
+
+[[bin]]
+name = "kvs-demo"
+path = "src/bin/demo.rs"
+
+[[bin]]
+name = "kvs-server"
+path = "src/bin/server.rs"
+required-features = ["web-ui"]
+
+[[bin]]
+name = "kvs-tui"
+path = "src/bin/tui.rs"
+required-features = ["tui"]
+
+[[bin]]
+name = "kvs-security-validation"
+path = "src/bin/security_validation.rs"
+
+[lib]
+name = "kvirtualstage"
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+# Maximum optimization settings for enterprise deployment
+lto = "fat"                    # Full link-time optimization
+codegen-units = 1              # Single codegen unit for better optimization
+panic = "abort"                # Remove panic handling overhead
+strip = "symbols"              # Strip all debug symbols
+opt-level = 3                  # Maximum optimization level
+overflow-checks = false        # Disable overflow checks for performance
+debug = false                  # No debug info
+debug-assertions = false       # Disable debug assertions
+rpath = false                  # Disable rpath for smaller binary
+
+[profile.release-with-debug]
+inherits = "release"
+debug = "line-tables-only"     # Minimal debug info for profiling
+strip = false
+
+[profile.performance]
+inherits = "release"
+# Ultra-optimized profile for maximum performance
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+opt-level = 3
+overflow-checks = false
+debug = false
+debug-assertions = false
+# Target-specific optimizations will be set via RUSTFLAGS
+
+[profile.size-optimized]
+inherits = "release"
+# Profile optimized for smallest binary size
+opt-level = "z"               # Optimize for size
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"

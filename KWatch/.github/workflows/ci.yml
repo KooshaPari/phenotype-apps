@@ -1,0 +1,159 @@
+name: ci
+
+on:
+  push:
+    branches: [main, chore/**, feat/**, fix/**, refactor/**]
+  pull_request:
+    branches: [main, chore/**, feat/**, fix/**, refactor/**]
+  workflow_dispatch:
+
+# Tier-0 hygiene: least-privilege default; jobs escalate as needed.
+permissions:
+  contents: read
+
+# Tier-0 hygiene: cancel superseded runs per ref to save CI minutes and
+# keep the actions queue responsive.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  go:
+    name: Go build & test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+
+      - name: Setup Go
+        uses: actions/setup-go@4a2405e6aebff6aabd8e43618539aa35cf90ac92
+        with:
+          go-version: "1.25"
+          cache: true
+
+      - name: Check gofmt
+        # `gofmt -l .` prints the names of files that are not gofmt-clean.
+        # An empty result means the tree is formatted; the shell `|| true` and
+        # the explicit `test ! -s` make the failure mode obvious in the Actions
+        # UI (a non-empty list of filenames will be shown above this step).
+        run: |
+          set -euo pipefail
+          out=$(gofmt -l .)
+          if [ -n "$out" ]; then
+            echo "::error::The following files are not gofmt-clean:"
+            echo "$out"
+            exit 1
+          fi
+
+      - name: Build
+        run: go build ./...
+
+      - name: Test
+        run: go test -coverprofile=coverage.out -covermode=atomic ./...
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: Security lint
+        run: |
+          set -euo pipefail
+          go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+          golangci-lint run ./...
+
+      - name: Coverage gate
+        run: |
+          set -euo pipefail
+          total=$(go tool cover -func=coverage.out | grep total: | awk '{print $3}' | sed 's/%//')
+          if [ -z "$total" ]; then
+            echo "::error::Could not parse coverage output"
+            exit 1
+          fi
+          if (( $(echo "$total < 70" | bc -l) )); then
+            echo "::error::Coverage ${total}% is below the 70% threshold"
+            exit 1
+          fi
+          echo "::notice::Coverage ${total}% meets the 70% threshold"
+
+  node:
+    name: Node build, lint & test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    if: hashFiles('tsconfig.json', 'jest.config.*') != ''
+    # KWatch is a Go project. The `package.json` is leftover from an
+    # abandoned TypeScript rewrite (no `tsconfig.json`, no `*.ts` / `*.js`
+    # source files committed, no test framework wired up). Skip the Node
+    # job entirely until source lands. A future PR that adds Node sources
+    # should drop this `if:` and the gating here.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@f4a67bbeca970f103397d3d2b9462cf787cd2980
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install
+        run: npm install --no-audit --no-fund
+
+      - name: Build
+        run: npm run build
+
+      - name: Lint
+        run: npm run lint
+
+      # The package.json `test` script is `jest --config jest.config.mjs`,
+      # but the repo currently has no `jest.config.mjs` and no test files
+      # under any of the standard globs (no `*.test.ts`, no `*.spec.ts`,
+      # no `__tests__/` directory). Running `npm test` as-is fails with
+      # "ENOENT: no such file or directory, open 'jest.config.mjs'".
+      #
+      # Rather than drop a stub `jest.config.mjs` that may rot, the test
+      # step is gated on a real test framework being wired up. It runs
+      # only if BOTH a `jest.config.*` file is present AND at least one
+      # test file exists. A future PR that adds a test framework should
+      # add the config and the tests together; this step will then run
+      # automatically with no further CI changes.
+      - name: Test (gated)
+        run: |
+          set -euo pipefail
+          if [ ! -f jest.config.mjs ] && [ ! -f jest.config.js ] && [ ! -f jest.config.cjs ] && [ ! -f jest.config.ts ]; then
+            echo "::notice::No jest config found. Skipping \`npm test\` (test infrastructure not yet wired up — see CONTRIBUTING.md)."
+            exit 0
+          fi
+          count=$(find . -type f \( -name '*.test.ts' -o -name '*.test.tsx' -o -name '*.spec.ts' -o -name '*.spec.tsx' -o -name '*.test.js' -o -name '*.spec.js' \) -not -path './node_modules/*' | wc -l | tr -d ' ')
+          if [ "$count" -eq 0 ]; then
+            echo "::notice::No test files found. Skipping \`npm test\` (test infrastructure not yet wired up — see CONTRIBUTING.md)."
+            exit 0
+          fi
+          echo "Found $count test file(s). Running \`npm test\`."
+          npm test
+
+  links:
+    name: Link check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+
+      - name: lychee link check
+        uses: lycheeverse/lychee-action@2b973e86fc7b1f6b36a53795f2d1fb0960b3c6b6
+        with:
+          # Only check markdown and text files; skip the audit JSON (too large)
+          args: >-
+            --verbose --no-progress --require-https
+            --exclude "https://github.com/Phenotype-org"
+            --exclude "https://github.com/KooshaPari"
+            -- './**/*.md' './**/*.txt'
+          fail: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

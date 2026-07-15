@@ -1,0 +1,35 @@
+FROM ubuntu:22.04
+
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DISPLAY=:1
+
+# Install LXDE and automation tools
+RUN apt-get update && apt-get install -y \
+    lxde-core \
+    lxterminal \
+    galculator \
+    mousepad \
+    xvfb \
+    x11vnc \
+    xdotool \
+    wmctrl \
+    imagemagick \
+    python3 \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies for automation
+RUN pip3 install pyautogui pillow
+
+# Create VNC startup script
+RUN mkdir -p /root/.vnc && \
+    echo '#!/bin/bash\nexport DISPLAY=:1\nXvfb :1 -screen 0 1024x768x24 &\nsleep 2\nstartlxde &\nx11vnc -display :1 -nopw -listen localhost -xkb -forever' > /start-desktop.sh && \
+    chmod +x /start-desktop.sh
+
+# Copy automation script
+COPY accurate_automation.py /accurate_automation.py
+
+EXPOSE 5900
+
+CMD ["/start-desktop.sh"]

@@ -1,0 +1,67 @@
+okf_version: "1.0"
+project:
+  id: koosha.phenotype.kodevibe
+  name: KodeVibe
+  charter_ref: charter.md
+  review_ref: review.md
+artifacts:
+  - id: intent-root
+    path: intent.md
+    kind: intent
+    summary: "Quality role static analysis; Go engine + shell CLI + MCP/daemon"
+    links:
+      - docs/intent/synthesis.md
+      - docs/intent/assumptions.md
+  - id: charter
+    path: charter.md
+    kind: governance
+    summary: "tooling boundary; quality role; Go engine Tier 3 justified"
+  - id: review-kilo
+    path: review.md
+    kind: review
+    standard: kilo-code-stand@1
+    summary: "Automated PR review contract for agents"
+  - id: sota-root
+    path: SOTA.md
+    kind: sota
+    summary: "Go engine optimal for migrated analyzer; kwality owns LLM layer"
+    dimensions:
+      - technical
+      - dx
+      - ux
+      - ax
+      - security
+      - ops
+      - cost
+  - id: quality-platform
+    path: docs/architecture/quality-platform.md
+    kind: architecture
+    summary: "KodeVibe vs kwality vs HexaKit schema map"
+dimensions:
+  technical: docs/sota/technical.md
+  dx: docs/sota/dx.md
+  ux: docs/sota/ux.md
+  ax: docs/sota/ax.md
+  security: docs/sota/security.md
+  ops: docs/sota/ops.md
+  cost: docs/sota/cost.md
+  alternatives: docs/sota/alternatives.md
+  fork: docs/sota/fork-rationale.md
+provenance:
+  intent_prompts: docs/intent/prompts/
+  last_scrape: null
+  sources:
+    - cursor
+    - forge
+    - claude
+    - codex
+llm_wiki:
+  chunk_max_tokens: 800
+  cross_link_style: relative
+  embedding_hint: "title + summary + first_h2"
+  injection_order:
+    - charter.md
+    - review.md
+    - intent.md
+    - SOTA.md
+    - docs/architecture/quality-platform.md

@@ -1,0 +1,22 @@
+container_runtime = "docker"
+default_desktop = "kubuntu"
+
+[default_resources]
+memory_mb = 2048
+cpu_cores = 2
+disk_gb = 10
+
+[recording_settings]
+default_format = "mp4"
+quality = "high"
+fps = 30
+
+[audio_settings]
+enable_tts = true
+tts_voice = "default"
+enable_recording = true
+
+[security_settings]
+enable_encryption = true
+credential_vault_path = "/app/vault"
+enable_mfa = false

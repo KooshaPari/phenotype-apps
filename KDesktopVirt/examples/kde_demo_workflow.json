@@ -1,0 +1,221 @@
+{
+  "name": "Complete KDE Desktop Workflow Demo",
+  "description": "Comprehensive demonstration of KVirtualStage with multiple KDE applications",
+  "version": "1.0",
+  "metadata": {
+    "platform": "linux",
+    "desktop": "kde_plasma",
+    "duration_estimate": "180_seconds"
+  },
+  "workflow": [
+    {
+      "step": 1,
+      "name": "Initial Desktop Capture",
+      "action": "take_screenshot",
+      "output": "screenshots/workflow_01_initial.png",
+      "description": "Capture clean KDE Plasma desktop"
+    },
+    {
+      "step": 2,
+      "name": "Open File Manager",
+      "action": "open_application",
+      "target": "dolphin",
+      "method": "krunner",
+      "wait": 2000,
+      "description": "Launch Dolphin file manager"
+    },
+    {
+      "step": 3,
+      "name": "Navigate to Documents",
+      "action": "key_combination",
+      "keys": ["ctrl", "shift", "o"],
+      "description": "Navigate to Documents folder"
+    },
+    {
+      "step": 4,
+      "name": "Create New Folder",
+      "action": "key_combination",
+      "keys": ["ctrl", "shift", "n"],
+      "description": "Create new folder"
+    },
+    {
+      "step": 5,
+      "name": "Name Folder",
+      "action": "type_text",
+      "text": "KVirtualStage_Demo",
+      "description": "Name the new folder"
+    },
+    {
+      "step": 6,
+      "name": "Confirm Folder Creation",
+      "action": "key_press",
+      "key": "return",
+      "description": "Press Enter to create folder"
+    },
+    {
+      "step": 7,
+      "name": "Capture File Manager",
+      "action": "take_screenshot",
+      "output": "screenshots/workflow_02_file_manager.png",
+      "description": "Show file management capabilities"
+    },
+    {
+      "step": 8,
+      "name": "Open Terminal",
+      "action": "key_combination",
+      "keys": ["ctrl", "alt", "t"],
+      "description": "Open Konsole terminal"
+    },
+    {
+      "step": 9,
+      "name": "Terminal Commands",
+      "action": "type_text",
+      "text": "echo 'KVirtualStage Desktop Automation Demo' > ~/Documents/KVirtualStage_Demo/demo.txt",
+      "description": "Create demo file via terminal"
+    },
+    {
+      "step": 10,
+      "name": "Execute Command",
+      "action": "key_press",
+      "key": "return",
+      "description": "Execute the echo command"
+    },
+    {
+      "step": 11,
+      "name": "List Files",
+      "action": "type_text",
+      "text": "ls -la ~/Documents/KVirtualStage_Demo/",
+      "description": "List files in demo directory"
+    },
+    {
+      "step": 12,
+      "name": "Execute List",
+      "action": "key_press",
+      "key": "return",
+      "description": "Execute ls command"
+    },
+    {
+      "step": 13,
+      "name": "Capture Terminal",
+      "action": "take_screenshot",
+      "output": "screenshots/workflow_03_terminal.png",
+      "description": "Show terminal automation"
+    },
+    {
+      "step": 14,
+      "name": "Open Calculator",
+      "action": "open_application",
+      "target": "kcalc",
+      "method": "alt_f2",
+      "wait": 1500,
+      "description": "Open KDE Calculator via Alt+F2"
+    },
+    {
+      "step": 15,
+      "name": "Mathematical Operation",
+      "action": "type_text",
+      "text": "123*456",
+      "description": "Enter calculation: 123 × 456"
+    },
+    {
+      "step": 16,
+      "name": "Calculate Result",
+      "action": "key_press",
+      "key": "return",
+      "description": "Execute calculation"
+    },
+    {
+      "step": 17,
+      "name": "Capture Calculator",
+      "action": "take_screenshot",
+      "output": "screenshots/workflow_04_calculator.png",
+      "description": "Show calculation result"
+    },
+    {
+      "step": 18,
+      "name": "Open Text Editor",
+      "action": "open_application",
+      "target": "kate",
+      "method": "krunner",
+      "wait": 2000,
+      "description": "Launch Kate text editor"
+    },
+    {
+      "step": 19,
+      "name": "Create Demo Document",
+      "action": "type_text",
+      "text": "# KVirtualStage Workflow Demo Results\n\n## Applications Automated:\n✅ Dolphin File Manager - Folder creation and navigation\n✅ Konsole Terminal - Command execution and file operations\n✅ KCalc Calculator - Mathematical operations (123 × 456 = 56,088)\n✅ Kate Text Editor - Document creation and editing\n\n## Automation Features Demonstrated:\n- Multi-application coordination\n- Keyboard shortcut automation\n- Text input with variable typing speeds\n- Screenshot capture at each step\n- Cross-application data flow\n- File system operations\n- Terminal command execution\n\n## KVirtualStage Capabilities:\n- Playwright-equivalent desktop scripting\n- JSON-based workflow definitions\n- Real-time screen recording\n- MCP protocol for AI agent integration\n- Secure credential management\n- Container-based session isolation\n\n## Workflow Completion:\nThis document was created entirely through automated KVirtualStage scripting, demonstrating comprehensive desktop automation capabilities for AI agents.\n\nTimestamp: $(date)\nDemo Status: SUCCESS ✅",
+      "description": "Create comprehensive demo documentation",
+      "typing_speed": "normal"
+    },
+    {
+      "step": 20,
+      "name": "Save Document",
+      "action": "key_combination",
+      "keys": ["ctrl", "s"],
+      "description": "Save the demo document"
+    },
+    {
+      "step": 21,
+      "name": "Enter Filename",
+      "action": "type_text",
+      "text": "~/Documents/KVirtualStage_Demo/workflow_results.md",
+      "description": "Specify save location and filename"
+    },
+    {
+      "step": 22,
+      "name": "Confirm Save",
+      "action": "key_press",
+      "key": "return",
+      "description": "Confirm document save"
+    },
+    {
+      "step": 23,
+      "name": "Final Workflow Capture",
+      "action": "take_screenshot",
+      "output": "screenshots/workflow_05_completed.png",
+      "description": "Capture final workflow state"
+    },
+    {
+      "step": 24,
+      "name": "Cleanup and Organization",
+      "action": "key_combination",
+      "keys": ["alt", "tab"],
+      "description": "Switch between applications to show coordination"
+    },
+    {
+      "step": 25,
+      "name": "Final Screenshot",
+      "action": "take_screenshot",
+      "output": "screenshots/workflow_06_final_desktop.png",
+      "description": "Show complete workflow with all applications"
+    }
+  ],
+  "expected_outcomes": {
+    "files_created": [
+      "~/Documents/KVirtualStage_Demo/demo.txt",
+      "~/Documents/KVirtualStage_Demo/workflow_results.md"
+    ],
+    "folders_created": [
+      "~/Documents/KVirtualStage_Demo/"
+    ],
+    "applications_used": ["dolphin", "konsole", "kcalc", "kate"],
+    "calculations_performed": ["123 × 456 = 56,088"],
+    "screenshots_captured": 6,
+    "automation_features": [
+      "File management automation",
+      "Terminal command execution", 
+      "Mathematical calculations",
+      "Document creation and editing",
+      "Multi-application coordination",
+      "Keyboard shortcut automation"
+    ]
+  },
+  "performance_metrics": {
+    "estimated_duration": "180 seconds",
+    "steps_count": 25,
+    "applications_count": 4,
+    "file_operations": 3,
+    "screenshot_operations": 6
+  }
+}
