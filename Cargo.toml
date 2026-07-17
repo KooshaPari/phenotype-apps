@@ -70,6 +70,7 @@ members = [
     "crates/phenotype-workflow",
     "crates/phenotype-policy-engine",
     "pheno-context",
+    "apps/apisync",
 ]
 
 [workspace.package]
