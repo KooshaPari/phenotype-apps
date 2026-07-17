@@ -21,3 +21,10 @@ apps/ios/**/.build/
 FocalPoint-wtrees/
 .build
 .claude/worktrees/
+
+# HeliosApp (Bun monorepo) build artifacts — apps/helios-app/.gitignore
+# is self-contained for the subdir; these guard against root-level scans
+# catching generated files in any other post-absorbs.
+**/node_modules/
+**/*.tsbuildinfo
+**/coverage/
