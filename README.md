@@ -3,9 +3,9 @@
 <!-- Slop issues are expected and intentionally present as part of an HITL-less -->
 <!-- /minimized AI-DD metaproject of learning, refining, and building brute-force -->
 <!-- training for both agents and the human operator. -->
-![Downloads](https://img.shields.io/github/downloads/KooshaPari/FocalPoint/total?style=flat-square&label=downloads&color=blue)
-![GitHub release](https://img.shields.io/github/v/release/KooshaPari/FocalPoint?style=flat-square&label=release)
-![License](https://img.shields.io/github/license/KooshaPari/FocalPoint?style=flat-square)
+![Downloads](https://img.shields.io/github/downloads/KooshaPari/phenotype-apps/total?style=flat-square&label=downloads&color=blue)
+![GitHub release](https://img.shields.io/github/v/release/KooshaPari/phenotype-apps?style=flat-square&label=release)
+![License](https://img.shields.io/github/license/KooshaPari/phenotype-apps?style=flat-square)
 ![AI-Slop](https://img.shields.io/badge/AI--DD-Slop%20Expected-orange?style=flat-square)
 ![AI-Only-Maintained](https://img.shields.io/badge/Planned%20%26%20Maintained%20by-AI%20Agents%20Only-red?style=flat-square)
 ![HITL-less](https://img.shields.io/badge/HITL--less%20AI--DD-metaproject-yellow?style=flat-square)
@@ -33,8 +33,8 @@
 
 [![AI Slop Inside](https://sladge.net/badge.svg)](https://sladge.net)
 [![Build](https://img.shields.io/github/actions/workflow/status/KooshaPari/FocalPoint/rust.yml?branch=main&label=build)](https://github.com/KooshaPari/FocalPoint/actions)
-[![Release](https://img.shields.io/github/v/release/KooshaPari/FocalPoint?include_prereleases&sort=semver)](https://github.com/KooshaPari/FocalPoint/releases)
-[![License](https://img.shields.io/github/license/KooshaPari/FocalPoint)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/KooshaPari/phenotype-apps?include_prereleases&sort=semver)](https://github.com/KooshaPari/FocalPoint/releases)
+[![License](https://img.shields.io/github/license/KooshaPari/phenotype-apps)](LICENSE)
 [![Phenotype](https://img.shields.io/badge/Phenotype-org-blueviolet)](https://github.com/KooshaPari)
 
 **Status:** v0.0.5 — Phase 1 in progress (~85%).
