@@ -1,0 +1,30 @@
+{
+  "name": "pheno-handbook",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Phenotype Handbook - Patterns, guidelines, and best practices",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "test": "vitest run",
+    "build": "vitepress build docs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.0",
+    "@types/node": "^26.0.1",
+    "vitepress": "^1.0.0",
+    "vitest": "^4.1.7"
+  },
+  "engines": {
+    "node": ">=18",
+    "bun": ">=1.0"
+  },
+  "overrides": {
+    "vitepress": {
+      "vite": "6.4.2"
+    }
+  },
+  "license": "MIT OR Apache-2.0",
+  "packageManager": "bun@1"
+}
